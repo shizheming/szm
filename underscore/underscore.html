@@ -10,5 +10,11 @@
 </html>
 <script src="underscore1.8.2.js"></script>
 <script>
-	console.log(_.isFunction(function(){}));
+	// gc-过程函数-jg-结果函数
+
+	// 集合
+	// gc
+	_.each([1,2,3],function(index){
+		console.log(index * 2);
+	})
 </script>
