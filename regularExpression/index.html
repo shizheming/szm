@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<title>regularExpression</title>
+	<style>
+		
+	</style>
+</head>
+<body style="font-family:'Microsoft YaHei';">
+	<h1 id="babala2"><input type="text"><input type="button" value="查找" id="chazhao"></h1>
+	<h1 id="h1">Regular expression, also known as the formal representation of a conventional method, said method (English: regular expression, in the code often abbreviated as regex, regexp or re), computer science a concept. Regular expressions use a single string to describe, match a series of strings that conform to a syntax rule. In many text editors, regular expressions are often used to retrieve and replace text that is consistent with a pattern.1 spoiup</h1>
+	<h1>能用正则的几个方法：exec(),test(),match(),replace(),search(),split()</h1>
+	<h1>方法</h1>
+	<h1>match</h1>
+	<h1>match(/t(h)(e)/)</h1>
+	<h1>不带g，返回一个数组，第0个是匹配的文本，其余是子表达式的内容，最后是一个是index，对应找到字符的位置，一个input是原来的字符串。一个参数可以传字符串，字面量正则表达式，构造函数。</h1>
+	<img src="images/img1.jpg">
+	<h1>match(/t(h)(e)/g)</h1>
+	<h1>带g就没有其他信息了，只有全局匹配到的内容。</h1>
+	<img src="images/img2.jpg">
+	<h1>规则</h1>
+	<h1>[]：中括号内匹配可以是任意其中的一个字符，里面的是单个字符不是一组，里面的元字符都是普通字符。</h1>
+	<h1 id="h2"></h1>
+	<h1>[^]：中括号内第一个字符带^，说明是反过来的，只要不匹配里面的任意字符就返回。^貌似只能写在中括号里面而且是第一位，其他情况有问题。</h1>
+	<h1 id="h3"></h1>
+	<h1>\w：匹配所有大小写英文字母和所有数字加下划线。</h1>
+	<h1 id="h5"></h1>
+	<h1>\W：匹配所有非大小写英文字母和所有数字加下划线。</h1>
+	<h1 id="h6"></h1>
+	<h1>\s：匹配所有Unicode空白符。</h1>
+	<h1 id="h7"></h1>
+	<h1>\S：匹配所有非Unicode空白符。</h1>
+	<h1 id="h8"></h1>
+	<h1>\d：匹配所有数字。</h1>
+	<h1 id="h9"></h1>
+	<h1>\D：匹配所有非数字。</h1>
+	<h1 id="h10"></h1>
+	<h1>匹配优先量词：*，+，?，{num,num}</h1>
+	<h1>+：加号的意思是加号前面的连着的是可以重复的，不论是单个还是一类，比如\w，\s，就英文重复，或是空白符重复，至少匹配1次。</h1>
+	<h1 id="h4"></h1>
+	<h1>{n,m}：至少重复n次最多重复m次。</h1>
+	<h1 id="h11"></h1>
+	<h1>{n,}：至少匹配n次，最多不限。</h1>
+	<h1 id="h12"></h1>
+	<h1>{n}：正好匹配n次</h1>
+	<h1 id="h13"></h1>
+	<h1>?：可选项，没有就返回空，有就批次一次。（和*一样匹配当前位置的，有就有，没有就没有）</h1>
+	<h1 id="h14"></h1>
+	<h1>*：匹配0次货多次（和？一样匹配当前位置的，有就有，没有就没有）</h1>
+	<h1 id="h15"></h1>
+	<h1>忽略优先量词：*?，+?，??，{num,num}?</h1>
+	<h1>*?与*对应</h1>
+	<h1 id="h48">ni hao shanghai beijing tianjing hangzhou shanghai</h1>
+	<h1 id="h49"></h1>
+	<h1>+?与+对应</h1>
+	<h1 id="h50">abccccccc222</h1>
+	<h1 id="h51"></h1>
+	<h1>??与?对应</h1>
+	<h1 id="h52">string to describe</h1>
+	<h1 id="h53"></h1>
+	<h1>{num,num}?与{num,num}对应</h1>
+	<h1 id="h54">abbbbbbc2</h1>
+	<h1 id="h55"></h1>
+	<!-- <h1>javascript不支持固化分组(?>......)</h1>
+	<h1>javascript不支持占有优先量词?+,*+,++,{n,m}+</h1> -->
+	<h1>.：点可以匹配任何的字符</h1>
+	<h1 id="h16"></h1>
+	<h1>\b：匹配单词的边界。</h1>
+	<h1 id="h23"></h1>
+	<h1>\B：不匹配单词的边界</h1>
+	<h1 id="h24"></h1>
+	<h1 id="h19">ben@forta.com ben.forta@forta.com support@forta.com ben@urgent.forta.com spam@forta.com</h1>
+	<h1 id="h20"></h1>	
+	<h1>()：子表达式，把括号里面的作为一个整体来匹配。</h1>
+	<h1 id="h25">[]里面，元字符都变成了普通字符，除了\-]</h1>
+	<h1>回溯引用：\1,\2,\3...，引用第几个子表达式的规则匹配。</h1>
+	<h1 id="h27">h1aaaaaaaaah1h2bbbbbbbbbbbh2h3ccccccccccccch3</h1>
+	<h1 id="h28"></h1>
+	<h1>string.replace(regexp,replacement)</h1>
+	<h1>参数：regexp可以是一个字符串，也可以是一个正则表达式。replacement可以是一个字符串，也可以是一个函数，如果是函数的话，第一个参数输匹配的文本，第二个到第n个是捕捉分组匹配到的文本。</h1>
+	<h1 id="h29"></h1>
+	<h1 id="h37">with a pattern the Regular expression</h1>
+	<h1>$1,$2...$99：与regexp中第一个到第99个子表达式想匹配的文本。</h1>
+	<h1 id="h36"></h1>
+	<h1>$&：与regexp相匹配的子串，不是括号里的，而是整个正则表达式。</h1>
+	<h1 id="h38"></h1>
+	<h1>$`：匹配子串左侧的文本。</h1>
+	<h1 id="h39"></h1>
+	<h1>$'：匹配子串右侧的文本。</h1>
+	<h1 id="h40"></h1>
+	<h1>$$：转义$直接量。</h1>
+	<h1 id="h41"></h1>
+	<h1>环视：肯定顺序环视(?=)，否定顺序环视(?!)</h1>
+	<h1>javascript不支持逆序环视也就是向后查找(?<=......)</h1>
+	<h1>一般来说，凡是提取有长度特征的数据，都需要用到环视，还有时候，可以在匹配的同时以环视加以限制，达到双管齐下的效果，环视真正牛逼的地方是达到and的效果，|是或的作用，而和就是用环视来达到的。因为他完全不影响后面的匹配，后面的匹配还是从原来的位置开始。环视不会真正改变匹配的位置，每个环视判断完成，下一个直接的环视仍然从字符串的起始位置开始匹配。</h1>
+	<h1>环视的括号不影响分组捕获，但环视里面出现了括号就会影响分组捕获，而且环视结构中的捕获括号一旦匹配完成就不能回溯。</h1>
+	<h1 id="h30">http:www.forta.com</h1>
+	<h1 id="h31"></h1>
+	<h1 id="h56">123456789</h1>
+	<h1 id="h57"></h1>
+	<h1>-：字符组里面的元字符，如果出现在字符组的开头就是一个普通的字符，结尾也是一样。</h1>
+	<h1 id="h33">asdf</h1>
+	<h1 id="h34"></h1>
+	<h1>[^]：^必须放在开头，否则在字符组里是普通字符，他表示匹配一个未列出的字符，而不是不要比配列出的字符，意思是匹配的那个位置后面必须有东西，像上面没有东西就返回null。</h1>
+	<h1>(?:...)：?:这个所在的括号就不会被捕获。</h1>
+	<h1 id="h35"></h1>
+	<h1>匹配规则1：优先选择最左端的匹配结果</h1>
+	<h1>匹配先从需要查找的字符串的起始位置尝试匹配，在当前位置测试整个正则表达式能匹配的每样文本，如果在当前测试了所有的可能之后不能找到匹配结果，那就开始字符串的下一个位置的匹配，反正每个位置整个表达式都要过一遍。</h1>
+	<h1 id="h43">The dragging belly indicates your cat is too fat</h1>
+	<h1 id="h42"></h1>
+	<h1>虽然fat在表达式的最开头但belly是最先匹配成功的（从字符串的最左边开始匹配）</h1>
+	<h1>匹配规则2：标准量词是匹配优先的</h1>
+	<h1 id="h46">Copyright 2003.</h1>
+	<h1 id="h44"></h1>
+	<h1>*量词优先先匹配成功整个表达式然后交出最后一个数字虽然有+量词优先原则，但前面已经有量词出现了，所以就有先来先服务的概念，+量词只能完成最低匹配。</h1>
+	<h1>正则有2种引擎，一种NFA，一种DFA，我们现在用到的是NFA，NFA最重要的特点就是回溯。NFA匹配的原则就是不放过任何可能性，是表达式主导，而DFA是文本主导，表达式不一定会全都走完。</h1>
+	<h1 id="h47">tagabcqwe</h1>
+	<h1 id="h45"></h1>
+	<h1>字符组里面的都是单个字符，不是连起来的，排除也是一样的，排除的是单个字符而不是连起来的单词。</h1>
+	<!-- <h1>javascript不支持/a(?i)b(?-i)c/</h1>
+	<h1>javascript不支持条件表达式</h1> -->
+	<h1>]}单独使用不是元字符，只有配对使用的时候才是元字符。</h1>
+	<h1 id="h58">]1}</h1>
+	<h1 id="h59"></h1>
+	<h1>/^...$/行首行尾是正好匹配某段字符串，szm匹配szm不会匹配i am szm yeah。</h1>
+	<h1 id="babala">aa bb cc dd</h1>
+	<script>
+		var h1 = document.getElementById('h1');
+		var h1v = h1.childNodes[0].nodeValue;
+		h2.innerHTML = '规则：/[the]/，返回：' + h1v.match(/[the]/) + '，位置：' + h1v.match(/[the]/).index;
+		h3.innerHTML = '规则：/[^the]/，返回：' + h1v.match(/[^the]/) + '，位置：' + h1v.match(/[^the]/).index;
+		h4.innerHTML = '规则：/s+/，返回：' + h1v.match(/s+/) + '，位置：' + h1v.match(/s+/).index;
+		h5.innerHTML = '规则：/\\w/，返回：' + h1v.match(/\w/) + '，位置：' + h1v.match(/\w/).index;
+		h6.innerHTML = '规则：/\\W/，返回：' + h1v.match(/\W/) + '，位置：' + h1v.match(/\W/).index;
+		h7.innerHTML = '规则：/\\s/，返回：' + h1v.match(/\s/) + '，位置：' + h1v.match(/\s/).index;
+		h8.innerHTML = '规则：/\\S/，返回：' + h1v.match(/\S/) + '，位置：' + h1v.match(/\S/).index;
+		h9.innerHTML = '规则：/\\d/，返回：' + h1v.match(/\d/) + '，位置：' + h1v.match(/\d/).index;
+		h10.innerHTML = '规则：/\\D/，返回：' + h1v.match(/\D/) + '，位置：' + h1v.match(/\D/).index;
+		h11.innerHTML = '规则：/\\w{3,10}/，返回：' + h1v.match(/\w{3,10}/) + '，位置：' + h1v.match(/\w{3,10}/).index;
+		h12.innerHTML = '规则：/t{2,}/，返回：' + h1v.match(/t{2,}/) + '，位置：' + h1v.match(/t{2,}/).index;
+		h13.innerHTML = '规则：/b{2}/，返回：' + h1v.match(/b{2}/) + '，位置：' + h1v.match(/b{2}/).index;
+		h14.innerHTML = '规则：/@?/，返回：' + h1v.match(/@?/);
+		h15.innerHTML = '规则：/b*/，返回：' + h1v.match(/b*/);
+		h16.innerHTML = '规则：/w.t/，返回：' + h1v.match(/w.t/);
+		var h19 = document.getElementById('h19');
+		var h19v = h19.childNodes[0].nodeValue;
+		h20.innerHTML = '规则：/[\\w.]+@[\\w.]+/g，返回：' + h19v.match(/[\w.]+@[\w.]+/g);
+		h23.innerHTML = '规则：/\\bre\\b/，返回：' + h1v.match(/\bre\b/g);
+		h24.innerHTML = '规则：/\\bre\\b/，返回：' + h1v.match(/\Bre\B/) + '，位置：' + h1v.match(/\Bre\B/).index;
+		var h27v = h27.childNodes[0].nodeValue;
+		h28.innerHTML = '规则：/h([1-6]).*\\1/g，返回：' + h27v.match(/h([1-6]).*\1/g);
+		h29.innerHTML = h27v.replace(/h([1-6])/g,'($1)');
+		var h30v = h30.childNodes[0].nodeValue;
+		h31.innerHTML = '规则：/.+(?=:)/，返回：' + h30v.match(/.+(?=:)/);
+		var h33v = h33.childNodes[0].nodeValue;
+		h34.innerHTML = '规则：/f[^y]/，返回：' + h33v.match(/f[^y]/);
+		h35.innerHTML = '规则：/(?:s)?(p)oiu\\1/，返回：' + h1v.match(/(?:s)?(p)oiu\1/);
+		var h37v = h37.childNodes[0].nodeValue;
+		h36.innerHTML = '规则：/r(egu)lar/i,$1abc，返回：' + h37v.replace(/r(egu)lar/i,'$1abc');
+		h38.innerHTML = '规则：/regular/i,$&kkk，返回：' + h37v.replace(/regular/i,'$&kkk');
+		h39.innerHTML = '规则：/regular/i,$`，返回：' + h37v.replace(/regular/i,'$`');
+		h40.innerHTML = "规则：/regular/i,$'，返回：" + h37v.replace(/regular/i,"$'");
+		h41.innerHTML = '规则：/regular/i,$$，返回：' + h37v.replace(/regular/i,'$$');
+		var h43v = h43.childNodes[0].nodeValue;
+		h42.innerHTML = '规则：/fat|cat|belly|your/，返回：' + h43v.match(/fat|cat|belly|your/);
+		var h46v = h46.childNodes[0].nodeValue;
+		h44.innerHTML = '规则：/^.*([0-9]+)/，返回：' + h46v.match(/^.*([0-9]+)/);
+		var h47v = h47.childNodes[0].nodeValue;
+		h45.innerHTML = '规则：/[^tag]/，返回：' + h47v.match(/[^tag]/);
+		var h48v = h48.childNodes[0].nodeValue;
+		h49.innerHTML = '规则：/ni hao .*?hai/，返回：' + h48v.match(/ni hao .*?hai/);
+		var h50v = h50.childNodes[0].nodeValue;
+		h51.innerHTML = '规则：/abc+?/，返回：' + h50v.match(/abc+?/);
+		var h52v = h52.childNodes[0].nodeValue;
+		h53.innerHTML = '规则：/s??tring/，返回：' + h52v.match(/s??tring/);
+		var h54v = h54.childNodes[0].nodeValue;
+		h55.innerHTML = '规则：/ab{3,}?/，返回：' + h54v.match(/ab{3,}?/);
+		var h56v = h56.childNodes[0].nodeValue;
+		h57.innerHTML = '规则：/.*(?!9)/，返回：' + h56v.match(/.*(?!9)/);
+		var h58v = h58.childNodes[0].nodeValue;
+		h59.innerHTML = '规则：/]1}/，返回：' + h58v.match(/]1}/);
+		var str = 'The rain in Spainly stays mainly in the playin';
+		var patt1 = /stays/g;
+		patt1.test(str);
+		document.write('<h1>lastIndex属性，是在g模式的匹配下有效，是第一次成功匹配完后，开始第二次匹配的起始位置。/stays/g.lastIndex：' + patt1.lastIndex + '</h1>');
+		var re = /\d+/g;
+		var ma = null;
+		document.write('<h1>exec返回数组的信息最全，他在全局模式下需要手动遍历，才能匹配整个字符串，要你何用？</h1>');
+		// console.log(ma.index);
+		// console.log(re.lastIndex);
+		// ma = re.exec('fshsfhrtgrth5');
+		// console.log(ma.index);
+		// console.log(re.lastIndex);
+		// ma = re.exec('tgrthrgertywerweg5');
+		// console.log(ma.index);
+		// console.log(re.lastIndex);
+		document.write('<h1>一个带g模式的正则表达式重复运行，他引擎每次的启动和结束的位置都会是连续的，上次从哪里结束，下次就从哪里开始。</h1>');
+		while(re.exec('23,7,5,,86,6')){
+			console.log(re.lastIndex);
+		};
+		document.write('<h1>如果要匹配一个相当复杂的字符串是，在循环中使用多少个正则表达式会比使用一个包含嵌套的顺序环视分组的正则表达式要快，因为后者要求正则引擎进行大量的回溯</h1>');
+		var str = '<b>before ass</b>';
+		console.log(str.replace(/<b>.*<\/b>/,function(match){
+			return match.replace(/before/g,'after');
+		}));
+		// 替换正则表达式中的匹配结果
+		var str2 = 'asd1<b>123<b>321<b>2qwer4<b>2ffg';
+		console.log(str2.split(/\d(<b>)\d/));
+		// split中如果正则有捕获分组，那么也会把捕获分组的匹配内容返回出来
+		var str3 = '1a2b3c2b1a';
+		console.log(str3.match(/1(a)1|2b3cv|2b1\1/));
+		var str4 = '123456789';
+		console.log(str4.match(/3(?=41)456789/));
+		// 为什么肯定顺序环视后面不能跟东西，一跟东西就变null，不是不能跟而是写错了，里面匹配的只是一个位置，并不是字符串本身。
+		var str5 = '44445';
+		console.log(str5.match(/(.)\1\1\1/));
+		// 判断用户输入的重复
+		// 密码等级
+		function validate(password){
+			var z = [
+				/^[\s\S]{8,32}$/,
+				/[A-Z]/,
+				/[a-z]/,
+				/[0-9]/,
+				/[ !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/
+			];
+			var count = -1;
+			var rank = ['密码弱','密码中等','密码强','宇宙无敌超级强密码'];
+			if(z[0].test(password)){
+				for(var i = 1,len = z.length; i < len; i++){
+					if(z[i].test(password)) count++;
+				};
+				return rank[count];
+			};
+			return '密码不能少于6位';
+		};
+		console.log(validate('123asdJKL$%^'));
+		// 匹配某个单词以外的任意单词
+		var ssss = 'szm szmb qszmwasd hjszmszmkl iuszmyszmkj';
+		console.log(ssss.match(/\b(?=szm)\b\w+/g));
+		// 这个把szmb也匹配出来是这样子的，第一\b并不是前面一个\b是左边空格右边单词后面个\b是左边单词右边空格，其实每个\b都是独立的，他左右都会判断，第二就是单词边界和环视都是匹配位置的而非字符，所以第一个\b匹配完在s的位置，环视匹配完也在s的位置，第二个\b匹配完依旧在s的位置，因为\b左右单词空格都需要匹配，是独立的，所以szmb就会被匹配出来。
+		console.log(ssss.match(/\b(?!szm\b)\w+/g));
+		document.write('<h1>匹配是位置的元字符：行首行尾，环视，单词边界。</h1>');
+		// 字母数字组合长度在6到16之间
+		var hh = 'gfhg12';
+		console.log(/^(?=.{6,16})([a-zA-Z]+\d+|\d+[a-zA-Z]+){1,}$/.test(hh));
+		// 匹配不包含某个单词的其他单词
+		var ssss2 = 'hgd szm szm2d 1ffsszm diszmf92 1szm01jdszm3d gert34';
+		console.log(ssss2.match(/\b(?:(?!szm)\w)+\b/g));
+		var kk = '20114';
+		console.log(kk.match(/(\d){5}/));
+		// 数字已经重复匹配到第五次了，单括号的捕获还是1，所有最后结果是第五个4，意思是括号里面的会动，括号是不动的
+		var sa = babala.firstChild.nodeValue;
+		babala.innerHTML = sa.replace(/(bb)/,'<span style="color:red;">$1</span>');
+		// 模拟游览器查找字符高亮显示
+
+		// var s=prompt("请输入在查找的字符","魔");
+		// // alert(s)
+		// var reg=new RegExp("("+s+")","g");
+		// var str="简明现代魔法，简明现代魔法";
+		// var newstr=str.replace(reg,"<span style='color:red;'>$1</span>");
+		// document.write('<h1>' + newstr + '</h1>');
+		var ba = h1.firstChild.nodeValue;
+		chazhao.onclick = function(){
+			var ipt = babala2.firstChild.value;
+			var ex = new RegExp('(' + ipt + ')','gi');
+			h1.innerHTML = ba.replace(ex,'<span style="background-color:yellow;">$1</span>');
+		};
+		var asdf = '123a12';
+		console.log(asdf.match(/(?=(\d+))\w+\1/));
+		// 环视中的括号回溯会有问题
+		var vb = 'cat acat';
+		console.log(vb.match(/(\bcat\b).*\b\1\b/));
+		// 反向引用不保存匹配的位置
+		var qq = "123";
+		console.log(qq.match(/(?=1209l7867)/));
+		var sk = 'asdf';
+		if(/(a)s(d)f/.test(sk)){
+			document.write(RegExp.$1 + ' ' + RegExp.$2);
+		};
+		// RegExp.$1这个会造成混乱,\，他只有一个RexExp对象，$n属性会不停的覆盖之前的
+	</script>
+</body>
+</html>
