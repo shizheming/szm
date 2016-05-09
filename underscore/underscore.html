@@ -13,8 +13,15 @@
 	// gc-过程函数-jg-结果函数
 
 	// 集合
+
 	// gc
 	/*_.each([1,2,3],function(index){
 		console.log(index * 2);
-	})*/
+	});*/
+	
+	// jg
+	var a = _.map([1,2,3],function(index){
+		return index * 2;
+	});
+	console.log(a);
 </script>
