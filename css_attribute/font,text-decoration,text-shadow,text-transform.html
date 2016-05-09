@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>font,text-decoration,text-shadow,text-transform</title>
+		<style type="text/css">
+			body{font-family:'Microsoft YaHei';}
+			.tdd1{text-decoration:underline;}
+			.tdd1 span{margin-right:50px;}
+			.tdd1 .tds1{text-decoration:;color:#ccc;}
+			.tdd4{-moz-text-decoration-line:line-through blink overline underline;}
+			.tdh1{-moz-text-decoration-line:overline;-moz-text-decoration-color:green;}
+			.tdh2 span:nth-of-type(1){-moz-text-decoration-line:line-through blink overline underline;-moz-text-decoration-style:solid;}
+			.tdh2 span:nth-of-type(2){-moz-text-decoration-line:line-through blink overline underline;-moz-text-decoration-style:double;}
+			.tdh2 span:nth-of-type(3){-moz-text-decoration-line:line-through blink overline underline;-moz-text-decoration-style:dotted;}
+			.tdh2 span:nth-of-type(4){-moz-text-decoration-line:line-through blink overline underline;-moz-text-decoration-style:dashed;}
+			.tdh2 span:nth-of-type(5){-moz-text-decoration-line:line-through blink overline underline;-moz-text-decoration-style:wavy;}
+			.tsd1{text-shadow:10px 10px #ccc;}
+			.tsd2{text-shadow:#999 10px 10px;}
+			.tsh1{text-shadow:10px 10px #ccc;}
+			.ttp1{text-transform:capitalize;}
+			.ttp2{text-transform:lowercase;}
+			.ttp3{text-transform:uppercase;}
+			.tth1{text-transform:full-width;}
+		</style>
+	</head>
+
+	<body>
+		<h1>font简写属性</h1>
+		<h1>font:font-style,font-variant,font-weight,font-stretch,font-size/line-height,font-family</h1>
+		<h1>font:italic 700 small-caps 22px/1.8 "Trebuchet MS", Arial, Helvetica, sans-serif;前3个属性可有可无，之间的顺序随意，不过都要在字体大小前面，后两个属性必须有，且位置不能颠倒，行高的属性倒是可有可无。</h1>
+		<h1>有继承，简写属性，应用于所有元素</h1>
+		<div>
+			<h1>同时写2个简写属性是不能继承的，</h1>
+		</div>
+		<div>
+			<h1>同时写2个简写属性是不能继承的，之后写的单个属性是可以继承的，这里的字体为什么会变大是因为，h1-h6的字体和外边距默认单位是em，所以继承了祖先的大小字体变得更大的，外边距也变得更大了。</h1>
+		</div>
+		<h1>少用简写属性，不过也可以用简写属性来消灭继承属性。</h1>
+		<h1>font-family</h1>
+		<h1>初始值：由用户代理决定</h1>
+		<h1>应用于：所有元素</h1>
+		<h1>继承：有</h1>
+		<h1>动画：无</h1>
+		<h1>font-family:"Palatino Linotype", "Book Antiqua", "Microsoft YaHei", serif;不论中文英文都可以直接写，有空格隔开的需要用引号，单双引号都可以。</h1>
+		<h1><apan>aaa</apan><span style="font-family:SimHei;">aaa</span>即使设了固定字体大小，但字体不一样，实际的高度也不一样。</h1>
+		<h1>font-weight</h1>
+		<h1>初始值：normal</h1>
+		<h1>应用于：所有元素</h1>
+		<h1>继承：有</h1>
+		<h1>动画：无</h1>
+		<h1>font-weight:normal,bold,bolder,lighter,100,200,300,400,500,600,700,800,900</h1>
+		<h1>font-weight一共有9个等级100-900,400=normal，700=bold，<span style="font-weight:bolder;">bolder</span>和<span style="font-weight:lighter;">lighter</span>这2种粗细等级还是要根据本身的字体来的，在根据字体粗细的情况下往上在抬个等级，或往下在抬个等级，就像字体大小的larger和smaller一样。</h1>
+		<h1>font-style</h1>
+		<h1>初始值：normal</h1>
+		<h1>应用于：所有元素</h1>
+		<h1>继承：有</h1>
+		<h1>动画：无</h1>
+		<h1>font-style:normal,italic,oblique</h1>
+		<h1>font-size</h1>
+		<h1>初始值：medium </h1>
+		<h1>应用于：所有元素</h1>
+		<h1>继承：有</h1>
+		<h1>动画：有</h1>
+		<img src="f1.jpg">
+		<h1>font-variant</h1>
+		<h1>line-height</h1>
+		<h1>font-size有很多单位，px，em，%，这几个比较重要，<span style="font-size:2em;">em</span>，<span style="font-size:200%;">%</span>根据父元素的字体大小来计算。</h1>
+		<h1>关键字有很多，貌似都不怎么用。<span style="font-size:larger">larger</span>和<span style="font-size:smaller">smaller</span>和字体的更粗更细属性是一样的会在原来的基础上递增或递减，而其他关键字只是一个绝对数值。</h1>
+		<h1>字体大小设0，em框没有高度了，文档中消失了。</h1>
+		<div style="font-size:0;">a</div>
+		<h1>整站有哪些字体大小是一样的，占的比例如何，如何合理的这是这3个单位。</h1>
+		<h1>font-variant就是把小写的英文字母变大写。</h1>
+		<h1>text-decoration简写属性</h1>
+		<h1>text-decoration:text-decoration-line,text-decoration-style,text-decoration-color</h1>
+		<h1>text-decoration-line</h1>
+		<h1>初始值：none</h1>
+		<h1>应用于：所有元素</h1>
+		<h1>继承：无</h1>
+		<h1>动画：无</h1>
+		<h1>line-through,blink,overline,underline</h1>
+		<h1 class="tdd4">text-decoration-line:line-through overline underline;能连着写</h1>
+		<h1>text-decoration-color</h1>
+		<h1>初始值：继承字体颜色</h1>
+		<h1>应用于：所有元素</h1>
+		<h1>继承：无</h1>
+		<h1>动画：有</h1>
+		<h1 class="tdh1">text-decoration-color:yellow;颜色不能连着写</h1>
+		<h1>text-decoration-style</h1>
+		<h1>初始值：solid</h1>
+		<h1>应用于：所有元素</h1>
+		<h1>继承：无</h1>
+		<h1>动画：无</h1>
+		<h1>solid,double,dotted,dashed,wavy</h1>
+		<h1 class="tdh2"><span>solid</span>,<span>double</span>,<span>dotted</span>,<span>dashed</span>,<span>wavy</span>不能连着写</h1>
+		<h1>text-decoration的效果都是属于内容区里面的，不像边框</h1>
+		<h1>text-decoration是跟着文本走的，字体为零了，她也就看不见了</h1>
+		<h1 class="tdd1"><span>虽然没有继承性但为什么里面也有效果</span><span class="tds1">虽然没有继承性但为什么里面也有效果</span><span>我只能这样理解，有字就有效果，只不过这效果是写的那个属性所在的元素的效果，并不是后代真正的效果，虽然看上去是那样。</span></h1>
+		</div>
+		<h1>原来他是个简写属性，不能叠加，只能覆盖，同时3条线的效果</h1>
+		<h1>她的粗细还是根据字体大小来的</h1>
+		<h1>文本自身属性</h1>
+		<h1>当边框用</h1>
+		<h1>text-shadow</h1>
+		<h1>初始值：none</h1>
+		<h1>应用于：所有元素</h1>
+		<h1>继承：有</h1>
+		<h1>动画：有</h1>
+		<h1 class="tsh1">祖先元素<span>后代元素</span></h1>
+		<h1>很box-shadow一样，他同样也能写许多阴影，用逗号隔开，写在最前面的在最上面。</h1>
+		<h1>模糊值颜色值可以不写，模糊不写就是不模糊，颜色不写就是字体的颜色。颜色和偏移值可以任意顺序</h1>
+		<h1 class="tsd1">text-shadow:10px 10px #ccc;</h1>
+		<h1 class="tsd2">text-shadow:#999 1em 10px;</h1>
+		<h1>文本自身属性</h1>
+		<h1>除了能设置字体阴影外好像不能干别的了</h1>
+		<h1>text-transform</h1>
+		<h1>初始值：none</h1>
+		<h1>应用于：所有元素</h1>
+		<h1>继承：有</h1>
+		<h1>动画：无</h1>
+		<h1>text-transform:none,capitalize,uppercase,lowercase,full-width</h1>
+		<h1 class="ttp1">capitalize：开头字母大写</h1>
+		<h1 class="ttp2">LOWERCASE：全部小写</h1>
+		<h1 class="ttp3">uppercase：全部大写</h1>
+		<h1 class="tth1">全宽度：abcdefghijklmnopqrstuvwxyz0123456789</h1>
+		<h1>文本自身属性</h1>
+		<h1>除了能设置小型大写字母外好像不能干别的了</h1>
+		<h1>中文网站很少用</h1>
+	</body>
+</html>

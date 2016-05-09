@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>inline</title>
+		<style type="text/css">
+			body{font-family:'Microsoft YaHei';}
+			.d1 span{border:1px solid #ccc;font-size:2em;}
+			.d2{background-color:#ccc;}
+			.d2 span{margin:0 10px;padding:10px;}
+			.d2 .d2s1{font-size:2em;border:1px solid #999;}
+			.d2 .d2s2{font-size:4em;border:1px solid #999;}
+			.d2 .d2s3{font-size:3em;border:1px solid #999;}
+			.d2 .d2s4{font-size:5em;border:1px solid #999;}
+			.d3{background-color:#ccc;}
+			.d3 img{border:5px solid #666;padding:10px;margin:10px;}
+			.d5{background-color:#ccc;line-height:102px;}
+			.d5 span{margin:0 10px;border:1px solid #666;}
+			.d5s1{vertical-align:top;font-size:22px;}
+			.d5s2{font-size:42px;}
+			.d5s3{font-size:82px;}
+			.d5s4{font-size:102px;}
+			.d6{background-color:#ccc;font-size:100px;}
+			.d6 span{font-size:12px;}
+			.d6 p{font-size:12px;}
+			.d7{background-color:#ccc;line-height:102px;}
+			.d7 div{margin:0 10px;border:1px solid #666;display:inline-block;}
+			.d7 span{margin:0 10px;border:1px solid #666;} 
+			.d7s2,.d7d2{font-size:42px;}
+			.d7s3,.d7d3{font-size:82px;}
+			.d7s4,.d7d4{font-size:102px;}
+			.d8 span{vertical-align:50px;}
+			.d8 img{margin-top:-150px;}
+			.d9 span{vertical-align:-100px;}
+			.d9 img{margin-bottom:-300px;opacity:.5;}
+			.d11{background-color:#ccc;line-height:100px;}
+			.d12{font-size:50px;line-height:100px;}
+		</style>
+	</head>
+
+	<body>
+	<h1>匿名文本</h1>
+	<h1>没有在行内元素中的文本。</h1>
+	<h1>&lt;p&gt;匿名文本&lt;span&gt;非匿名文本&lt;/span&gt;&lt;/p&gt;</h1>
+	<h1>em框</h1>
+	<h1>一个字就是的字体大小来决定em框的高度。</h1>
+	<h1 class="d1"><span>A</span></h1>
+	<h1>内容区</h1>
+	<h1>非替换元素中，由各em框就是内容区，替换元素中，由元素固有的高度加上内外边距，边框构成。</h1>
+	<h1 class="d2"><span class="d2s1">A</span><span class="d2s2">B</span><span class="d2s3">G</span><span class="d2s4">g</span></h1>
+	<div class="d3"><img src="img1.jpg" width="300" height="188"></div>
+	<h1>行间距</h1>
+	<h1>字体大小和行高之差，然后分为两部分，分别应用到内容区的顶端和低端，替换元素没有行间距，就是没有行高。</h1>
+	<h1>行内框</h1>
+	<h1>这个框通过内容区增加行间距来描述，对于非替换元素行内框刚好等于行高的值，对于替换元素行内框就是内容区的高度。</h1>
+	<h1>行框</h1>
+	<h1>这是包含该行中出现的行内框的最高点和最低点的最小框。</h1>
+	<h1>行内元素的背景应用于内容区及所有内边距，不应用行高。</h1>
+	<h1>行内非替换元素的垂直内边距，垂直边框，垂直外边距，不影响行框的高度</h1>
+	<h1>替换元素的内边距，边框，外边距会影响行框的高度</h1>
+	<h1>垂直对齐属性是行内框与行框的一些对齐选择，而不是内容区</h1>
+	<h1 class="d5"><!-- <span class="d5s1">A</span><span class="d5s2">f</span><span class="d5s3">g</span> --><span class="d5s4">asd</span>h</h1>
+	<h1>行高和字体设的一样大应用在块级元素套块级元素上子元素的高度就是父元素的高度，当应用到块级元素套行内元素的时候，问题就产生了，外面的块级元素的高度不等于他设的行高的高度，这是因为块级元素的设的字体大小或是默认的字体大小和里面行内元素设的字体大小不一样所长生的，即使块级元素里没有直接的匿名文本也是一样的，当块级元素设的字体和里面的行内元素一样时文字就解决了，还有种方法就是让里面的行内元素垂直居中对齐顶部或是底部也能解决问题，所以说为了避免这一情况的发生最好把字体设在外面的块级元素上，让里面的行内元素继承就可以了。</h1>
+	<h1>行高是基线与基线之间的距离，字体和行高设的一样，所以行间距是零，效果就变成是重叠的了</h1>
+	<div class="d6"><span>基线在哪里基线在哪里基线在哪里基线在哪里基线在哪里基线在哪里基线在哪里基线在哪里</span></div>
+	<div class="d6"><p>基线在哪里基线在哪里基线在哪里基线在哪里基线在哪里基线在哪里基线在哪里基线在哪里</p></div>
+	<h1>虽然行高是基线之间的距离，但如果行内框中的行间距不一样的话，会影响行高的实际距离，而非设的行高值</h1>
+	<h1>小心并排元素因字体不一样而由于是继承的行高，所形成的高度不一样。</h1>
+	<div class="d7">
+		<div class="d7d1">基线</div>
+		<div class="d7d2">基线</div>
+		<div class="d7d3">基线</div>
+		<div class="d7d4">基线</div>
+		<div class="d7d1">基线</div>
+		<div class="d7d2">基线</div>
+		<div class="d7d3">基线</div>
+		<div class="d7d4">基线</div>
+		<div class="d7d1">基线</div>
+		<div class="d7d2">基线</div>
+		<div class="d7d3">基线</div>
+		<div class="d7d4">基线</div>
+	</div>
+	<p class="d7"><span class="d7s1">基线</span><span class="d7s2">基线</span><span class="d7s3">基线</span><span class="d7s4">基线</span><span class="d7s1">基线</span><span class="d7s2">基线</span><span class="d7s3">基线</span><span class="d7s4">基线</span><span class="d7s1">基线</span><span class="d7s2">基线</span><span class="d7s3">基线</span><span class="d7s4">基线</span></p>
+	<h1>行内替换元素的垂直外边距的几种效果</h1>
+	<h1 class="d8">上外边距负值应用于图片顶到文字最小行高就没效果了<span>是的</span><img src="img1.jpg" width="300" height="188"></h1>
+	<h1 class="d9">下外边距负值应用于图片，图片无下限<img src="img1.jpg" width="300" height="188"></h1>
+	<h1>网页字体12px的页面，默认行高是14px，上下1px，基线到行框底端的距离是2px</h1>
+	<h1>块级元素包换行内父元素时，想不出为什么，html4和html5有出入</h1>
+	<h1>这里父元素span没设字体所以和里面span设了字体的大小是不一样的，所以父元素span应用背景后的区域只有这么点。</h1>
+	<span class="d11"><span class="d12">文本</span></span>
+	<div class="d11"><span class="d12">文本</span></div>
+	</body>
+</html>

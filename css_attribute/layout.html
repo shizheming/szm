@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>layout</title>
+		<style type="text/css">
+			body{font-family:'Microsoft YaHei';}
+			.h,.q,.t{overflow:hidden;}
+			.h>h1,.t>h1{float:left;}
+			.h1{margin-left:40%;}
+			.h2{margin-left:-70%;}
+			.h1,.h4{width:30%;background-color:#ccc;}
+			.h2,.h5{width:40%;background-color:#999;}
+			.h3{width:30%;background-color:#666;}
+			.q>.h4{float:left;}
+			.h5{margin-left:30%;}
+			.t{padding:0 300px;}
+			.h6{background-color:#ccc;width:100%;}
+			.h7{background-color:#999;width:300px;margin-left:-100%;position:relative;right:300px;}
+			.h8{background-color:#666;width:300px;margin-right:-300px;}
+			.contain{width:1010px;background-color:#ccc;overflow:hidden;font-size:2em;height:10em;overflow:hidden;}
+			.main{width:70%;background-color:#999;float:left;margin:0 3% 0 2%;height:inherit;}
+			.extra{width:18%;background-color:#999;float:right;margin:0 1% 0 3%;height:inherit;}
+			.info{float:left;background-color:#666;height:inherit;width:9%;}
+			.text{float:right;background-color:#666;height:inherit;width:575px;}
+		</style>
+	</head>
+	<body>
+		<div class="h">
+			<h1 class="h1">h1</h1>
+			<h1 class="h2">h2</h1>
+			<h1 class="h3">h3</h1>
+		</div>
+		<div class="q">
+			<h1 class="h4">h4</h1>
+			<h1 class="h5">h5</h1>
+		</div>
+		<div class="t">
+			<h1 class="h6">h6</h1>
+			<h1 class="h7">h7</h1>
+			<h1 class="h8">h8</h1>
+		</div>
+		<div class="contain">
+			<div class="main">
+				<div class="info"></div>
+				<div class="text"></div>
+			</div>
+			<div class="extra"></div>
+		</div>
+	</body>
+</html>

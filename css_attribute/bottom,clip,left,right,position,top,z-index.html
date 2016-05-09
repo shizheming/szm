@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>position</title>
+		<style type="text/css">
+			body{font-family:'Microsoft YaHei';}
+			.s1{background-color:#ccc;position:relative;left:500px;}
+			.d1{position:fixed;right:0;top:50px;width:300px;height:300px;background-color:#333;}
+			.d11{position:relative;top:100px;width:200px;height:200px;background-color:#666;}
+			.d111{position:absolute;top:100px;width:100px;height:100px;background-color:#999;}
+			.d2{width:300px;height:300px;background-color:#ccc;position:relative;}
+			.d3{position:relative;width:100px;height:100px;background-color:#ccc;top:50px;margin-top:50px;}
+			.d31{position:absolute;top:100px;width:100px;height:100px;background-color:#666;}
+			.d4{width:200px;height:200px;background-color:#333;margin-bottom:50px;}
+			.d44{font-size:50px;vertical-align:middle;position:relative;display:inline;}
+			.d5{background-color:#ccc;position:relative;height:300px;}
+			.d51{background-color:#999;position:absolute;top:50px;left:50px;}
+			.d511{background-color:#666;position:absolute;top:0;left:250px;}
+			.d6{background-color:#ccc;position:relative;}
+			.d61{background-color:#999;position:absolute;top:50px;left:50px;}
+			.d62{background-color:#666;position:relative;top:50px;left:50px;}
+			.d63{background-color:#333;color:#fff;position:absolute;top:50px;left:50px;}
+			.d64{background-color:#000;color:#fff;position:absolute;top:50px;left:50px;}
+			.d7{background-color:#ccc;position:relative;float:left;}
+			.d71{background-color:#999;position:absolute;left:50px;}
+			.d8{position:relative;background-color:#ccc;}
+			.d81{position:absolute;width:300px;background-color:#999;left:10px;right:10px;margin:0 auto;}
+			.d9{position:relative;background-color:#ccc;height:200px;}
+			.d91{width:100px;height:100px;background-color:#999;position:absolute;top:0;bottom:0;margin:auto 0;}
+			.d10{height:200px;background-color:#ccc;position:relative;}
+			.d101{position:absolute;background-color:#999;top:5px;left:5px;right:5px;bottom:5px;margin:20px;padding:20px;}
+			.d22{height:200px;background-color:#ccc;position:relative;}
+			.d221{position:absolute;background-color:#999;top:50px;}
+			.d99{height:200px;background-color:#ccc;position:relative;}
+			.d991{position:absolute;background-color:#666;top:0;left:20px;right:0;bottom:20px;margin:-80px -200px 0 0;}
+			.d66{width:200px;height:200px;background-color:#ccc;position:relative;}
+			.d661{position:absolute;background-color:#999;top:-100px;left:50px;right:-200px;bottom:20px;}
+			.d77{height:200px;background-color:#ccc;position:relative;}
+			.d771{position:absolute;background-color:#999;top:100px;left:50px;right:200px;bottom:200px;}
+			.d222{width:100%;background-color:#ccc;border:4px solid #999;clip:rect(0,20em,100px,0);position:absolute;}
+			.h2{position:fixed;top:0;}
+		</style>
+	</head>
+
+	<body>
+		<h1>position：无继承</h1>
+		<h1>应用于所有元素</h1>
+		<h1>top</h1>
+		<h1>left</h1>
+		<h1>right</h1>
+		<h1>bottom</h1>
+		<h1>z-index</h1>
+		<h1>clip</h1>
+		<h1>fixed和relative都可以作为absolute的包含块，但是是有区别的，子元素是相对于包含块边框处开始偏移，跟包含块的外边距，自身偏移值无关</h1>
+		<div class="d1">
+			<div class="d11">
+				<div class="d111"></div>
+			</div>
+		</div>
+		<h1>即使是设了relative还是能改变他的display显示方式，absolute和fixed还没试过。</h1>
+		<div>
+			<div class="d44">111</div>
+			<span>222</span>
+		</div>
+		<h1>绝对定位也能作为绝对定位的包含块，不过包含块是fixed还是relative，里面的绝对定位的宽度在不显性设置的情况下的宽度不超过他包含快的宽度。不过当带有数字或是字母同时没有空格的情况下，宽度就被这些硬撑开来了。</h1>
+		<h1 class="d5">包含块<span class="d51">绝对定位第一层<span class="d511">绝对定位第二层，这层的绝对定位并不是按照祖先元素的相对定位来的确定，她的top，right，bottom，left是跟着最近的定位来的</span></span></h1>
+		<h1>定top和bottom两个点，元素有高度了，定left和right两个点，元素有宽度了，而再在绝对定位元素上显性的设置高和宽后，top，right，bottom，left就像这个绝对定位元素外面又隐性的多了一个包含块，居然就可以是定位元素居中了</h1>
+		<h1 class="d8">包含块<span class="d81">居中元素</span></h1>
+		<h1>定位元素还能垂直居中，正常文档流就不行</h1>
+		<div class="d9">
+			<div class="d91"></div>
+		</div>
+		<h1>在不设z-index的情况下，定位的层级关系还是按照文档流的顺序来的，越在后面越在上面。</h1>
+		<h1>绝对定位元素有设top,right,bottom,left四个值时，设有高度的情况下bottom无效，设有宽度的情况下right无效。</h1>
+		<h1 class="d10"><span class="d101">4个值的时候，再加正外边距内边距</span></h1>
+		<h1 class="d22"><span class="d221">当绝对定位元素没有文本的情况下，4个值需全设才有效果，因为absolute有包裹性，有文本设1个就有效果</span></h1>
+		<h1 class="d99"><span class="d991">4个值的时候，再加负外边距，有增加宽高的效果，而在正常文档流中只有增加水平宽度的效果，没有垂直效果，哪边负值需要增加效果，那哪边就要设定位置，否则的情况就像在正常文档流中的一样，为什么？还是因为absolute的包裹性在起作用</span></h1>
+		<h1 class="d66"><span class="d661">负值的时候</span></h1>
+		<h1 class="d77"><span class="d771">当水平或垂直的2个相对值之间为0或者是负的话，那绝对定位元素就消失了，留下的文本内容还是以top和left的位置来确定</span></h1>
+		<h1>clip只应用于绝对定位</h1>
+		<h1 class="d222">可以用px，em，但不能用%。</h1>
+		<h1 class="h1">定位left跟着定位元素的左边框，right跟着元素的右边框，top跟着元素的上边框，bottom跟着元素的下边框。</h1>
+		<h1>单设fixed，或是设right,left，不设top,bottom的值，元素就会消失，他不像absolute一样会根据文档流的位置，停留在相对的原地。</h1>
+		<img src="img6.jpg">
+		<h1>这张图说明了为什么在fixed的情况下只设left，right是没有效果的，这是张firebug的图，可以看到纵向的默认位置是认可文档高度的，而横向的距离就只视窗口位置来，不管body或是html设了多长的宽度都没用，也就是说在不设4个值，单设fixed的情况下，left和right已经符合作为控制fixed属性的条件了，之所以元素还没有出来，是因为垂直的属性还没有符合条件，还不能确定她在平面当中的位置，所以不能显示。</h1>
+		<h1 class="h2">fixed</h1>
+		<h1>设了top，他就出来了，还发现默认情况下水平位置还是在文档流中的水平位置，并没有变化，这里body默认8px他就在8px的地方出现，和absolute一样，不同的只是垂直位置。</h1>
+	</body>
+</html>

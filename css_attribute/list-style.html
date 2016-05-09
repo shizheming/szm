@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>list-style</title>
+		<style type="text/css">
+			body{font-family:'Microsoft YaHei';}
+			/*.alpha{list-style:upper-alpha;}*/
+			.fk{list-style:upper-alpha;}
+			.alpha li{background-color:#ccc;}
+			.h1{text-indent:3em;}
+			.u100{list-style-image:url(img2.png);}
+			.u1{list-style-type:armenian;}
+			.u2{list-style-type:circle;}
+			.u3{list-style-type:cjk-ideographic;}
+			.u4{list-style-type:decimal;}
+			.u5{list-style-type:decimal-leading-zero;}
+			.u6{list-style-type:disc;}
+			.u7{list-style-type:georgian;}
+			.u8{list-style-type:hebrew;}
+			.u9{list-style-type:hiragana;}
+			.u10{list-style-type:hiragana-iroha;}
+			.u11{list-style-type:katakana;}
+			.u12{list-style-type:katakana-iroha;}
+			.u13{list-style-type:lower-alpha;}
+			.u14{list-style-type:lower-greek;}
+			.u15{list-style-type:lower-latin;}
+			.u16{list-style-type:lower-roman;}
+			.u17{list-style-type:square;}
+			.u18{list-style-type:upper-alpha;}
+			.u19{list-style-type:upper-latin;}
+			.u20{list-style-type:upper-roman;}
+		</style>
+	</head>
+
+	<body>
+		<div class="fk">
+			<ul class="alpha">
+				<li>1111</li>
+				<li><ul>
+				<li>2222</li>
+				<li>2222</li>
+				<li><ul>
+					<li>333</li>
+					<li><ul>
+						<li>444</li>
+						<li><ul>
+							<li></li>
+						</ul></li>
+					</ul></li>
+				</ul></li>
+			</ul></li>
+			</ul>
+		</div>
+
+		<h1>list-style简写属性</h1>
+		<h1>list-style:list-style-type,list-style-position,list-style-image</h1>
+		<h1>3个值可以任意顺序，而且都能忽略</h1>
+		<h1>应用于dispaly值为list-item的元素</h1>
+		<h1>初始值：相对应各个属性</h1>
+		<h1>list-style-image</h1>
+		<h1>初始值：none</h1>
+		<h1>应用于：list-item</h1>
+		<h1>继承：有</h1>
+		<h1>动画：无</h1>
+		<h1>有图片会代替list-style-type的标记，没图片会是默认的list-style-type标记。</h1>
+		<h1 class="u100">
+			<div>
+				<ul>
+					<li>list-style-image有继承</li>
+				    <li>
+				    	<ul>
+				    		<li>里面的也会继承父元素的图片</li>
+				    	</ul>
+				    </li>
+				</ul>
+			</div>
+		</h1>
+		<h1>这个属性是作用于list-item的元素上的，这里我写在h1上了，h1不是list-item元素是block元素，但还是拥有相同的效果，因为它是由继承的，就算再套个span写在span上页是一样的，不过这个只有list-style-image有效，其他2个无效，但是为什么他们还能写在ul或ol上，这2个不是block嘛。</h1>
+		<h1>list-style-type</h1>
+		<h1>初始值：disc</h1>
+		<h1>应用于：list-item</h1>
+		<h1>继承：有</h1>
+		<h1>动画：无</h1>
+		<ul class="u1">
+		  <li><h1>armenian：乱码</h1></li>
+		</ul>
+		<ul class="u2">
+		  <li><h1>circle：空心圆点</h1></li>
+		</ul>
+		<ul class="u3">
+		  <li><h1>cjk-ideographic：表意数字</h1></li>
+		  <li><h1>cjk-ideographic：表意数字</h1></li>
+		</ul>
+		<ul class="u4">
+		  <li><h1>decimal：数字</h1></li>
+		  <li><h1>decimal：数字</h1></li>
+		  <li>
+		  	<ul>
+		  		<li><h1>decimal：数字</h1></li>
+		  		<li><h1>decimal：数字</h1></li>
+		  	</ul>
+		  </li>
+		</ul>
+		<ul class="u5">
+		  <li><h1>decimal-leading-zero：数字</h1></li>
+		  <li><h1>decimal-leading-zero：数字</h1></li>
+		</ul>
+		<ul class="u6">
+			<li><h1>disc：实心圆点</h1></li>
+		</ul>
+		<ul class="u7">
+			<li><h1>georgian：乱码</h1></li>
+		</ul>
+		<ul class="u8">
+			<li><h1>hebrew：希伯来文</h1></li>
+			<li><h1>hebrew：希伯来文</h1></li>
+		</ul>
+		<ul class="u9">
+			<li><h1>hiragana：日文</h1></li>
+			<li><h1>hiragana：日文</h1></li>
+		</ul>
+		<ul class="u10">
+			<li><h1>hiragana-iroha：日文</h1></li>
+			<li><h1>hiragana-iroha：日文</h1></li>
+		</ul>
+		<ul class="u11">
+			<li><h1>katakana：日文</h1></li>
+			<li><h1>katakana：日文</h1></li>
+		</ul>
+		<ul class="u12">
+			<li><h1>katakana-iroha：日文</h1></li>
+			<li><h1>katakana-iroha：日文</h1></li>
+		</ul>
+		<ul class="u13">
+			<li><h1>lower-alpha：英文</h1></li>
+			<li><h1>lower-alpha：英文</h1></li>
+		    <li>
+		    	<ul>
+		  		<li><h1>decimal：数字</h1></li>
+		  		<li><h1>decimal：数字</h1></li>
+		  	</ul>
+		    </li>
+		</ul>
+		<ul class="u14">
+			<li><h1>lower-greek：希腊文</h1></li>
+			<li><h1>lower-greek：希腊文</h1></li>
+		</ul>
+		<ul class="u15">
+			<li><h1>lower-latin：英文</h1></li>
+			<li><h1>lower-latin：英文</h1></li>
+		</ul>
+		<ul class="u16">
+			<li><h1>lower-roman：英文</h1></li>
+			<li><h1>lower-roman：英文</h1></li>
+		</ul>
+		<ul class="u17">
+			<li><h1>square：实心方点</h1></li>
+			<li><h1>square：实心方点</h1></li>
+		</ul>
+		<ul class="u18">
+			<li><h1>upper-alpha：英文</h1></li>
+			<li><h1>upper-alpha：英文</h1></li>
+		</ul>
+		<ul class="u19">
+			<li><h1>upper-latin：英文</h1></li>
+			<li><h1>upper-latin：英文</h1></li>
+		</ul>
+		<ul class="u20">
+			<li><h1>upper-roman：英文</h1></li>
+			<li><h1>upper-roman：英文</h1></li>
+		</ul>
+		<h1>我们可以看到页就是第一层li会有所定义的标示符，而嵌套的li还是默认的圆点。</h1>
+		<h1>list-style-position</h1>
+		<h1>初始值：outside</h1>
+		<h1>应用于：list-item</h1>
+		<h1>继承：有</h1>
+		<h1>动画：无</h1>
+		<h1>list-style-position:outside,inside</h1>
+		<ul>
+			<li class="h1"><h1>点在外面不算文档流，设为inside就算在文档流中了，默认行内。</h1></li>
+		</ul>
+		
+	</body>
+</html>

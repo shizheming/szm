@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>margin,padding</title>
+		<style type="text/css">
+			body{font-family:'Microsoft YaHei';}
+			.d1{background-color:#ccc;width:100px;padding:1em 0;}
+			.d11{background-color:#999;width:1200px;}
+			.d2{background-color:#ccc;padding:1em 0;margin-left:100px;}
+			.d21{background-color:#999;margin-left:-100px;}
+			.d3{background-color:#ccc;width:100px;padding:1em 0;}
+			.d31{background-color:#999;margin-right:-1400px;}
+			.d4{background-color:#ccc;padding:1em 0;}
+			.d41{background-color:#999;display:inline-block;font-size:40px;}
+			.d42{background-color:#666;display:inline-block;margin-right:-4000px;font-size:30px;}
+			.d43{background-color:#333;display:inline-block;}
+			.d5{background-color:#ccc;padding:1em 0;}
+			.d51{background-color:#999;display:inline-block;font-size:40px;}
+			.d52{background-color:#666;display:inline-block;margin-left:-2200px;}
+			.d53{background-color:#333;display:inline-block;}
+			.d6{border:5px solid #333;}
+			.d61{margin:1%;border:5px solid #666;height:50px;}
+			.d71{margin-bottom:10px;}
+			.d711{margin-bottom:50px;}
+			.d72{margin-top:30px}
+			.d81{margin-bottom:10px;border-bottom:solid #ccc;}
+			.d811{margin-bottom:-30px;}
+			.d82{margin-top:20px;}
+			.d91{margin-bottom:10px;padding-bottom:10px;}
+			.d911{margin-bottom:-30px;}
+			.d92{margin-top:20px;}
+			.d101{display:inline-block;margin-bottom:20px;}
+			.d1011{margin-bottom:20px;}
+			.d102{margin-top:20px;}
+			.d111{margin-bottom:-20px;}
+			.d112{margin-top:-30px;}
+			.d1111{margin-bottom:-70px;}
+			.d121{margin-bottom:-20px;}
+			.d1211{margin-bottom:30px;}
+			.d122{margin-top:50px;}
+			.d1221{margin-top:-10px;}
+			.d13_{height:50px;margin:10px 10em 0 20%;border:5px solid #ccc;}
+			.d141{margin-bottom:10px;overflow:hidden;}
+			.d1411{margin-bottom:30px;}
+			.d142{margin-top:20px;}
+			.d15{line-height:100px;background-color:#333;}
+			.s1{background-color:#666;}
+			.d16{line-height:100px;background-color:#ccc;margin-top:-70px;color:#fff;}
+			.d17{width:60%;margin:auto;height:200px;background-color:#ccc;}
+			.d17 h1{margin:0 -200px;height:100px;background-color:#999;}
+			.pd1{border:5px solid #ccc;}
+			.pd11{border:5px solid #666;padding:5%;}
+		</style>
+	</head>
+
+	<body>
+		<h1>margin:无继承</h1>
+		<h1>应用于所有元素</h1>
+		<h1>百分比：相对于包含块的宽度</h1>
+		<h1>几种右边距或宽度自动计算的情况。</h1>
+		<div class="d1">
+			<h1 class="d11">块级子元素设有宽度，宽度超过包含快，块级子元素视觉超出部分不属于文档流。</h1>
+		</div>
+		<div class="d2">
+			<h1 class="d21">块级子元素没设宽度，左边距设成负值，会变长，块级子元素视觉超出部分不属于文档流。</h1>
+		</div>
+		<div class="d3">
+			<h1 class="d31">块级子元素没设宽度，右边距设成负值，会变长，块级子元素视觉超出部分不属于文档流。</h1>
+		</div>
+		<div class="d4">
+			<h1 class="d41">当有多个并排子元素的时候，右边距设成负值，就是减少该子元素的宽度，当减到宽度是负值后，就有了类似左边距负值的效果。</h1>
+		    <h1 class="d42">当有多个并排子元素的时候，右边距设成负值，就是减少该子元素的宽度，当减到宽度是负值后，就有了类似左边距负值的效果。</h1>
+		    <h1 class="d43">当有多个并排子元素的时候，右边距设成负值，就是减少该子元素的宽度，当减到宽度是负值后，就有了类似左边距负值的效果。</h1>
+		</div>
+		<div class="d5">
+			<h1 class="d51">当有多个并排子元素的时候，左边距设成负值，就是减少该子元素前面元素的宽度。</h1>
+		    <h1 class="d52">当有多个并排子元素的时候，左边距设成负值，就是减少该子元素前面元素的宽度。</h1>
+		    <h1 class="d53">当有多个并排子元素的时候，左边距设成负值，就是减少该子元素前面元素的宽度。</h1>
+		</div>
+		<h1 class="h1">上面3个是行内元素，第二个一直往左边顶，第三个永远是跟着第二个屁股的，第二个遮住第一个，第三个也遮住第一个，当如果3个元素换成浮动的话，情况就完全不一样了，第三个顶到第一个就顶不过去了，这是为什么，还得再看看float。</h1>
+		<h1>百分比：相对于包含块的宽度</h1>
+		<div class="d6">
+			<div class="d61"></div>
+		</div>
+		<h1>垂直外边距合并的几种情况。</h1>
+		<div class="d7">
+			<div class="d71">
+				<h1 class="d711">不论多少后代元素，都是正值的情况下，取之中最大的。</h1>
+			</div>
+			<h1 class="d72">不论多少后代元素，都是正值的情况下，取之中最大的。</h1>
+		</div>
+		<div class="d8">
+			<div class="d81">
+				<h1 class="d811">当存在边框，就不会合并，后代元素的外边距负值不影响包含块。</h1>
+			</div>
+			<h1 class="d82">当存在边框，就不会合并，后代元素的外边距负值不影响包含块。</h1>
+		</div>
+		<div class="d9">
+			<div class="d91">
+				<h1 class="d911">当存在内边距，就不会合并，后代元素的外边距负值不影响包含块。</h1>
+			</div>
+			<h1 class="d92">当存在内边距，就不会合并，后代元素的外边距负值不影响包含块。</h1>
+		</div>
+		<div class="d14">
+			<div class="d141">
+				<h1 class="d1411">当存在overflow，就不会合并，后代元素的外边距负值不影响包含块。</h1>
+			</div>
+			<h1 class="d142">当存在overflow，就不会合并，后代元素的外边距负值不影响包含块。</h1>
+		</div>
+		<div class="d10_">
+			<div class="d101">
+				<h1 class="d1011">行内块级元素不合并垂直外边距。</h1>
+			</div>
+			<h1 class="d102">行内块级元素不合并垂直外边距。</h1>
+		</div>
+		<div class="d11_">
+			<div class="d111">
+				<h1 class="d1111">后代元素都是负值，取绝对值最大的。</h1>
+			</div>
+			<h1 class="d112">后代元素都是负值，取绝对值最大的。</h1>
+		</div>
+		<div class="d12_">
+			<div class="d121">
+				<h1 class="d1211">后代元素有正有负，负的和负的取绝对值最大的，正的和正的取最大的，然后两者相加，就是最后的外边距值。</h1>
+			</div>
+			<div class="d122">
+				<h1 class="d1221">后代元素有正有负，负的和负的取绝对值最大的，正的和正的取最大的，然后两者相加，就是最后的外边距值。</h1>
+			</div>
+		</div>
+		<h1>可以混用各种单位。</h1>
+		<div class="d13_"></div>
+		<h1>上边距负值，在与行内元素的使用中可以看到，按照理论来说，应该是后面的内容和背景遮蔽前面的内容和背景，块与块之间是这样的，但前面存在行内元素后，背景遮不掉行内的背景，但内容遮得掉行内的内容</h1>
+		<h1 class="d15">块级<span class="s1">行内元素</span><img src="img1.jpg" width="50"></h1>
+		<h1 class="d16">块级元素块级元素</h1>
+		<h1>两边搓出去可以这样做</h1>
+		<div class="d17">
+			<h1></h1>
+		</div>
+		<h1>元素控制属性</h1>
+		<h1>无敌</h1>
+		<h1>padding:无继承</h1>
+		<h2>应用于所有元素</h2>
+		<h3>百分比：相对于包含快的宽度计算</h3>
+		<div class="pd1">
+			<h1 class="pd11">一</h1>
+		</div>
+		<div>
+		<h1>元素控制属性</h1>
+		<h2>能当边距用</h2>
+		</div>
+	</body>
+</html>
