@@ -1,0 +1,5 @@
+#pinkie{width:200px;height:200px;background-color:#ccc;position:absolute;top:25%;left:25%;overflow:hidden;}
+#pinkie>div:first-child{width:200px;height:200px;background-color:pink;position:absolute;left:-200px;top:0;}
+
+#pinkie2{width:200px;height:200px;background-color:#ccc;position:absolute;top:55%;left:75%;overflow:hidden;}
+#pinkie2>div:first-child{width:200px;height:200px;background-color:pink;position:absolute;left:-200px;top:0;}

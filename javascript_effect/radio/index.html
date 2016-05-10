@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="../../css_passage/css_reset.css">
+	<link rel="stylesheet" href="css/css.css">
+</head>
+<body>
+	<form action="xxx.php" method="get" id="form">
+		<input type="radio" name="sex" value="man">man
+		<input type="radio" name="sex" value="woman">woman
+		<input type="submit" value="提交">
+	</form>
+	<form action="xxx.php" method="get" id="form2">
+		<input type="radio" name="like" value="ball">ball
+		<input type="radio" name="like" value="game">game
+		<input type="submit" value="提交">
+	</form>
+	<script src="../../javascript_passage/js_passage.js"></script>
+	<script src="js/js.js"></script>
+	<script>
+		initRadio('form','sex');
+		initRadio('form2','like');
+	</script>
+</body>
+</html>

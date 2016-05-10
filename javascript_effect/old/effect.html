@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN" xml:lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"  />
+<title></title>
+<link rel="stylesheet" href="css.css">
+</head>
+<body>
+<script type="text/javascript" src="http://www.yodak.net/templets/js/jq.js"></script>
+	<h1>tab对象切换</h1>
+	<div id="tab" style="display:inline-block;">
+		<div class="tabTitle"><span>标题1</span><span>标题2</span><span>标题3</span><span>标题4</span></div>
+		<div class="tabContent">
+			<div><img src="images/5.jpg"></div>
+			<div><img src="images/6.jpg"></div>
+			<div><img src="images/7.jpg"></div>
+			<div><img src="images/8.jpg"></div>
+		</div>
+	</div>
+	<div id="tab2" style="display:inline-block;">
+		<div class="tabTitle"><span>标题1</span><span>标题2</span><span>标题3</span><span>标题4</span></div>
+		<div class="tabContent">
+			<div><img src="images/5.jpg"></div>
+			<div><img src="images/6.jpg"></div>
+			<div><img src="images/7.jpg"></div>
+			<div><img src="images/8.jpg"></div>
+		</div>
+	</div>
+
+	<h1>图片对象库</h1>
+	<div id="pic" style="display:inline-block;">
+		<div><a href="images/1.jpg">图片1</a><a href="images/2.jpg">图片2</a><a href="images/3.jpg">图片3</a><a href="images/4.jpg">图片4</a></div>
+		<img src="images/1.jpg">
+	</div>
+	<div id="pic2" style="display:inline-block;">
+		<div><a href="images/1.jpg">图片1</a><a href="images/2.jpg">图片2</a><a href="images/3.jpg">图片3</a><a href="images/4.jpg">图片4</a></div>
+		<img src="images/1.jpg">
+	</div>
+
+	<h1>滚动对象</h1>
+	<div id="strip" class="strip" style="display:inline-block;">
+		<div>
+			<ul>
+				<li>第一条</li>
+				<li>第二条</li>
+				<li>第三条</li>
+				<li>第四条</li>
+				<li>第五条</li>
+				<li>第六条</li>
+			</ul>
+		</div>
+	</div>
+	<div id="strip2" class="strip" style="display:inline-block;">
+		<div>
+			<ul>
+				<li>第一条</li>
+				<li>第二条</li>
+				<li>第三条</li>
+				<li>第四条</li>
+				<li>第五条</li>
+				<li>第六条</li>
+			</ul>
+		</div>
+	</div>
+
+
+	<h1>拖拽对象</h1>
+	<div id="drag" class="drag"></div>
+	<div id="drag2" class="drag"></div>
+	<div id="dd"></div>
+
+
+	<script src="js.js"></script>
+	<script>
+		// 为什么要将属性或是方法私有化？
+		// 什么时候写公有的什么时候写私有的？
+
+		// 什么时候写变量什么时候写属性什么时候写方法？
+		// 继承形成了层级关系，那什么时候用继承什么时候用组合？
+		// 通过接口访问，不能直接访问？
+		// 什么时候用静态属性和静态方法？
+		new Tab('tab').cut({
+			_event : 'click',
+			_class : 'style',
+			_fade : true,
+			_auto : true,
+			_transitionSpeed : 1,
+			_intervalSpeed : 2000
+		});
+		new Tab('tab2').cut({
+			_event : 'click',
+			_class : 'style',
+			_fade : true,
+			_auto : true,
+			_transitionSpeed : 1,
+			_intervalSpeed : 2000
+		});
+		
+		new Pic('pic').showBigPic('click')
+		new Pic('pic2').showBigPic('mouseover');
+
+		new Strip('strip').roll({
+			_direction : 'marginLeft',
+			_timeFast : 50
+		});
+		new Strip('strip2').roll({
+			_direction : 'marginTop',
+			_timeFast : 50
+		});
+
+		new Drag('drag').drag();
+		new Drag('drag2').drag();
+
+	</script>
+
+
+</body>
+</html>

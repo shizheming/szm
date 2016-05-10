@@ -1,0 +1,11 @@
+#foldingMenu{width:300px;margin:auto;line-height:40px;}
+#foldingMenu h2{background-color:#999;cursor:pointer;}
+#foldingMenu ul{background-color:#ccc;height:0;}
+#foldingMenu>div{overflow:hidden;}
+#foldingMenu .active{background-color:pink;}
+
+#foldingMenu2{width:300px;line-height:40px;}
+#foldingMenu2 h2{background-color:#999;cursor:pointer;}
+#foldingMenu2 ul{background-color:#ccc;height:0;}
+#foldingMenu2>div{overflow:hidden;}
+#foldingMenu2 .active{background-color:pink;}

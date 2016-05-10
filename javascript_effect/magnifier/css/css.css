@@ -1,0 +1,11 @@
+#magnifier1{overflow:hidden;margin:100px;}
+#magnifier1>.smallPic{position:relative;float:left;}
+#magnifier1 .mark{display:none;width:100px;height:100px;background-color:rgba(0,0,0,.5);position:absolute;top:0;left:0;}
+#magnifier1>.bigPic{display:none;width:700px;height:500px;float:left;overflow:hidden;position:relative;}
+#magnifier1>.bigPic>img{position:absolute;top:0;left:0;}
+
+#magnifier2{margin:100px;}
+#magnifier2>.smallPic{position:relative;float:left;}
+#magnifier2 .mark{display:none;width:100px;height:100px;background-color:rgba(0,0,0,.5);position:absolute;top:0;left:0;}
+#magnifier2>.bigPic{display:none;width:700px;height:500px;overflow:hidden;position:relative;float:left;}
+#magnifier2>.bigPic>img{position:absolute;top:0;left:0;}

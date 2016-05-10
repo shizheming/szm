@@ -1,0 +1,17 @@
+#customScroll1{overflow:hidden;margin-right:400px;}
+#customScroll1 .top{height:10px;background-color:#999;}
+#customScroll1 .bottom{height:10px;background-color:#999;}
+#customScroll1>.scroll{width:10px;float:right;}
+#customScroll1 .center{height:400px;background-color:#ccc;position:relative;}
+#customScroll1 .block{height:40px;background-color:#666;position:absolute;width:100%;top:0;}
+#customScroll1>.content{width:400px;height:400px;position:relative;float:right;}
+#customScroll1>.content>*{position:absolute;top:0;}
+
+#customScroll2{overflow:hidden;}
+#customScroll2 .top{height:10px;background-color:#999;}
+#customScroll2 .bottom{height:10px;background-color:#999;}
+#customScroll2>.scroll{width:10px;float:right;}
+#customScroll2 .center{height:400px;background-color:#ccc;position:relative;}
+#customScroll2 .block{height:40px;background-color:#666;position:absolute;width:100%;top:0;}
+#customScroll2>.content{width:400px;height:400px;position:relative;float:right;}
+#customScroll2>.content>*{position:absolute;top:0;}

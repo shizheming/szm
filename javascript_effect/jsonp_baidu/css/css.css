@@ -1,0 +1,5 @@
+*{padding:0;margin:0;list-style:none;}
+#baiduSearch{width:300px;margin:auto;text-indent:1em;font-size:14px;line-height:1.8;}
+#baiduSearch>input{width:100%;border:1px solid #ccc;line-height:1.8;font-size:14px;display:block;text-indent:1em;}
+#baiduSearch>input:focus{border-color:#4791ff;}
+#baiduSearch>ul{border:1px solid #ccc;display:none;margin-top:-1px;width:100%;background-color:#fff;position:relative;z-index:2;}

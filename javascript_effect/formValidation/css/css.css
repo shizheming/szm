@@ -1,0 +1,6 @@
+#formValidation{line-height:2;font-size:16px;}
+#formValidation .true{border-color:#8CEA00;}
+#formValidation .false{border-color:#FFBB77	;}
+#formValidation label>span{display:inline-block;width:100px;text-align:right;margin-right:20px;}
+#formValidation label>input{vertical-align:middle;font-size:16px;border-color:#ccc;padding:2px;border-radius:2px;}
+#formValidation #getCode.true{background-color:pink;}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="../../css_passage/css_reset.css">
+	<link rel="stylesheet" href="css/css.css">
+</head>
+<body>
+	<div id="tab1">
+		<div class="title">
+			<div>1</div>
+			<div>2</div>
+			<div>3</div>
+		</div>
+		<div class="content">
+			<div><img src="../pictureLibrary/Avatar1.jpg"></div>
+			<div><img src="../pictureLibrary/Avatar2.jpg"></div>
+			<div><img src="../pictureLibrary/Avatar3.jpg"></div>
+		</div>
+		<a href="">prev</a>
+		<a href="">next</a>
+	</div>
+	<div id="tab2">
+		<div class="title">
+			<div>1</div>
+			<div>2</div>
+			<div>3</div>
+		</div>
+		<div class="content">
+			<div><img src="../../javascript_effect/pictureLibrary/Avatar1.jpg"></div>
+			<div><img src="../../javascript_effect/pictureLibrary/Avatar2.jpg"></div>
+			<div><img src="../../javascript_effect/pictureLibrary/Avatar3.jpg"></div>
+		</div>
+		<a href="">prev</a>
+		<a href="">next</a>
+	</div>
+	<script src="../../javascript_passage/js_passage.js"></script>
+	<script src="js/js.js"></script>
+	<script>
+		tab('tab1');
+		tab('tab2',{
+			e : 'onclick',
+			auto : true
+		});
+	</script>
+</body>
+</html>

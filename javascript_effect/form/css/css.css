@@ -1,0 +1,24 @@
+.form .myCheckBox{width:10px;height:10px;border:1px solid #ccc;display:inline-block;}
+.form .myCheckBox.active{background-color:pink;}
+.form input[type="checkbox"]{display:none;}
+
+.form .myRadio{width:10px;height:10px;border:1px solid #ccc;cursor:pointer;display:inline-block;}
+.form .myRadio.active{background-color:green;}
+.form input[type="radio"]{display:none;}
+
+.mySelect{border:1px solid #ccc;width:100px;line-height:30px;text-align:center;cursor:default;margin-bottom:10px;}
+.mySelect>span{display:block;width:100px;border-bottom:1px solid #ccc;margin-bottom:-1px;}
+.mySelect>ul{display:none;}
+.mySelect li:hover{background-color:#ccc;}
+#sel1,#sel2{display:none;}
+
+#inputCue{display:block;margin:auto;width:200px;height:40px;font-size:22px;color:#ccc;border-color:#000;}
+#inputCue.active{color:#000;}
+
+#inputCue2{display:block;margin:auto;width:200px;height:40px;font-size:22px;color:#ccc;border-color:#000;}
+#inputCue2.active{color:#000;}
+
+#checkbox1,#checkbox2,#sex,#pop{line-height:30px;}
+.mySelect,#submit{margin:30px;}
+
+#form{width:1000px;margin:auto;}

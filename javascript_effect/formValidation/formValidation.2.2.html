@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="../../css_passage/css_reset.css">
+	<link rel="stylesheet" href="css/css.css">
+	<style>
+		label{display:block;}
+	</style>
+</head>
+<body>
+	<form action="xxx.php" id="formValidation">
+		<label for="call">手机：<input type="text" class="check" name="phone"></label>	
+		<label for="call">用户名：<input type="text" class="check" name="user"></label>
+		<label for="call">密码：<input type="password" class="check" name="ps"></label>
+		<label for="call">确认密码：<input type="password" class="check" name="ps2"></label>
+		<input type="submit" value="提交">
+	</form>
+	<script src="../../javascript_passage/mScore.js"></script>
+	<script src="../../javascript_passage/js_passage.js"></script>
+	<script src="js/formValidation.2.2.js"></script>
+	<script>
+		
+	formValidation({
+		phone : [/^\d{11}$/,'填正确的手机号'],
+		user : [/^\w{4}$/,'填正确的用户名'],
+		ps : [/^\d{6}$/,'填正确的密码'],
+		ps2 : [/^\d{6}$/,'填的不一样，草']
+	},function(){
+		var form1 = document.getElementById('formValidation');
+		form1.onsubmit = function(){
+			if(!phone.check()) return false;
+			if(!user.check()) return false;
+		};
+	});
+
+
+	</script>
+</body>
+</html>

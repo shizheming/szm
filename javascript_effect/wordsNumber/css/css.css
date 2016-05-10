@@ -1,0 +1,4 @@
+.textarea{text-align:center;}
+.textarea>div{height:2em;line-height:2em;}
+.textarea>.pass{color:#45b502;}
+.textarea>.nopass{color:red;}
