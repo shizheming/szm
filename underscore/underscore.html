@@ -13,20 +13,244 @@
 	// 过程函数(工人函数)------process
 	// 结果函数(咀嚼函数)------result
 
-	// 1.集合(遍历i)
+
+	/***********
+		集合(遍历)
+	***********/
+
+	// _.where();
+	// _.findWhere();
+
+	// result
+	// 反过滤
+	var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
+	// => [1, 3, 5]
+
+	// result
+	// 是否包含某个值
+	_.contains([1, 2, 3], 3);
+	// => true
+
+	// process result
+	// 调用字符串方法
+	_.invoke([[5, 1, 7], [3, 2, 1]], 'sort');
+	// => [[1, 5, 7], [1, 2, 3]]
+
+	// result
+	// 过滤值
+	var stooges = [{name: 'moe', age: 40}, {name: 'larry', age: 50}, {name: 'curly', age: 60}];
+	_.pluck(stooges, 'name');
+	// => ["moe", "larry", "curly"]
+
+	// result
+	// 最大值
+	var stooges = [{name: 'moe', age: 40}, {name: 'larry', age: 50}, {name: 'curly', age: 60}];
+	_.max(stooges, function(stooge){ return stooge.age; });
+	// => {name: 'curly', age: 60};
+	
+	// result
+	// 最小值
+	var numbers = [10, 5, 100, 2, 1000];
+	_.min(numbers);
+	// => 2
+
+	// result
+	// 排序
+	_.sortBy([1, 2, 3, 4, 5, 6], function(num){ return Math.sin(num); });
+	// => [5, 4, 6, 3, 1, 2]
+	var stooges = [{name: 'moe', age: 40}, {name: 'larry', age: 50}, {name: 'curly', age: 60}];
+	_.sortBy(stooges, 'name');
+	// => [{name: 'curly', age: 60}, {name: 'larry', age: 50}, {name: 'moe', age: 40}];
+
+	// result
+	// 分组
+	_.groupBy([1.3, 2.1, 2.4], function(num){ return Math.floor(num); });
+	// => {1: [1.3], 2: [2.1, 2.4]}
+	_.groupBy(['one', 'two', 'three'], 'length');
+	// => {3: ["one", "two"], 5: ["three"]}
+
+	// result
+	// 打乱顺序
+	_.shuffle([1, 2, 3, 4, 5, 6]);
+	// => [4, 1, 6, 3, 5, 2]
+
+	// result
+	// 返回随机参数值
+	_.sample([1, 2, 3, 4, 5, 6]);
+	// => 4
+	_.sample([1, 2, 3, 4, 5, 6], 3);
+	// => [1, 6, 2]
+
+	// result
+	// 把参数变数组
+	(function(){ return _.toArray(arguments).slice(1); })(1, 2, 3, 4);
+	// => [2, 3, 4]
+
+	// result
+	// 返回对象的长度
+	_.size({one: 1, two: 2, three: 3});
+	// => 3
+
+	// result
+	// 左边对的，右边错的
+	_.partition([0, 1, 2, 3, 4, 5], function(n){return n % 2 === 0;});
+	// => [[1, 3, 5], [0, 2, 4]]
+
+
+	/***********
+		数组
+	***********/
+
+	// result
+	// 排除最后一个数
+	_.initial([5, 4, 3, 2, 1]);
+	// => [5, 4, 3, 2]
+
+	// result
+	// 排除第一个值
+	_.rest([5, 4, 3, 2, 1]);
+	// => [4, 3, 2, 1]
+
+	// result
+	// 排除是false的值
+	_.compact([0, 1, false, 2, '', 3]);
+	// => [1, 2, 3]
+
+	// result
+	// 去多维度
+	_.flatten([1, [2], [3, [[4]]]]);
+	// => [1, 2, 3, 4];
+	_.flatten([1, [2], [3, [[4]]]], true);
+	// => [1, 2, 3, [[4]]];
+
+	// result
+	// 删除里面的值
+	_.without([1, 2, 1, 0, 3, 1, 4], 0, 1);
+	// => [2, 3, 4]
+
+	// result
+	// 去重
+	_.union([1, 2, 3], [101, 2, 1, 10], [2, 1]);
+	// => [1, 2, 3, 101, 10]
+
+	// result
+	// 去单
+	_.intersection([1, 2, 3], [101, 2, 1, 10], [2, 1]);
+	// => [1, 2]
+
+	// result
+	// 求矩阵
+	_.zip(['moe', 'larry', 'curly'], [30, 40, 50], [true, false, false]);
+	// => [["moe", 30, true], ["larry", 40, false], ["curly", 50, false]]
+
+	// result
+	// 解矩阵
+	_.unzip([['moe', 'larry', 'curly'], [30, 40, 50], [true, false, false]]);
+	// =>["moe", 30, true], ["larry", 40, false], ["curly", 50, false]
+
+	// result
+	// 数组变对象
+	_.object(['moe', 'larry', 'curly'], [30, 40, 50]);
+	// => {moe: 30, larry: 40, curly: 50}
+	_.object([['moe', 30], ['larry', 40], ['curly', 50]]);
+	// => {moe: 30, larry: 40, curly: 50}
+
+	// result
+	// 2分法找位置
+	_.sortedIndex([10, 20, 30, 40, 50], 35);
+	// => 3
+	var stooges = [{name: 'moe', age: 40}, {name: 'curly', age: 60}];
+	_.sortedIndex(stooges, {name: 'larry', age: 50}, 'age');
+	// => 1
+
+	// result
+	// 迅速创建数组
+	_.range(10);
+	// => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+	_.range(1, 11);
+	// => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+	_.range(0, 30, 5);
+	// => [0, 5, 10, 15, 20, 25]
+	_.range(0, -10, -1);
+	// => [0, -1, -2, -3, -4, -5, -6, -7, -8, -9]
+	_.range(0);
+	// => []
+
+
+	/***********
+		有关函数的函数
+	***********/
+
+	// _.memoize();
+	// _.throttle();
+	// _.debounce();
+	// _.wrap();
+	// _.negate();
 
 	// process
-	/*_.each([1, 2, 3],function(a){
-		console.log(a * 2);
-	});*/
+	// 只调用一次的函数
+	var initialize = _.once(function(){console.log(1)});
+	initialize();
+	initialize();
+
+	// process
+	// 条用数次后才有效果的函数
+	var renderNotes = _.after(3, function(a){console.log(a)});
+	_.each([1,2,3,4,5], function(note) {
+		renderNotes(note);
+	});
 
 	// result
-	/*console.log(_.map([1,2,3],function(num){
-		return 2 * num;
-	}));*/
+	// 到达次数，记住最后次的返回结果
+	var a = 1;
+	var monthlyMeeting = _.before(3, function(){return a++;});
+	monthlyMeeting();
+	monthlyMeeting();
+	monthlyMeeting();
+	monthlyMeeting();
+	monthlyMeeting();
+	monthlyMeeting();
+	// => 2
+
+	var greet    = function(name){ return "hi: " + name; };
+	var exclaim  = function(statement){ return statement.toUpperCase() + "!"; };
+	var welcome = _.compose(greet, exclaim);
+	welcome('moe');
+	// => 'hi: MOE!'
+
+
+	/***********
+		对象
+	***********/
+
+	// _.matcher();
+	
+	// result
+	// 对象变数组
+	_.pairs({one: 1, two: 2, three: 3});
+	// => [["one", 1], ["two", 2], ["three", 3]]
 
 	// result
-	console.log(_.reduce([1, 2, 3], function(memo, num){
-		return memo + num;
-	},2));
+	// 对换键值对
+	_.invert({Moe: "Moses", Larry: "Louis", Curly: "Jerome"});
+	// => {Moses: "Moe", Louis: "Larry", Jerome: "Curly"};
+
+	// result
+	// 返回对象的方法
+	_.functions(_);
+	// => ["all", "any", "bind", "bindAll", "clone", "compact", "compose" ...
+
+	// result
+	// 合并对象
+	_.extend({name: 'moe'}, {age: 50});
+	// => {name: 'moe', age: 50}
+
+	// result
+	// 过滤对象
+	_.pick({name: 'moe', age: 50, userid: 'moe1'}, 'name', 'age');
+	// => {name: 'moe', age: 50}
+	_.pick({name: 'moe', age: 50, userid: 'moe1'}, function(value, key, object) {
+		return _.isNumber(value);
+	});
+	// => {age: 50}
 </script>
