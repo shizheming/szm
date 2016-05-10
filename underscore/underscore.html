@@ -10,18 +10,23 @@
 </html>
 <script src="underscore1.8.2.js"></script>
 <script>
-	// gc-过程函数-jg-结果函数
+	// 过程函数(工人函数)------process
+	// 结果函数(咀嚼函数)------result
 
-	// 集合
+	// 1.集合(遍历i)
 
-	// gc
-	/*_.each([1,2,3],function(index){
-		console.log(index * 2);
+	// process
+	/*_.each([1, 2, 3],function(a){
+		console.log(a * 2);
 	});*/
-	
-	// jg
-	var a = _.map([1,2,3],function(index){
-		return index * 2;
-	});
-	console.log(a);
+
+	// result
+	/*console.log(_.map([1,2,3],function(num){
+		return 2 * num;
+	}));*/
+
+	// result
+	console.log(_.reduce([1, 2, 3], function(memo, num){
+		return memo + num;
+	},2));
 </script>
