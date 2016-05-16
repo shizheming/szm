@@ -2,9 +2,7 @@
 	var z = that;
 	var slice = Array.prototype.slice;
 	var toString = Object.prototype.toString;
-	function m(){
-
-	}
+	function m(){}
 	z.m = m;
 
 	// 把数组转化为对象
