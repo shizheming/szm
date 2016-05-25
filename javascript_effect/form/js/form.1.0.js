@@ -1,3 +1,7 @@
+// 名称：form.js
+// 版本：1.0
+// 时间：2015.8
+// ------------------------------------------------------------
 // 多选按钮
 function initCheckBox(id,name){
 	var obj = document.getElementById(id),
