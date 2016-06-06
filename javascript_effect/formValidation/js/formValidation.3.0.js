@@ -1,9 +1,47 @@
 // 名称：formValidation.js
 // 版本：3.0
 // 时间：2016.3
+// 更新内容：把验证完的信息作为数据返回给用户，而不是去操作dom怎么显示信息，同时提交表单验证时额外需要操作的事情，通过回调函数来完成
 // ------------------------------------------------------------
 
 // 2.2的版本我是把一个input看成一个对象来创建，然后验证的方法都写在input对象上，
+
+// 用法-格式
+/*new FormValidation('formValidation',[{
+	iptName : 'user',
+	regex : /^.+$/
+},{
+	iptName : 'tpc',
+	chinaName : '用户协议'
+},{
+	chinaName : '密码',
+	iptName : 'ps',
+	regex : /^.+$/
+},{
+	chinaName : '文本内容',
+	iptName : 'text',
+	message : '不能超过5个字',
+	depends : function(ipt){
+		return ipt.element.value.length < 5;
+	}
+},{
+	chinaName : '手机',
+	iptName : 'phone',
+	regex : /^\d+$/
+},{
+	chinaName : '确认密码',
+	iptName : 'ps2',
+	regex : /^.+$/,
+	addRules : 'matches[ps]'
+},{
+	chinaName : '第一性别',
+	iptName : 'sex'
+},{
+	chinaName : '第二性别',
+	iptName : 'sex2'
+}],function(ipt){
+	...
+});*/
 
 
 // 1.首先把传进来的数据变成对象的数据，也就是变成对象的属性或方法，然后就是操作对象了

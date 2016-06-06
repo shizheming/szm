@@ -1,7 +1,28 @@
 // 名称：formValidation.js
 // 版本：2.1
 // 时间：2016.1
+// 更新内容：添加图片验证码刷新功能，还有就是异步多出来个input需要在提交表单是验证的时候的解决方案，这里其实并没有解决好，而是耦合度太高了，写在里面了
 // ------------------------------------------------------------
+
+// 用法-格式
+/*formValidation('formValidation',{
+    UserName : [/^1\d{10}|[A-Za-z][A-Za-z0-9_-]{5,24}|[\u4E00-\u9FA5\uf900-\ufa2dA-Za-z0-9_-]{1,24}$/,'请输入正确的用户名/手机号。'],
+    UserPass : [/^.{6,32}$/,'密码必须由6-32位字符组成'],
+    code : [/^\d{4}$/,'请输入正确的短信验证码'],
+    imgCode : [/^.{4}$/,'请输入正确的图片验证码']
+},{
+    mouseBlur : function(dom,ecma){
+           // ecma.myTip();
+           ecma.publicTip();
+    },
+    imgCode : function(succFn,failFn){
+        //验证码验证
+        // 图片验证码
+    },
+    getCode : function(dom){
+        // 手机获取验证码
+    }
+});*/
 
 
 // 1.数据有了

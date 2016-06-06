@@ -1,7 +1,29 @@
 // 名称：formValidation.js
 // 版本：2.0
 // 时间：2016.1
+// 更新内容：把静态数据变成动态获取生成数据，写法变为面向对象
 // ------------------------------------------------------------
+
+// 用法-格式
+/*formValidation('formValidation',{
+    chinaName : [/^[\u4e00-\u9fa5]+$/,'草拟吗写中文'],
+    email : [/^.+@[a-z0-9\-]+(\.[a-z]{2,6}){1,2}$/i,'请正确输入邮箱'],
+    password : [/^.{6,}$/,'不能少于6位'],
+    passwordConfirmation : [/^.{6,}$/,'输入与上次不符'],
+    phone : [/^1\d{10}$/,'手机不对'],
+    code : [/^\d{4}$/,'验证码不对'],
+    imgCode : [/^\d{4}$/,'验证码不对']
+},{
+    mouseBlur : function(dom,ecma){
+           // ecma.myTip();
+           ecma.publicTip();
+    },
+    getCode : function(arg){
+        // $.ajax({});
+    },
+    mouseSumbit : function(arg){}
+});*/
+
 
 // 1.数据有了
 // 2.方法有了

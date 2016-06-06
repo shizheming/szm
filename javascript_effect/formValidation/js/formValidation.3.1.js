@@ -1,9 +1,23 @@
 // 名称：formValidation.js
 // 版本：3.0
 // 时间：2016.3
+// 更新内容：事件变为绑定，本来是通过name值来获取对象，现在改为id获取对象，因为如果后台套模板的时候把name都变成一样的时候就费了
 // ------------------------------------------------------------
 
-// 2.2的版本我是把一个input看成一个对象来创建，然后验证的方法都写在input对象上，
+// 用法-格式
+/*new FormValidation('formValidation', [{
+    iptName: 'userID',
+    regex: /(?:^\w{18}$)|(?:^\w{15}$)/,
+    chinaName: '身份证'
+}, {
+    chinaName: '真实姓名',
+    iptName: 'userName',
+    regex: /^.{1,}$/
+}], function (ipt) {
+    // 操作验证后的输出信息
+}, function (ipts) {
+	...
+});*/
 
 
 // 1.首先把传进来的数据变成对象的数据，也就是变成对象的属性或方法，然后就是操作对象了
@@ -33,7 +47,7 @@ function FormValidation(id,fields,callBack,formSubmit){
 	// 整个表单input绑定失焦事件
 	for(var i = 0,len = fields.length; i < len; i++){
 		// 如果找不到iptName的值，那就自动过滤
-		if(!this.domForm[fields[i].iptName]) continue;
+		if(!document.getElementById(fields[i].iptName)) continue;
 		// 把符合的填到inputObject
 		this.inputObject.push(new InputClass(fields[i],this.domForm));
 		
@@ -75,19 +89,6 @@ function FormValidation(id,fields,callBack,formSubmit){
 	}
 	// 绑定整个表单提交事件
 
-	/*this.domForm.querySelector('input[type="submit"]').onclick = (function(that){
-		return function(event){
-			that.validateForm(that.inputObject);
-			for(var i = 0,len = that.errors.length;i < len; i++) if(!that.errors[i]) return false;
-
-			// event.preventDefault();
-
-			that.formSubmit(that.inputObject);
-			
-			return false;
-
-		};
-	})(this);*/
 	this.domForm.querySelector('input[type="submit"]').addEventListener('click',(function(that){
 		return function(event){
 			that.validateForm(that.inputObject);
@@ -129,7 +130,7 @@ FormValidation.prototype.validateForm = function(inputObjects){
 
 // 创建input对象
 function InputClass(field,parents){
-	var element = parents[field.iptName];
+	var element = document.getElementById(field.iptName);
 
 	this.parents = parents;
 	this.iptName = field.iptName;

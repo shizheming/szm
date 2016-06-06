@@ -2,6 +2,10 @@
 // 版本：1.0
 // 时间：2015.7
 // ------------------------------------------------------------
+
+// 用法-格式
+// formValidation('formValidation');
+
 function formValidation(id){
     var form1 = document.getElementById(id);
     if(!form1) return;
