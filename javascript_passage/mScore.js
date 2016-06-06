@@ -1,7 +1,16 @@
+// 名称：mScore.js
+// 版本：1.0
+// 时间：2016.2
+// ------------------------------------------------------------
+
+// 仿underscore.js
 (function(that){
+	// window对象
 	var z = that;
+	// 需要用到的一些原生方法
 	var slice = Array.prototype.slice;
 	var toString = Object.prototype.toString;
+	// 方法都是写在m函数上的静态方法
 	function m(){}
 	z.m = m;
 
@@ -84,7 +93,56 @@
 		}
 	};
 
+	// 随机n-m之间的数
+	m.randomCount = function(n,m){
+		return parseInt(n + Math.random() * (m - n));	
+	};
 
+	// 数组去重
+	m.removeRepeat = function(arr){
+		var arr2 = [];
+		function findInArr(arr,num){
+			for(var i = 0,len = arr.length; i < len; i++){
+				if(arr[i] === num) return true;
+			};
+			return false;
+		};
+		i = 0;
+		while(i < arr.length){
+			if(!findInArr(arr2,arr[i])) arr2.push(arr[i]);
+			i++;
+		};
+		return arr2;
+	};
+
+	// 找最小最大值
+	m.findM = function(arr){
+		var min = Number.MAX_VALUE,
+			max = Number.MIN_VALUE,
+			minIndex = -1,
+			maxIndex = -1;
+		for(var i = 0,len = arr.length; i < len; i++){
+			if(min > arr[i]){
+				min = arr[i];
+				minIndex = i;
+			};
+			if(max < arr[i]){
+				max = arr[i];
+				maxIndex = i;
+			};
+		};
+		return {
+			min : min,
+			minIndex : minIndex,
+			max : max,
+			maxIndex : maxIndex
+		};
+	};
+
+	// 补零
+	m.fillZero = function (n){
+		return n < 10 ? '0' + n : '' + n;	
+	};
 
 	// 判断数据类型
 	['Arguments','Function','String','Number','Date','RegExp','Error','Array'].forEach(function(element,index,array){
