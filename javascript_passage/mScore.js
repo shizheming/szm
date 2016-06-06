@@ -152,4 +152,4 @@
 	  });
 
 
-}).call(this,this);
+}).call(null,window);
