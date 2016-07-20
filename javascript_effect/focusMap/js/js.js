@@ -1,4 +1,4 @@
-function focusMap(id){
+function focusMap(id,at){
 	var obj = document.getElementById(id),
 		title = obj.children[0],
 		titleC = title.children,
@@ -26,7 +26,7 @@ function focusMap(id){
 		if(pos === now) return;
 		now === len ? method.addClass(titleC[0],'active') : method.addClass(titleC[now],'active');
 		method.removeClass(titleC[pos],'active');
-		method.move(content,{
+		move(content,{
 			marginLeft : -now * contentC1C1W
 		},{
 			fn : function(){
@@ -61,12 +61,15 @@ function focusMap(id){
 		}
 		auto();
 	};
-	// 定时器怎么传鼠标事件？
-	timer = setInterval(n,2000);
-	obj.onmouseover = function(){
-		clearInterval(timer);
-	};
-	obj.onmouseout = function(){
+
+	at && (function(){
+		// 定时器怎么传鼠标事件？
 		timer = setInterval(n,2000);
-	};
+		obj.onmouseover = function(){
+			clearInterval(timer);
+		};
+		obj.onmouseout = function(){
+			timer = setInterval(n,2000);
+		};
+	})();
 };

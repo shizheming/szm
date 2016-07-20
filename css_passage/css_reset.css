@@ -13,7 +13,6 @@ code,kbd,pre,samp,textarea{font-family:inherit;}
 h1,h2,h3,h5,h6,sub,sup{font-size:inherit;}
 address,cite,dfn,em,i{font-style:inherit;}
 button,mark{background-color:transparent;}
-img[src$='.jpg']{background-color:#ccc;}
 pre,select,option{white-space:inherit;}
 fieldset{margin-left:0;margin-right:0;}
 legend{padding-left:0;padding-right:0;}

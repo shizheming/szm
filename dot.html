@@ -73,5 +73,15 @@
 		};
 		_.mixin(_);
 	}).call(this);
-
+	// 这样创建对象原型方法厉害，不用每次创建都写a.prototype了，而且原型里面能很方便的用私有变量
+	function a(){}
+	(function(){
+		var b = 100;
+		this.a1 = function(){
+			return b
+		};
+		this.a2 = function(val){
+			b = val;
+		};
+	}).call(a.prototype);
 </script>

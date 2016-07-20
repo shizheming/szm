@@ -10,8 +10,42 @@
 </html>
 <script src="underscore1.8.2.js"></script>
 <script>
-	// 过程函数(工人函数)------process
-	// 结果函数(咀嚼函数)------result
+	
+	function a(k) {
+		return function() {
+			return k;
+		};
+	}
+	var b = a(5);
+	console.log(b())
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<script>
+	// 过程函数(工人函数)======process
+	// 结果函数(咀嚼函数)======result
 
 
 	/***********
@@ -326,4 +360,4 @@
 	// => 1392066795351
 
 
-</script>
+</script>-->
