@@ -5,23 +5,19 @@
 	<title>Document</title>
 </head>
 <body>
-	
+	<input type="text" id="a">
+	<input type="text" id="b">
 </body>
 </html>
 <script src="underscore1.8.2.js"></script>
 <script>
-	
-	function a(k) {
-		return function() {
-			return k;
-		};
+var c = '';
+setInterval(function() {
+	if (a.value != c) {
+		b.value = a.value;
+		c = a.value;
 	}
-	var b = a(5);
-	console.log(b())
-
-
-
-
+},1);
 
 
 

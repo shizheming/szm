@@ -1,7 +1,12 @@
 // 名称：takenDataForTaobaoAndJingdong.js
-// 版本：2.2
+// 版本：3.0
 // 时间：2016.7
-// 更新：1. 把登录页面的注册链接去掉，防止用户点击造成抓数据顺序混乱
+// 更新：1. 改为函数式编程
+//       2. 数据正则处理优化，归类
+//       3. 封装3目
+//       4. 增加队列
+//       5. 配置正则替换内容的高阶函数
+//       6. 增加k，always基础函数
 
 // ------------------------------------------------------------
 
@@ -18,18 +23,22 @@
 
     // 判断京东还是淘宝
     var url = window.location;
-    var taobao = /taobao\.com/.exec(url) ? 1 : 0;
-    var jd = /jd\.com/.exec(url) ? 1 : 0;
+    var taobao = three(/taobao\.com/.exec(url));
+    var jd = three(/jd\.com/.exec(url));
+
 
     // 过滤登录页面
     if (/login/.exec(url)) {
         // 淘宝登录页去掉注册链接，防止用户点进去，开始抓取不必要的数据
-        taobao ? document.querySelector('.other-link').style.display = 'none' : 0;
+        three(taobao, function() {
+            document.querySelector('.other-link').style.display = 'none';
+        });
+        
         // 京东登录页去掉注册链接，防止用户点进去，开始抓取不必要的数据
-        if(jd) {
+        three(jd, function() {
             document.querySelector('.quick-login').style.display = 'none';
             document.querySelector('.quick-nav').style.display = 'none';
-        }
+        });
 
 
         // 万一用户在抓数据的半当中退出了，我要在下次重新登录页的时候销毁这2个值
@@ -39,12 +48,15 @@
         delete localStorage.a;
 
         // 登录页引导文案
-        ct(jd ? '京东' : '淘宝');
+        ct(three(jd, '京东', '淘宝'));
 
         // alert('这个页面是登录页面，所以我不抓');
 
         return;
     }
+
+    // 初始native请求列队
+    var initQueue = queue(100);
 
     // 抓京东用户数据
     if (jd) {
@@ -53,9 +65,7 @@
         // alert(localStorage.bl);
 
         // 告诉native我开始抓数据了要他把webview遮掉
-
-        reNative('start');
-
+        initQueue(always(reNative, ['start']));
 
         if (!localStorage.bl) {
 
@@ -70,6 +80,7 @@
             // 全部订单列表页获取最终详情页链接
             (function() {
                 var t = arguments.callee;
+
                 $.ajax({
                     type : 'get',
                     url: '//home.m.jd.com/newAllOrders/newAllOrders.json?sid=' + /sid=(.+)/.exec(window.location)[1] + '&page=' + ++page,
@@ -83,9 +94,7 @@
                             // 通过aARR数组里面有没有抓到要链接来判断这家伙有没有订单
                             if(aArr.length == 0){
                                 // alert('你妹的，啥东东都没有~');
-                                setTimeout(function() {
-                                    reNative('finished');
-                                }, 300);
+                                initQueue(always(reNative, ['finished']));
                                 return;
                             }
 
@@ -96,7 +105,9 @@
                             var na = shuffle(aArr);
 
                             // 最多只抓20条
-                            na.length > 20 ? na = intercept(na, 20) : 0;
+                            three(na.length > 20, function() {
+                                na = intercept(na, 20);
+                            });
 
                             // 存入本地存储
                             localStorage.a = JSON.stringify(na);
@@ -106,9 +117,7 @@
                         }
 
                         // 要自己拼链接地址
-                        for (var i = 0,len = json.orderList.length; i < len; i++) {
-                            aArr.push('//home.m.jd.com/newAllOrders/queryOrderDetailInfo.action?orderId=' + json.orderList[i].orderId + '&from=newUserAllOrderList&passKey=' + json.passKeyList[i] + '&sid=' + json.sid);
-                        }
+                        for (var i = 0,len = json.orderList.length; i < len; i++) aArr.push('//home.m.jd.com/newAllOrders/queryOrderDetailInfo.action?orderId=' + json.orderList[i].orderId + '&from=newUserAllOrderList&passKey=' + json.passKeyList[i] + '&sid=' + json.sid);
 
                         // 递归列队ajax请求，把她所有的列表都请求出来
                         t();
@@ -130,9 +139,7 @@
                 // 删除状态
                 delete localStorage.bl;
                 // 关掉webview
-                setTimeout(function() {
-                    reNative('finished');
-                }, 300);
+                initQueue(always(reNative, ['finished']));
                 return;
             }
 
@@ -145,9 +152,7 @@
                 // 删除数组链接数组
                 delete localStorage.a;
                 // 发请求告诉native我已抓完让她关掉页面
-                setTimeout(function() {
-                    reNative('finished');
-                }, 300);
+                initQueue(always(reNative, ['finished']));
 
                 return;
             }
@@ -157,11 +162,8 @@
 
             // alert(af);
 
-            // native拦截confirm方法拿取数据
-            // 延迟不让native接收太快而产生并发
-            setTimeout(function() {
-                reNative('work', encodeURIComponent(af));
-            }, 200);
+            initQueue(always(reNative, ['work', encodeURIComponent(af)]));
+
             var aArr = JSON.parse(localStorage.a);
 
             // 队列弹出
@@ -187,8 +189,7 @@
         // alert(localStorage.bl);
 
         // 告诉native我开始抓数据了要他把webview遮掉
-
-        reNative('start');
+        initQueue(always(reNative, ['start']));
 
 
         if (!localStorage.bl) {
@@ -228,7 +229,9 @@
             var na = shuffle(aArr);
 
             // 最多只抓20条
-            if(na.length > 20) na = intercept(na, 20);
+            three(na.length > 20, function() {
+                na = intercept(na, 20);
+            })
 
             localStorage.a = JSON.stringify(na);
             window.location = na[0];
@@ -241,9 +244,7 @@
                 // 删除状态
                 delete localStorage.bl;
                 // 关掉webview
-                setTimeout(function() {
-                    reNative('finished');
-                }, 300);
+                initQueue(always(reNative, ['finished']));
                 return;
             }
 
@@ -256,9 +257,7 @@
                 // 删除数组链接数组
                 delete localStorage.a;
                 // 发请求告诉native我已抓完让她关掉页面
-                setTimeout(function() {
-                    reNative('finished');
-                }, 300);
+                initQueue(always(reNative, ['finished']));
                 return;
             }
 
@@ -266,11 +265,7 @@
 
             // alert(af);
 
-            // native拦截confirm方法拿取数据
-            // 延迟不让native接收太快而产生并发
-            setTimeout(function() {
-                reNative('work', encodeURIComponent(af));
-            }, 200);
+            initQueue(always(reNative, ['work', encodeURIComponent(af)]));
 
             var aArr = JSON.parse(localStorage.a);
 
@@ -290,19 +285,7 @@
 
 })();
 
-// native请求
-function reNative(act, data) {
-    var ifr = document.getElementById('ifr');
-    if(ifr) ifr.parentNode.removeChild(ifr);
-    var div = document.createElement('div');
-    var iframe = '<iframe id="iframe"></iframe>';
-    div.id = 'ifr';
-    div.style.display = 'none';
-    div.innerHTML = iframe;
-    document.body.appendChild(div);
-    data = data ? '?data=' + data : '';
-    document.getElementById('iframe').contentWindow.window.location = 'js://com.renwohua.conch/crawler/' + act + data;
-}
+
 
 // 拿到的数据过处理下
 // 删除js，css，img标签，然后在删除剩余标签中的所有属性，除了留下id和class
@@ -312,27 +295,42 @@ function dataFilter() {
 
     // alert('本页的原始已经抓到，需要处理下，请稍等。。。');
 
-    // 把script标签里面的代码缩成一行，不让是匹配不到script标签的
-    oldTxt = oldTxt.replace(/<script.*?>(?:(?:\s+.+)+|(?:.+\s+)+)<\/script>/g, '');
-
-    // 替换工作
-    function rep(txt,rep1,rt,n) {
-        // 需要替换几处
-        var str = '';
-        for(var i = 0; i < n; i++) str += '$' + i + ' ';
-
-        rt = rt || str;
-        return txt.replace(rep1, rt);
-    }
-
     var arr = [
+        // 把script标签里面的代码缩成一行，否则是匹配不到script标签的
+        /<script.*?>(?:(?:\s+.+)+|(?:.+\s+)+)<\/script>/g,
         // 干掉js
         /<script.*?>.{0,}?<\/script>/g,
         // 干掉style
         /<style.*?>.{0,}?<\/style>/g,
         // 干掉img
-        /<img.{0,}?>/g
-    ]
+        /<img.{0,}?>/g,
+        // 除去换行
+        /\n/g,
+        // 去掉注释
+        /<!--.+?-->/g,
+        // 去掉input标签
+        /<input.+?>/g,
+        // 去除空标签
+        // 1次
+        /<[^\/<>]+?><\/[^<>]+?>/g,
+        // 2次
+        /<[^\/<>]+?><\/[^<>]+?>/g,
+        // 3次
+        /<[^\/<>]+?><\/[^<>]+?>/g
+    ];
+
+    var arr2 = [
+        // 除去标签与文字之间的空格的2中情况
+        /(>)\s+(\S)/g,
+        /(\S)\s+(<)/g
+    ];
+
+    // 初始替换内容为空格
+    var ir1 = initRep('');
+    // 初始替换内容为><
+    var ir2 = initRep('><');
+    // 初始替换内容为$1 $2
+    var ir3 = initRep('$1 $2');
 
     // for循环函数
     function f(obj, fn) {
@@ -340,33 +338,14 @@ function dataFilter() {
     }
 
     f(arr, function(that) {
-        oldTxt = rep(oldTxt, that, '');
+        oldTxt = ir1(that, oldTxt);
     });
-
+    f(arr, function(that) {
+        oldTxt = ir3(that, oldTxt);
+    });
+    
     // 去除标签之间的空格
     oldTxt = oldTxt.replace(/>\s+?</g, '><');
-
-    // 除去换行
-    oldTxt = oldTxt.replace(/\n/g, '');
-
-    // 除去标签与文字之间的空格
-    oldTxt = oldTxt.replace(/(>)\s+(\S)/g, '$1 $2');
-    oldTxt = oldTxt.replace(/(\S)\s+(<)/g, '$1 $2');
-
-    // 去掉注释
-    oldTxt = oldTxt.replace(/<!--.+?-->/g, '');
-    
-    // 去掉input标签
-    oldTxt = oldTxt.replace(/<input.+?>/g, '');
-
-    // 去除空标签
-    // 1次
-    oldTxt = oldTxt.replace(/<[^\/<>]+?><\/[^<>]+?>/g, '');
-    // 2次
-    oldTxt = oldTxt.replace(/<[^\/<>]+?><\/[^<>]+?>/g, '');
-    // 3次
-    oldTxt = oldTxt.replace(/<[^\/<>]+?><\/[^<>]+?>/g, '');
-
 
     // console.log(oldTxt);
 
@@ -417,8 +396,22 @@ function ct(logo) {
     document.body.appendChild(cd);
 }
 
+// 纯净版native请求
+function reNative(act, data) {
+    var ifr = document.getElementById('ifr');
+    if(ifr) ifr.parentNode.removeChild(ifr);
+    var div = document.createElement('div');
+    var iframe = '<iframe id="iframe"></iframe>';
+    div.id = 'ifr';
+    div.style.display = 'none';
+    div.innerHTML = iframe;
+    document.body.appendChild(div);
+    data = data ? '?data=' + data : '';
+    document.getElementById('iframe').contentWindow.window.location = 'js://com.renwohua.conch/crawler/' + act + data;
+}
+
 // n到m之间的随机数
-function nm(n,m){
+function nm(n,m) {
     return parseInt(n + Math.random() * (m - n));   
 }
 
@@ -440,3 +433,57 @@ function intercept(arr, num) {
     for(var i = 0; i < num; i++) result[i] = arr[i];
     return result;
 }
+
+// k函数 返回一个用一次的变量
+function k(val) {
+    return val;
+}
+
+// always函数 存一个变量的状态
+function always(val, arr) {
+    return function() {
+        return Array.isArray(arr) ? val.apply(null, arr) : val;
+    };
+}
+
+// 封装三目
+function three(a, b, c) {
+    var obj = {
+        a : a,
+        b : b,
+        c : c
+    };
+    function n(d) {
+        return (typeof d).toLowerCase() != 'function' ? always(d) : d;
+    }
+    for (var key in obj) obj[key] = n(obj[key]);
+    return obj.a() ? obj.b() || 1 : obj.c() || 0;
+}
+
+// 简陋的列队
+function queue(time) {
+    return (function(arr, t) {
+        return function(fn) {
+            arr.push(fn);
+            setTimeout(function() {
+                arr[0]();
+                arr.shift();
+            }, ++t * time);
+        }
+    })([], 0);
+}
+
+// 配置初始替换内容
+function initRep(txt) {
+    return function(rex, str) {
+        return str.replace(rex, txt);
+    };
+}
+
+
+
+
+
+
+
+

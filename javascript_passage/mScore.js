@@ -95,7 +95,7 @@
 
 	// 随机n-m之间的数
 	m.randomCount = function(n,m){
-		return parseInt(n + Math.random() * (m - n));	
+		return parseInt(n + Math.random() * (m - n));
 	};
 
 	// 数组去重
@@ -141,15 +141,15 @@
 
 	// 补零
 	m.fillZero = function (n){
-		return n < 10 ? '0' + n : '' + n;	
+		return n < 10 ? '0' + n : '' + n;
 	};
 
 	// 判断数据类型
-	['Arguments','Function','String','Number','Date','RegExp','Error','Array'].forEach(function(element,index,array){
-		m['is' + element] = function(obj){
+	['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Array'].forEach(function(element, index, array) {
+		m['is' + element] = function(obj) {
 			return toString.call(obj) === '[object ' + element + ']';
 		};
 	  });
 
 
-}).call(null,window);
+}).call(null, window);
