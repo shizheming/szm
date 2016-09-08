@@ -12,6 +12,8 @@
 	// +-号元算符隐转
 	console.log(undefined === -undefined);
 	console.log(undefined === +undefined);
+
+	
 	// 批量创建变量还是得借助对象，或数组，把变量名变成对象的属性名，或是变成数组的值
 	for(var i = 0; i < 10; i++){
 		(function(num){
@@ -20,6 +22,8 @@
 			};
 		})(i);
 	}
+
+
 	// 直接用原生的和用原生加call得出的结果不一样，因为Object上的toString和Array，Function上的toString返回的格式不一样，而call里面的thisobj就是对象，相当于调用对象上的toString，不管传进去的是字符串还是数字都当成对象了，所以返回的是Object上toString方法返回的格式
 	var toString = Object.prototype.toString;
 	console.log(toString.call(function(){}));
@@ -32,12 +36,16 @@
 	console.log({}.toString());
 	console.log(toString.call([4,5]));
 	console.log([4,5].toString());
+
+
 	// new运算符优先级最高，所以是new _(obj)先实例化了，再去调用_(obj)函数，所以第二次走自调用的时候this就不指向window了，而是指向new _(obj)这个对象了，所以就是_这个的实例了，所以自调用的那次this instanceof _就返回true了
 	var _ = function(obj){
 		if(obj instanceof _) return obj;
 		if(!(this instanceof _)) return new _(obj);
 		this._wrapped = obj;
 	};
+
+
 	// 1.他是把所有的方法当做函数的属性写在函数上面，而他有支持链式写法，很好奇他是怎么写的，一开始我以为他是通过遍历所有的方法复制到下划线对象的原型上去，后来发现他是在原型中直接调用已有的方法了
 	// 这里以一个_.first方法为例链式调用
 	// 2.为什么他的链式传参能传给对象，而方法直接调用不用传参就可以，就像我们直接用原生一样，比如[2,3,4].push(5)，他其实是利用把传给对象的参数变成自己的属性this.xx=参数，然后传给原型方法，实例化后原型方法就能获取刚刚添加上去的对象属性了。
@@ -73,6 +81,8 @@
 		};
 		_.mixin(_);
 	}).call(this);
+
+
 	// 这样创建对象原型方法厉害，不用每次创建都写a.prototype了，而且原型里面能很方便的用私有变量
 	function a(){}
 	(function(){
@@ -84,4 +94,10 @@
 			b = val;
 		};
 	}).call(a.prototype);
+
+
+	// 把arguments变成数组最快的方法
+	function a() {
+		var result = Array.prototype.slice.call(arguments, 0);
+	}
 </script>

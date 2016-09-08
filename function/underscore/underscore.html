@@ -9,18 +9,15 @@
 	<input type="text" id="b">
 </body>
 </html>
-<script src="underscore1.8.2.js"></script>
+<!-- <script src="underscore1.8.2.js"></script> -->
+<script src="0.js"></script>
 <script>
-var c = '';
-setInterval(function() {
-	if (a.value != c) {
-		b.value = a.value;
-		c = a.value;
-	}
-},1);
 
 
+var stooge = {name: 'moe', luckyNumbers: [13, 27, 34]};
+var clone  = {name: 'moe', luckyNumbers: [13, 27, 34]};
 
+console.log(_.isEqual(stooge, clone));
 </script>
 
 

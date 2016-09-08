@@ -1,0 +1,7 @@
+#popUp{position:fixed;top:0;left:0;right:0;bottom:0;opacity:0;transition:all .25s;font-family:'Microsoft YaHei';}
+#popUp>.mark{background-color:rgba(0,0,0,.4);top:0;left:0;right:0;bottom:0;position:absolute;}
+#popUp>.content{border-radius:10px;width:70%;height:20%;background-color:#fff;position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;z-index:2;}
+#popUp .close{float:right;margin:10px 10px 0 0;cursor:pointer;}
+#popUp.mm{opacity:1;}
+#popUp .ys{width:70%;height:25%;background-color:#f73e3e;text-align:center;line-height:2;color:#fff;margin:auto;position:absolute;left:0;right:0;bottom:10px;border-radius:5px;}
+
