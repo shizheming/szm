@@ -42,6 +42,43 @@ window._ = {
 	val : function(val) {
 	    return val;
 	},
+	// 最大值
+	max : function(arr) {
+		return Math.max.apply(null, arr);
+	},
+	// 最小值
+	min : function(arr) {
+		return Math.min.apply(null, arr);
+	},
+	// 判断一个值存在数组中没有
+	include : function(arr, target) {
+		return arr.indexOf(target) != -1;
+	},
+	// 删除数组中的元素
+	without : function(array, del) {
+		var result = [];
+		array.forEach(function(a, b, c) {
+			if (a != del) result.push(a);
+		});
+		return result;
+	},
+	// 返回json的长度
+	size : function(obj) {
+		return Object.keys(obj).length;
+	},
+	// 只运行一次的函数
+	once : function (fn) {
+		var sc = true;
+		return function() {
+			if (sc) fn();
+			sc = false;
+		};
+	},
+
+
+
+
+
 	// always函数 存一个变量的状态
 	always : function(val, arr) {
 	    return function() {
@@ -119,6 +156,19 @@ window._ = {
 	/*
 		[??] : 重复输出-放哪里都一样
 		(=属性名=) : 需要套的地方的语法
+
+		<div id="mm">
+			<script type="szm" id="mod">
+				[??]
+				<div class="img">
+					<input value="商品名称：(=thumb=)">
+				</div>
+				<div class="main">
+					<span class="text-org mui-h4"><em>商品价格：￥(=shop_price=)</em></span>
+				    <div class="hd-h5 margin-small-top">到货天数：(=days=)</div>
+				</div>
+			</script>
+		</div>
 	*/
 	sall : function(m, data) {
 		var result = '';
@@ -131,7 +181,7 @@ window._ = {
 				result += che(m, data[a]);
 			});
 			return result;
-		} 
+		}
 		// 单输出
 		function che(m, data) {
 			// 匹配属性替换json的值
@@ -146,7 +196,12 @@ window._ = {
 			return m;
 		}
 		return che(m, data);
-	}
+	},
+	// 随机颜色
+	randomColor : function(){
+		return '#' + Math.floor(Math.random() * parseInt('0xffffff',16).toString(10)).toString(16);
+	},
+	
 };
 
 // 判断数据类型
@@ -155,63 +210,5 @@ window._ = {
 		return Object.prototype.toString.call(obj) === '[object ' + element + ']';
 	};
 });
-
-
-
-
-/*******************************未消化***************************************/
-// 找最小最大值
-m.findM = function(arr){
-	var min = Number.MAX_VALUE,
-		max = Number.MIN_VALUE,
-		minIndex = -1,
-		maxIndex = -1;
-	for(var i = 0,len = arr.length; i < len; i++){
-		if(min > arr[i]){
-			min = arr[i];
-			minIndex = i;
-		};
-		if(max < arr[i]){
-			max = arr[i];
-			maxIndex = i;
-		};
-	};
-	return {
-		min : min,
-		minIndex : minIndex,
-		max : max,
-		maxIndex : maxIndex
-	};
-};
-
-	
-
-
-
-// 封装三目
-function three(a, b, c) {
-    var obj = {
-        a : a,
-        b : b,
-        c : c
-    };
-    function n(d) {
-        return (typeof d).toLowerCase() != 'function' ? always(d) : d;
-    }
-    for (var key in obj) obj[key] = n(obj[key]);
-    return obj.a() ? obj.b() || 1 : obj.c() || 0;
-}
-
-
-
-// 配置初始替换内容
-function initRep(txt) {
-    return function(rex, str) {
-        return str.replace(rex, txt);
-    };
-}
-
-
-
 
 

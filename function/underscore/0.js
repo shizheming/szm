@@ -1,11 +1,12 @@
 // Javascript can be so much more pleasant when it's functional -- re-implement
 // a bunch of utility methods from Prototype and Steele's Functional...
 window._ = {
-
+  
+  
   // Return the first value which passes a truth test.
   detect : function(obj, iterator, context) {
     var result;
-    _.forEach(obj, function(value, index) {
+    _.each(obj, function(value, index) {
       if (iterator.call(context, value, index)) {
         result = value;
         throw '__break__';
@@ -18,7 +19,7 @@ window._ = {
   include : function(obj, target) {
     if (_.isArray(obj)) if (obj.indexOf(target) != -1) return true;
     var found = false;
-    _.forEach(obj, function(value) {
+    _.each(obj, function(value) {
       if (value == target) {
         found = true;
         throw '__break__';
@@ -29,7 +30,7 @@ window._ = {
   
   // Aka reduce. Inject builds up a single result from a list of values.
   inject : function(obj, memo, iterator, context) {
-    _.forEach(obj, function(value, index) {
+    _.each(obj, function(value, index) {
       memo = iterator.call(context, memo, value, index);
     });
     return memo;
@@ -46,7 +47,7 @@ window._ = {
   // Return the maximum item or (item-based computation).
   max : function(obj, iterator, context) {
     var result;
-    _.forEach(obj, function(value, index) {
+    _.each(obj, function(value, index) {
       value = iterator ? iterator.call(context, value, index) : value;
       if (result == null || value >= result) result = value;
     });
@@ -56,7 +57,7 @@ window._ = {
   // Return the minimum element (or element-based computation).
   min : function(obj, iterator, context) {
     var result;
-    _.forEach(obj, function(value, index) {
+    _.each(obj, function(value, index) {
       value = iterator ? iterator.call(context, value, index) : value;
       if (result == null || value < result) result = value;
     });
@@ -66,14 +67,14 @@ window._ = {
   // Optimized version of a common use case of map: fetching a property.
   pluck : function(obj, key) {
     var results = [];
-    _.forEach(obj, function(value){ results.push(value[key]); });
+    _.each(obj, function(value){ results.push(value[key]); });
     return results;
   },
   
   // Return all the elements for which a truth test fails.
   reject : function(obj, iterator, context) {
     var results = [];
-    _.forEach(obj, function(value, index) {
+    _.each(obj, function(value, index) {
       if (!iterator.call(context, value, index)) results.push(value);
     });
     return results;
@@ -129,7 +130,7 @@ window._ = {
   
   // Trim out all falsy values from an array.
   compact : function(array) {
-    return _.filter(array, function(value){ return !!value; });
+    return _.select(array, function(value){ return !!value; });
   },
   
   // Return a completely flattened version of an array.
@@ -144,7 +145,7 @@ window._ = {
   // Return a version of the array that does not contain the specified value.
   without : function(array) {
     var values = array.slice.call(arguments, 0);
-    return _.filter(function(value){ return !_.include(values, value); });
+    return _.select(function(value){ return !_.include(values, value); });
   },
   
   // Produce a duplicate-free version of the array. If the array has already
@@ -158,7 +159,7 @@ window._ = {
   
   // Produce an array that contains every item shared between two given arrays.
   intersect : function(array1, array2) {
-    return _.filter(_.uniq(array1), function(item1) {
+    return _.select(_.uniq(array1), function(item1) {
       return _.detect(array2, function(item2) { return item1 === item2; });
     });
   },
@@ -236,7 +237,7 @@ window._ = {
   bindAll : function() {
     var args = _.toArray(arguments);
     var context = args.pop();
-    _.forEach(args, function(methodName) {
+    _.each(args, function(methodName) {
       context[methodName] = _.bind(context[methodName], context);
     });
   },
@@ -265,7 +266,7 @@ window._ = {
   
   // Objects have equal contents if they have the same keys, and all the values
   // are equal (as defined by _.isEqual).
-  isEqualContents : function(a, b) {
+  _isEqualContents : function(a, b) {
     var aKeys = _.keys(a), bKeys = _.keys(b);
     if (aKeys.length != bKeys.length) return false;
     for (var key in a) if (!_.isEqual(a[key], b[key])) return false;
@@ -287,7 +288,7 @@ window._ = {
         .split("%>").join("p.push('") 
         .split("\r").join("\\'") 
     + "');}return p.join('');");
-    return data ? fn(data) : fn;
+    return data ? fn(data) : fn;  
   }
   
 };

@@ -350,6 +350,7 @@ function arrTostring(arr) {
 
 
 
+
 // 模仿不了的
 
 // Array
@@ -357,6 +358,56 @@ function arrTostring(arr) {
 Array.prototype.sort();
 // es3
 Array.prototype.toLocaleString();
+
+
+
+
+
+
+// Math
+
+/***********es1**************/
+Math.E;
+Math.LN10;
+Math.LN2;
+Math.LOG10E;
+Math.LOG2E;
+Math.PI;
+Math.SQRT1_2;
+Math.SQRT2;
+
+	Math.abs();
+	Math.max();
+	Math.min();
+	Math.pow();
+	Math.random();
+	Math.ceil();
+	Math.floor();
+	Math.sqrt();
+
+Math.acos();
+Math.asin();
+Math.atan();
+Math.cos();
+Math.exp();
+Math.log();
+Math.sin();
+Math.tan();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

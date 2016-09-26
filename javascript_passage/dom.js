@@ -39,10 +39,7 @@ var method = {
 		obj.parentNode.insertBefore(newNode,obj.nextElementSibling);
 	},
 
-	// 随机颜色
-	randomColor : function(){
-		return '#' + Math.floor(Math.random() * parseInt('0xffffff',16).toString(10)).toString(16);
-	},
+	
 	
 	// 批量添加样式
 	css : function(obj,json){
