@@ -1,0 +1,134 @@
+<!----------------------------------
+
+名称：tab.js
+版本：1.0
+时间：2015.8
+
+---------------------------------->
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+	*{padding:0;margin:0;}
+	img{width:100%;}
+	#tab1{font-size:22px;overflow:hidden;}
+	#tab1>.title{overflow:hidden;line-height:40px;text-align:center;}
+	#tab1>.title>div{width:100px;float:left;background-color:#ccc;cursor:pointer;}
+	#tab1>.content>div{display:none;height:618px;overflow:hidden;}
+	#tab1>.title>.cur{background-color:#4866fd;color:#fff;}
+	#tab1>.content>.cur{display:block;}
+	#tab1>a{width:100px;float:left;background-color:#ccc;line-height:40px;text-align:center;}
+
+	img{width:100%;}
+	#tab2{font-size:22px;overflow:hidden;}
+	#tab2>.title{overflow:hidden;line-height:40px;text-align:center;}
+	#tab2>.title>div{width:100px;float:left;background-color:#ccc;cursor:pointer;}
+	#tab2>.content>div{display:none;height:618px;overflow:hidden;}
+	#tab2>.title>.cur{background-color:#4866fd;color:#fff;}
+	#tab2>.content>.cur{display:block;}
+	#tab2>a{width:100px;float:left;background-color:#ccc;line-height:40px;text-align:center;}
+	</style>
+</head>
+<body>
+	<div id="tab1">
+		<div class="title">
+			<div>1</div>
+			<div>2</div>
+			<div>3</div>
+		</div>
+		<div class="content">
+			<div><img src="../pictureLibrary/Avatar1.jpg"></div>
+			<div><img src="../pictureLibrary/Avatar2.jpg"></div>
+			<div><img src="../pictureLibrary/Avatar3.jpg"></div>
+		</div>
+		<a href="">prev</a>
+		<a href="">next</a>
+	</div>
+	<div id="tab2">
+		<div class="title">
+			<div>1</div>
+			<div>2</div>
+			<div>3</div>
+		</div>
+		<div class="content">
+			<div><img src="../../javascript_effect/pictureLibrary/Avatar1.jpg"></div>
+			<div><img src="../../javascript_effect/pictureLibrary/Avatar2.jpg"></div>
+			<div><img src="../../javascript_effect/pictureLibrary/Avatar3.jpg"></div>
+		</div>
+		<a href="">prev</a>
+		<a href="">next</a>
+	</div>
+	<script>
+	function tab(id,j){
+		j = j || {};
+		var json = {
+			e : j.e || 'onmouseover',
+			time : j.time || 2000,
+			auto : j.auto || false
+		},
+			obj = document.getElementById(id),
+			title = obj.children[0],
+			content = obj.children[1],
+			prev = obj.children[2],
+			next = obj.children[3],
+			titleChild = title.children,
+			contentChild = content.children,
+			pos = 0,// 这个能和now连着写2个tab切换会出问题why？
+			now = 0,// 因为 pos = now = 0，这样的写法后面的now就变成全局变量了
+			timer = null;
+		method.addClass(titleChild[0],'cur');
+		method.addClass(contentChild[0],'cur');
+		for(var i = 0,len = titleChild.length; i < len; i++){
+			(function(index){
+				titleChild[i][json.e] = function(){
+					now = index;
+					doThing();
+				};
+			})(i);
+		};
+		function doThing(){
+			if(pos === now) return;
+			method.addClass(titleChild[now],'cur');
+			method.removeClass(titleChild[pos],'cur');
+			method.addClass(contentChild[now],'cur');
+			method.removeClass(contentChild[pos],'cur');
+			pos = now;
+		};
+		next.onclick = auto;
+		prev.onclick = function(ev){
+			if(now-- === 0) now = titleChild.length - 1;
+			doThing();
+			ev.preventDefault();
+			// return false;
+		};
+		function auto(ev){
+			if(++now === titleChild.length) now = 0;
+			doThing();
+			ev.preventDefault();
+			// return false;
+		};
+		json.auto && (function(){
+			timer = setInterval(auto,json.time);// 这里怎么传ev preventDefault报错了
+			obj.onmouseover = function(){
+				clearInterval(timer);
+			};
+			obj.onmouseout = function(){
+				timer = setInterval(auto,json.time);
+			};
+		})();
+	};
+	</script>
+
+
+	<script>
+		tab('tab1');
+		tab('tab2',{
+			e : 'onclick',
+			auto : true
+		});
+	</script>
+</body>
+</html>

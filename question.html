@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+
+// 1
+function Queue() {
+	var items = [];
+	var l = 0;
+	
+	/*this.enqueue = function(elemets) {
+		for (var i = 0, len = arguments.length; i < len; i++) items[i + l] = arguments[i];
+		l = i;
+	};*/
+
+
+	/*Queue.prototype.me = function() {
+		return items;
+	};*/
+
+	// 为什么这样重写子啊构造函数里面外面就挂了，上面的确可以
+	Queue.prototype = {
+		h : function() {
+			alert(7)
+		}
+	};
+}
+
+var a = new Queue();
+
+// Queue();
+console.log(a.h())
+// console.log(a.me())
+/*a.enqueue(1,2,3,4,5,6,7,8,9,0);
+a.enqueue(1,2,3,4,5,6,7,8,9,0);
+
+console.log(a.me())*/
+
+
+
+// var b = [];
+
+/*console.time()
+for (var i = 0; i < 100000000; i++) b.push(i);
+console.timeEnd();*/
+
+/*console.time();
+for (var i = 0; i < 100000000; i++) b[i] = i;
+console.timeEnd();*/
+
+/*console.time();
+for (var i = 0; i < 100000000; i++) a.enqueue(i);
+console.timeEnd();*/
+
+
+
+
+
+
+// 2
+// 如何判断方法来自原型上
+
+
+
+// 3
+// src和href的区别
+
+// 4
+// 图片和iframe的src也是能跨域的，但怎么拿到对方的信息，为什么script里面src请求跨域就会回调我的回调函数，而img的src为什么不行，同样是请求百度的顺丰接口
+
+// 5
+// 不是ajax的请求怎么设置请求头
+</script>

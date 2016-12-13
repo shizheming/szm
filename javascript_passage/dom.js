@@ -63,21 +63,6 @@ var method = {
 			left : left - borderL,
 			top : top - borderT
 		};
-	},
-
-	// 处理时间戳
-	timeStamp : function(time){
-		var result = {};
-
-		time = new Date(time * 1000);
-		result.year = time.getFullYear();
-		result.month = zero(time.getMonth() + 1);
-		result.date = zero(time.getDate());
-		result.hours = zero(time.getHours());
-		result.minutes = zero(time.getMinutes());
-		result.seconds = zero(time.getSeconds());
-
-		return result;
 	}
 	
 	

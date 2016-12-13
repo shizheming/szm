@@ -100,4 +100,9 @@
 	function a() {
 		var result = Array.prototype.slice.call(arguments, 0);
 	}
+
+	// 有些写法window作为参数传进函数，因为参数是局部变量，局部变量在作用域链上访问快
+	(function(that) {
+		// ...
+	})(window);
 </script>

@@ -1,0 +1,60 @@
+<!---------------------------------- 
+
+名称：popUp.js
+版本：1.0
+时间：2016.10
+
+---------------------------------->
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+	<title>Document</title>
+	<style>
+	*{padding:0;margin:0;}
+	#popUp{position:fixed;top:0;left:0;right:0;bottom:0;opacity:0;transition:all .25s;font-family:'Microsoft YaHei';}
+	#popUp>.mark{background-color:rgba(0,0,0,.4);top:0;left:0;right:0;bottom:0;position:absolute;}
+	#popUp>.content{border-radius:10px;width:70%;height:20%;background-color:#fff;position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;z-index:2;}
+	#popUp .close{float:right;margin:10px 10px 0 0;cursor:pointer;}
+	#popUp.mm{opacity:1;}
+	#popUp .ys{width:70%;height:25%;background-color:#f73e3e;text-align:center;line-height:2;color:#fff;margin:auto;position:absolute;left:0;right:0;bottom:10px;border-radius:5px;}
+
+
+	</style>
+</head>
+<body>
+	<div id="click">click</div>
+	<div id="popUp">
+		<div class="content">
+			<!-- <div class="close">X</div> -->
+			<div class="con"></div>
+			<div class="ys">确定</div>
+		</div>
+		<div class="mark"></div>
+	</div>
+	<script>
+	function popUp(id, fn){
+		var obj = document.getElementById(id);
+		var close = obj.querySelector('.close');
+		var mark = obj.querySelector('.mark');
+		var ys = obj.querySelector('.ys');
+		obj.classList.add('mm');
+		ys.onclick = function(){
+			obj.classList.remove('mm');
+			fn && fn();
+		};
+		mark.onclick = function(){
+			obj.classList.remove('mm');
+			fn && fn();
+		};
+	};
+	</script>
+	<script>
+		addEventListener('load' ,function() {
+			popUp('popUp');
+		}, false);
+	</script>
+</body>
+</html>

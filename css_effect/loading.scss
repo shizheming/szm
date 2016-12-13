@@ -1,0 +1,73 @@
+$building: #E85457;
+
+.building { 
+	height: 20px;  /* Can be anything */
+	position: relative;
+	background: #fff;
+	padding: 10px;
+    box-shadow:0px 1px 5px 1px rgba(0,0,0,0.2);
+ > span {
+  display: block;
+  height: 100%;
+  background-color: $building;
+  position: relative;
+  overflow: hidden;
+}
+
+ > span:after, .animate > span > span {
+  animation: move 2s linear infinite;
+  content: "";
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background-image: linear-gradient(
+    -45deg, 
+    rgba(255, 255, 255, .2) 25%, 
+    transparent 25%, 
+    transparent 50%, 
+    rgba(255, 255, 255, .2) 50%, 
+    rgba(255, 255, 255, .2) 75%, 
+    transparent 75%, 
+    transparent
+  );
+  z-index: 1;
+  background-size: 50px 50px;
+  animation: move 2s linear infinite;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  overflow: hidden;
+}
+}
+
+.animate > span:after {
+  display: none;
+}
+
+@keyframes move {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 50px 50px;
+  }
+}
+
+// .building > span {
+//   background-color: #f1a165;
+//   background-image: linear-gradient(to bottom, #f1a165, #f36d0a);
+// }
+
+//demo styles
+body{
+  background:#7FCDD0;
+  text-align: center;
+}
+.container{
+  width:50%;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+
+}
