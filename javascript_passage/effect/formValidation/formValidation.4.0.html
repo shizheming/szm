@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>xxx</title>
+	<style>
+	input,button{display:block;font-size:20px;margin:10px;}
+	</style>
+</head>
+<body>
+
+<input type="text" id="s1" placeholder="电话">
+<input type="text" id="s2" placeholder="姓名">
+<input type="text" id="s3" placeholder="密码">
+<button id="btn">添加验证</button>
+<button id="btn2">取消验证</button>
+<button id="ss">提交</button>
+
+</body>
+</html>
+<script src="js/formValidation.4.0.js"></script>
+<script>
+
+var s = formverify('ss', function() {
+	alert('验证通过');
+}, function(msg) {
+    console.log(msg.name);
+});
+s.add({
+	type : 'tel',
+	name : '电话',
+	id : 's1'
+}, function(msg) {
+	console.log(msg.name + 'yeyeyey');
+});
+s.add({
+	regex : /^\w+$/,
+	name : '姓名',
+	id : 's2'
+});
+btn.onclick = function() {
+	s.add({
+		regex : /^\d{6}$/,
+		name : '密码',
+		id : 's3'
+	});
+};
+btn2.onclick = function() {
+	s.remove('s3');
+};
+</script>
