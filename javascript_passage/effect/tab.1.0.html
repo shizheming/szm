@@ -40,9 +40,9 @@
 			<div>3</div>
 		</div>
 		<div class="content">
-			<div><img src="../pictureLibrary/Avatar1.jpg"></div>
-			<div><img src="../pictureLibrary/Avatar2.jpg"></div>
-			<div><img src="../pictureLibrary/Avatar3.jpg"></div>
+			<div>111111111111111</div>
+			<div>222222222222222222222</div>
+			<div>3333333333333333</div>
 		</div>
 		<a href="">prev</a>
 		<a href="">next</a>
@@ -54,9 +54,9 @@
 			<div>3</div>
 		</div>
 		<div class="content">
-			<div><img src="../../javascript_effect/pictureLibrary/Avatar1.jpg"></div>
-			<div><img src="../../javascript_effect/pictureLibrary/Avatar2.jpg"></div>
-			<div><img src="../../javascript_effect/pictureLibrary/Avatar3.jpg"></div>
+			<div>1111111111111111111111111111111111</div>
+			<div>22222222222222222222222</div>
+			<div>3333333333333333333</div>
 		</div>
 		<a href="">prev</a>
 		<a href="">next</a>
@@ -79,8 +79,8 @@
 			pos = 0,// 这个能和now连着写2个tab切换会出问题why？
 			now = 0,// 因为 pos = now = 0，这样的写法后面的now就变成全局变量了
 			timer = null;
-		method.addClass(titleChild[0],'cur');
-		method.addClass(contentChild[0],'cur');
+		titleChild[0].classList.add('cur');
+		contentChild[0].classList.add('cur');
 		for(var i = 0,len = titleChild.length; i < len; i++){
 			(function(index){
 				titleChild[i][json.e] = function(){
@@ -91,10 +91,10 @@
 		};
 		function doThing(){
 			if(pos === now) return;
-			method.addClass(titleChild[now],'cur');
-			method.removeClass(titleChild[pos],'cur');
-			method.addClass(contentChild[now],'cur');
-			method.removeClass(contentChild[pos],'cur');
+			titleChild[now].classList.add('cur');
+			titleChild[pos].classList.remove('cur');
+			contentChild[now].classList.add('cur');
+			contentChild[pos].classList.remove('cur');
 			pos = now;
 		};
 		next.onclick = auto;
