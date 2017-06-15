@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>transform</title>
+<style type="text/css">
+.z1{position:relative;height:300px;}
+.a{background-color:black;width:200px;position:absolute;left:200px;text-align:center;line-height:100px;color:#fff;font-size:22px;}
+.b,.c,.d{width:200px;position:absolute;left:200px;text-align:center;line-height:100px;color:#fff;font-size:22px;transform-origin:bottom left;}
+.b{transform:matrix(-1,0,0,1,0,0);background-color:#030;}
+.c{transform:matrix(1,0,0,-1,0,0);background-color:#930;}
+.d{transform:matrix(0,1,1,0,0,0);background-color:#660;}
+.z2{background-color:#0b0b0b;}
+.z3{background-color:black;width:100px;height:100px;margin:0 auto;transform:matrix(.5,.866025,-.866025,.5,0,0) matrix(1.5,0,0,1.5,0,0) matrix(1,0,0,1,50,50) matrix(1,0,1,1,0,0)}
+.z4{background-color:#060;width:600px;line-height:200px;color:#fff;text-align:center;margin:0 auto;transform:rotate(45deg) translate(0px, 100px) rotate(6deg);}
+
+
+
+
+.z6{perspective:600px;width:1000px;background-color:rgba(204,204,204,.5);}
+.z111{width:300px;height:300px;background-color:rgba(153,153,153,.5);margin:0 auto;transform:rotateX(30deg);transform-style:preserve-3d;}
+.z15{width:150px;height:150px;background-color:rgba(102,102,102,.5);margin:0 auto;transform:rotateX(-16deg)rotateY(40deg)rotate(-60deg);font-size:22px;color:#fff;}
+
+.z222{width:600px;background-color:#666;margin:0 auto;transform:perspective(1000px)rotateY(-30deg);transform-style:preserve-3d;}
+.z16{width:200px;height:200px;background-color:#333;margin:0 auto;transform:rotateY(60deg);color:#fff;font-size:22px;}
+
+.z9{transform-style:preserve-3d;width:300px;height:188px;margin:350px auto;transform:perspective(1000px)rotateX(90deg);}
+.z9 img{position:absolute;}
+.z9 img:nth-child(1){transform:rotateY(0deg)translateZ(362px);}
+.z9 img:nth-child(2){transform:rotateY(45deg)translateZ(362px);}
+.z9 img:nth-child(3){transform:rotateY(90deg)translateZ(362px);}
+.z9 img:nth-child(4){transform:rotateY(135deg)translateZ(362px);}
+.z9 img:nth-child(5){transform:rotateY(180deg)translateZ(362px);}
+.z9 img:nth-child(6){transform:rotateY(225deg)translateZ(362px);}
+.z9 img:nth-child(7){transform:rotateY(270deg)translateZ(362px);}
+.z9 img:nth-child(8){transform:rotateY(315deg)translateZ(362px);}
+
+.z14{perspective:1000px;text-align:center;perspective-origin:center 0;}
+.z14 img{transform:matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,500,1);}
+</style>
+</head>
+
+<body>
+<h1>transform</h1>
+<h2>无继承</h2>
+<h3>应用于块级元素和行内替换元素</h3>
+<h1>2D</h1>
+<section class="z2">
+<img src="origin-per.png" width="160" height="130"><img src="origin-x-y.png" width="190" height="145"><img src="origin-x.png" width="180" height="140"><img src="rotate.png" width="245" height="165"><img src="scale-x-y.png" width="220" height="130"><img src="scale-x.png" width="182" height="107"><img src="scale-y.png" width="204" height="115"><img src="skew-x-y.png" width="225" height="140"><img src="skew-x.png" width="230" height="130"><img src="skew-y.png" width="230" height="130"><img src="translate-x-y.png" width="240" height="160"><img src="translate-x.png" width="237" height="124"><img src="translate-y.png" width="220" height="130">
+</section>
+<p>transform也能连着写</p>
+<p>不过每次变换后的坐标轴是不一样的，后一次的变换是跟着他前一次的坐标轴来变换的，而非原始坐标轴，所以改变顺序的话，会得到不一样的效果</p>
+<p>旋转和斜切，他们逆时针的是正角度，顺时针的是负角度</p>
+<section class="z3"></section>
+<h1>transform-origin</h1>
+<h2>无继承</h2>
+<h3>应用于块级元素和行内替换元素</h3>
+<ul>
+	<li>matrix矩阵镜像</li>
+</ul>
+<img src="3.png" width="230" height="62">
+<br>
+<img src="4.png" width="238" height="62">
+<br>
+<img src="5.png" width="450" height="62">
+<br>
+<img src="6.png" width="380" height="62">
+<br>
+<img src="1.png" width="439" height="95">
+<br>
+<img src="2.png" width="180" height="179">
+<br>
+<img src="8.jpg" width="120" height="348">
+<h2>matrix(a,b,c,d,e,f)</h2>
+<p>e,f是平移，a，d是缩放，b，c是斜切，a，b，c，d是旋转</p>
+<p>x原横坐标点，x'变换后的横坐标点 x'= ax+cy+e;</p>
+<p>y原纵坐标点，y'变换后的横坐标点，y' = bx+dy+f;</p>
+<img src="7.png" width="411" height="386">
+<p>求镜像的原理就是一点关于一天直线对称，已知x，y，已知y=kx直线经过原点，求x'y'</p>
+<p>方法：1.两点的构成直线的中点在y=kx直线上。2.两直线是垂直的，所以斜率想成是-1。</p>
+<p>斜率：k=tan@</p>
+<p>两点的中点坐标：((x1+x2)/2,(y1+y2)/2)</p>
+<p>两点的距离：sqrt((x1-x2)^2+(y1-y2)^2)</p>
+<ol>
+	<li>两点的中点带入对称轴y=kx得方程一</li>
+    <li>假设两点构成的直线是y=kx+b，带入得两个方程，最后去b算出方程k</li>
+    <li>原k成上面新算成的方程k等于-1得方程二</li>
+    <li>然后把x'和y'提出来</li>
+    <li>最后匹配矩阵公式得出a，b，c，d，e，f的值，就是matrix的6个参数</li>
+</ol>
+<img src="1.jpg" width="440" height="783">
+<br>
+<img src="2.jpg" width="440" height="783">
+<br>
+<p>镜像的xy轴还是不变的</p>
+<p>然后我们会发现x轴镜像和y轴镜像只有a和d是有参数的，所以得出的结论就是，这两个镜像是特殊缩放得到的结果，而关于y=kx直线方程镜像k=1的时候，就是种特殊的斜切，当k不为1是，abcd都有参数，那就是种特殊的旋转。</p>
+<section class="z1">
+	<section class="a">原像</section>
+	<section class="b">y轴镜像</section>
+	<section class="c">x轴镜像</section>
+	<section class="d">y=kx;k=1镜像</section>
+</section>
+<p>不用担心一个属性的书写次数</p>
+<section class="z4">transform:rotate(45deg)translate(0,100px)rotate(60deg);</section>
+
+
+
+
+
+
+<h1>3D</h1>
+<h2>matrix3d(a,b,0,0,c,d,0,0,0,0,1,0,e,f,0,1)</h2>
+<!--<p>matrix3d(1 + (1-cos(angle))*(x*x-1), -z*sin(angle)+(1-cos(angle))*x*y, y*sin(angle)+(1-cos(angle))*x*z, 0, z*sin(angle)+(1-cos(angle))*x*y, 1 + (1-cos(angle))*(y*y-1), -x*sin(angle)+(1-cos(angle))*y*z, 0, -y*sin(angle)+(1-cos(angle))*x*z, x*sin(angle)+(1-cos(angle))*y*z, 1 + (1-cos(angle))*(z*z-1), 0, 0, 0, 0, 1)</p>-->
+<img src="3.jpg" width="190" height="118">
+<img src="5.jpg" width="190" height="118">
+<img src="6.jpg" width="190" height="118">
+<img src="4_01.jpg" width="1200" height="293">
+<p>preserve-3d，是作用于子元素的，当父元素设置了perspective透视后，并没有应用3d变换的时候，写不写preserve-3d，子元素的3d变换的效果是一样的，当父元素设置了3d变换后，设与不设preserve-3d对子元素的效果就大不一样了，设了子元素的3d变换就基于父元素的3d变换而变换，若是不设，那3d变换的子元素就没有透视变化，结论就是perspective透视效果只应用于子元素，后代元素用3d变换没有3d效果，想要有3d效果，必须每个子元素的父元素设置preserve-3d，或是再设个perspective透视。</p>
+<p>3d变换里面应用2d变换xyz轴是不变的，3d2d的轴是公用的</p>
+<section class="z6">
+	<section class="z111">
+    	<section class="z15">3d2d的轴是公用的</section>
+    </section>
+</section>
+<p>perspective写在里面和外面是不一样的，写在里面的，自身也有透视效果</p>
+<section class="z222">
+	<section class="z16">perspective写在里面</section>
+</section>
+<section class="z9"><img src="img1.jpg" width="300" height="188"><img src="img1.jpg" width="300" height="188"><img src="img1.jpg" width="300" height="188"><img src="img1.jpg" width="300" height="188"><img src="img1.jpg" width="300" height="188"><img src="img1.jpg" width="300" height="188"><img src="img1.jpg" width="300" height="188"><img src="img1.jpg" width="300" height="188">
+</section>
+<p>perspective-origin的初始视点在写的这个元素的中心位置上</p>
+<p>perspective属性设置镜头到元素平面的距离。所有元素都是放置在z=0的平面上。比如perspective(300px)表示，镜头距离元素表面的位置是300像素。</p>
+
+
+<section class="z14"><img src="img1.jpg" width="300" height="188"></section>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style type="text/css">
+* {
+	padding:0;
+	margin:0
+}
+li{ list-style:none; }
+/*#centeredmenu {
+   float:left;
+   width:100%;
+   background:#fff;
+   border-bottom:4px solid #000;
+   overflow:hidden;
+   position:relative;
+}
+#centeredmenu ul {
+   clear:left;
+   float:left;
+   list-style:none;
+   margin:0;
+   padding:0;
+   position:relative;
+   left:50%;
+   text-align:center;
+}
+#centeredmenu ul li {
+   display:block;
+   float:left;
+   list-style:none;
+   margin:0;
+   padding:0;
+   position:relative;
+   right:50%;
+}
+#centeredmenu ul li a {
+   display:block;
+   margin:0 0 0 1px;
+   padding:3px 10px;
+   background:#ddd;
+   color:#000;
+   text-decoration:none;
+   line-height:1.3em;
+}
+#centeredmenu ul li a:hover {
+   background:#369;
+   color:#fff;
+}
+#centeredmenu ul li a.active,
+#centeredmenu ul li a.active:hover {
+   color:#fff;
+   background:#000;
+   font-weight:bold;
+}*/
+#juzhong{ width:1000px; height:200px; overflow:auto; position:relative; margin:0 auto; }
+#juzhong ul{ position:absolute; left:50%; float:left; text-align:center; background:#030; height:100px; }
+#juzhong li{ float:left; position:relative; right:50%; }
+#juzhong a{ display:block; background:#666; padding:2px 5px; margin:0 1px; color:#FFF; }
+
+#img{ width:500px; height:500px; background:#036; display:table; }
+#img div{ display:table-cell; text-align:center; vertical-align:middle; }/*除了直接作用于img标签就不行外，其他标签都行*/
+#img img{ padding:10px 50px; border:14px solid #999; background:#C00; }
+
+#img2{ position:relative; width:300px; height:300px; background:#036; margin:0 auto; overflow:auto; }/*加了overflow：auto绝对定位的图片如果超出他父元素的区域的话，超出的部分就会被影藏掉*/
+#img2 img{ position:absolute; left:-10px; }
+
+.div1{width:400px; height:300px; background:#030; position:relative;}
+.div2{width:100px; height:100px; background:#09F; position:absolute; top:50%;}
+.div2 p{width:100px; height:100px; background:#036; position:relative; top:-50%}
+
+.div3{width:200px; height:100px; float:right; background:#C93;}
+.div4{width:500px; height:100px; float:left; background:#09C;}
+</style>
+</head>
+
+<body>
+<!--<div id="centeredmenu">
+	<ul>
+		<li><a href="#">Tab one</a></li>
+		<li><a href="#" class="active">Tab two</a></li>
+		<li><a href="#">Tab three</a></li>
+		<li><a href="#">Tab four</a></li>
+	</ul>
+</div>-->
+<div id="juzhong">
+	<ul>
+		<li><a href="#">a</a></li>
+		<li><a href="#">bb</a></li>
+		<li><a href="#">cccc</a></li>
+		<li><a href="#">dddddddddddddddd</a></li>
+		<li><a href="#">eeeeeeee</a></li>
+		<li><a href="#">ffffff</a></li>
+		<li><a href="#">ggggggg</a></li> 	
+	</ul>
+</div><!--需不需要外面的div都无所谓-->
+<div id="img"><div><img src="img/pic2-3.jpg" /></div></div>
+<div id="img2"><img src="img/pic4-3.jpg" /></div>
+<div class="div1"><div class="div2"><p></p></div></div>
+<div style="clear:both;"></div>
+<div class="div3"></div><div class="div4"></div>
+</body>
+</html>

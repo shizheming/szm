@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+.div1{background-color:#ccc;margin-left:100px;width:100px;height:100px;}
+.div2{background-color:#666;margin-left:inherit;width:100px;height:100px;}
+.div3{position:relative;}
+.div4{position:absolute;}
+.div5{position:absolute;width:200px;height:200px;background-color:#999;}
+.div6{position:absolute;width:100px;height:100px;background-color:#ccc;top:50px;}
+</style>
+</head>
+
+<body>
+<h1>1.无敌属性值inherit，把不能继承的属性显性的变成继承。</h1>
+<div class="div1">
+	<div class="div2"></div>
+</div>
+<h1>2.包含框模型里面分为2种，1种是行框，1种是块框。</h1>
+<div class="div3">
+	<div class="div4">子元素</div>
+</div>
+后面的内容
+<h1>3.元素设置了'position: absolute'，包含块由最近的前辈创建</h1>
+<div class="div5">
+	<div class="div6">子元素</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://img_width1w.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://img_width1w.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link rel="stylesheet" href="css/base.css" />
+<style type="text/css">
+body{background:#ccc;}
+.kv{position:relative;overflow:hidden; margin:0 auto;}
+.bgImage img{position:absolute;}
+.dot{margin:0 auto; overflow:hidden;}
+.dot img{display:none;}
+.dot li{float:left; font-size:22px; cursor:pointer; margin:10px; background:url(img/dot.png) no-repeat; width:11px; height:11px;}
+.dot li:hover{background-position:0 -11px;}
+li.selected{background-position:0 -11px;}/*这里不能直接写selected取不到他的背景这里要继承li才行*/
+.prev{background:url(img/prev.png) no-repeat; left:110px;}
+.next{background:url(img/next.png) no-repeat; right:110px;}
+.prev,.next{width:30px; height:59px; position:absolute; top:40%; z-index:2; cursor:pointer; opacity:.3;}
+.prev:hover,.next:hover{opacity:1;}
+
+
+.scr{ position:fixed; right:60px; bottom:10px; display:none; cursor:pointer;_position:absolute; _top:expression(eval(document.documentElement.scrollTop+document.documentElement.clientHeight-this.offsetHeight));}
+</style>
+</head>
+
+<body>
+<div class="cwBanner">
+<div class="kv">
+	<div class="bgImage"><img src="img/1.jpg" /></div>
+</div>
+<ul class="dot">
+	<li class="selected"><img src="img/1.jpg" /></li>
+	<li><img src="img/7.jpg" /></li>
+	<li><img src="img/2.jpg" /></li>
+	<li><img src="img/10.jpg" /></li>
+	<li><img src="img/4.jpg" /></li>
+	<li><img src="img/31.jpg" /></li>
+</ul>
+</div>
+</body>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript">
+$( function(){
+	changeWidth('bgImage','kv','dot','selected','cwBanner','2000');
+});
+function changeWidth(bgImage,kv,dot,selected,banner,speed){
+			var d             = '.' ,
+				$bgImage      = $(d + bgImage) ,
+				$bgImage_img  = $('img',$bgImage) ,
+				$kv           = $(d + kv) ,
+				$dot          = $(d + dot)
+				$dot_li       = $('li',$dot) ,
+				 dot_liLength = $dot_li.length ;
+			$(d + banner).prepend('<div class="prev"></div><div class="next"></div>');
+			$dot.css({
+					width:$dot_li.outerWidth()*dot_liLength*(parseFloat(dot_liLength/2))
+				     })
+			$kv.css({
+					width:$bgImage_img.width(),
+					height:$bgImage_img.height()
+				    });
+			$bgImage.css({
+						width:$bgImage_img.width()*$dot_li.length,
+						height:$bgImage_img.height()
+						 });
+			var self = 0 ;
+				n    = 0 ;
+			$dot_li.bind('click',cw);
+			$('.prev').bind('click',prevImg);
+			$('.next').bind('click',nextImg);
+			function cw(/*e*/){
+						var $this     = $(this) ,
+							$imgSrc   = $('img',$this).attr('src') ,
+							 idx      = $this.index() ;
+						$(d + selected).removeClass(selected)
+						$this.addClass(selected);
+						//if(self == idx) return false ;
+						if( $bgImage.children().length > 1 ){
+								$bgImage.children(':last').remove();
+															 };
+						var $bgImage_img       = $('img',$bgImage) ,
+							 currentImageWidth = $bgImage_img.width() ,
+							$newImg            = $('<img />').css({
+																left:currentImageWidth
+																  }).attr('src',$imgSrc);
+						$newImg.prependTo($bgImage);
+						var newImg_width  = $newImg.width() ,
+							newImg_height = $newImg.height() ;
+						if(self > idx){
+							$newImg.css({
+										left: - newImg_width
+										});
+							currentImageWidth  = - newImg_width ;
+									   }
+						$kv.stop().animate({
+										width:newImg_width,
+										height:newImg_height
+										   });
+						$newImg.stop().animate({
+										left: 0
+											   });
+						$bgImage_img.stop().animate({
+												left: - currentImageWidth
+													});
+						self = idx ;
+						n    = idx ;
+						//e.preventDefault();
+						};
+			function nextImg(){
+				if(!$('img',$bgImage).is(':animated')){
+					if(self < $dot_li.length){
+						
+						if(self == dot_liLength - 1 ){
+											self = 0 ;
+											$dot_li.eq(self).trigger('click');
+														}else{
+															$dot_li.eq(self + 1).trigger('click');
+															}
+						
+						
+						
+						
+											  };
+														};
+							   };
+			function prevImg(){
+				if(!$('img',$bgImage).is(':animated')){
+						//if(self > 0 ){
+								//$dot_li.eq(self - 1).trigger('click');
+								if(self < 0 ){
+											self == dot_liLength - 1 ;
+											$dot_li.eq(self).trigger('click');
+														}else{
+															$dot_li.eq(self - 1).trigger('click');
+															}
+								
+								
+								
+								
+								
+									  //};
+														};
+							   };
+							   
+							   
+							   
+							   
+	function showauto(){
+		if(n > dot_liLength - 1 ){
+			n = 0 ;
+		}else{
+			n++ ;
+		};
+		$dot_li.eq(n).trigger('click');
+	} ;
+	var t = setInterval(showauto,speed) ;//setInterval()里面直接写showauto不加引号，即使让他赋值给变量也会自动运行。。。。
+	$(d + banner).hover(function(){
+		clearInterval(t);
+	},function(){
+		t = setInterval(showauto,speed) ;
+	})
+};
+
+
+
+
+
+scrollBack('scr',200,220)
+function scrollBack(cl,fadeSpeed,anSpeed){
+								var $doc        = $(window) ,
+									$docWidth   = $doc.width() ,
+									$docHeight  = $doc.height() ,
+									$scrHeight  = $doc.scrollTop() ,
+									$scr        = $('.' + cl) ,
+									windowWidth = $(window).height() + 150 ;
+								$scr.bind('click',goBack);
+								$doc.scroll(scr);	
+								$('<div></div>').addClass(cl).appendTo('body');
+								function scr(){
+									if($doc.scrollTop() > windowWidth){
+																$scr.fadeIn(fadeSpeed);
+																	   }else{
+																$scr.fadeOut(fadeSpeed);
+																			}
+											   };
+								function goBack(){
+									$('html,body').animate({
+													scrollTop : 0
+															} , anSpeed )
+												  };
+										}
+</script>
+</html>

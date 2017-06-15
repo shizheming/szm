@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+<style type="text/css">
+*{margin:0;padding:0;}
+#banner3{width:478px;height:286px;position:relative;}
+#banner3 .on{color:#fff;}
+#banner3_list a{position:absolute;}
+#banner3_info{}
+#banner3_info .dx2{position:absolute;top:0;}
+.dot{background-color:rgba(187,187,187,.5);position:absolute;z-index:2;bottom:0;display:none;}
+.dx{margin-left:10px;margin-right:10px;width:30px;display:inline-block;cursor:pointer;text-align:center;line-height:30px;font-size:18px;}
+#banner3_list a{display:block;}
+/*.ul1{display:none;}*/
+</style>
+</head>
+<body>
+<div id="banner3">
+	<div id="banner3_list">
+		<a href="http://www.baidu.com" target="_blank"><img src="img/p1.jpg" width="478" height="286" title="111"></a><a href="http://www.w3school.com.cn/" target="_blank"><img src="img/p5.jpg" width="478" height="286" title="222"></a><a href="http://sports.sina.com.cn/" target="_blank"><img src="img/p3.jpg" width="478" height="286" title="333"></a><a href="http://sports.sina.com.cn/" target="_blank"><img src="img/p4.jpg" width="478" height="286" title="444"></a>
+	</div>
+    <!--<ul class="ul1">
+    	<li>1111</li>
+        <li>2222</li>
+        <li>3333</li>
+        <li>4444</li>
+    </ul>-->
+</div>
+<script type="text/javascript" src="http://www.yodak.net/templets/js/jq.js"></script>
+<script type="text/javascript">
+$(function(){
+	var $banner = $('#banner3') ,
+		zIndex = 'zindex' ,
+		$bannerList = $('#banner3_list') ,
+		$bannerListChild = $bannerList.children() ,
+		class1 = 'on' ,
+		avWidth1 = $bannerListChild.width() ;
+	
+	$bannerListChild.first().addClass(zIndex)
+	$('<div class="dot"></div>').appendTo($banner);
+	var $dot = $('.dot') ;
+	$bannerListChild.each(function(index, element) {
+		$('<span class="dx">'+(index+1)+'</span>').appendTo($dot)
+	});
+	$('<div id="banner3_info"><div class="dx2"></div></div>').appendTo($banner)
+	var $bannerInfo = $('#banner3_info') ,
+		$dx2 = $('.dx2') ,
+		$dx = $('.dx')
+	$dx2.css({left:$('#banner3_list img').width(),height:$('#banner3_list img').height()})
+	$dot.css({width:avWidth1});
+	$bannerInfo.css({width:avWidth1});
+	$bannerListChild.not(':first').css({opacity:0});
+	
+	$dx2.text($('.ul1 li:first').html());
+	$('.dx').first().addClass(class1)
+	var jj = 0 ,
+		jj2 = 0 ;
+	$dx.bind('mousemove',mg)	
+	function mg(){
+		i=$(this).index();
+		if(jj==i)return false ;
+		$('.'+class1,$banner).removeClass(class1);
+		$(this).addClass(class1);
+		$dx2.text($('.ul1 li').eq(i).html());
+		$('.'+zIndex).css({zIndex:-1});
+		$('.'+zIndex).stop().animate({opacity:0},2000).removeClass(zIndex);
+		$bannerListChild.eq(i).stop().animate({opacity:1},2000).addClass(zIndex);
+		$bannerListChild.eq(i).css({zIndex:1});
+		jj = i ;
+		jj2 = i ;
+	};
+	
+	function st(){
+		if(jj2>$bannerListChild.length-1){
+			jj2=0;
+		}else{
+			jj2++;
+		}
+		$dx.eq(jj2).trigger('mousemove');
+	};
+	var t = setInterval(st,5000) ;
+	$banner.hover(function(){
+		clearInterval(t);
+	},function(){
+		t = setInterval(st,5000) ;
+	})
+})
+
+
+
+
+
+</script>
+</body>
+</html>

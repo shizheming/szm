@@ -1,0 +1,420 @@
+<!DOCTYPE html PUBdivC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<style type="text/css">
+/*css rest*/
+body{font-size:12px;}
+a{color:#000;text-decoration:none;}
+a:hover{text-decoration:underline;}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td,abbr,pre,img,span{margin:0;padding:0;}
+table{border-spacing:0;border-collapse:collapse;}
+fieldset,img,abbr,acronym{border:0;}
+address,caption,cite,code,dfn,em,strong,th,var{font-weight:normal;font-style:normal;}
+ol,ul{list-style:none;}
+h1,h2,h3,h4,h5,h6{font-weight:normal;font-size:100%;}
+input,textarea{outline:none;}
+textarea{resize:none;}
+/*css rest*/
+/*.contentLayer{border:1px dashed #999;width:980px;min-height:100px;background-color:#ccc;margin:0 auto;position:relative;padding:20px;}*/
+.contentLayer li{cursor:pointer;}
+.edit{position:absolute;right:0;}
+
+.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
+
+.editFrame{position:relative;left:-50%;float:left;display:none;background-color:#FFF;top:-50%;}
+.editFrame form{/*position:relative;left:-50%;float:left;*/border:3px solid #ccc;padding:20px;}
+.editFrame li{margin-bottom:10px;}
+.editFrame .borderColor{margin-left:30px;}
+.editFrame .backgroundImage{margin-left:42px;}
+.editFrame .more{margin-left:28px;}
+.editFrame .title{margin-left:30px;}
+
+.editConten{clear:both;min-height:300px;position:relative;width:600px;display:none;background-color:#FFF;left:-50%;top:-50%;}
+.editConten{border:3px solid #ccc;overflow:hidden;}
+.tabContnet ul{display:none;padding:20px;}
+.tabTitle{_zoom:1;border-bottom:1px solid #ccc;}
+.tabTitle ul{overflow:hidden;text-align:center;margin-right:-3px;}
+.tabTitle li{border-right:1px solid #ccc;cursor:pointer;font-size:14px;float:left;width:200px;line-height:30px;_width:196px;}
+.text li{text-align:right;_width:200px;}
+.text a{float:left;}
+.imageText{overflow:hidden;}
+.imageText img{display:block;}
+.imageText li{float:left;}
+#editConten .style{color:#fff;background-color:#999;}
+#editConten .layout{display:block;}
+.editConten .submit{position:absolute;bottom:10px;left:20px;_bottom:-2px;}
+
+.editData{float:left;position:relative;left:-50%;display:none;background-color:#FFF;height:350px;overflow:auto;border:3px solid #ccc;}
+.editData form{/*position:relative;left:-50%;*/padding:20px;}
+.editData input{margin-right:10px;}
+.deleteData{cursor:pointer;}
+.data input{margin-bottom:10px;}
+
+.close{position:absolute;right:10px;top:5px;cursor:pointer;}
+.close:hover{color:#fff;background-color:#060;}
+.del980Div:hover{color:#fff;background-color:#060;}
+/*-------------------------------------------------------------------------张郭华丽的分割线---------------------------------------------------------------*/
+/*-----------top-------------*/
+.topTitle{height:100px;margin-bottom:160px;line-height:100px;text-align:center;}
+.topTemplate{position:absolute;left:0px;top:100px;width:100%;height:160px;background:#f1f1f1;}
+.fixed{position:fixed;top:0px;left:0px;z-index:1000;_position:absolute;_top:expression(documentElement.scrollTop+documentElement.clientHeight *0+"px")}
+.content{width:980px;height:120px;margin:0 auto;background:#fff;}
+.content ul{height:60px;overflow:hidden;_zoom:1;padding:21px 0 10px 21px;}
+.content ul li{float:left;width:74px;height:52px;margin-right:14px;border:4px solid #a3b1ca;overflow:hidden;_zoom:1;}
+.content ul li div{float:left;height:100%;}
+.borderRight{border-right:4px solid #a3b1ca;}
+.template0{float:left;width:100%;}
+.template11{float:left;width:49%;}
+.template12{float:right;width:49%;}
+.template21{float:left;width:32%;}
+.template22{float:right;width:65%;}
+.template31{float:left;width:65%;}
+.template32{float:right;width:32%;}
+.template41{float:left;width:24%;}
+.template42{float:right;width:74%;}
+.template51{float:left;width:74%;}
+.template52{float:right;width:24%;}
+.template61{width:31%;_width:30%;}
+.template62{width:31%;}
+.template63{width:32%;}
+.content p{padding-left:21px;}
+.content p span{display:inline-block;*zoom:1;*display:inline;width:82px;margin-right:14px;text-align:center;}
+/*-----------wrapper---------*/
+.wrapper{position:relative;width:980px;/*overflow:hidden;*/_zoom:1;margin:0 auto;}
+.tempDiv{position:relative;z-index:102;/*overflow:hidden;*/_zoom:1;margin-bottom:5px;border:1px dashed #0a9dfd;background-color:#DDF0DF;*height:60px;}
+.tempDiv>div{min-height:90px;}
+#wrapper .template0{position:relative;width:980px;background:#ccfafc;}
+#wrapper .template11{position:relative;width:480px;background:#ccfafc}
+#wrapper .template12{position:relative;width:480px;background:#ccfafc}
+#wrapper .template21{position:relative;width:320px;background:#ccfafc}
+#wrapper .template22{position:relative;width:640px;background:#ccfafc}
+#wrapper .template31{position:relative;width:640px;background:#ccfafc}
+#wrapper .template32{position:relative;width:320px;background:#ccfafc}
+#wrapper .template41{position:relative;width:240px;background:#ccfafc}
+#wrapper .template42{position:relative;width:720px;background:#ccfafc}
+#wrapper .template51{position:relative;width:720px;background:#ccfafc}
+#wrapper .template52{position:relative;width:240px;background:#ccfafc}
+#wrapper .template61{position:relative;float:left;width:313px;background:#ccfafc}
+#wrapper .template62{position:relative;float:left;width:313px;margin-left:20px;background:#ccfafc;_display:inline;}
+#wrapper .template63{position:relative;float:right;width:313px;background:#ccfafc}
+.tips{display:none;position:absolute;top:0px;right:0px;z-index:103;width:80px;overflow:hidden;_zoom:1;}
+.tips li{height:20px;margin-bottom:1px;}
+/*.tips li.first{display:none;}*/
+.tips li a{display:block;background:#ccc;text-indent:1.5em;line-height:20px;}
+.tips li a:hover{background:#09F;color:#fff;}
+.popup{display:none;position:fixed;top:50%;left:50%;z-index:1001;_position:absolute;_top:expression(documentElement.scrollTop+documentElement.clientHeight *1/2+"px");top:25%;}
+</style>
+</head>
+<body>
+<div class="topTitle">后天框架后台框架后台框架后台框架后台框架</div>
+<div class="topTemplate" id="topTemplate">
+	<div class="content">
+		<ul id="templateUl">
+			<li>
+				<div class="template0">
+					<div class='tips'><ul><li class='first'><a href='#'>编译框架</a></li><li><a href='#'>编译内容</a></li><li><a href='#'>编译数据</a></li><li><a href='#'>删除内容</a></li></ul></div>
+				</div></li>
+			<li>
+				<div class="template11 borderRight">
+					<div class='tips'><ul><li class='first'><a href='#'>编译框架</a></li><li><a href='#'>编译内容</a></li><li><a href='#'>编译数据</a></li><li><a href='#'>删除内容</a></li></ul></div>
+				</div>
+				<div class="template12">
+					<div class='tips'><ul><li class='first'><a href='#'>编译框架</a></li><li><a href='#'>编译内容</a></li><li><a href='#'>编译数据</a></li><li><a href='#'>删除内容</a></li></ul></div>
+				</div></li>
+			<li>
+				<div class="template21 borderRight">
+					<div class='tips'><ul><li class='first'><a href='#'>编译框架</a></li><li><a href='#'>编译内容</a></li><li><a href='#'>编译数据</a></li><li><a href='#'>删除内容</a></li></ul></div>
+				</div>
+				<div class="template22">
+					<div class='tips'><ul><li class='first'><a href='#'>编译框架</a></li><li><a href='#'>编译内容</a></li><li><a href='#'>编译数据</a></li><li><a href='#'>删除内容</a></li></ul></div>
+				</div>
+			</li>
+			<li>
+				<div class="template31 borderRight">
+					<div class='tips'><ul><li class='first'><a href='#'>编译框架</a></li><li><a href='#'>编译内容</a></li><li><a href='#'>编译数据</a></li><li><a href='#'>删除内容</a></li></ul></div>
+				</div>
+				<div class="template32">
+					<div class='tips'><ul><li class='first'><a href='#'>编译框架</a></li><li><a href='#'>编译内容</a></li><li><a href='#'>编译数据</a></li><li><a href='#'>删除内容</a></li></ul></div>
+				</div>
+			</li>
+			<!--<li>
+				<div class="template41 borderRight">
+					<div class='tips'><ul><li class='first'><a href='#'>编译框架</a></li><li><a href='#'>编译内容</a></li><li><a href='#'>编译数据</a></li><li><a href='#'>删除内容</a></li></ul></div>
+				</div>
+				<div class="template42">
+					<div class='tips'><ul><li class='first'><a href='#'>编译框架</a></li><li><a href='#'>编译内容</a></li><li><a href='#'>编译数据</a></li><li><a href='#'>删除内容</a></li></ul></div>
+				</div>
+			</li>
+			<li>
+				<div class="template51 borderRight">
+					<div class='tips'><ul><li class='first'><a href='#'>编译框架</a></li><li><a href='#'>编译内容</a></li><li><a href='#'>编译数据</a></li><li><a href='#'>删除内容</a></li></ul></div>
+				</div>
+				<div class="template52">
+					<div class='tips'><ul><li class='first'><a href='#'>编译框架</a></li><li><a href='#'>编译内容</a></li><li><a href='#'>编译数据</a></li><li><a href='#'>删除内容</a></li></ul></div>
+				</div>
+			</li>-->
+			<li>
+				<div class="template61 borderRight">
+					<div class='tips'><ul><li class='first'><a href='#'>编译框架</a></li><li><a href='#'>编译内容</a></li><li><a href='#'>编译数据</a></li><li><a href='#'>删除内容</a></li></ul></div>
+				</div>
+				<div class="template63 borderRight">
+					<div class='tips'><ul><li class='first'><a href='#'>编译框架</a></li><li><a href='#'>编译内容</a></li><li><a href='#'>编译数据</a></li><li><a href='#'>删除内容</a></li></ul></div>
+				</div>
+				<div class="template62 borderRight">
+					<div class='tips'><ul><li class='first'><a href='#'>编译框架</a></li><li><a href='#'>编译内容</a></li><li><a href='#'>编译数据</a></li><li><a href='#'>删除内容</a></li></ul></div>
+				</div>
+			</li>
+		</ul>
+		<p>
+			<span>100%框架</span><span>1:1</span><span>1:2</span><span>2:1</span><!--<span>1:3</span><span>3:1</span>--><span>1:1:1</span> 
+		</p>
+	</div>
+</div>
+<div class="wrapper" id="wrapper"></div>
+<div class="popup" id="popup">
+	<div class="editFrame" id="editFrame">
+			<form action="">
+				<ul>
+					<li>标题：<input name="title" type="text" value="" class="title" /></li>
+					<li><textarea name="more" class="more"></textarea></li>
+					<li>边框 宽度：<input name="width" type="text" value="" class="borderWidth" /></li>
+					<li>颜色：<input name="color" type="text" value="" class="borderColor" /></li>
+					<li>背景 颜色：<input name="color" type="text" value="" class="backgroundColor" /></li>
+					<li>图片<input name="picture" type="text" value="" class="backgroundImage" /></li>
+					<li><input type="reset" value="重置" /><input type="button" class="submit" value="确定" /></li>
+				</ul>
+			</form>
+			<div class="close">close</div>
+		</div>
+	<div class="editConten" id="editConten">
+		<div class="tabTitle">
+			<ul>
+				<li class="style">文字</li>
+				<li>图文</li>
+				<li>自定义</li>
+			</ul>
+		</div>
+		<div class="tabContnet" id="tabContnet">
+			<ul class="layout text">
+				<li><a href="111">华东地区知名品牌医院1</a>11-11-11</li>
+				<li><a href="222">华东地区知名品牌医院2</a>11-11-11</li>
+				<li><a href="333">华东地区知名品牌医院3</a>11-11-11</li>
+				<li><a href="444">华东地区知名品牌医院4</a>11-11-11</li>
+				<li><a href="555">华东地区知名品牌医院5</a>11-11-11</li>
+				<li><a href="666">华东地区知名品牌医院6</a>11-11-11</li>
+				<li><a href="777">华东地区知名品牌医院7</a>11-11-11</li>
+				<li><a href="888">华东地区知名品牌医院8</a>11-11-11</li>
+			</ul>
+			<ul class="imageText">
+				<li><a href="123"><img src="img/11111.jpg" alt="失效1" />中韩国际整形指定地1</a></li>
+				<li><a href="456"><img src="img/22222.jpg" alt="失效2" />中韩国际整形指定地2</a></li>
+				<li><a href="789"><img src="img/33333.jpg" alt="失效3" />中韩国际整形指定地3</a></li>
+				<li><a href="135"><img src="img/44444.jpg" alt="失效4" />中韩国际整形指定地4</a></li>
+				<li><a href="246"><img src="img/55555.jpg" alt="失效5" />中韩国际整形指定地5</a></li>
+				<li><a href="zzz"><img src="img/66666.jpg" alt="失效6" />中韩国际整形指定地6</a></li>
+				<li><a href="aaa"><img src="img/77777.jpg" alt="失效7" />中韩国际整形指定地7</a></li>
+				<li><a href="sss"><img src="img/88888.jpg" alt="失效8" />中韩国际整形指定地8</a></li>
+			</ul>
+			<ul>
+				<li><h2>自定义</h2></li>
+			</ul>
+		</div>
+		<div class="submit"><button type="submit">选择样式</button></div>
+		<div class="close">close</div>
+	</div>
+	<div class="editData" id="editData">
+		<form action="">
+			<input type="button" name="addData" id="addData" value="添加数据" class="addData" /><button type="submit">确定</button>
+		</form>
+		<div class="close">close</div>
+	</div>
+</div>
+<!----------------------------------------------------------szm--------------------------------------------------------->
+<!--<div id="contentLayer" class="contentLayer">
+	<ul id="edit" class="edit">
+		<li>编辑框架</li>
+		<li>编辑内容</li>
+		<li>删除内容</li>
+	</ul>
+</div>-->
+<script type="text/javascript" language="javascript" src="js/jquery.js"></script>
+<script type="text/javascript">
+$(function(){
+		// Scroll Fixed Effect
+	$(window).scroll(function(){
+		var scrollTop = $(window).scrollTop();
+		var topDemo = $("#topTemplate").offset().top;
+		if(scrollTop>=topDemo){
+			$("#topTemplate").addClass("fixed");
+		}
+		if(scrollTop<100){
+			$("#topTemplate").removeClass("fixed");	
+		} 
+	})
+	// Add Template
+	$("#templateUl li").live("click",function(){
+		$("#wrapper").append("<div class='tempDiv clearfix'>"+$(this).html()+"</div>");
+		$("#wrapper div").each(function(){
+			if( $(this).hasClass("borderRight")){
+				$(this).removeClass("borderRight")
+			}
+		});
+		//删除980div  szm add
+		$('<div class="del980Div">删除</div>').appendTo($('.tempDiv:last'));	
+		$('.del980Div').css({
+			position:'absolute',
+			right:'-15px',
+			width:'12px',
+			wordBreak:'break-all',
+			cursor:'pointer'
+		});
+		$('.del980Div').click(function(){
+			$(this).parent().remove();
+		});
+	})
+	// Template hover 
+	var bool = false;   // true : never save if save bool == true 
+	var index = null;	// index => the current object;
+	$("#wrapper .tempDiv div").live({	
+		mouseover:function(){
+			if(bool == false){
+				$(this).find(".tips").css("display","block");
+			}
+		},
+		mouseout:function(){
+			if(bool == false){
+				$(this).find(".tips").css("display","none");
+			}
+		}
+	})
+	// Tip Click  Effect
+	 
+	$(".tempDiv .tips:visible li").live("click",function(e){
+		$('.jj').removeClass('jj');//szm add
+		$('.tips:visible').parent().addClass('jj');//szm add
+		
+		if(bool == false){
+			var tipIndex = $(".tempDiv .tips:visible li").index(this);
+		}else{
+			var tipIndex = $(".tempDiv .tips:visible li").index(this);
+		}
+		
+		switch(tipIndex){
+			case 0:
+				$(".editFrame").css("display","block");
+				$(".editConten").css("display","none");
+				$(".editData").css("display","none");
+				break;
+			case 1:
+				$(".editConten").css("display","block");
+				$(".editFrame").css("display","none");
+				$(".editData").css("display","none");
+				break;		
+			case 2:
+				$(".editData").css("display","block");
+				$(".editFrame").css("display","none");
+				$(".editConten").css("display","none");
+				break;	
+			case 3:
+				//szm add 删除内容
+				$('.jj').children().not(':last').remove();
+		};
+		$("#popup").show();
+		stopBubble(e);
+		
+		
+		
+		//szm add 编辑数据
+		var $cv = $('.jj').children().not(':last') ,
+			aHref = $cv.find('a') ,
+			imgSrc = $cv.find('img')
+			liLebgth = $cv.find('li').length ;
+		$('.data').remove();
+		for(i=liLebgth-1;i>=0;i--){
+			$('<div class="data"><input class="title" type="text" name="title" value="'+aHref.eq(i).text()+'" /><input type="text" name="href" value="'+ aHref.eq(i).attr('href') +'" /><input type="text" name="picturePath" value="'+ imgSrc.eq(i).attr('src') +'" /><span class="deleteData">删除</span></div>').prependTo('#editData form');
+		};
+		$('.deleteData').each(function(){
+			$(this).click(function(){
+				$(this).parent().remove();
+			});
+		});
+		
+		return false;
+	})
+	
+	// window onclick 
+	/*var win = ($.browser.msie) ? document : window;
+	$(win).click(function(){
+		$("#popup").fadeOut(300);
+	})	*/
+	// No Bubble 
+	function stopBubble(e){
+		if(e){
+		   e.stopPropagation();
+		}else{
+		   window.event.cancelBubble = true;
+		}
+	}
+/*-------------------------------------------------------------------------张郭华丽的分割线---------------------------------------------------------------*/
+	$('.close').click(function(){
+		$('#popup').hide();
+		$(this).parent().hide();
+	});
+	//添加数据
+	$('#addData').click(function(){
+		$('#editData .data:last').after('<div class="data"><input class="title" type="text" name="title" value="" /><input type="text" name="href" value="" /><input type="text" name="picturePath" value="" /><span class="deleteData">删除</span></div>');
+		$('.deleteData').each(function(){
+			$(this).click(function(){
+				$(this).parent().remove();
+			});
+		});
+	});
+	//编辑内容的提交
+	$('#editConten .submit').click(function(){
+		$('#tabContnet').children(':visible').clone().prependTo($('.jj'));
+		$('.jj').children(':visible').css({margin:'10px'})
+	});
+	//编辑框架的提交
+	$('.editFrame .submit').click(function(){
+		$('.jj').find('h2').remove();
+		$('<h2>'+ $('.editFrame .title').val() +'</h2>').prependTo($('.jj'));
+		//$('<img src="" />').appendTo('#contentLayer')
+		$('.jj').css({
+			borderWidth:$('.editFrame .borderWidth').val(),
+			borderColor:$('.editFrame .borderColor').val(),
+			backgroundColor:$('.editFrame .backgroundColor').val(),
+			backgroundImage:"url("+ $('.editFrame .backgroundImage').val() +")" ,
+			backgroundRepeat:'no-repeat'
+			
+		});
+		if($('.editFrame .borderWidth').val()==''){$('.jj').css({borderStyle:''})}else{$('.jj').css({borderStyle:'solid'})}
+	})
+	//编辑内容的tab切换
+	lab('style','#editConten','layout');
+	
+});
+function lab(ac,lc1,c2){
+	var dot	  = '.' ,
+		jj ,
+		$lab1 = $(lc1).children().eq(1),
+		$lab0 = $(lc1).children().eq(0),
+		$dLi  = $($lab0,lc1).find('li');
+	$dLi.bind('mouseenter',en);
+	function en(){
+		var $this = $(this) ,
+			idx = $this.index() ;
+		if(jj == idx) return false ;
+		$(dot + ac , lc1).removeClass(ac);
+		$this.addClass(ac);
+		$(dot + c2 , $lab1).removeClass(c2);
+		$lab1.children().eq(idx).addClass(c2);
+		jj = idx ;
+	};
+};
+
+
+</script>
+</body>
+</html>

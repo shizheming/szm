@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+<style type="text/css">
+*{padding:0;margin:0;}
+ul{list-style-position:inside;}
+img{outline:1px solid #ccc;vertical-align:bottom;}
+body{font-size:12px;line-height:1;}
+.discovery{width:1000px;margin:0 auto;}
+a{text-decoration:none;color:black;}
+a:hover{text-decoration:underline;}
+.green{color:green;position:absolute;}
+/*-------------------------------------*/
+.div1{font-size:14px;border-top:33px solid transparent;border-bottom:33px solid transparent;}
+.div1 .self{font-weight:700;}
+.div1 .self a{color:#0093D0;}
+.div1 .layout:before{content:'|';color:#ccc;margin:0 20px;}
+.div2{font-size:18px;font-family:微软雅黑;border-top:31px solid transparent;border-bottom:31px solid transparent;}
+.div2 span{margin-right:50px;line-height:18px;}
+.div2 a:hover{color:#0093D0;text-decoration:none;}
+.div2 .self{color:#0093D0;border-bottom:3px solid #0093D0;padding-bottom:3px;}
+.div3{text-align:justify;margin-bottom:-12px;}
+.div3:after{content:".";height:0;width:100%;display:inline-block;}
+.div4{width:320px;display:inline-block;border-bottom:20px solid transparent;}
+.div4 h2{font-size:14px;font-weight:400;border-bottom:10px solid transparent;}
+.div4 p{color:#818181;line-height:2;height:90px;border-bottom:1px solid #ccc;}
+.div4 .layout{vertical-align:10px;}
+</style>
+</head>
+
+<body>
+<div class="discovery">
+	<h1>border：元素控制属性（无磁性）（四边距离）</h1>
+    <div class="green">生成的内容即使标签又是内容？</div>
+	<div class="div1">
+		<span class="self"><a href="">发现世界</a></span><span class="layout"><a href="">发现主题</a></span>
+	</div>
+    <div>
+    	<a href=""><img src="ex1.jpg" width="1000" height="284"></a>
+    </div>
+    <div class="green">行内的边框是围着内容区的，并不是行内框的，所以先是边框，然后外面才是行高，所以想用行高在行内元素中顶开边框是不正确的</div>
+    <div class="div2">
+    	 <span class="self"><a href="">全部</a></span><span><a href="">亚洲</a></span><span><a href="">欧洲</a></span><span><a href="">南美洲</a></span><span><a href="">北美洲</a></span><span><a href="">大洋洲</a></span><span><a href="">非洲</a></span>
+    </div>
+    <div class="div3">
+    	<div class="div4">
+        	<a href=""><img src="ex1.jpg" width="320" height="212" class="layout"></a>
+        	<h2><a href="">穿行在四十万条火腿的“森林”中</a></h2>
+            <p>帕尔玛是意大利中部艾米利亚罗马尼亚大区的一座城市，也是帕尔马省的省会。这里有许多华丽的宫殿教堂，有曾经的“意甲七姐妹”之一的帕尔玛足球队，不......</p>    
+        </div>
+        <div class="div4">
+        	<a href=""><img src="ex1.jpg" width="320" height="212" class="layout"></a>
+        	<h2><a href="">奥地利维也纳 音乐之城的神秘音符</a></h2>
+            <p>[本文摄影使用器材为Nikon D700] 音乐之城的神秘音符 二零一三年的奥地利旅行（四） 维也纳（4）·国家歌剧院/有轨电车/地铁通道 维也纳是这个世界上......</p>    
+        </div>
+        <div class="div4">
+        	<a href=""><img src="ex1.jpg" width="320" height="212" class="layout"></a>
+        	<h2><a href="">荥经牛背山：云海为幕 雪峰走秀</a></h2>
+            <p>牛背山即荥经县最高山峰——海拨3666米的野牛山,因山顶一面悬崖有巨石突出酷似牛头，山脊细长貌似牛背而得名，2009年末开始为人所知。牛背山位于二郎山......</p>    
+        </div>
+        <div class="div4">
+        	<a href=""><img src="ex1.jpg" width="320" height="212" class="layout"></a>
+        	<h2><a href="">穿行在四十万条火腿的“森林”中</a></h2>
+            <p>帕尔玛是意大利中部艾米利亚罗马尼亚大区的一座城市，也是帕尔马省的省会。这里有许多华丽的宫殿教堂，有曾经的“意甲七姐妹”之一的帕尔玛足球队，不......</p>    
+        </div>
+        <div class="div4">
+        	<a href=""><img src="ex1.jpg" width="320" height="212" class="layout"></a>
+        	<h2><a href="">奥地利维也纳 音乐之城的神秘音符</a></h2>
+            <p>[本文摄影使用器材为Nikon D700] 音乐之城的神秘音符 二零一三年的奥地利旅行（四） 维也纳（4）·国家歌剧院/有轨电车/地铁通道 维也纳是这个世界上......</p>    
+        </div>
+        <div class="div4">
+        	<a href=""><img src="ex1.jpg" width="320" height="212" class="layout"></a>
+        	<h2><a href="">荥经牛背山：云海为幕 雪峰走秀</a></h2>
+            <p>牛背山即荥经县最高山峰——海拨3666米的野牛山,因山顶一面悬崖有巨石突出酷似牛头，山脊细长貌似牛背而得名，2009年末开始为人所知。牛背山位于二郎山......</p>    
+        </div>
+    </div>
+</div>
+</body>
+</html>

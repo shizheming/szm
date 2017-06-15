@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://img_width1w.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://img_width1w.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link rel="stylesheet" href="css/base.css" />
+<style type="text/css">
+.js1{position:relative;}
+.js2{overflow:hidden;}
+.js2 ul{overflow:hidden;}
+.js2 li{float:left;}
+.turnLeft,.turnRight{width:22px;height:30px; position:absolute;top:0;bottom:0;margin:auto 0;cursor:pointer;}
+.turnLeft{background:url(images/left.jpg) no-repeat #000;left:0;}
+.turnRight{background:url(images/right.jpg) no-repeat #000;right:0}
+</style>
+</head>
+
+<body>
+<div class="js1">
+	<div class="js2">
+		<ul>
+			<li><img src="img/01.jpg" width="128" height="96" alt="111" /></li>
+			<li><img src="img/02.jpg" width="128" height="96" alt="222" /></li>
+			<li><img src="img/03.jpg" width="128" height="96" alt="333" /></li>
+			<li><img src="img/04.jpg" width="128" height="96" alt="444" /></li>
+		</ul>
+	</div>
+</div>
+</body>
+<script type="text/javascript" src="js/jquery.js"></script>
+
+<script type="text/javascript">
+$(function(){
+		showAutoImg('js2','js1',3)
+			});
+	
+
+//jquery 描点		
+$('a[href*=#]').click(function() {
+        if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+            var $target = $(this.hash);
+            $target = $target.length && $target || $('[name=' + this.hash.slice(1) + ']');
+            if ($target.length) {
+                var targetOffset = $target.offset().top;
+                $('html,body').animate({
+                    scrollTop: targetOffset
+                },
+                500);
+                return false;
+            }
+        }
+    });
+/*正确的*/
+
+function showAutoImg(class1,class2,n){
+			var d                  = '.' ,
+				cl1                = class1 ,
+				$cl1               = $(d + cl1) ,
+				cl2                = class2 ,
+				$cl2               = $(d + cl2) ,
+				$cl1_ul            = $('ul',$cl1) ,
+				$cl1_li            = $('li',$cl1) ,
+				$cl1_liLength      = $cl1_li.length ,
+				$cl1_liFirst       = $cl1_li.first() ,
+				$cl1_liFirstWidth  = $cl1_liFirst.outerWidth() ,
+				$cl1_liFirstHeight = $cl1_liFirst.height() ,
+				$cl1Width          = $cl1_liFirstWidth*($cl1_liLength - 1) ,
+				$cl1Height         = $cl1_liFirstHeight ,
+				$cl1_ulWidth       = $cl1_liFirstWidth*$cl1_liLength ;
+				$cl1.after('<div class="turnLeft"></div><div class="turnRight"></div>');
+				$cl1.css({width:$cl1_liFirstWidth*n,height:$cl1_liFirstHeight});
+				$cl1_ul.css({
+						width: $cl1_ulWidth
+							});
+				$('.turnRight',$cl2).bind('click',turnR);
+				$('.turnLeft',$cl2).bind('click',turnL);
+				function turnR(){
+							if(!$cl1_ul.is(':animated')){
+												$cl1_ul.stop().animate({
+																	marginLeft: '-' + $cl1_liFirstWidth
+																		},function(){
+																				var $cl1_li = $('li',$cl1) ;
+																				$cl1_li.first().appendTo($cl1_ul);
+																				$cl1_ul.css({marginLeft:0});
+																		});
+												
+														}else{return false}
+								};
+				function turnL(){
+							if(!$cl1_ul.is(':animated')){
+												var $cl1_li = $('li',$cl1) ;
+												$cl1_ul.css({
+														marginLeft: '-' + $cl1_li.first().width()+'px'}).prepend($cl1_li.last())
+												$cl1_ul.stop().animate({
+																	marginLeft:0
+																		})
+														}else{return false}
+								}
+				var set = setInterval(showAuto,2000);
+				function showAuto(){$('.turnRight',$cl2).trigger('click')}
+				$cl2.hover(function(){
+									clearInterval(set);
+									},function(){
+											set = setInterval(showAuto,2000)
+									});	
+}
+
+</script>
+</html>
+<!-- 20141111
+function showAutoImg(class1,class2,n){
+var d                  = '.' ,
+cl1                = class1 ,
+$cl1               = $(d + cl1) ,
+cl2                = class2 ,
+$cl2               = $(d + cl2) ,
+$cl1_ul            = $('ul',$cl1) ,
+$cl1_li            = $('li',$cl1) ,
+$cl1_liLength      = $cl1_li.length ,
+$cl1_liFirst       = $cl1_li.first() ,
+$cl1_liFirstWidth  = $cl1_liFirst.outerWidth() ,
+$cl1_liFirstHeight = $cl1_liFirst.height() ,
+$cl1Width          = $cl1_liFirstWidth*($cl1_liLength - 1) ,
+$cl1Height         = $cl1_liFirstHeight ,
+$cl1_ulWidth       = $cl1_liFirstWidth*$cl1_liLength ;
+$cl1.after('<div class="turnLeft"></div><div class="turnRight"></div>');
+$cl1.css({width:$cl1_liFirstWidth*n,height:$cl1_liFirstHeight});
+$cl1_ul.css({
+width: $cl1_ulWidth
+});
+$('.turnRight',$cl2).bind('click',turnR);
+$('.turnLeft',$cl2).bind('click',turnL);
+function turnR(){
+if(!$cl1_ul.is(':animated')){
+$cl1_ul.stop().animate({
+marginLeft: '-' + $cl1_liFirstWidth
+},function(){
+var $cl1_li = $('li',$cl1) ;
+$cl1_li.first().appendTo($cl1_ul);
+$cl1_ul.css({marginLeft:0});
+});
+
+}else{return false}
+};
+function turnL(){
+if(!$cl1_ul.is(':animated')){
+var $cl1_li = $('li',$cl1) ;
+$cl1_ul.css({
+marginLeft: '-' + $cl1_li.first().width()+'px'}).prepend($cl1_li.last())
+$cl1_ul.stop().animate({
+marginLeft:0
+})
+}else{return false}
+}
+/*var set = setInterval(showAuto,2000);
+function showAuto(){$('.turnRight',$cl2).trigger('click')}
+$cl2.hover(function(){
+clearInterval(set);
+},function(){
+set = setInterval(showAuto,2000)
+});*/	
+}
+ -->

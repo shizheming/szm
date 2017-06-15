@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript">
+$(function(){
+	var doc_width = $(window).width() ;
+	var doc_height = $(window).height() ;
+	//$('.div1').animate({paddingBottom:doc_height,paddingRight:doc_width},10000) ;
+	$('.div2').css({
+		top:(doc_height-100)/2,
+		left:(doc_width-200)/2
+	}) ;
+	
+	
+	
+	var li1_length = $('.ul1>li').length ;
+	var ul1_width = $('.ul1>li').width()*li1_length ;
+	$('.ul1').css({width:ul1_width*2}) ;
+	function ul1auto(){
+		$('.ul1').animate({left:'-=100'},function(){
+			$('.ul1>li').first().appendTo('.ul1') ;
+			$('.ul1').css({left:0}) ;
+		}) ;	
+	} ;
+	var set = setInterval(ul1auto,1000) ;
+	$('.div4').hover(function(){
+		clearInterval(set) ;
+	},function(){
+		set = setInterval(ul1auto,1000) ;
+	})
+	
+	
+	
+	
+	
+	
+	
+			/*function scrollBox(){
+				var first = $('#scrollbox ul li:first');
+				var width = -(first.width()) + 'px';
+				$('#scrollbox ul').animate({left:width},function(){
+						$('#scrollbox ul').append(first).css("left","0");
+					}
+				); 
+			};
+
+		 
+			myScroll = setInterval(scrollBox,1500);		 
+			$('#scrollbox').hover(function(){		 
+				clearInterval(myScroll);		 
+			},function(){		 
+				myScroll = setInterval(scrollBox,1500);
+			}
+		);*/
+})
+</script>
+<style type="text/css">
+* {
+	margin:0;
+	padding:0;
+}
+li {
+	list-style:none;
+}
+img {
+	border:0;
+}
+.div1 {
+	background:#069;
+	width:0;
+	height:0;
+}
+.div2 {
+	width:200px;
+	height:100px;
+	background:#666;
+	position:absolute;
+}
+.div4 {
+	position:relative;
+	margin:0 auto;
+	width:300px;
+	overflow:hidden;
+	background:#999;
+	height:120px;
+}
+.ul1 {
+	position:absolute;
+}
+.ul1>li {
+	float:left;
+	margin:10px 20px;
+}
+#scrollbox {
+	width:500px;
+	height:240px;
+	position:relative;
+	overflow:hidden;
+	margin:0 auto;
+	border:1px solid #000;
+}
+#scrollbox ul {
+	width:900px;
+	height:280px;
+	position:absolute;
+	padding:10px 0;
+}
+#scrollbox li {
+	float:left;
+	margin:0 10px;
+	border:1px solid #000;
+}
+</style>
+</head>
+
+<body>
+<div class="div1"></div>
+<!--<div class="div2"></div>-->
+<div class="div3"></div>
+<div class="div4">
+	<ul class="ul1">
+		<li>
+			<ul>
+				<li>11111111</li>
+				<li>11111111</li>
+				<li>11111111</li>
+				<li>11111111</li>
+				<li>11111111</li>
+			</ul>
+		</li>
+		<li>
+			<ul>
+				<li>22222222</li>
+				<li>22222222</li>
+				<li>22222222</li>
+				<li>22222222</li>
+				<li>22222222</li>
+			</ul>
+		</li>
+		<li>
+			<ul>
+				<li>33333333</li>
+				<li>33333333</li>
+				<li>33333333</li>
+				<li>33333333</li>
+				<li>33333333</li>
+			</ul>
+		</li>
+		<li>
+			<ul>
+				<li>44444444</li>
+				<li>44444444</li>
+				<li>44444444</li>
+				<li>44444444</li>
+				<li>44444444</li>
+			</ul>
+		</li>
+		<li>
+			<ul>
+				<li>55555555</li>
+				<li>55555555</li>
+				<li>55555555</li>
+				<li>55555555</li>
+				<li>55555555</li>
+			</ul>
+		</li>
+	</ul>
+</div>
+<!--<div id="scrollbox">
+	<ul>
+		<li><img src="img/pic4-3.jpg" alt=""></li>
+		<li><img src="img/pic4-4.jpg" alt=""></li>
+		<li><img src="img/pic4-2.jpg" alt=""></li>
+		<li><img src="img/pic4-5.jpg" alt=""></li>
+	</ul>
+</div>-->
+</body>
+</html>

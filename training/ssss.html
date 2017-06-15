@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td,abbr,pre,img,span{padding:0;margin:0;}
+table{border-collapse:collapse;border-spacing:0;}
+fieldset,img,abbr,acronym{border:0;}
+address,caption,cite,code,dfn,em,strong,th,var{font-weight:normal;font-style:normal;}
+ol,ul{list-style:none;}
+caption,th{text-align:left;}
+h1,h2,h3,h4,h5,h6{font-weight:normal;font-size:100%;}
+q:before,q:after{content:'';}
+a{cursor:pointer;color:#333;text-decoration:none;}
+a:hover{text-decoration:underline;}
+input,textarea{outline:none;}
+textarea{resize:none;}
+
+
+
+/*侧边栏*/
+.d1{width:500px;height:500px;background-color:#000;position:absolute;top:0;bottom:0;left:-450px;margin:auto 0;transition:left 1s;}
+.d1:hover{left:0;}
+.d1 h6{width:40px;height:480px;float:right;background-color:#FFF;}
+.d1_1{margin:10px;}
+/*侧边栏*/
+
+
+
+/*弹出框*/
+.d2{width:500px;height:500px;background-color:#000;position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;}
+.d2 h6{height:40px;background-color:#FFF;margin-bottom:10px;}
+.d2_1{margin:10px;}
+.d2 h6 span{float:right;font:small-caps 12px 微软雅黑;margin:10px;cursor:pointer;}
+.d2 h6 span:hover{text-decoration:underline;}
+#d2{display:none;}
+/*弹出框*/
+</style>
+</head>
+
+<body>
+<!--侧边栏-->
+<div class="d1">
+	<div class="d1_1">
+		<h6></h6>
+		<table width="430" height="480" border="1" bgcolor="#FFFFFF">
+		  <tr>
+		    <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+		  </tr>
+		  <tr>
+		    <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+		  </tr>
+		</table>
+	</div>
+</div>
+<!--侧边栏-->
+
+
+<!--弹出框-->
+<h1 style="text-align:center;font-size:50px;cursor:pointer;text-decoration:underline;">tan</h1>
+<div class="d2" id="d2">
+	<div class="d2_1">
+		<h6><span id="close">close</span></h6>
+		<table width="480" height="430" border="1" bgcolor="#FFFFFF">
+		  <tr>
+		    <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+		  </tr>
+		  <tr>
+		    <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+		  </tr>
+		</table>
+	</div>
+</div>
+<!--弹出框-->
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript">
+$(function(){
+	$('h1').click(function(){
+		$('#d2').show();
+	})
+	
+	
+	
+	$('#close').click(function(){
+		$('#d2').hide();
+	})
+})
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="css/base.css" />
+<title>无标题文档</title>
+<style type="text/css">
+.out{background-color:#060;padding-bottom:20px;position:relative;left:50%;float:left;}/*relative设float对文档流依旧有效，应为他作用的真身还留在文档流里面*/
+.in{background-color:#0F0;font-size:40px;position:relative;left:-50%;}
+
+.iii{width:800px;background-color:#CCF;}
+.ttt{background-color:#FF6;font-size:60px;}/*为什么文字会从那个地方开始起，那是你要看他的真身在哪里，真身当然是没有设置top，left时候的位置了，所以float:left&nbsp;之后会从那里开始*/
+
+.i1{width:500px;background-color:#30C;height:100px;}
+.i2{font-size:22px;background-color:#0CC;position:relative;left:50%;/*定位的left的百分比是相对于他父亲的宽度而言的，并不是他自身的宽度，relative能有很多父亲而absolute只有body一个父亲*/}
+
+.k1{font-size:22px;background-color:#666;position:absolute;}
+.k2{height:100px;background-color:#99C;position:absolute;}/*why？应为连让他在空中飞的爸爸都没有了，没有空间了，所以会挤压自身达到以个体为单位的最大宽度*/
+
+.gh{line-height:200px;/*line-height只对文字内容有效图片无效*/background-color:#ccc;}
+.gh img{vertical-align:middle;}
+
+.q1{background-color:#666;text-align:center;font-size:0;}
+.q1 li{background-color:#9FC;font-size:22px;display:inline-block;}
+</style>
+</head>
+
+<body>
+<div class="out"><div class="in">阿飞嘎嘎飞快的将规范看郭德纲</div></div>
+<div class="iii">
+	<div class="ttt">的福建省的规范化个</div>
+</div>
+<div class="i1">
+	<div class="i2">的风景快递费归属地飞</div>
+</div>
+<div class="k2">
+	<div class="k1">说的话将快速的很干净快速发货的教科书的发布会<img src="img/3.jpg" />阿迪广泛地</div>
+</div>
+<div style="height:500px;"></div>
+<p class="gh"><img src="img/02.jpg" />11</p>
+<ul class="q1">
+	<li>aa</li>
+	<li>ddd</li>
+	<li>fff</li>
+	<li>gg</li>
+	<li>hhh</li>
+</ul>
+</body>
+</html>

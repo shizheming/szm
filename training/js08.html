@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style type="text/css">
+*{ padding:0; margin:0; font-size:12px; }
+li{ list-style:none; }
+.div1{ width:700px; position:relative; }
+.div3{ margin:100px 0; }
+.div1 img{ margin:0 auto; display:block; width:700px; }
+.div3 img{ margin:0 auto; display:block; width:500px; }
+.div2{ width:200px; height:200px; background:url(img/mmmm.jpg) no-repeat center center; position:absolute; border:4px solid #666; }
+.div4{ width:200px; height:200px; background:url(img/webpage.png) no-repeat center center; position:absolute; top:0; left:0; border:4px solid #ccc; 
+cursor:url(img/blank.cur),default;}
+.scr{ background:#399; position:fixed; width:20px; bottom:10px; right:10px; color:#FFF; font-size:16px; padding:10px; text-align:center; display:none; }
+</style>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript">
+$(function(){
+	var $doc        = $(document) ,
+		$doc_width  = $doc.width() ,
+		$doc_height = $doc.height() ,
+		$scr_height = $doc.scrollTop() ,
+		$img        = $('.div1 img') ,
+		$div2       = $('.div2') ,
+		$img2       = $('.div3 img') ,
+		$div4       = $('.div4') ,
+		$div1       = $('.div1')
+	//alert($('.div1 img').offset().left)
+	//为什么div1会不停的闪烁，是因为当移到img上的时候div1显示了，这时候鼠标又是在div1上的同时又不在img上了，所以瞬间div1又隐藏了
+	$div1.mousemove(function(e){
+		var x = e.pageX ,
+			y = e.pageY ,
+			left1  = x - $img.offset().left , 
+			top1   = y - $img.offset().top ;
+			//alert($img.offset().left)
+			//alert($img.offset().top)
+		//$('p').text('x :' + x + ' , + y :' + y);
+		if(left1 < 0 || top1 < 0 || left1 > $img.width() || top1 > $img.height()){
+			if(!$div2.is(':animated')){
+				$img.trigger('mouseleave');
+			}
+			return false;
+		}
+		$div2.css({
+			left : left1 - $div2.width()/2  ,
+			top  : top1 - $div2.height()/2 ,
+			backgroundPosition : '-' + (1.6 * left1) + 'px -' + (1.6 * top1) + 'px'//1.6是img宽高之比
+		});
+		
+		
+		/*	left2  = x - $img2.offset().left , 
+			top2   = y - $img2.offset().top ;
+		if(left2 < 0 || top2 < 0 || left2 > $img2.width() || top2 > $img2.height()){
+			$div4.fadeOut(100);
+		}else{
+			$div4.fadeIn(100);
+		};
+		$div4.css({
+			left : x - $div4.width()/2 ,
+			top  : y - $div4.height()/2 ,
+			backgroundPosition : '-' + (1.6 * left2) + 'px -' + (1.4 * top2) + 'px'
+		});*/
+	}/*,function(){
+		$div2.stop().hide();
+	}*/).mouseout(function(){
+		$div2.stop().hide();
+	}).mouseover(function(){
+		$div2.stop().show();
+	});
+	
+	
+	
+	var $scr         = $('.scr') ,
+		window_width = $(window).height() ;
+	$scr.bind('click',goback)
+	$doc.scroll(function xxx(){
+		if($doc.scrollTop() > window_width){
+			$scr.fadeIn(200);
+		}else{
+			$scr.fadeOut(200);
+		}
+	});	
+	function goback(){
+		$('html,body').animate({
+			scrollTop : 0
+		} , 220 )
+	}
+	
+})
+</script>
+</head>
+
+<body>
+
+<div class="div1"><img src="img/mmmm.jpg" /><div class="div2"></div></div>
+
+<p></p>
+<div class="div3"><img src="img/webpage.png" /></div>
+<!--<div class="div4"></div>-->
+<div style="clear:both;"></div>
+<div class="scr">回到顶部</div>
+<ul><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li><li>1</li></ul>
+
+</body>
+</html>
