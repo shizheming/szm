@@ -1,0 +1,14 @@
+
+.btn1{
+	width:343rem/$fs;line-height:44rem/$fs;border-radius:3rem/$fs;color:#fff;background-color:#f73e3e;font-size:16rem/$fs;text-align:center;margin:22rem/$fs auto;display:block;
+	&:active{
+		background-color:#e33333;
+	}
+}
+.btn1no{
+	@extend .btn1;
+	background-color:#d8d7dc;
+	&:active{
+		background-color:#dedee2;
+	}
+}

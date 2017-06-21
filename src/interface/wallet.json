@@ -1,0 +1,31 @@
+{
+	"data": {
+		"banner_list": [{
+			"id": 1,
+			"title": "火影意志",
+			"img_url": "http://rwhstorage-pub.oss-cn-shanghai.aliyuncs.com/AppBanner%2Fe61190ef76c6a7ef052e233ffefaaf51f3de669b1493871228.jpg?OSSAccessKeyId=CmwrKoHjZLkBY3AC&Signature=Y0mHOHt8Ck3Itlhat%2BgAgnBP5vM%3D&Expires=1809404028",
+			"url": "http://www.baidu.com"
+		}, {
+			"id": 2,
+			"title": "绿叶",
+			"img_url": "http://rwhstorage-pub.oss-cn-shanghai.aliyuncs.com/AppBanner%2FChMkJ1ejNFGIelHZAAOpRmQpHqAAAUKRgLUtt4AA6le5081493871273.jpg?OSSAccessKeyId=CmwrKoHjZLkBY3AC&Signature=UW20kmupl9sougi%2FjRUav06MJEY%3D&Expires=1809404073",
+			"url": "http://www.phpfensi.com/mysql/20141009/6859.html"
+		}, {
+			"id": 3,
+			"title": "banner1",
+			"img_url": "http://rwhstorage-pub.oss-cn-shanghai.aliyuncs.com/AppBanner%2FIMG_03741493871367.jpg?OSSAccessKeyId=CmwrKoHjZLkBY3AC&Signature=S5DfwDwl3c8SeKoqz9dy7h4dT7w%3D&Expires=1809404172",
+			"url": "https://www.baidu.com"
+		}],
+		"quick_loan_list": [{
+			"id": 2,
+			"title": "test1",
+			"des": "测试产品",
+			"img_url": "http://rwhstorage-pub.oss-cn-shanghai.aliyuncs.com/AppBanner%2FIMG_03741493871161.jpg?OSSAccessKeyId=CmwrKoHjZLkBY3AC&Signature=0%2B7GMqlYYDEfztHgT3Y8BhA2ufk%3D&Expires=1809403966",
+			"url": "https://www.baidu.com",
+			"virtual_loaned_num": 2000
+		}],
+		"credit_loan_list": []
+	},
+	"code": 1000,
+	"message": "successful"
+}

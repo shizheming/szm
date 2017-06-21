@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>plug</title>
+	<style>
+		body{
+			position:static;
+		}
+		body .modal-overlay{
+			position:fixed;
+		}
+		body .modal{
+			position:fixed;
+		}
+	</style>
+</head>
+<body style="overflow:auto;">
+	<h1>渲染模板</h1>
+	<div id="a"></div>
+	<script type="text/html" id="ssss">
+		<ul>
+			{{each list}}
+			<li>{{$value}}</li>
+			{{/each}}
+		</ul>
+	</script>
+
+
+	<h1>地区选择器</h1>
+	<input type="text" id='city-picker' placeholder="请选择出生地">
+	
+	
+	<h1>日期时间选择</h1>
+	<input type="text" id='datetime-picker' placeholder="请选择出生日期">
+
+	
+	<h1>日历选择器</h1>
+	<input type="text" id="my-input">
+
+
+
+	<h1>单选select</h1>
+	<input type="text" id='picker'>
+
+
+
+	<h1>轻提示</h1>
+	<button id="toast">点击轻提示</button>
+
+
+
+	<h1>预加载</h1>
+	<button class="open-preloader">点击预加载</button>
+
+
+
+	<h1>弹窗</h1>
+	<button class="alert-text">点击弹窗</button>
+
+
+
+
+	<h1>下拉刷新</h1>
+	
+
+
+
+	<h1>幻灯片</h1>
+
+</body>
+</html>
+<script src="/dist/js/plug.js"></script>

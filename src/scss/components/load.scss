@@ -1,0 +1,81 @@
+/*flower loading*/
+/*<div class="flowerLoading"><img src="//rwh-web.oss-cn-shanghai.aliyuncs.com/public/images/base/flower.gif"></div>*/
+.flowerLoad{
+	position:fixed;left:0;right:0;bottom:0;top:0;width:15%;margin:auto;height:15%;opacity:.6;
+}
+.circularLoad{
+
+}
+.ui.centered.inline.loader.active{
+    display: block;
+    margin-left: auto;
+    margin-right: auto
+}
+.ui.inline.loader.active{
+    display: inline-block
+}
+.ui.inline.loader {
+    position: relative;
+    vertical-align: middle;
+    margin: 0;
+    left: 0;
+    top: 0;
+    transform: none
+}
+.ui.loader.active{
+    display: block
+}
+.ui.inverted.dimmer .ui.loader,.ui.loader {
+    width: 2.28571429rem;
+    height: 2.28571429rem;
+    font-size: 1em
+}
+.ui.loader {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: 0;
+    text-align: center;
+    z-index: 1000;
+    transform: translateX(-50%) translateY(-50%)
+}
+.ui.loader:after,.ui.loader:before {
+    width: 2.28571429rem;
+    height: 2.28571429rem;
+    margin: 0 0 0 -1.14285714rem
+}
+.ui.loader:before {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 50%;
+    border-radius: 500rem;
+    border: .2em solid rgba(0,0,0,.1)
+}
+.ui.loader:after,.ui.loader:before {
+    width: 2.28571429rem;
+    height: 2.28571429rem;
+    margin: 0 0 0 -1.14285714rem
+}
+.ui.loader:after {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 50%;
+    animation: loader .6s linear;
+    animation-iteration-count: infinite;
+    border-radius: 100px;
+    border-color: #767676 transparent transparent;
+    border-style: solid;
+    border-width: .2em;
+    box-shadow: 0 0 0 1px transparent
+}
+@keyframes loader {
+    from {
+        transform: rotate(0)
+    }
+    to {
+        transform: rotate(360deg)
+    }
+}
