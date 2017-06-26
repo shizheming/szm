@@ -1,35 +1,31 @@
 /*
-名称：mScore.js
-版本：3.1
+名称：ecma.js
+版本：1.0
 时间：2017.4
-更新：1去除max，min，reg，throttle,btnActive
 */
 // ------------------------------------------------------------
-
-
 module.exports = {
 
 
+
 	/******************常用一阶函数******************/
+
 
 
 	// 随机n-m之间的数
 	random : function(n, m) {
 		return parseInt(n + Math.random() * (m - n));
 	},
-	// 去重
-	only : function(arr) {
-		var arr2 = [];
-		function findInArr(arr, num) {
-			for(var i = 0,len = arr.length; i < len; i++) if(arr[i] === num) return true;
-			return false;
-		};
-		i = 0;
-		while(i < arr.length) {
-			if (!findInArr(arr2, arr[i])) arr2.push(arr[i]);
-			i++;
-		};
-		return arr2;
+	// 数组去重，返回一个新数组
+	uniq : function (array) {
+		var result = [];
+		for(var i = 0,length = array.length;i < length;i++){
+			var value = array[i];
+			if(result.indexOf(value) === -1) {
+				result.push(value);
+			}
+		}
+		return result;
 	},
 	// 补零
 	zero : function (n) {
@@ -62,18 +58,7 @@ module.exports = {
 		});
 		return result;
 	},
-	// 动态加载js
-	loadJs : function(url, fn) {
-		var doc = document;
-	    var oHead = doc.querySelector('head'); 
-	    var oScript = doc.createElement("script"); 
-	    oScript.src = url;
-	    oScript.onload = function() {
-	    	fn && fn();
-	    }; 
-	    oHead.appendChild( oScript);
-	    
-	},
+	
 	// 数组扁平化
 	arrFlatten : function(input) {
 		var result = [];
@@ -111,65 +96,6 @@ module.exports = {
 			}
 		}
 		return obj;
-	},
-	// 返回当前日期信息
-	date : function(time) {
-	    var n = new Date(time);
-	    return [n.getFullYear(), n.getMonth() + 1, n.getDate(), n.getHours(), n.getMinutes(), n.getSeconds()];
-	},
-	// 数字3位加逗号，金钱显示
-	money : function(num) {
-		return num.split('').reverse().join('').replace(/(\d{3})/g, '$1,').split('').reverse().join('').replace(/^\,/,'');
-	},
-	// 获取某个月份的天数
-	days : function(year, month) {
-	    return new Date(year, month, 0).getDate();
-	},
-	// 秒倒计时
-	second : function(time, fn1, fn2) {
-		fn1 && fn1(time);
-		var timer = setInterval(function(){
-		    fn1 && fn1(--time);
-		    if (time == 0) {
-		        clearInterval(timer);
-		        fn2 && fn2();
-		    }
-		},1000);
-	},
-	// 完整的倒计时
-	countDown : function(c, fn) {
-		upDate(c, fn);
-		var timer = setInterval(function() {
-			if (!upDate(c, fn)) clearInterval(timer);
-		},1000);
-
-		function upDate(c, fn){
-			var d = new Date();
-			//获取当前时间戳
-			var nowTime = d.getTime();
-			// 后台直接给了时间戳，我这里不用写
-			// d.setFullYear(y1, y2, y3);
-			// d.setHours(0, 0, 0, 0);
-			//结束时间戳
-			// var overTime = d.getTime();
-			var overTime = c * 1000;
-			//结束事件戳-当前时间戳 
-			var mist = parseInt((overTime - nowTime) / 1000);
-			var date = parseInt(mist / 86400);
-			//去天后的秒数
-			mist = mist % 86400	
-			var hours = parseInt(mist / 3600);
-			//去小时后的秒数
-			mist = mist % 3600;
-			var minutes = parseInt(mist / 60)
-			mist = mist % 60;
-			fn && fn(date, hours, minutes, mist);
-			return date + hours + minutes + mist;
-		}
-	},
-	// 随机颜色
-	randomColor : function(){
-		return '#' + Math.floor(Math.random() * parseInt('0xffffff',16).toString(10)).toString(16);
 	},
 	// 通过平级key寻找当前对象
 	getObj : function() {
@@ -370,14 +296,53 @@ module.exports = {
 		for (var key in json) result[key] = json[key];
 		return result;
 	},
+	// 深复制一个数组，返回一个新数组
+	cloneArray : function (array) {
+		return array.slice();
+	},
 	// 去除空格
 	trim : function(str) {
 		return str.replace(/(^\s*)|(\s*$)/g,'');
 	},
-
-
+	// 返回数组除了第一个元素外的其他元素，如果传递第二个参数index，那么就返回从index开始剩余的所有元素
+	// （比如表格的表头不是数据，可以用这个干掉）
+	rest : function (array,n) {
+		return slice.call(array,n == null ? 1 : n);
+	},
+	// 返回数组中除了最后一个元素之外的全部元素，传递n参数将从结果中排除从最后一个开始的n个元素
+	initial : function (array,n) {
+		return slice.call(array,0,array.length - (n == null ? 1 : n));
+	},
+	// 返回object对象所有的属性值的数组
+	values : function (obj) {
+		var keys = Object.keys(obj);
+		var length = keys.length;
+		var val = Array(length);
+		for(var i = 0;i < length;i++){
+			val[i] = obj[keys[i]];
+		}
+		return val;
+	},
+	// 把一个对象转换为一个[key,value]形式的数组
+	pairs : function (obj) {
+		var keys = Object.keys(obj);
+		var length = keys.length;
+		var pai = Array(length);
+		for(var i = 0;i < length;i++){
+			pai[i] = [keys[i],obj[keys[i]]];
+		}
+		return pai;
+	},
+	// 如果对象object中的属性property是函数，则调用他，否则，返回他
+	result : function (object,property) {
+		var value = object[property];
+		return isFunction(value) ? value.call(object) : value;
+	}
 
 	/******************常用高阶函数******************/
+
+
+
 	// 初始默认值
 	initDefault : function(json) {
 		return function(key) {
@@ -387,13 +352,6 @@ module.exports = {
 			} else result = json[key];
 			return result;
 		};
-	},
-
-	// always函数 存一个变量的状态
-	always : function(val, arr) {
-	    return function() {
-	        return Array.isArray(arr) ? val.apply(null, arr) : val;
-	    };
 	},
 	// 延迟列队
 	queue : function(time) {
@@ -408,117 +366,7 @@ module.exports = {
 	    })([], 0);
 	},
 
-	/******************DOM******************/
 
-
-	// 弹窗
-	popUp : function(str, uf, btn) {
-		btn = btn ? btn : '确定';
-	    // 创建div
-	    function createDom(n, fn) {
-	        var doc = document;
-	        var popUp = doc.createElement('div');
-	        popUp.id = 'popUp';
-	        popUp.innerHTML = '<div class="content"><div class="con">' + n + '</div><div class="ys">' + btn + '</div><div class="close"><img src="//rwhstorage-pub.oss-cn-shanghai.aliyuncs.com/dist/images/webr_icon_x.png"></div></div><div class="mark"></div>';
-	        fn(popUp, doc, uf);
-	        return popUp;
-	    }
-	    // 绑定事件
-	    function et(dom, doc, fn) {
-	    	// 确定按钮
-	        dom.querySelector('.ys').addEventListener('click', function() {
-	            doc.body.removeChild(dom);
-	            fn && fn();
-	        });
-	        // 关闭按钮
-	        dom.querySelector('.close').addEventListener('click', function() {
-	            doc.body.removeChild(dom);
-	        });
-	    }
-	    return createDom(str, et);
-	},
-	alert : function(json) {
-		/*{
-			type : alert/confirm,
-			confirm : function() {
-				....
-			},
-			body : function() {
-				....
-			},
-			btnTxt : [11,22]
-		}*/
-		// 初始默认值
-		!json.type ? json.type = 'alert' : '';
-		!json.body ? json.body = '' : '';
-		!json.confirm ? json.confirm = function() {} : '';
-		if (!json.btnTxt) json.btnTxt = ['确定', '取消']; else if (json.btnTxt.length < 2) json.btnTxt[1] = '取消';
-		
-		
-	},
-
-
-
-
-
-
-	
-	// 公共提示信息
-	title : function(msg) {
-		var doc = document;
-		var mg = doc.querySelector('.message2');
-		if (mg) mg.remove(mg); else mg = doc.createElement('div');
-		mg.className = 'message2';
-		mg.innerHTML = '<div class="div">' + msg + '</div>';
-		doc.body.appendChild(mg);
-	},
-	// 图片懒加载
-	initImg : function() {
-		var doc = document;
-		// 图片代理
-		var imgProxy = (function() {
-			// 图片本体
-			function imgSrc(dom, url) {
-				dom.src = url;
-			}
-			return function(that) {
-				var img = doc.createElement('img');
-				imgSrc(that, '//rwhstorage-pub.oss-cn-shanghai.aliyuncs.com/dist/images/initImg.png');
-				img.src = that.dataset.src;
-				img.onload = function() {
-					imgSrc(that, that.dataset.src);
-				};
-			};
-		})();
-		// 初始默认图片
-		[].forEach.call(doc.querySelectorAll('img[data-src]'), function(a, b, c) {
-			imgProxy(a);
-		});
-	},
-	
-	
-
-
-
-	/******************业务函数******************/
-
-
-	// 去测试登录还是去正式登录
-	loginUrl : function(debug) {
-		debug = debug && true;
-		var test = '//103.37.149.172:8895';
-		var formal = '//passport.renwohua.com';
-		var route = '/user/loadLogin?';
-		return function(channel_id, channel_code) {
-			var url = !debug ? formal : test;
-			channel_id = channel_id ? channel_id : '';
-			channel_code = channel_code ? channel_code : '';
-			if (!channel_code && _.getCookie('channel_code')) {
-				channel_code =  _.getCookie('channel_code');
-			}
-			return url + route + 'channel_id=' + channel_id; + '&channel_code=' + channel_code;
-		};
-	},
 	
 };
 
@@ -552,17 +400,3 @@ module.exports = {
 
 
 */
-
-
-var routeType = function(url) {
-	var a = /http/.exec(url);
-	if (a) location.href = url; else {
-		var jsb = new JsBridge();
-		jsb.record({
-		    data: {
-		        url : url, //跳转页面
-		        flags : 4 //1、新开一个页面；2、同一个栈里面，打开页面；3、移除栈里面的
-		    }
-		});
-	}
-};

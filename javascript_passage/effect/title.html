@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>title</title>
+</head>
+<body>
+
+<script>
+
+// 公共提示信息
+function title (msg) {
+	var doc = document;
+	var mg = doc.querySelector('.message2');
+	if (mg) mg.remove(mg); else mg = doc.createElement('div');
+	mg.className = 'message2';
+	mg.innerHTML = '<div class="div">' + msg + '</div>';
+	doc.body.appendChild(mg);
+}
+
+
+
+
+</script>
+</body>
+</html>
