@@ -1,0 +1,195 @@
+★★实际技巧★★
+
+作用域-词法作用域-函数作用域-块作用域（let，const）
+js代码在执行前都要进行编译，大部分编译的情况发生在代码执行前的几微妙，甚至更短。
+运行代码段有3个角色，引擎，编译器，作用域。变量的赋值操作会执行2个动作，首先编译器会在当前作用域中声明一个变量，然后引擎运行时会在作用域中查找该变量，如果能够找到就会对他赋值。
+全局作用域和局部作用域统称为词法作用域，词法作用域就是定义在词法阶段的作用域，也就是在编译阶段的作用域，词法作用域是由你在写代码时将变量写在哪里决定的
+
+每个函数在创建时会附加2个隐藏属性：函数的上下文和实现函数行为的代码，会设置一个“调用”属性。当调用一个函数是时，可理解为调用此函数的“调用”属性。函数实际上是object的一个子类型，具体来说，函数是“可调用对象”，他有一个内部属性[[call]]，该属性使其可以被调用。
+函数的参数不像普通的变量那样被初始化为undefined，而是在该函数调用的时初始化为实际提供的值
+function a (b, c) {
+	console.log(b, c);//1, 2
+	var b = 33;
+	var c = 55;
+	console.log(b, c);//33, 55
+}
+a(1, 2);
+变量和函数语句的名字同名的时候，那他们提升的时候，函数语句等级比变量高
+alert(a);//function a () {}
+var a = 1;
+function a () {}
+let,const声明的变量不提升
+
+
+
+
+
+递归
+递归干掉for循环语句
+他把一个问题分解成一组相似的子问题，一般来说，一个递归函数调用自身去解决他的子问题。
+递归函数可以非常高效的操作树形的数据结构，比如游览器端的dom树，每次递归调用时处理指定的树的一小段。
+尾递归是一种在函数的最后执行递归调用语句的特殊形式的递归。
+
+
+
+
+闭包
+闭包其实无处不在，讲到闭包那不得不提词法作用域，js代码的运行分为2个阶段，第一个是编译阶段，编译的阶段形成词法的作用域，第二个是代码运行阶段，运行时的函数产生闭包，一个函数包着一个函数运行其实也是一种广义上的闭包，只不过这种闭包我们没有办法去用到，去从外部访问到内部的词法作用域，当内部的作用域通过一些方式能从外部在时间段内能访问到了，这就形成了闭包。
+当函数可以记住并访问所在的词法作用域时，就产生了闭包，即使函数是在当前词法作用域之外执行。
+闭包的特点就是可以阻止函数运行完后整个内部作用域被销毁，事实上内部作用域依然存在，我们依然能访问词法作用域，讲的通俗点就是，函数运行完后变量依然被劫持着，依然能访问到。
+使用回调等于使用了闭包。
+
+闭包和循环
+for (var i = 1l i <= 5; i++) {
+	setTimeout(function timer () {
+		console.log(i);
+	}, i * 1000);
+}
+这里打印出来的i并不是我们想要的，理想的情况是我们需要每个迭代在运行时都会有自己捕获的i副本，但实际情况是根据作用域的工作原理，他们都被分封闭在一个共享的全局作用域中，因此实际上只有一个i。所以我们需要自己的闭包作用域，特别是在循环的过程中每个迭代都需要一个闭包作用域。
+for (var i = 1; i <= 5; i++) {
+	(function () {
+		setTimeout(function timer () {
+			console.log(i);
+		}, i * 1000);
+	})();
+}
+我们现在显然拥有了更多的词法词法作用域了，但还是不够，因为我们现在只是一个什么都没有的空作用域，我们需要加点实质的内容。
+for (var i = 1; i <= 5; i++) {
+	(function () {
+		var j = i;
+		setTimeout(funciton timer () {
+			console.log(j);
+		}, j * 1000);
+	})();
+}
+改进
+for (var i = 1; i <= 5; i++) {
+	(function (j) {
+		setTimeout(funciton timer () {
+			console.log(j);
+		}, j * 1000);
+	})(i);
+}
+换句话说，每次迭代我们需要一个块作用域，let其实就能帮我们搞定，因为他可以劫持块作用域。
+for (var i = 1; i < 5; i++) {
+	let j = i;
+	setTimeout(function timer () {
+		console.log(j);
+	}, j * 1000);
+}
+改进
+for (let i = 1; i < 5; i++) {
+	setTimeout(function timer () {
+		console.log(i);
+	}, i * 1000);
+}
+
+闭包和模块
+function CoolModule () {
+	var something = 'cool';
+	var another = [1, 2, 3];
+	function doSomething () {
+		console.log(something);
+	}
+	function doAnother () {
+		console.log(another.join('!'));
+	}
+	return {
+		doSomethind : doSomething,
+		doAnother : doAnother
+	};
+}
+var foo = CoolModule();
+foo.doSomething();
+foo.doAnother();
+这种模式就被称为模块，亦可以把他变成单列模块
+1.必须有外部的封闭函数，该函数必须至少被调用一次（每次调用都会创建一个新的模块的实例）
+2.封闭函数必须返回至少一个内部函数，这样内部函数才能在私有作用域中形成闭包，并且可以访问或者修改私有的状态
+
+
+
+
+
+闭包的的各种形式
+
+1.广义形式的闭包
+function foo () {
+	var a = 2;
+	function bar () {
+		console.log(a);
+	}
+	bar();
+}
+foo();
+
+2.通过函数return出去的闭包
+function foo () {
+	var a = 2;
+	function bar () {
+		console.log(a);
+	}
+	return bar;
+}
+var baz = foo();
+baz();
+
+3.通过变量传递出去的闭包
+var fn;
+function foo () {
+	var a = 2;
+	function baz () {
+		console.log(a);
+	}
+	fn = baz;
+}
+foo();
+fn();
+
+4.定时器形成的闭包
+function wait (message) {
+	setTimeout(function timer () {
+		console.log(message);
+	}, 1000);
+}
+wait('hello, closure!');
+
+5.绑定事件时的闭包
+function setupBot (name, selector) {
+	document.querySelector(selector).addEventListener('click', function () {
+		console.log('activating:' + name);
+	});
+}
+setupBot('closure bot', '#bot_1');
+
+
+
+
+
+回调--也是闭包
+函数使得对不连续事件的处理变得更容易----异步
+
+
+
+
+
+
+
+★★思想★★
+
+模块
+我们可以使用函数和闭包来构建模块，模块是一个提供接口却隐藏状态和实现的函数或对象，通过使用函数产生模块，我们几乎可以完全摒弃全局变量的使用
+
+
+
+
+柯理化
+
+
+
+
+记忆函数
+
+
+
+
+尽量用函数表达式少用函数语句，应为函数语句会被提升，造成顺序混乱

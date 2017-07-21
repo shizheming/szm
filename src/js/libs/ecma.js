@@ -337,7 +337,16 @@ module.exports = {
 	result : function (object,property) {
 		var value = object[property];
 		return isFunction(value) ? value.call(object) : value;
+	},
+	// 判断一个值是不是整数
+	isInteger : function (num) {
+		return typeof num == 'number' && num % 1 === 0;
+	},
+	// 判断值是不是NaN
+	isNaN : function (n) {
+		return n !== n;
 	}
+
 
 	/******************常用高阶函数******************/
 

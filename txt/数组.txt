@@ -1,0 +1,22 @@
+把length设小将导致所有下标大于等于新length的属性被删除。
+delete可以删除数组中的元素但是会留下位置，对象当中的delete却不会。
+我们还可以使用splice来删除元素，这样就不会保留位置了。
+如果字符串键值能够被强制类型转换为十进制数字的话，他就会被当作数字索引来处理。
+var a = [];
+a['100'] = 1;
+console.log(a.length);//101
+把目标变成数组
+var str = 'asdfasdf---fdg---123-4-&*h23&^$%$^%!';
+var obj = {
+	a : 1,
+	b : 2,
+	c : 3
+};
+var nub = 123123123;
+var fn = function () {
+	return [123];
+};
+var arr = Array.prototype.slice.call(str);
+console.log(arr);
+console.log(Array.from(obj));
+只有类数组和字符串能借用数组的方法直接变成数组，其他数据类型不行，Array.from是es6的新方法

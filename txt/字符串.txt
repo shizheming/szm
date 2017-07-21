@@ -1,0 +1,2 @@
+翻转字符串
+str.split('').reverse().join('');

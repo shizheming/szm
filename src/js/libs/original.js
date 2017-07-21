@@ -222,6 +222,10 @@ function pop(arr) {
 	return result;
 }
 
+function pop (arr) {
+	return arr.splice(arr.length - 1, 1)[0];
+}
+
 
 // 添加一个或多个元素到数组的末尾，并返回数组新的长度
 Array.prototype.push(element1, ..., elementN);
@@ -231,6 +235,10 @@ function push(arr, arg) {
 	return arr.length;
 }
 
+function push (arr) {
+	arr.splice.apply(null, [arr.length, 0].concat(Array.prototype.slice.call(arguments, 1)));
+	return arr.length;
+}
 
 // 删除数组的 第一个 元素，并返回这个元素。该方法会改变数组的长度。
 Array.prototype.shift();
@@ -241,6 +249,10 @@ function shift(arr) {
 	for (var i = 0,len = arr.length; i < len; i++) arr[i] = arr[i + 1];
 	arr.length = arr.length - 1;
 	return result;
+}
+
+function shift (arr) {
+	return arr.splice(0, 1)[0];
 }
 
 
@@ -293,6 +305,55 @@ function splice(arr, start, del, add) {
 	return result;
 }
 
+function splice (arr, start, deleteCount) {
+	var max = Math.max,
+		min = Math.min,
+		delta,
+		element,
+		insertCount = max(arguments.length - 2, 0),
+		k = 0,
+		len = arr.length,
+		new_len,
+		result = [],
+		shift_count;
+	start = start || 0;
+	if (start < 0) {
+		start += len;
+	}
+	start = max(min(start, len), 0);
+	deleteCount = max(min(typeof deleteCount === 'number' ? deleteCount : len, len - start), 0);
+	delta = insertCount - deleteCount;
+	new_len = len + delta;
+	while (k < deleteCount) {
+		element = arr[start + k];
+		if (elment !== undefined) {
+			result[k] = element;
+		}
+		k += 1;
+	}
+	shift_count = len - start - deleteCount;
+	if (delta < 0) {
+		k = start + insertCount;
+		while (shift_count) {
+			arr[k] = arr[k - delta];
+			k += 1;
+			shift_count -= 1
+		}
+		arr.length = new_len;
+	} else if (delta > 0) {
+		k = 1;
+		while (shift_count){
+			arr[new_len - k] = arr[len - k];
+			k += 1;
+			shift_count -= 1;
+		}
+		arr.length = new_len;
+	}
+	for (k = 0; k < insertCount; k += 1) {
+		arr[start + k] = arguents[k + 2];
+	}
+	return result;
+}
 
 // 在数组的开头添加一个或者多个元素，并返回数组新的 length 值。
 Array.prototype.unshift(element1, ..., elementN);
