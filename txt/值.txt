@@ -1,0 +1,81 @@
+类型转换发生在静态类型语言的编译阶段，而强制类型转换则发生在动态类型语言的运行时。
+
+ToString------把非字符串类型强制转换成字符串
+对普通对象来说，除非自定义toString，否则toString返回内部属性[[class]]的值，如[object Obkect]，如果有对象自己的toString方法，字符串化时就会调用该方法并使用其返回值。
+把值转化为字符串，越过vlaueOf方法，直接调用toString方法。
+在JSON.stringify中，如果对象定义了toJSON方法，JSON字符串化时会首先调用该方法，然后用它的返回值来进行序列化
+var a = {
+	val : [1, 2, 3],
+	toJSON : function () {
+		return this.val.slice(1);
+	}
+};
+var b = JSON.stringify(a);
+console.log(b);//[2, 3]
+
+var o = {};
+var a = {
+	b : 42,
+	c : o,
+	d : function () {}
+};
+o.e = a;
+var b = JSON.stringify(a);
+console.log(b);
+循环引用会报错
+JSON.stringify参数的用法
+第二个参数如果是个数组，那么他必须是一个字符串数组，1其中包含序列化要处理的对象的属性名称，除此之外其他的属性则被忽略。
+第二个参数如果是函数，他会对对象本身调用一次，然后对对象中的每个属性个调用一次，每次传递2个参数，键和值，如果要忽略某个键就返回undefined，否则返回指定的值。
+var a = {
+	b : 42,
+	c : '42',
+	d : [1, 2, 3]
+};
+JSON.stringify(a, ['b', 'c']);//'{"b":42,"c":"42"}'
+JSON.stringify(a, function (k, v) {
+	if (k !== 'c') return v;
+});
+//'{"b":42,"d":[1,2,3]}'
+第三个参数定义为正整数时是指定每一级缩进的字符数
+JSON.stringify(a, null, 3);
+JSON.stringify(a, null, '---');
+
+ToNumber------把非数字类型强制转换成数字
+true转化为1，flase转化为0，undefined转化为NaN，null转化为0。字符串的处理遵从数字常量规则，处理失败返回NaN。
+对象会首先被转化为基本类型，在强制转化为数字。为了转化为基本类型值，抽象操作ToPrimitive会首先检查知否有 valueOf方法，如果有并返回基本类型值，就是用该值强制类型转化为数字，如果没有，或使用完valueOf后没有变成基本类型，那么就使用toString的返回值来进行强制类型转化为数字。
+var c = {
+	valueOf : function () {
+		return '42';
+	},
+	toString : function () {
+		return 4;
+	}
+};
+
+ToBoolean------把非布尔值类型强制转化成布尔值
+undefined，null，false，+0，-0，NaN，''除了这些假值以外，其他的都是真值。
+
+解析与转换
+解析允许字符串中含有非数字字符，转换不允许出现非数字字符
+Number('42px')//NaN  转换
+parseInt('42px')//42  解析 还有parseFloat
++,-,显示强制类型转换为数字，!!，显示强制类型转化为布尔值
++'1',-'1'
+
+2个值之间进行-，*，\的计算会把其中不是数字类型的强制转换为数字，+会有点特殊，只要其中有一个是字符串类型就进行连接操作。
+
+宽松相等和严格相等
+==允许在相等比较中进行强制类型转换，而===不允许
+NaN不等于NaN
++0等于-0
+字符串和数字之间相等比较：将字符串强制转换为数字然后比较。
+其他类型和布尔值相等比较：将布尔值变成数字然后比较。如果其他类型是对象，那么通过valueOf或toString把对象变成字符串在比较。
+var a = '42';
+var b = true;
+a == b //false
+------
+b=>1
+1 == 42 //false
+所以个人建议无论什么情况下都不要使用==true和==false
+null和undefined的相等比较：在==中undefined和null是一回事，除此之外都不存在这种情况。
+对象和非对象的相等比较：先抽象操作ToPrimitive，通过valueOf或toString把对象变成基础类型（字符串），然后就是基础类型的比较了。

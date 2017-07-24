@@ -20,3 +20,4 @@ var arr = Array.prototype.slice.call(str);
 console.log(arr);
 console.log(Array.from(obj));
 只有类数组和字符串能借用数组的方法直接变成数组，其他数据类型不行，Array.from是es6的新方法
+创建数组的时候可以把new省略掉的直接Array()。
