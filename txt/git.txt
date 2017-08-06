@@ -1,0 +1,50 @@
+git checkout -b shizheming master
+设置分支指向
+
+git log --graph
+看分支图
+
+git merge master
+同步master
+
+看log
+git log
+
+重置到某次提交的版本
+git reset --hard f4da50eb0970303151f7c705ac1e6a3f1c50352e
+
+删除整个目录
+git rm -r public/html/static/
+
+删除单个文件
+git rm 需要删除文件的名称
+
+创建文件夹
+mkdir 需要创建的文件夹的名称
+
+查看当前目录结构
+ls
+
+恢复到修改前的状态
+git checkout .
+
+重命名文件
+git mv 现在的文件名 重命名之后的文件名
+
+查看日志变一行
+git log --oneline
+
+让日志变得更详细
+git log --decorate
+
+查看2个分支中的某个文件不同
+git diff 分支1..分支2 文件名
+
+查看当前工作区和上次提交的某个文件的不同
+git diff 文件名
+
+把git add.和git commit -m '提交说明'合成一个命令
+git commit -am '提交说明'
+
+创建文件
+touch 需要创建的文件
