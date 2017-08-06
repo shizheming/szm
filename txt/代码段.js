@@ -1,3 +1,4 @@
+// 模块化--添加模块
 var MyModules = (function Manager () {
 	var modules = {};
 	function define (name, deps, impl) {

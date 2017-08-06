@@ -345,8 +345,11 @@ module.exports = {
 	// 判断值是不是NaN
 	isNaN : function (n) {
 		return n !== n;
-	}
-
+	},
+	// 区别undefined，null以外的值
+	existy : function (x) {
+		return x != null;
+	},
 
 	/******************常用高阶函数******************/
 
