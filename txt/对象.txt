@@ -10,3 +10,4 @@
 hasOwnProperty确定对象有没有某个属性，不查找原形链，in查找原形链，所以for in比for慢，有2种办法不去循环原形链，第一种在for in里面判断hasOwnProperty，第二种就是把对象Object.keys变数组，然后循环这个数组，避免了for in又有顺序了
 delete删除属性
 对象永远不会是真的空对象，因为他们可以从原型链中取得成员属性
+干净的对象。

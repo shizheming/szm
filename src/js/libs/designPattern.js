@@ -289,5 +289,32 @@ module.exports = {
 			return afterFn.apply(this, arguments);
 		};
 	}
+	/*
+	利用钩子的装饰者模式
+	1.
+	var myFunc = function () {...};
+	myFunc = void function (foo) {
+		return function () {
+			钩子的功能代码
+			return foo.apply(this, arguments);
+		};
+	}(myFunc);
+	2.
+	Number.prototype.toString = void function (foo) {
+		return function (radix, length) {
+			var result = foo.apply(this. arguments).toUpperCase();
+			钩子的代码
+		};
+	}(Number.prototype.toSting);
+	3.
+	myFunc = void function (foo) {
+		return function () {
+			脱钩，且只能用一次
+			myFunc = foo;
+			钩子的代码
+			return foo.apply(this, arguments);
+		};
+	}(myFunc);
+	*/
 
 };
