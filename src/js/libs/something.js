@@ -27,22 +27,10 @@ module.exports = {
 		}
 		return uuid.join('');
 	},
-	// 测试环境还是正式环境
-	env : function(str) {
-		var rwhApiDomain = {
-			'172' : 'http://103.37.149.172',
-			'201' : 'http://api.test.renwohua.com',
-			formal : 'https://api.renwohua.com'
-		};
-		str ? str = rwhApiDomain[str] : str = rwhApiDomain.formal;
-		return function(route) {
-			return str + route;
-		};
-	},
 	// 返回当前日期信息
 	date : function(time) {
 	    var n = new Date(time);
-	    return [n.getFullYear(), n.getMonth() + 1, n.getDate(), n.getHours(), n.getMinutes(), n.getSeconds()];
+	    return [n.getFullYear(), fillZero(n.getMonth() + 1), fillZero(n.getDate()), fillZero(n.getHours()), fillZero(n.getMinutes()), fillZero(n.getSeconds())];
 	},
 	// 数字3位加逗号，金钱显示
 	money : function(num) {
@@ -98,4 +86,16 @@ module.exports = {
 	randomColor : function(){
 		return '#' + Math.floor(Math.random() * parseInt('0xffffff',16).toString(10)).toString(16);
 	},
+	// 获取某一时间段的时间戳
+	getStamp : function (el) {
+		return Date.parse(new Date(el.value + ' ' + '00:00:00'));
+	},
+	// 2017-08-20 11:09:25
+	getTime : function (stamp) {
+		var time = this.date(stamp);
+		return time[0] + '-' time[1] + '-' + time[2] + ' ' + time[3] ':' + time[4] + ':' time[5];
+	},
+	fillZero : function (nub) {
+		return nub < 10 ? '0' + nub : nub;
+	}
 };
