@@ -1,73 +1,5 @@
-// 原始js--用来解析每个方法的本质实现原理
-// 使用运算符来实现，不用任何函数方法
-// 函数行为不改变传进来的参数，而是返回一个新的结果，分离，独立，不影响原来的，这就是函数的没有变量，只有常量，一份数据被创建出来了之后，他永远不会改变
-
-
-
 // 有时候会一直想怎么判断这个东西在不在，是什么位置，有没有
-// 我们用眼就能看到，但计算机不知道
-// 所以把这些变成数组或是对象加以用方法调用就简单了，
-
-
-// 算数运算符
-/***********
-加法 (+)
-减法 (-)
-除法 (/)
-乘法 (*)
-求余 (%)
-递增 (++)
-递减 (--)
-一元负号 (-)
-一元正号 (+)
-***********/
-
-// 赋值运算符
-/***********
-赋值（Assignment）	x = y	x = y
-加赋值（Addition assignment）	x += y	x = x + y
-减赋值（Subtraction assignment）	x -= y	x = x - y
-乘赋值（Multiplication assigment）	x *= y	x = x * y
-除赋值（Division assignment）	x /= y	x = x / y
-模赋值（Remainder assignment）	x %= y	x = x % y
-***********/
-
-// 逻辑运算符
-/***********
-逻辑与 (&&)	expr1 && expr2	
-逻辑或 (||)	expr1 || expr2	
-逻辑非(!)	!expr
-***********/
-
-// 关键字运算符
-// new
-// typeof
-// void
-// delete
-// in
-// instanceof
-
-// 条件运算符
-// condition ? expr1 : expr2 
-
-// 比较操作符
-/***********
-“两等”比较运算符
-相等(==)
-不相等 (!=)
-一致/严格相等 (===)
-不一致/严格不相等 (!==)
-关系运算符
-大于运算符 (>)
-大于等于运算符 (>=)
-小于运算符 (<)
-小于等于运算符 (<=)
-***********/
-
-
-
-
-
+// 我们用眼就能看到，但计算机不知道，所以要转变成计算机能理解的语言
 
 // Array
 
@@ -173,7 +105,7 @@ function reduceRight(arr, callback, initialValue) {
 Array.prototype.some(callback[, thisArg]);
 
 function some(arr, fn, thisArg) {
-	thisArg = thisArg ? thisArg : void 0;
+	thisArg = thisArg ? thisArg : undefined;
 	for (var i = 0, len = arr.length; i < len; i++) if (fn.call(thisArg, arr[i], i, arr)) return true;
 	return false;
 }
@@ -491,7 +423,26 @@ Math.tan();
 
 
 
+// its
+// rest参数
 
+function getRest(func) {
+	// 新返回的函数支持rest参数
+	return function(){
+		// 获得形参个数
+		var argLength = func.length;
+		// rest参数的起始位置为最后一个形参位置
+		var startIndex = argLength - 1;
+		// 最终需要的参数数组
+		var args = Array(argLength);
+		// 设置rest参数
+		var rest = Array.prototype.slice.call(arguments, startIndex);
+		// 设置最终调用时需要的参数
+		for(var i = 0; i < startIndex; i++) args[i] = arguments[i];
+		args[startIndex] = rest;
+		return func.apply(null, args);
+	}
+}
 
 
 

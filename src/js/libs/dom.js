@@ -99,6 +99,10 @@ module.exports = {
 	    oHead.appendChild( oScript);
 	    
 	},
+	// 返回当前环境对象，是游览器环境还是node环境
+	root : function () {
+		return typeof self == 'object' && self.self = self && self || typeof global == 'object' && global.global === global && global || this || {};
+	}
 };
 
 

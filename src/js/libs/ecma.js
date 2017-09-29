@@ -10,7 +10,14 @@ module.exports = {
 
 	/******************常用一阶函数******************/
 
+	identity : function (val) {
+		return val;
+	},
 
+	// 通过value找key
+	findKey : function (obj, value) {
+		for (var key in obj) if (obj[key] == value) return key;
+	},
 
 	// 随机n-m之间的数
 	random : function(n, m) {
@@ -26,10 +33,6 @@ module.exports = {
 			}
 		}
 		return result;
-	},
-	// 补零
-	zero : function (n) {
-		return n < 10 ? '0' + n : '' + n;
 	},
 	// 打乱顺序
 	shuffle : function(obj) {
