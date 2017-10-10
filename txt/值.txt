@@ -81,3 +81,17 @@ null和undefined的相等比较：在==中undefined和null是一回事，除此�
 对象和非对象的相等比较：先抽象操作ToPrimitive，通过valueOf或toString把对象变成基础类型（字符串），然后就是基础类型的比较了。
 
 typeof一个未声明的变量的时候不会报错，也只有他不会报错，其他情况下子在未声明的情况下使用都会报错，这个机制呵呵
+
+var obj = Object(obj);
+这段代码的意义是：
+如果 obj 是一个对象，那么 Object(obj) 返回 obj
+如果 obj 是 undefined 或 null，那么 Object(obj) 返回一个 {}
+如果 obj 是一个原始值 (Primitive value)，那么 Object(obj) 返回一个被包裹的原始值:
+var obj = 2;
+obj = Object(obj); // 相当于 new Number(obj);
+// => obj: Number {[[PrimitiveValue]]: 2}
+var value = obj.valueOf();
+// => value: 2
+一言以蔽之，Object(obj) 就是将传入的 obj 进行对象化。
+new和不new的关系是一样的
+Number(),Object(),Array(),string(),Boolean()这些对象包装器都是转换成对应的数据类型的

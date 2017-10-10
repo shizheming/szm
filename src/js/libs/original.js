@@ -17,7 +17,7 @@ function isArray(obj) {
 // 测试数组的所有元素是否都通过了指定函数的测试。
 Array.prototype.every(callback[, thisArg]);
 
-function every(arr, fun, thisArg) {
+function every(arr, fn, thisArg) {
 	for (var i = 0; i < arr.length; i++) if (!fn.call(thisArg, arr[i], i, arr)) return false;
 	return true;
 }
@@ -26,7 +26,7 @@ function every(arr, fun, thisArg) {
 // 使用指定的函数测试所有元素，并创建一个包含所有通过测试的元素的新数组。
 Array.prototype.filter(callback[, thisArg]);
 
-function filter(arr, fun, thisArg) {
+function filter(arr, fn, thisArg) {
 	var result = [];
 	for (var i = 0, len = arr.length; i < len; i++) if (fn.call(thisArg, arr[i], i, arr)) result[i] = arr[i];
 	return result;
