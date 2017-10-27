@@ -1,43 +1,4 @@
 module.exports = {
-	// 状态模式
-	/*var myState = {
-		openState : function() {
-			console.log('开');
-			// 切换状态
-			objState.setState(myState.big);
-		},
-		closeState : function() {
-			console.log('关');
-			// 切换状态
-			objState.setState(myState.openState);
-		},
-		big : function() {
-			console.log('大');
-			objState.setState(myState.small);
-		},
-		small : function() {
-			console.log('小');
-			objState.setState(myState.closeState);
-		}
-	};
-
-	var objState = {
-		setState : function(stateObj) {
-			this.currState = stateObj;
-		},
-		// 以前当前状态的值是其本类型，现在变成对象，状态对象，使得状态变的更立体，更丰满
-		// 默认指向开对象
-		currState : myState.openState
-	};
-
-	<body>
-		<div id="ss"></div>
-	</body>
-
-	ss.onclick = function() {
-		objState.currState();
-	};*/
-
 	// 策略模式
 	/*function suanfa() {
 		var suanfa = {
@@ -84,21 +45,7 @@ module.exports = {
 			}
 		};
 	});*/
-	// 节流代理
-	proxy : function(fn, interval) {
-		// 记录是否在节流期间
-		var num = 0;
-		return function() {
-			if (num) return; else {
-				num++;
-				var timer = setTimeout(function() {
-					num = 0;
-					clearTimeout(timer);
-				}, interval || 1000);
-			}
-			fn.apply(null, arguments);
-		};
-	},
+	
 
 	// 单列模式
 	/*
@@ -109,15 +56,7 @@ module.exports = {
 		a();
 		a();
 	*/
-	once : function (fn) {
-		var bl = true;
-		return function() {
-			var result;
-			if (bl) result = fn.apply(null, arguments);
-			bl = false;
-			return result;
-		};
-	},
+	
 
 	// 职责连设计模式
 	/*
@@ -273,48 +212,17 @@ module.exports = {
 		};
 		return method;
 	},
-	// 装饰者模式
-	/*var a = before(function(v) {
-		alert(1 + v);
-	}, function(v) {
-		alert(2 + v);
-	});
-	a = before(a, function(v) {
-		alert(3 + v);
-	});
-	a(10);*/
-	decorate : function(beforeFn, afterFn) {
-		return function() {
-			if (beforeFn.apply(this, arguments) === false) return;
-			return afterFn.apply(this, arguments);
-		};
-	}
-	/*
-	利用钩子的装饰者模式
-	1.
-	var myFunc = function () {...};
-	myFunc = void function (foo) {
-		return function () {
-			钩子的功能代码
-			return foo.apply(this, arguments);
-		};
-	}(myFunc);
-	2.
-	Number.prototype.toString = void function (foo) {
-		return function (radix, length) {
-			var result = foo.apply(this. arguments).toUpperCase();
-			钩子的代码
-		};
-	}(Number.prototype.toSting);
-	3.
-	myFunc = void function (foo) {
-		return function () {
-			脱钩，且只能用一次
-			myFunc = foo;
-			钩子的代码
-			return foo.apply(this, arguments);
-		};
-	}(myFunc);
-	*/
-
 };
+
+/*********************************设计原则********************************************/
+/*
+1.单一原则：
+	一个对象（方法）只做一件事，一个对象（方法）应该仅有一个引起他变化的原因
+
+2.最少知道原则：
+	一个对象（方法）应当尽可能少的去其他对象（方法）发生相互作用
+	“城门失火殃及池鱼，一人犯法株连九族”
+
+3.开放-封闭原则
+
+*/

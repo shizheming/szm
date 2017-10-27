@@ -6,12 +6,10 @@ module.exports = {
 	},
 	// 数字3位加逗号，金钱显示
 	money : function(num) {
+		num = num + '';
 		return num.split('').reverse().join('').replace(/(\d{3})/g, '$1,').split('').reverse().join('').replace(/^\,/,'');
 	},
-	// 获取某个月份的天数
-	days : function(year, month) {
-	    return new Date(year, month, 0).getDate();
-	},
+	
 	// 秒倒计时
 	second : function(time, fn1, fn2) {
 		fn1 && fn1(time);
@@ -48,25 +46,23 @@ module.exports = {
 			var hours = parseInt(mist / 3600);
 			//去小时后的秒数
 			mist = mist % 3600;
-			var minutes = parseInt(mist / 60)
+			var minutes = parseInt(mist / 60);
 			mist = mist % 60;
 			fn && fn(date, hours, minutes, mist);
 			return date + hours + minutes + mist;
 		}
 	},
-	// 随机颜色
-	randomColor : function(){
-		return '#' + Math.floor(Math.random() * parseInt('0xffffff',16).toString(10)).toString(16);
-	},
+	
 	// 获取某一时间段的时间戳
-	getStamp : function (el) {
-		return Date.parse(new Date(el.value + ' ' + '00:00:00'));
+	getStamp : function (val) {
+		return Date.parse(new Date(val + ' ' + '00:00:00'));
 	},
 	// 2017-08-20 11:09:25
 	getTime : function (stamp) {
 		var time = this.date(stamp);
 		return time[0] + '-' time[1] + '-' + time[2] + ' ' + time[3] ':' + time[4] + ':' time[5];
 	},
+	// 这个没有脱离形
 	fillZero : function (nub) {
 		return nub < 10 ? '0' + nub : nub;
 	}
