@@ -3,6 +3,8 @@
 版本：2.0
 时间：2017.10
 
+1.0的时候只是把一些觉得实用的常用的功能罗列的写出来，没有提升到抽象层面
+
 @@@@从具象到抽象，脱离形，提炼一般化@@@@
 我认为的一般化包含通用性和普遍性
 
@@ -15,7 +17,10 @@
 	抽象行为，抽象动词，抽象特性，抽象属性，抽象种属概念
 	2个及及以上可以找共同的部分，那单个实际怎么抽象？
 4. 抽象出什么来？
-	鬼知道
+	形式是可以确定的，一种是不产出函数，另一种是产出函数，（当然不管哪种都包含了普通函数和高阶函数）
+	不产出函数也就是只运行动作
+	产出函数有返回值，那是返回一个呢，还是返回多个
+
 5. 抽象的程度
 	抽象的程度越深，那抽象出来的离抽象本身最近，越一般，与其他抽象越紧密，如果2个抽象依旧没有关系，就说明抽象的程度没有达到联系的那一层，需继续抽象
 
@@ -229,10 +234,11 @@ _.isEqual = function(a, b, aStack, bStack) {
 
 
 /****************
-	更加抽象的行为
+	行为模式
 	重形式轻内容
 ****************/
 /*
+	重复行为
 	重复做直到达到目标，不达目的誓不罢休
 */
 _.repeat = function (createVal, predicate, arr) {
@@ -257,11 +263,15 @@ _.whichData = function (data, arr, obj) {
 	if (Array.isArray(data)) return arr(data);
 };
 /*
-	节流
+	节流行为
+	时间节流
+	空间节流
 */
 _.throttle = function(fn, interval) {
-	// 记录是否在节流期间
+	// 时间记录
 	var num = 0;
+	// 空间记录
+	var list = [];
 	return function() {
 		if (num) return; else {
 			num++;
@@ -274,7 +284,7 @@ _.throttle = function(fn, interval) {
 	};
 };
 /*
-	单列
+	单列行为
 */
 _.once = function (fn) {
 	var bl = true;
@@ -286,7 +296,7 @@ _.once = function (fn) {
 	};
 };
 /*
-	装饰
+	装饰行为
 */
 _.decorate = function () {
 	var args = [].slice.call(arguments);
@@ -299,36 +309,84 @@ _.decorate = function () {
 			item.apply(null, arguments);
 		});
 	};
+	// 增加添加方法
 	go.add = add;
 	return go;
 };
 /*
-	状态--形态
+	状态行为--形态
+	2种状态，循环，回流
 */
 _.state = function () {
 	// 1. 静态
 	// 首先要定义多个状态和状态的顺序
-	// 提供一个实体,状态全实体的属性
-	// 有一个设置状态变化的方法
-	// 如果不是object先变成object
+	// 如果不是function先变成function
 	var data = [].map.call(arguments, function (item, index, arr) {
 		return _.isFunction(item) ? item : _.fnVal(item);
 	});
-	// 我感觉这个东西像链表一样的，以后写个链表通用下,现在先将就下
+	var link = _.createLink();
 	data.forEach(function (item, index, arr) {
-		item.next = arr[index + 1] ? arr[index + 1] : arr[0];
+		link.add(item);
 	});
-	var one = data[0];
-	var oneByOne = function () {
-		one();
-		one = one.next;
+	var one = link.find(data[0]);
+	// 回流的方向
+	var direction = true;
+	// 把专门判断方向的变成整体了，还不能说是抽象，只是把零碎的步骤提升到整体，只是整体，一坨的，还没整理
+	var directionFn = function () {
+		direction ? one = one.next : one = one.previous;
+		// 正序
+		if (one === link.head.next) direction = true;
+		// 倒序
+		if (one === link.tail.previous) direction = false;
+	};
+	var oneByOne = function (backflow) {
+		one.el();
+		backflow ? void function () {
+			directionFn();
+		}() : void function () {
+			one = one.next;
+		}();
 	};
 	// 2. 动态
-	// 然后添加一些方法能动态的添加或是删除或是修改状态的方法
+	// 然后添加一些方法能动态的添加或是删除或是修改状态
+	// 添加状态
+	var addState = function (newState, item) {
+		link.add(newState, item);
+	};
+	// 替换状态
+	var replaceState = function (newState, oldState) {
+		link.replace(newState, oldState);
+		if (one.el === oldState) one = link.find(newState);
+	};
+	// 删除状态
+	var delState = function (obj) {
+		// 这里有个问题就是，有时删除的实体已经变成下一个要运行的实体了，例如我运行1，运行完1后，运行实体变成2，虽然紧接着我删除了2，可下次运行的是时候是运行2的实体，因为之前运行完1后，就更新了运行实体
+		if (one.el === obj) directionFn();
+		link.del(obj);
+	};
 	return {
 		currState : oneByOne,
-		// setState : ,
-		// delState : 
+		addState : addState,
+		replaceState : replaceState,
+		delState : delState
+	};
+};
+/*
+	检测行为
+	检测实体参数符合不符合，他的健壮性
+	未完成。。。。。。
+*/
+_.init = function () {
+	var args = arguments;
+};
+/*
+	js特性的终极目标--动态变化
+	未完成。。。。。。
+*/
+_.change = function () {
+	// ...
+	return function () {
+		// ...
 	};
 };
 
@@ -661,6 +719,139 @@ _.flatten = function(input) {
 _.getDays = function(year, month) {
     return new Date(year, month, 0).getDate();
 };
+
+
+
+/****************
+	数据结构--js当中的纯质料
+****************/
+/*
+	链表--循环双向链表
+	这张图大致是这样的所有链表真正用的元素之外有一个head一个tail，head的previous是tail，tail的next是head，而head的next是第一实体，tail的previous是最后一个实体，所有实体之间也是双向的，循环的关键在于第一实体和最后一个实体是双向的，这样头尾实体就循环连起来了。
+*/
+var linkFn = (function () {
+	var link = {};
+	// 判断是否头尾相连，也就是链表里面有没有元素
+	var isConnected = function (that) {
+		return that.head.next === that.head.previous;
+	};
+	// 往后添加
+	link.add = function (newElement, item) {
+		// 缺点在于一次只能插一个值
+		var newNode = {
+			el : newElement,
+			next : null,
+			previous : null
+		};
+		// 直接插入尾部
+		var addLast = function () {
+			// 这里是链表里面没有元素的情况下
+			if (isConnected(this)) {
+				// 更新头尾
+				this.head.next = newNode;
+				this.tail.previous = newNode;
+				// 更新
+				return;
+			}
+			// 这里是链表里面有元素的情况下
+			// 循环链接--过掉head和tail--直接链接第一实体，这里就是实体元素之间头尾相连了
+			// 新元素下一个连第一个
+			newNode.next = this.head.next;
+			// 新元素上一个连最后一个
+			newNode.previous = this.tail.previous;
+			// 更新第一个的上一个的指向
+			this.head.next.previous = newNode;
+			// 更新最后一个的下一个的指向
+			this.tail.previous.next = newNode;
+			// 更新尾巴的上一个的指向
+			this.tail.previous = newNode;
+		}.bind(this);
+		// 1个参数直接添加到尾部
+		if (!item) {
+			addLast();
+		// 2个参数是找到第2个参数后面插入
+		} else {
+			// 某个位置特定插入
+			var current = this.find(item);
+			if (!current) return;
+			// 判断是不是最后一个
+			if (current === this.tail.previous) addLast(); else {
+				newNode.next = current.next;
+				newNode.previous = current;
+				current.next.previous = newNode;
+				current.next = newNode;
+			}
+		}
+	};
+	// 删除
+	link.del = function (item) {
+		var currNode = this.find(item);
+		// 没找到
+		if (!currNode) return;
+		// 有2种可能需要判断，一种是删实体头，一种是删实体尾，就需要调整虚体头尾的next和previous的指向了
+		if (this.head.next === currNode) this.head.next = currNode.next;
+		if (this.tail.previous === currNode) this.tail.previous = currNode.previous;
+		currNode.previous.next = currNode.next;
+		currNode.next.previous = currNode.previous;
+		// 返回被删除的对象
+		return currNode;
+	};
+	// 替换
+	link.replace = function (newElement, item) {
+		// 删除和添加就是替换
+		this.add(newElement, item);
+		this.del(item);
+	};
+	// 寻找
+	// 找到当前的
+	link.find = function (item) {
+		// 头尾不给找，排除在外，头尾相连也不给找，因为本身里面就没有东西，还没添加呢
+		if (item === 'head' || item === 'tail' || isConnected(this)) return;
+		// 这里用this，因为head是创建链表时候独立存在的，link是没有head的，find调的时候也要用this，应为如果用link，里面this又指向link了，而link是没有head的
+		var currNode = this.head;
+		// 要避免无限循环
+		while (currNode.el != item && currNode !== this.tail.previous) {
+			currNode = currNode.next;
+		}
+		return currNode.el !== item ? false : currNode;
+	};
+	// 展示
+	link.display = function () {
+		var currNode = this.head;
+		var arr = [];
+		var bl = true;
+		while (bl || currNode.next !== this.head.next) {
+			arr.push(currNode.next.el);
+			currNode = currNode.next;
+			bl = false;
+		}
+		return arr;
+	};
+	return link;
+})();
+
+_.createLink = function () {
+	var newLink = {};
+	// 头节点
+	newLink.head = {
+		el : 'head',
+		next : null,
+		previous : null
+	};
+	// 尾节点
+	newLink.tail = {
+		el : 'tail',
+		next : newLink.head,
+		previous : newLink.head
+	};
+	// 头尾相连
+	newLink.head.next = newLink.tail;
+	newLink.head.previous = newLink.tail;
+	// 继承方法
+	return _.extend(newLink, linkFn);
+};
+
+
 
 
 
