@@ -14,12 +14,12 @@
 	因为让别人看的一脸懵笔的感觉很爽。
 	因为抽象是我们创建实体的起点，必经之路，我们不能直接从tab切换的业务代码变成另一个拖拽排序的东西，我们只有从中抽象出数据类型，语法，等等，重新构建另一个，这就是从实体到抽象，抽象再到实体的这么一个过程，所以是必经之路，而复用只是抽象附带的这么一个特性而已。
 3. 怎么抽象？
-	抽象行为，抽象动词，抽象特性，抽象属性，抽象种属概念
-	2个及及以上可以找共同的部分，那单个实际怎么抽象？
+	单个抽象：抽象行为，抽象属性，抽象种属概念（比较难）
+	多个抽象：抽象相同的部分和不同的部分，抽象不变的和变化的（比上面容易，因为有比较了）
 4. 抽象出什么来？
 	形式是可以确定的，一种是不产出函数，另一种是产出函数，（当然不管哪种都包含了普通函数和高阶函数）
 	不产出函数也就是只运行动作
-	产出函数有返回值，那是返回一个呢，还是返回多个
+	产出函数有返回值，是返回一个呢，还是返回多个
 
 5. 抽象的程度
 	抽象的程度越深，那抽象出来的离抽象本身最近，越一般，与其他抽象越紧密，如果2个抽象依旧没有关系，就说明抽象的程度没有达到联系的那一层，需继续抽象
@@ -32,6 +32,7 @@ js是动态的语言，动态的特性是变化，有哪些变化呢，空间的
 */
 
 // 我现在用高阶函数只是存一些数据,状态,配置一些属性,还没有提升到进去一个函数出来另一个函数的能力
+// 2步到位
 
 
 
@@ -187,7 +188,9 @@ _.isNaN = function (n) {
 _.isExisty = function (x) {
 	return x != null;
 };
-// 判断2个集合是否相等
+/*
+	判断2个集合是否相等
+*/
 _.isEqual = function(a, b, aStack, bStack) {
 	var c1 = Object.prototype.toString.call(a);
 	// 类型不同直接out
@@ -231,6 +234,19 @@ _.isEqual = function(a, b, aStack, bStack) {
 	// 到这里就说明这一维度的数组的值相等
 	return true;
 };
+/*
+	是否过去
+*/
+_.past = function (date) {
+	return (new Date(date)).getTime() < (new Date()).getTime() || false;
+};
+/*
+	是否未来
+*/
+_.future = function (date) {
+	return !_.past(date);
+};
+
 
 
 /****************
@@ -263,15 +279,10 @@ _.whichData = function (data, arr, obj) {
 	if (Array.isArray(data)) return arr(data);
 };
 /*
-	节流行为
-	时间节流
-	空间节流
+	消抖行为
 */
-_.throttle = function(fn, interval) {
-	// 时间记录
+_.debounce = function(fn, interval) {
 	var num = 0;
-	// 空间记录
-	var list = [];
 	return function() {
 		if (num) return; else {
 			num++;
@@ -293,6 +304,22 @@ _.once = function (fn) {
 		if (bl) result = fn.apply(null, arguments);
 		bl = false;
 		return result;
+	};
+};
+/*
+	达到次数后才激活
+*/
+_.after = function (times, fn) {
+	return function () {
+		if (--times < 1) return fn.apply(this, arguments);
+	};
+};
+/*
+	规定方法调用次数
+*/
+_.before = function (times, fn) {
+	return function () {
+		if (--times > 0) return fn.apply(this, arguments);
 	};
 };
 /*
@@ -360,7 +387,7 @@ _.state = function () {
 	};
 	// 删除状态
 	var delState = function (obj) {
-		// 这里有个问题就是，有时删除的实体已经变成下一个要运行的实体了，例如我运行1，运行完1后，运行实体变成2，虽然紧接着我删除了2，可下次运行的是时候是运行2的实体，因为之前运行完1后，就更新了运行实体
+		// 这里有个问题就是，有时删除的实体已经变成下一个要运行的实体了，例如我运行1，运行完1后，运行实体变成2，虽然紧接着我删除了2，可下次运行的是时候是运行2的实体，因为之前运行完1后，就更新了运行实体，替换也有这个问题
 		if (one.el === obj) directionFn();
 		link.del(obj);
 	};
@@ -372,12 +399,11 @@ _.state = function () {
 	};
 };
 /*
-	检测行为
-	检测实体参数符合不符合，他的健壮性
-	未完成。。。。。。
+	策略
+	访问对象的属性(数字-字符)
 */
-_.init = function () {
-	var args = arguments;
+_.strategy = function (road) {
+
 };
 /*
 	js特性的终极目标--动态变化
@@ -483,8 +509,8 @@ _.accAdd = function (arg1, arg2) {
 /*
 	减法
 */
-_.accSub = function (arg1, arg2) {      
-    return this.accAdd(arg1, -arg2);  
+_.accSub = function (arg1, arg2) {
+    return this.accAdd(arg1, -arg2);
 };
 /*
 	乘法
@@ -719,7 +745,73 @@ _.flatten = function(input) {
 _.getDays = function(year, month) {
     return new Date(year, month, 0).getDate();
 };
+/*
+	返回某一时间段日期信息
+*/
+_.date = function(time) {
+    var n = n ? new Date(time) : new Date();
+    return [n.getFullYear(), fillZero(n.getMonth() + 1), fillZero(n.getDate()), fillZero(n.getHours()), fillZero(n.getMinutes()), fillZero(n.getSeconds())];
+};
+/*
+	变成这种格式2017-08-20 11:09:25
+*/
+_.getTime = function (stamp) {
+	var time = this.date(stamp);
+	return time[0] + '-' + time[1] + '-' + time[2] + ' ' + time[3] + ':' + time[4] + ':' +  time[5];
+};
+/*
+	倒计时
+*/
+_.countDown = function(c, fn) {
+	// 有这么计划总情况需要处理
+	// 1.传的是日期 2107-12-24 14:11:00
+	// 2.传的是时间戳 1510012800000
+	if (/-/g.test(c)) c = (new Date(c)).getTime();
+	upDate(c, fn);
+	var timer = setInterval(function() {
+		if (!upDate(c, fn)) clearInterval(timer);
+	},1000);
+	function upDate(c, fn){
+		var d = new Date();
+		//获取当前时间戳
+		var nowTime = d.getTime();
 
+		var overTime = c;
+		//结束事件戳-当前时间戳 
+		var mist = parseInt((overTime - nowTime) / 1000);
+		var date = parseInt(mist / 86400);
+		//去天后的秒数
+		mist = mist % 86400	
+		var hours = parseInt(mist / 3600);
+		//去小时后的秒数
+		mist = mist % 3600;
+		var minutes = parseInt(mist / 60);
+		mist = mist % 60;
+		fn && fn(date, hours, minutes, mist);
+		return date + hours + minutes + mist;
+	}
+};
+
+
+
+/****************
+	数字
+	我从倒计时，日期，数字的分隔中抽象出数字，也就是抽象出了质料，我又从倒计时，数字的分隔中中抽象出了时间，金钱，也就抽象出了形式，这是实体抽象的2的方向，那实体之外的抽象，我该怎么分类呢？
+****************/
+_.fillZero = function (nub) {
+	return nub < 10 ? '0' + nub : nub;
+};
+
+
+
+/****************
+	金钱
+****************/
+// 数字3位加逗号，金钱显示
+_.money = function(num) {
+	num = num + '';
+	return num.split('').reverse().join('').replace(/(\d{3})/g, '$1,').split('').reverse().join('').replace(/^\,/,'');
+};
 
 
 /****************
@@ -868,97 +960,3 @@ _.createLink = function () {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-// html渲染模板
-
-	[??] : 重复输出-放哪里都一样
-	(=属性名=) : 需要套的地方的语法
-	<div id="mm">
-		<script type="szm" id="mod">
-			[??]
-			<div class="img">
-				<input value="商品名称：(=thumb=)">
-			</div>
-			<div class="main">
-				<span class="text-org mui-h4"><em>商品价格：￥(=shop_price=)</em></span>
-			    <div class="hd-h5 margin-small-top">到货天数：(=days.hello=)</div>
-			</div>
-		</script>
-	</div>
-	var a = rendering(document.getElementById('mm').innerHTML, {
-		thumb : 1,
-		shop_price : 2,
-		days : {
-			hello : 3
-		}
-	});
-
-// 现在只能在结构不变的情况下循环动态渲染，结构变了就挂了
-// data如果不是json而是数组呢，那就又挂了
-// 如果后台返回的数据有判断状态的，那就又挂了
-// 这种模板也需要中间层不是因为有时候需要处理后台给的原始数据，比如时间戳
-rendering : function(m, data) {
-	var result = '';
-	var re = /\[\?\?\]/.exec(m);
-	// 循环输出
-	if (re) {
-		m = m.replace(re[0], '');
-		var keys = Object.keys(data);
-		keys.forEach(function(a, b, c) {
-			result += che(m, data[a]);
-		});
-		return result;
-	}
-	// 单输出
-	function che(m, data) {
-		// 匹配属性替换json的值
-		var re = /\(=.*?=\)/g;
-		var rs;
-		while ((rs = re.exec(m)) != null) {
-			// 去标签,吧标签变成属性名
-			// 如果是嵌套属性？？？？？？？
-			// 解决了
-			var x = rs[0].replace(/\(=(.*?\.?)=\)/, '$1');
-			// 有嵌套
-			if (/.*?\./.exec(x)) {
-				var lastz;
-				// 嵌套变数组
-				var jk = x.split('.');
-				for (var u = 0, ll = jk.length; u < ll; u++) {
-
-					if (!lastz) {
-						lastz = data[jk[0]];
-					} else {
-						lastz = lastz[jk[u]];
-					}
-				}
-				// 替换属性名变属性值
-				m = m.replace(rs[0], lastz);
-			} else {
-				// 替换属性名变属性值
-				m = m.replace(rs[0], data[x]);
-			}
-		}
-		return m;
-	}
-	return che(m, data);
-},
-*/
