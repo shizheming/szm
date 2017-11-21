@@ -46,16 +46,6 @@ module.exports = {
 		};
 	});*/
 	
-
-	// 单列模式
-	/*
-		var a = once(function() {
-			alert(1);
-		});
-		a();
-		a();
-		a();
-	*/
 	
 
 	// 职责连设计模式

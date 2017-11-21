@@ -3,10 +3,16 @@
 版本：2.0
 时间：2017.10
 
-1.0的时候只是把一些觉得实用的常用的功能罗列的写出来，没有提升到抽象层面
+1. 1.0的时候只是把一些觉得实用的常用的功能罗列的写出来，没有提升到抽象层面♥♥♥♥
+2. 修改对象都要返回新的对象，不要在原有的对象上改♥♥♥♥
+3. 处理数组和对象一种是策略，一种是就当都对象处理，最后分离，我倾向后一种，因为他变成了统一质料
+4. js是动态的语言，动态的特性是变化，有哪些变化呢，空间的变化，添加，删除，状态（修改），时间的变化，然后就是功能都分创建时候的静态实体，和用的时候的动态实体，也就是实体会有方法给到外部使用
+5. 工具的分类还是通过形式来分类，展示不考虑质料
 
 @@@@从具象到抽象，脱离形，提炼一般化@@@@
-我认为的一般化包含通用性和普遍性
+抽象是哲学的根本特点，代码亦如此。
+
+心态：有能力就绕过感觉经验，没能力还是得靠感觉经验，以免对自己造成不必要的痛苦而导致无法正常前进
 
 1. 抽象是什么？
 	抽象是具象的反义词
@@ -17,26 +23,62 @@
 	单个抽象：抽象行为，抽象属性，抽象种属概念（比较难）
 	多个抽象：抽象相同的部分和不同的部分，抽象不变的和变化的（比上面容易，因为有比较了）
 4. 抽象出什么来？
-	形式是可以确定的，一种是不产出函数，另一种是产出函数，（当然不管哪种都包含了普通函数和高阶函数）
-	不产出函数也就是只运行动作
-	产出函数有返回值，是返回一个呢，还是返回多个
-
+	抽象出形式	
 5. 抽象的程度
 	抽象的程度越深，那抽象出来的离抽象本身最近，越一般，与其他抽象越紧密，如果2个抽象依旧没有关系，就说明抽象的程度没有达到联系的那一层，需继续抽象
-
-
-js是动态的语言，动态的特性是变化，有哪些变化呢，空间的变化，添加，删除，状态（修改），时间的变化，然后就是功能都分创建时候的静态实体，和用的时候的动态实体，也就是实体会有方法给到外部使用
-
-
-
 */
 
 // 我现在用高阶函数只是存一些数据,状态,配置一些属性,还没有提升到进去一个函数出来另一个函数的能力
 // 2步到位
 
+// 要抽象一样东西，我们的先规定形式和质料，形式就是我们要抽象出的那个东西，而这里的质料我只指代码的技巧和方法，当然还有其他质料，因为不是重点，姑且忽略
+// 那技巧是什么，就是函数，各种函数，回调，高阶等等。
 
 
-// module.exports _
+
+
+
+
+/****************
+	私有
+****************/
+/*	
+	处理对象
+	经典的一部，数组变对象，一切皆对象，哈哈哈
+	数组对象终归一家
+	直接对象处理，不要再用那个什么iswhich了这是意见，这里真理是什么，真理就是一切皆对象
+	处理克隆体
+*/
+var processCloneObject = function (obj, iterator) {
+	var newObj = {};
+	for (var key in obj) newObj[key] = obj[key];
+	Object.keys(newObj).forEach(function (item, index, arr) {
+		iterator(item, index, arr, newObj);
+	});
+	return newObj;
+};
+/*
+	处理新生体
+*/
+var processNewObject = function (obj, iterator) {
+	var newObj = {};
+	Object.keys(obj).forEach(function (item, index, arr) {
+		iterator(item, index, arr, newObj);
+	});
+	return newObj;
+};
+/*
+	对象统一转换
+*/
+var objectTransformation =  function (obj, newObj) {
+	return Array.isArray(obj) ? _.objectToArr(newObj) : _.arrToObject(newObj);
+}
+
+
+
+
+
+
 var _ = {};
 _.val = function (val) {
     return val;
@@ -45,6 +87,31 @@ _.fnVal = function (val) {
 	return function () {
 		return val;
 	};
+};
+
+
+
+/****************
+	复制
+****************/
+/*
+	复制引用类型
+	1.全部复制
+	2.过滤复制--一开始我只要基础类型，我想的是传的参数，比如str，nub之类的，后来想那又能我要其他的，这种其他的可能性是没有立足点的，列举几十种策略都满足不了，所以直接抽象上升到迭代器，让用户自己控制
+*/
+_.clone = function(obj, iteratee) {
+	iteratee = !iteratee ? function () {
+		return true;
+	} : iteratee;
+	return _.whichData(obj, function () {
+		return !iteratee ? obj.slice() : obj.filter(iteratee);
+	}, function () {
+		var newObj = {};
+		Object.keys(obj).filter(iteratee).forEach(function (item, index, arr) {
+			newObj[item] = obj[item];
+		});
+		return newObj;
+	}.bind(this));
 };
 
 
@@ -256,11 +323,12 @@ _.future = function (date) {
 /*
 	重复行为
 	重复做直到达到目标，不达目的誓不罢休
+	但这里只是重复特定的值，万一我是要做其他更具体的事情呢？？？？
 */
-_.repeat = function (createVal, predicate, arr) {
+_.repeat = function (create, predicate, arr) {
 	arr = arr ? [] : arr;
 	// 创建一个新值
-	var res = createVal();
+	var res = create();
 	// 判断这个新值在某个条件中符合不符合
 	// 如果符合就添加到数据中
 	// 如果不符合接着递归直到符合
@@ -269,10 +337,11 @@ _.repeat = function (createVal, predicate, arr) {
 		arr.push(res);
 		return res;
 	// 没达到目的继续
-	} else arguments.callee(createVal, predicate, arr);
+	} else this.repeat(createVal, predicate, arr);
 };
 /*
 	根据不同的数据类型做不同的事情
+	以后这种东西都要变成策略
 */
 _.whichData = function (data, arr, obj) {
 	if (_.isObject(data)) return obj(data);
@@ -295,7 +364,7 @@ _.debounce = function(fn, interval) {
 	};
 };
 /*
-	单列行为
+	单次行为
 */
 _.once = function (fn) {
 	var bl = true;
@@ -333,7 +402,7 @@ _.decorate = function () {
 	var go = function () {
 		// 每个方法都是独立的，之间没有关系，只是顺序，不像面向对象真的是包在里面的
 		[].forEach.call(args, function (item, index, arr) {
-			item.apply(null, arguments);
+			item.apply(args[0], arguments);
 		});
 	};
 	// 增加添加方法
@@ -381,7 +450,7 @@ _.state = function () {
 		link.add(newState, item);
 	};
 	// 替换状态
-	var replaceState = function (newState, oldState) {
+	var editState = function (newState, oldState) {
 		link.replace(newState, oldState);
 		if (one.el === oldState) one = link.find(newState);
 	};
@@ -394,13 +463,22 @@ _.state = function () {
 	return {
 		currState : oneByOne,
 		addState : addState,
-		replaceState : replaceState,
+		editState : editState,
 		delState : delState
 	};
 };
 /*
+	第三者
+	发现很多模式都是通过第三者甚至第n者来进行对象与对象之间的访问的，比如中介者，代理
+	未完成。。。。。。
+*/
+_.third = function () {
+
+};
+/*
 	策略
 	访问对象的属性(数字-字符)
+	未完成。。。。。。
 */
 _.strategy = function (road) {
 
@@ -414,6 +492,15 @@ _.change = function () {
 	return function () {
 		// ...
 	};
+};
+/*
+	深浅
+	对象都有深浅，对于深的操作，对于浅的操作，但归根结底还是策略，还是不同的道路，不同的意见，不是真理，知识需要立足点，我觉的我可以写个策略的形式，至于策略的实际内容，比如深浅，比如参数的不确定性都通过传参的方式，因为这些都是变化的，是意见，唯有真理不变，真理不需要写if，真理只有一条路，呵呵哒
+	未完成。。。。。。
+*/
+_.depth = function () {
+	// 这个对策略来时只是内容
+	// ...
 };
 
 
@@ -429,28 +516,56 @@ _.findKey = function (obj, value) {
 };
 /*
 	通过ke或是val寻找当前所在对象
+	这里有个问题就是，当里面嵌套的key和val一样的时候，就有些蛋疼了，他给了我里面的一个对象，我要的是外面一层的对象，还没有遍历到，所以要改进下，弄个广度优先遍历的
+	这个要改，我想了下就是先去维度吧，把他变成一维的，然后再在里面找，要全部找一遍，因为有可能有一样的，把找到的全部返回给外面，有具体业务逻辑决定
+	我加个是否需要深度查找不就好了么，
 */
 _.getObj = function () {
 	// 现在有2种情况
-	var arr = [function (obj, one, result) {
+	var arr = [function oneVal (obj, one, depth, result) {
+		// 至少深入一层寻找
+		// 维度
+		var dimension = 1;
 		// 2.只知道key或只知道val
 		for (var oldKey in obj) {
 			if (typeof obj[oldKey] === 'object') {
-				if (oldKey == one) return obj;
-				result = arguments.callee(obj[oldKey], one, result);
-				if (result) return result;
+				if (depth) {
+					if (oldKey == one) return obj;
+					result = oneVal(obj[oldKey], one, depth, result);
+					if (result) return result;
+				} else {
+					if (dimension === 1) {
+						// 浅寻找不能用递归了，还是手动for循环，因为我知道要循环2层
+						if (one in obj[oldKey]) return obj[oldKey];
+					}
+				}
 			} else if (one in obj) return obj; else if(one == obj[oldKey]) return obj;
 		}
-	}, function (obj, newKey, val, result) {
+		// 增加维度
+		dimension++;
+
+	}, function twoVal (obj, newKey, val, depth, result) {
+		// 至少深入一层寻找
+		// 维度
+		var dimension = dimension || 1;
 		// 1.知道key和val
 		for (var oldKey in obj) {
 			if (typeof obj[oldKey] === 'object') {
-				result = arguments.callee(obj[oldKey], newKey, val, result);
-				if (result) return result;
+				if (depth) {
+					result = twoVal(obj[oldKey], newKey, val, depth, result);
+					if (result) return result;
+				} else {
+					if (dimension === 1) {
+						// 浅寻找不能用递归了，还是手动for循环，因为我知道要循环2层
+						if (newKey in obj[oldKey] && val == obj[oldKey][newKey]) return obj[oldKey];
+					}
+				}
 			} else if (obj[newKey] == val) return obj;
 		}
+		// 增加维度
+		dimension++;
 	}];
-	return arr[arguments.length % 2].apply(null, arguments);
+	return !this.isBoolean(arguments[arguments.length - 1]) ? arr[arguments.length % 2].apply(null, arguments) : arr[arguments.length % 3].apply(null, arguments);
 };
 /*
 	寻找所有的对象的值
@@ -462,6 +577,93 @@ _.values = function (obj) {
 	for (var i = 0; i < length; i++) val[i] = obj[keys[i]];
 	return val;
 };
+/*
+	过滤false的值，都返回真值
+*/
+_.compact = function (obj) {
+	// 1.进来统一
+	var newObj = {};
+	for (var key in obj) newObj[key] = obj[key];
+	var keys = Object.keys(newObj);
+	var result = keys.filter(function (item, index, arr) {
+		return !newObj[item];
+	}).forEach(function (item, index, arr) {
+		delete newObj[item];
+	});
+	// 输出的时候还是要看看进来的是不是数组，人家进来数组数来对象，搞笑了
+	// 2.出去分流
+	return objectTransformation(obj, newObj);
+};
+
+
+
+/****************
+	映射
+****************/
+/*
+	映射转换
+	辩证法-你是我，我是你
+	键值互换
+*/
+_.invert = function (obj, arr) {
+	// arr是指那些不需要互换的，并不是所有情况都要互换
+	function surplus (it) {
+		return !arr.every(function (item, index, arr) {
+			return item === it ? false : true;
+		});
+	}
+	surplus = arr ? surplus : function () {};
+	return processNewObject(obj, function (item, index, arr, newObj) {
+		surplus(item) ? newObj[item] = obj[item] : newObj[obj[item]] = item;
+	});
+};
+/*
+	对象通过一张映射表来映射
+	值与值之间的映射
+	这里也要处理下是深映射还是浅映射--那我把深浅的概念提出来吧
+*/
+_.paraVal = function (obj, form) {
+	// 通过表的key找到obj的key后的值对应表的key的值
+	return processCloneObject(obj, function (item, index, arr, newObj) {
+		if (_.isObject(newObj[item]) && newObj[item] !== null) _.paraVal(newObj[item], form); else {
+			if (item in form) {
+				newObj[item] = form[item][newObj[item]];
+			}
+		}
+	});
+};
+/*
+	映射key
+*/
+_.paraKey = function (obj, form) {
+	return processNewObject(obj, function (item, index, arr, newObj) {
+		// 占时不深映射，深浅之后统一处理
+		for (let key in form) {
+			if (item === form[key]) newObj[key] = obj[item];
+		}
+	});
+}
+/*
+	对象变数组
+*/
+_.objectToArr = function (obj) {
+	if (Array.isArray(obj)) return obj;
+	var result = [];
+	for (var key in obj) result.push(obj[key]);
+	return result;
+};
+/*
+	数组变对象
+*/
+_.arrToObject = function (arr) {
+	if (_.isObject(arr)) return arr;
+	var result = {};
+	arr.forEach(function (item, index, arr) {
+		result[index] = item;
+	});
+	return result;
+};
+
 
 
 
@@ -477,75 +679,6 @@ _.pairs = function (obj) {
 	var pai = [];
 	for (var i = 0; i < length; i++) pai[i] = [keys[i], obj[keys[i]]];
 	return pai;
-};
-
-
-
-/****************
-	运算
-	浮点数运算
-****************/
-/*
-	加法
-*/
-_.accAdd = function (arg1, arg2) {
-	var that = this;
-    var r1;
-    var r2;
-    var m;
-    try {
-        r1 = arg1.toString().split(".")[1].length;
-    } catch(e) {
-        r1 = 0;
-    }
-    try {
-        r2 = arg2.toString().split(".")[1].length;
-    } catch(e) {
-        r2 = 0;
-    }
-    m = Math.pow(10, Math.max(r1, r2));
-    return (that.accMul(arg1, m) + that.accMul(arg2, m)) / m;
-};
-/*
-	减法
-*/
-_.accSub = function (arg1, arg2) {
-    return this.accAdd(arg1, -arg2);
-};
-/*
-	乘法
-*/
-_.accMul = function (arg1, arg2) {
-    var m = 0;
-	var s1 = arg1.toString();
-	var s2 = arg2.toString();
-    try {
-        m += s1.split(".")[1].length;
-    } catch(e) {}
-    try {
-        m += s2.split(".")[1].length;
-    } catch(e) {}
-    return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
-};
-/*
-	除法
-*/
-_.accDiv = function (arg1, arg2) {
-    var t1 = 0;
-	var t2 = 0;
-	var r1;
-	var r2;
-    try {
-        t1 = arg1.toString().split(".")[1].length;
-    } catch (e) {}
-    try {
-        t2 = arg2.toString().split(".")[1].length;
-    } catch (e) {}
-    with(Math) {
-        r1 = Number(arg1.toString().replace(".", ""));
-        r2 = Number(arg2.toString().replace(".", ""));
-        return (r1 / r2) * pow(10, t2 - t1);
-    }
 };
 
 
@@ -613,8 +746,17 @@ _.without = function(obj, del) {
 /*
 	删除空格
 */
-_.trim = function(str) {
-	return str.replace(/(^\s*)|(\s*$)/g,'');
+_.trim = function(obj) {
+	for (var key in obj) {
+		if (obj[key] == null || obj[key] == undefined) {
+			obj[key] = '';
+		} else if (typeof obj[key] == 'object') {
+			this.trim(obj[key]);
+		} else {
+			obj[key] = obj[key].toString().replace(/(^\s*)|(\s*$)/g,'');
+		}
+	}
+	return obj;
 };
 
 
@@ -703,19 +845,6 @@ _.complement = aggregate(2);
 	继承
 */
 _.extend = aggregate(0, true);
-
-
-
-/****************
-	复制
-****************/
-_.clone = function(obj) {
-	return _.whichData(obj, function () {
-		return obj.slice();
-	}, function () {
-		return this.extend({}, obj);
-	}.bind(this));
-};
 
 
 
@@ -960,3 +1089,4 @@ _.createLink = function () {
 
 
 
+// export default _;
