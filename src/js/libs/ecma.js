@@ -5,9 +5,9 @@
 
 1. 1.0的时候只是把一些觉得实用的常用的功能罗列的写出来，没有提升到抽象层面♥♥♥♥
 2. 修改对象都要返回新的对象，不要在原有的对象上改♥♥♥♥
-3. 处理数组和对象一种是策略，一种是就当都对象处理，最后分离，我倾向后一种，因为他变成了统一质料
+3. 处理数组和对象一种是策略，一种是就当都对象处理，最后分离，我倾向后一种，因为他变成了统一质料♥♥♥♥
 4. js是动态的语言，动态的特性是变化，有哪些变化呢，空间的变化，添加，删除，状态（修改），时间的变化，然后就是功能都分创建时候的静态实体，和用的时候的动态实体，也就是实体会有方法给到外部使用
-5. 工具的分类还是通过形式来分类，展示不考虑质料
+5. 工具的分类还是通过形式来分类，占时不考虑质料
 
 @@@@从具象到抽象，脱离形，提炼一般化@@@@
 抽象是哲学的根本特点，代码亦如此。
@@ -42,37 +42,109 @@
 /****************
 	私有
 ****************/
-/*	
+/*
 	处理对象
 	经典的一部，数组变对象，一切皆对象，哈哈哈
 	数组对象终归一家
 	直接对象处理，不要再用那个什么iswhich了这是意见，这里真理是什么，真理就是一切皆对象
+*/
+var processObject = function (fn) {
+	fn = fn || function (oldObj, newObj) {
+		return newObj;
+	};
+	return function (oldObj, iterator, data) {
+		var newObj = data || {};
+		// 不但要处理新的对象还是处理在什么对象上迭代
+		newObj = fn(oldObj, newObj);
+		Object.keys(oldObj).forEach(function (item, index, arr) {
+			iterator(item, index, arr, newObj);
+		});
+		return newObj;
+	};
+};
+/*
 	处理克隆体
 */
-var processCloneObject = function (obj, iterator) {
-	var newObj = {};
-	for (var key in obj) newObj[key] = obj[key];
-	Object.keys(newObj).forEach(function (item, index, arr) {
-		iterator(item, index, arr, newObj);
-	});
+var processCloneObject = processObject(function (oldObj, newObj) {
+	for (var key in oldObj) newObj[key] = oldObj[key];
 	return newObj;
-};
+});
 /*
 	处理新生体
 */
-var processNewObject = function (obj, iterator) {
-	var newObj = {};
-	Object.keys(obj).forEach(function (item, index, arr) {
-		iterator(item, index, arr, newObj);
-	});
-	return newObj;
-};
+var processNewObject = processObject();
 /*
 	对象统一转换
 */
 var objectTransformation =  function (obj, newObj) {
 	return Array.isArray(obj) ? _.objectToArr(newObj) : _.arrToObject(newObj);
 }
+/*
+	集合的种属概念
+*/
+var aggregate = function(index, bl) {
+	return function (obj) {
+		var that = this;
+		var thatArg = arguments;
+		return _.whichData(obj, function () {
+			// 并集
+			var union = [].concat.apply(obj, [].slice.call(thatArg, 1));
+			// 并集 交集
+			var result = [union, this.uniq(union)];
+			// 并集删除交集就是补集
+			result[2] = (function () {
+				var complement = union.slice(0);
+				result[1].forEach(function (item, index, arr) {
+					that.without(complement, item);
+				});
+				return complement;
+			})();
+			return result[index];
+		}.bind(this), function () {
+			// 哪个为主体的开关
+			// 并集
+			var result = [function () {
+				// 手动clone，自调用会栈溢出，呵呵
+				var newObj = {};
+				for (let key in obj) newObj[key] = obj[key];
+				// var newObj = that.clone(obj);
+				// console.log(newObj)
+				for (let i = 1, len = thatArg.length; i < len; i++) {
+					for (let key in thatArg[i]) {
+						if (that.isBoolean(bl) && bl) {
+							if (!newObj.hasOwnProperty(key)) newObj[key] = thatArg[i][key];
+						} else newObj[key] = thatArg[i][key];
+					}
+				}
+				return newObj;
+			// 交集
+			}, function () {
+				var newObj = {};
+				for (let i = 1, len = thatArg.length; i < len; i++) {
+					for (let key in thatArg[i]) {
+						if (that.isExistence(obj, thatArg[i][key])) {
+							newObj[key] = thatArg[i][key];
+						}
+					}
+				}
+				return newObj;
+			}];
+			// 补集
+			result[2] = function () {
+				// 并集
+				var union = result[0]();
+				// 交集
+				var intersection = result[1]();
+				// 并集删除交集就是补集
+				for (let key in intersection) {
+					that.without(union, intersection[key]);
+				}
+				return union;
+			};
+			return result[index]();
+		});
+	};
+};
 
 
 
@@ -99,19 +171,14 @@ _.fnVal = function (val) {
 	1.全部复制
 	2.过滤复制--一开始我只要基础类型，我想的是传的参数，比如str，nub之类的，后来想那又能我要其他的，这种其他的可能性是没有立足点的，列举几十种策略都满足不了，所以直接抽象上升到迭代器，让用户自己控制
 */
-_.clone = function(obj, iteratee) {
-	iteratee = !iteratee ? function () {
+_.clone = function(oldObj, iterator) {
+	iterator = !iterator ? function () {
 		return true;
-	} : iteratee;
-	return _.whichData(obj, function () {
-		return !iteratee ? obj.slice() : obj.filter(iteratee);
-	}, function () {
-		var newObj = {};
-		Object.keys(obj).filter(iteratee).forEach(function (item, index, arr) {
-			newObj[item] = obj[item];
-		});
-		return newObj;
-	}.bind(this));
+	} : iterator;
+	// 这里可以判断我进来的是什么数据类型出去的是什么数据类型了
+	return objectTransformation(oldObj, processNewObject(oldObj, function (item, index, arr, newObj) {
+		newObj[item] = oldObj[item];
+	})).filter(iterator);
 };
 
 
@@ -565,7 +632,7 @@ _.getObj = function () {
 		// 增加维度
 		dimension++;
 	}];
-	return !this.isBoolean(arguments[arguments.length - 1]) ? arr[arguments.length % 2].apply(null, arguments) : arr[arguments.length % 3].apply(null, arguments);
+	return !_.isBoolean(arguments[arguments.length - 1]) ? arr[arguments.length % 2].apply(null, arguments) : arr[arguments.length % 3].apply(null, arguments);
 };
 /*
 	寻找所有的对象的值
@@ -580,19 +647,10 @@ _.values = function (obj) {
 /*
 	过滤false的值，都返回真值
 */
-_.compact = function (obj) {
-	// 1.进来统一
-	var newObj = {};
-	for (var key in obj) newObj[key] = obj[key];
-	var keys = Object.keys(newObj);
-	var result = keys.filter(function (item, index, arr) {
-		return !newObj[item];
-	}).forEach(function (item, index, arr) {
-		delete newObj[item];
-	});
-	// 输出的时候还是要看看进来的是不是数组，人家进来数组数来对象，搞笑了
-	// 2.出去分流
-	return objectTransformation(obj, newObj);
+_.compact = function (oldObj) {
+	return objectTransformation(oldObj, processCloneObject(oldObj, function (item, index, arr, newObj) {
+		!newObj[item] && delete newObj[item];
+	}));
 };
 
 
@@ -673,12 +731,10 @@ _.arrToObject = function (arr) {
 /*
 	把一个对象转换为一个[key,value]形式的数组
 */
-_.pairs = function (obj) {
-	var keys = Object.keys(obj);
-	var length = keys.length;
-	var pai = [];
-	for (var i = 0; i < length; i++) pai[i] = [keys[i], obj[keys[i]]];
-	return pai;
+_.pairs = function (oldObj) {
+	return _.objectToArr(processNewObject(oldObj, function (item, index, arr, newArr) {
+		newArr.push([item, oldObj[item]]);
+	}, []));
 };
 
 
@@ -691,10 +747,10 @@ _.uniq = function (array) {
 	var repeat = [];
 	for(var i = 0; i < array.length; i++){
 		var value = array[i];
-		if(!this.isExistence(result, value)) result.push(value); else {
+		if(!_.isExistence(result, value)) result.push(value); else {
 			i--;
-			this.without(array, value);
-			if (!this.isExistence(repeat, value)) repeat.push(value);
+			_.without(array, value);
+			if (!_.isExistence(repeat, value)) repeat.push(value);
 		}
 	}
 	return repeat;
@@ -724,111 +780,32 @@ _.shuffle = function(obj) {
 /*
 	删除元素
 */
-_.without = function(obj, del) {
-	var arrData = function () {
-		var idx;
-		obj.every(function(item, index, arr) {
-			if (item === del) {
-				idx = index;
-				obj.splice(index, 1);
-				return false;
-			}
-			return true;
-		});
-		return idx;
-	};
-	var objData = function () {
-		delete obj[this.findKey(this.getObj(obj, del), del)];
-		return obj;
-	}.bind(this);
-	return this.whichData(obj, arrData, objData);
+_.without = function(oldObj, del) {
+	return objectTransformation(oldObj, processCloneObject(oldObj, function (item, index, arr, newObj) {
+		newObj[item] === del && delete newObj[item];
+	}));
 };
 /*
 	删除空格
 */
-_.trim = function(obj) {
-	for (var key in obj) {
-		if (obj[key] == null || obj[key] == undefined) {
-			obj[key] = '';
-		} else if (typeof obj[key] == 'object') {
-			this.trim(obj[key]);
+_.trim = function(oldObj) {
+	var newObj = _.clone(oldObj);
+	for (var key in newObj) {
+		if (newObj[key] == null || newObj[key] == undefined) {
+			newObj[key] = '';
+		} else if (typeof newObj[key] == 'object') {
+			_.trim(newObj[key]);
 		} else {
-			obj[key] = obj[key].toString().replace(/(^\s*)|(\s*$)/g,'');
+			newObj[key] = newObj[key].toString().replace(/(^\s*)|(\s*$)/g,'');
 		}
 	}
-	return obj;
+	return newObj;
 };
 
 
 /****************
 	集合--并集，交集，补集
 ****************/
-/*
-	集合的种属概念
-*/
-var aggregate = function(index, bl) {
-	return function (obj) {
-		var that = this;
-		var thatArg = arguments;
-		return _.whichData(obj, function () {
-			// 并集
-			var union = [].concat.apply(obj, [].slice.call(thatArg, 1));
-			// 并集 交集
-			var result = [union, this.uniq(union)];
-			// 并集删除交集就是补集
-			result[2] = (function () {
-				var complement = union.slice(0);
-				result[1].forEach(function (item, index, arr) {
-					that.without(complement, item);
-				});
-				return complement;
-			})();
-			return result[index];
-		}.bind(this), function () {
-			// 哪个为主体的开关
-			// 并集
-			var result = [function () {
-				// 手动clone，自调用会栈溢出，呵呵
-				var newObj = {};
-				for (let key in obj) newObj[key] = obj[key];
-				// var newObj = that.clone(obj);
-				// console.log(newObj)
-				for (let i = 1, len = thatArg.length; i < len; i++) {
-					for (let key in thatArg[i]) {
-						if (that.isBoolean(bl) && bl) {
-							if (!newObj.hasOwnProperty(key)) newObj[key] = thatArg[i][key];
-						} else newObj[key] = thatArg[i][key];
-					}
-				}
-				return newObj;
-			// 交集
-			}, function () {
-				var newObj = {};
-				for (let i = 1, len = thatArg.length; i < len; i++) {
-					for (let key in thatArg[i]) {
-						if (that.isExistence(obj, thatArg[i][key])) {
-							newObj[key] = thatArg[i][key];
-						}
-					}
-				}
-				return newObj;
-			}];
-			// 补集
-			result[2] = function () {
-				// 并集
-				var union = result[0]();
-				// 交集
-				var intersection = result[1]();
-				// 并集删除交集就是补集
-				for (let key in intersection) {
-					that.without(union, intersection[key]);
-				}
-				return union;
-			};
-			return result[index]();
-		});
-	};
-};
 /*
 	并集
 */
@@ -851,16 +828,10 @@ _.extend = aggregate(0, true);
 /****************
 	扁平化
 ****************/
-_.flatten = function(input) {
-	var result = [];
-	for (var i = 0, length = input.length; i < length; i++) {
-		var value = input[i];
-		if (Array.isArray(value)) {
-			value = arguments.callee(value);
-			for (var j = 0, len = value.length; j < len; j++) result.push(value[j]);
-		} else result.push(value);
-	}
-	return result;
+_.flatten = function(input, oldArr) {
+	return processNewObject(input, function (item, index, arr, newArr) {
+		Array.isArray(input[item]) ? newArr = newArr.concat(_.flatten(input[item], newArr)) : newArr.push(input[item]);
+	}, oldArr || []);
 };
 
 
@@ -904,7 +875,6 @@ _.countDown = function(c, fn) {
 		var d = new Date();
 		//获取当前时间戳
 		var nowTime = d.getTime();
-
 		var overTime = c;
 		//结束事件戳-当前时间戳 
 		var mist = parseInt((overTime - nowTime) / 1000);
@@ -938,7 +908,7 @@ _.fillZero = function (nub) {
 ****************/
 // 数字3位加逗号，金钱显示
 _.money = function(num) {
-	num = num + '';
+	num += '';
 	return num.split('').reverse().join('').replace(/(\d{3})/g, '$1,').split('').reverse().join('').replace(/^\,/,'');
 };
 
