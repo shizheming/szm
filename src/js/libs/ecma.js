@@ -34,7 +34,9 @@
 // 要抽象一样东西，我们的先规定形式和质料，形式就是我们要抽象出的那个东西，而这里的质料我只指代码的技巧和方法，当然还有其他质料，因为不是重点，姑且忽略
 // 那技巧是什么，就是函数，各种函数，回调，高阶等等。
 
-
+/*
+	代码是种知识，那我们要如何获取知识，知识必须有立足点，必须具有普遍性，一般性，客观性，我们才能把握，那种处在神灭变化当中的我们无法把握，不能获取，所以我们只能把握那个具有，普遍性，一般性，客观性的知识，而知识从何而来，从实体中来，
+*/
 
 
 
@@ -57,7 +59,7 @@ var processObject = function (fn) {
 		// 不但要处理新的对象还是处理在什么对象上迭代
 		newObj = fn(oldObj, newObj);
 		Object.keys(oldObj).forEach(function (item, index, arr) {
-			iterator(item, index, arr, newObj);
+			iterator(oldObj[item], item, newObj);
 		});
 		return newObj;
 	};
@@ -176,8 +178,8 @@ _.clone = function(oldObj, iterator) {
 		return true;
 	} : iterator;
 	// 这里可以判断我进来的是什么数据类型出去的是什么数据类型了
-	return objectTransformation(oldObj, processNewObject(oldObj, function (item, index, arr, newObj) {
-		newObj[item] = oldObj[item];
+	return objectTransformation(oldObj, processNewObject(oldObj, function (val, key, newObj) {
+		newObj[key] = val;
 	})).filter(iterator);
 };
 
@@ -267,7 +269,7 @@ _.reversePredicate = function (predicate) {
 	判断一堆数据中是否存在一个，一种，多个，多种数据
 	存在是一，存在是多(数量关系)
 */
-_.isExistence = function (data, value) {
+_.isExistence =	 function (data, value) {
 	// 现在只是单个存在，要添加多个存在，不但存在一，还要存在多
 	// 存在多
 	// 这里直接从多入手到一
@@ -279,29 +281,14 @@ _.isExistence = function (data, value) {
 	args.forEach(function (item, index, arr) {
 		typeof item == 'function' ? predicate.push(item) : val.push(item);
 	});
-	// data是数组
-	var arrData = function () {
-		val = val.length == 0 ? true : val.every(function (item, index, arr) {
-			return data.indexOf(item) > -1;
-		});
-		predicate = predicate.length == 0 ? true : predicate.every(function (item, index, arr) {
-			return data.some(function (val, index, arr) {
-				return item(val);
-			});
-		});
-	};
-	// data是对象
-	var objData = function () {
-		val = val.length == 0 ? true : val.every(function (item, index, arr) {
-			for (let key in data) if (data[key] === item) return true;
-			return false;
-		});
-		predicate = predicate.length == 0 ? true : predicate.every(function (item, index, arr) {
-			for (let key in data) if (item(data[key])) return true;
-			return false;
-		});
-	};
-	this.whichData(data, arrData, objData);
+	val = val.length == 0 ? true : val.every(function (item, index, arr) {
+		for (let key in data) if (data[key] === item) return true;
+		return false;
+	});
+	predicate = predicate.length == 0 ? true : predicate.every(function (item, index, arr) {
+		for (let key in data) if (item(data[key])) return true;
+		return false;
+	});
 	return val && predicate;
 };
 /*
@@ -648,8 +635,8 @@ _.values = function (obj) {
 	过滤false的值，都返回真值
 */
 _.compact = function (oldObj) {
-	return objectTransformation(oldObj, processCloneObject(oldObj, function (item, index, arr, newObj) {
-		!newObj[item] && delete newObj[item];
+	return objectTransformation(oldObj, processCloneObject(oldObj, function (val, key, newObj) {
+		!val && delete newObj[key];
 	}));
 };
 
@@ -663,7 +650,7 @@ _.compact = function (oldObj) {
 	辩证法-你是我，我是你
 	键值互换
 */
-_.invert = function (obj, arr) {
+_.invert = function (oldObj, arr) {
 	// arr是指那些不需要互换的，并不是所有情况都要互换
 	function surplus (it) {
 		return !arr.every(function (item, index, arr) {
@@ -671,8 +658,8 @@ _.invert = function (obj, arr) {
 		});
 	}
 	surplus = arr ? surplus : function () {};
-	return processNewObject(obj, function (item, index, arr, newObj) {
-		surplus(item) ? newObj[item] = obj[item] : newObj[obj[item]] = item;
+	return processNewObject(oldObj, function (val, key, newObj) {
+		surplus(key) ? newObj[key] = val : newObj[val] = key;
 	});
 };
 /*
@@ -680,12 +667,12 @@ _.invert = function (obj, arr) {
 	值与值之间的映射
 	这里也要处理下是深映射还是浅映射--那我把深浅的概念提出来吧
 */
-_.paraVal = function (obj, form) {
+_.paraVal = function (oldObj, form) {
 	// 通过表的key找到obj的key后的值对应表的key的值
-	return processCloneObject(obj, function (item, index, arr, newObj) {
-		if (_.isObject(newObj[item]) && newObj[item] !== null) _.paraVal(newObj[item], form); else {
-			if (item in form) {
-				newObj[item] = form[item][newObj[item]];
+	return processCloneObject(oldObj, function (val, key, newObj) {
+		if (_.isObject(newObj[key]) && newObj[key] !== null) _.paraVal(newObj[key], form); else {
+			if (key in form) {
+				newObj[key] = form[key][val];
 			}
 		}
 	});
@@ -694,10 +681,10 @@ _.paraVal = function (obj, form) {
 	映射key
 */
 _.paraKey = function (obj, form) {
-	return processNewObject(obj, function (item, index, arr, newObj) {
+	return processNewObject(obj, function (val, key, newObj) {
 		// 占时不深映射，深浅之后统一处理
-		for (let key in form) {
-			if (item === form[key]) newObj[key] = obj[item];
+		for (let x in form) {
+			if (key === form[x]) newObj[x] = val;
 		}
 	});
 }
@@ -732,8 +719,8 @@ _.arrToObject = function (arr) {
 	把一个对象转换为一个[key,value]形式的数组
 */
 _.pairs = function (oldObj) {
-	return _.objectToArr(processNewObject(oldObj, function (item, index, arr, newArr) {
-		newArr.push([item, oldObj[item]]);
+	return _.objectToArr(processNewObject(oldObj, function (val, key, newArr) {
+		newArr.push([key, val]);
 	}, []));
 };
 
@@ -781,8 +768,8 @@ _.shuffle = function(obj) {
 	删除元素
 */
 _.without = function(oldObj, del) {
-	return objectTransformation(oldObj, processCloneObject(oldObj, function (item, index, arr, newObj) {
-		newObj[item] === del && delete newObj[item];
+	return objectTransformation(oldObj, processCloneObject(oldObj, function (val, key, newObj) {
+		val === del && delete newObj[key];
 	}));
 };
 /*
@@ -829,8 +816,8 @@ _.extend = aggregate(0, true);
 	扁平化
 ****************/
 _.flatten = function(input, oldArr) {
-	return processNewObject(input, function (item, index, arr, newArr) {
-		Array.isArray(input[item]) ? newArr = newArr.concat(_.flatten(input[item], newArr)) : newArr.push(input[item]);
+	return processNewObject(input, function (val, key, newArr) {
+		Array.isArray(val) ? newArr = newArr.concat(_.flatten(val, newArr)) : newArr.push(val);
 	}, oldArr || []);
 };
 
