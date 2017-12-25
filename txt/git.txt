@@ -48,3 +48,8 @@ git commit -am '提交说明'
 
 创建文件
 touch 需要创建的文件
+
+创建新的空白分支不与朱分支关联
+1.git checkout --orphan gh-pages（分支明）
+2.删除所有文件
+rm -rf *

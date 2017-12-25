@@ -3,41 +3,83 @@
 版本：2.0
 时间：2017.10
 
+更新：
 1. 1.0的时候只是把一些觉得实用的常用的功能罗列的写出来，没有提升到抽象层面♥♥♥♥
 2. 修改对象都要返回新的对象，不要在原有的对象上改♥♥♥♥
-3. 处理数组和对象一种是策略，一种是就当都对象处理，最后分离，我倾向后一种，因为他变成了统一质料♥♥♥♥
-4. js是动态的语言，动态的特性是变化，有哪些变化呢，空间的变化，添加，删除，状态（修改），时间的变化，然后就是功能都分创建时候的静态实体，和用的时候的动态实体，也就是实体会有方法给到外部使用
-5. 工具的分类还是通过形式来分类，占时不考虑质料
+3. 处理数组和对象一种是策略，都当对象处理，最后分离，因为他变成了统一质料♥♥♥♥
+4. 功能还是保持单一性，就像那个复制，我有加了复制之后的过滤，这是2个不同的功能，不需要耦合在一起♥♥♥♥
+5. 函数参数容错处理♥♥♥♥
 
-@@@@从具象到抽象，脱离形，提炼一般化@@@@
 抽象是哲学的根本特点，代码亦如此。
-
-心态：有能力就绕过感觉经验，没能力还是得靠感觉经验，以免对自己造成不必要的痛苦而导致无法正常前进
+（理念和实体）（共相和殊相）（抽象和具象）都是相对的，有辩证性
 
 1. 抽象是什么？
 	抽象是具象的反义词
 2. 为什么要抽象？
 	因为让别人看的一脸懵笔的感觉很爽。
-	因为抽象是我们创建实体的起点，必经之路，我们不能直接从tab切换的业务代码变成另一个拖拽排序的东西，我们只有从中抽象出数据类型，语法，等等，重新构建另一个，这就是从实体到抽象，抽象再到实体的这么一个过程，所以是必经之路，而复用只是抽象附带的这么一个特性而已。
+	因为抽象是我们创建实体的起点，必经之路，我们不能直接从tab切换的业务代码变成另一个拖拽排序的东西，我们只有从中抽象出数据类型，语法，等等，重新构建另一个，这就是从实体到抽象，然后再从抽象到实体的这么一个过程，所以是必经之路，而复用只是抽象附带的这么一个特性而已。
 3. 怎么抽象？
 	单个抽象：抽象行为，抽象属性，抽象种属概念（比较难）
 	多个抽象：抽象相同的部分和不同的部分，抽象不变的和变化的（比上面容易，因为有比较了）
 4. 抽象出什么来？
-	抽象出形式	
+	抽象出形式，抽象出质料，任何事物都是形式和质料的统一
 5. 抽象的程度
 	抽象的程度越深，那抽象出来的离抽象本身最近，越一般，与其他抽象越紧密，如果2个抽象依旧没有关系，就说明抽象的程度没有达到联系的那一层，需继续抽象
 */
 
 // 我现在用高阶函数只是存一些数据,状态,配置一些属性,还没有提升到进去一个函数出来另一个函数的能力
-// 2步到位
-
-// 要抽象一样东西，我们的先规定形式和质料，形式就是我们要抽象出的那个东西，而这里的质料我只指代码的技巧和方法，当然还有其他质料，因为不是重点，姑且忽略
-// 那技巧是什么，就是函数，各种函数，回调，高阶等等。
 
 /*
-	代码是种知识，那我们要如何获取知识，知识必须有立足点，必须具有普遍性，一般性，客观性，我们才能把握，那种处在神灭变化当中的我们无法把握，不能获取，所以我们只能把握那个具有，普遍性，一般性，客观性的知识，而知识从何而来，从实体中来，
+	代码是种知识，那我们要如何获取知识，知识必须有立足点，必须具有普遍性，必然性，一般性，我们才能把握，那种处在神灭变化当中的我们无法把握，不能获取，所以我们只能把握那个具有，普遍性，必然性，一般性，的知识，
 */
 
+/*
+----关于页面----
+
+♥♥♥♥状态♥♥♥♥
+	初始状态
+	修改状态
+	删除状态
+	添加状态
+	重置状态
+	当前状态
+
+（在抽象弹窗抽象出通知的时候，我一度很困惑，这个概念总感觉是相当的具象，因为他限于人，并非动植物，或是无生命体，有局限性，所以具象，所以还不够通用，不够一般，那就再往上抽，把他的属差去掉，他的属差是什么，是人，是有理性，是主观主动性，然后想了想，“发出信息”就出来了，这就不限客观载体了，生命体能发出信息，非生命体也能发出信息，这样就是更加一般形式了）
+
+♥♥♥♥数据♥♥♥♥
+大量的数据需要组织分类，vue的data里不能无限加各种单个杂乱的数据，不利于管理
+数据的独立性，单独的意义，这里是纯质料，数据，那在这个质料上我给他赋予了形式，什么形式（用户的形式，来源的形式，去向的形式）
+1. 展示给用户的数据
+2. 用户输入的数据
+3. 提交给后端的数据
+4. 从后端拿到的数据
+
+♥♥♥♥可读函数♥♥♥♥
+还有就是有些判断和对象的赋值操作乍看之下看不出逻辑是什么意思，要联系上下文才看的我懂，所以最好分装成有名字解释的函数运行，读起来会好很多
+
+♥♥♥♥ajax统一处理下♥♥♥♥
+
+♥♥♥♥处理业务逻辑和处理数据分开♥♥♥♥
+主体业务逻辑不包含处理数据的部分，我的意思是那些是给人看的代码，和给计算机的代码分开，这里可以用装饰者，改初始挂的都先挂好，这样我就能专注业务逻辑了，不会一会写着业务逻辑，一遍处理数据
+
+状态的立体感，一个属性，一个变量太单薄，而且杂乱零散，用状态模式把页面的状态聚集一下
+9. 好多策略（比如先显示什么的时候好多if-else）
+11. 状态要添加下当前状态设置，因为不是每个状态都从初始开始
+12. 时间的控制比较蛋疼，比如我要获取3个月前的时间戳，1几小时前（反正就是要获得某一点的时间戳）
+----关于页面----
+*/
+
+// 运动，静止
+// 除了纯质料和纯形式，一些事物都是质料和形式的辩证
+// 我是这样理解偏函数的，当我抽象出某个事物的种的时候我回去用偏函数，当我要记录某些状态变化的时候我会去用偏函数，也就是要分1步以上的我回去用偏函数，如果不是种，而只是某个函数的中一小部分功能的时候，即使这个功能很复用，我也会去写个小函数，在某个函数里面调用，而不会把他作为种在直接在外面调用
+
+/* 
+★★★★★★★★★★★★★★★★★★★★
+1. 我先不要太烦恼和纠结于寻找那个最大种同时让这个最大的种与我现在写的东西的种之间建立关系等级，因为这是终极目标，不可能一下子找到和建立联系的，那么我现在要掉转枪头，把切入点放在我已有的方法上，从我具体的方法出发，往上找他的形式，往下找他的质料，达到统一，辩证。也就是要训练思维，不能不找边际的乱想
+2. 质料和形式的统一
+3. 知识的立足点，是那个一般的东西
+★★★★★★★★★★★★★★★★★★★★
+*/
 
 
 
@@ -46,15 +88,14 @@
 ****************/
 /*
 	处理对象
-	经典的一部，数组变对象，一切皆对象，哈哈哈
 	数组对象终归一家
-	直接对象处理，不要再用那个什么iswhich了这是意见，这里真理是什么，真理就是一切皆对象
 */
 var processObject = function (fn) {
 	fn = fn || function (oldObj, newObj) {
 		return newObj;
 	};
 	return function (oldObj, iterator, data) {
+		if (!_.isObject(oldObj) && !Array.isArray(oldObj) || !_.isFunction(iterator)) return [];
 		var newObj = data || {};
 		// 不但要处理新的对象还是处理在什么对象上迭代
 		newObj = fn(oldObj, newObj);
@@ -65,26 +106,53 @@ var processObject = function (fn) {
 	};
 };
 /*
-	处理克隆体
+	克隆体
 */
 var processCloneObject = processObject(function (oldObj, newObj) {
 	for (var key in oldObj) newObj[key] = oldObj[key];
 	return newObj;
 });
 /*
-	处理新生体
+	新生体
 */
 var processNewObject = processObject();
 /*
 	对象统一转换
 */
 var objectTransformation =  function (obj, newObj) {
-	return Array.isArray(obj) ? _.objectToArr(newObj) : _.arrToObject(newObj);
+	if (!_.isObject(obj) && !Array.isArray(obj) || !_.isObject(newObj) && !Array.isArray(newObj)) return [];
+	return Array.isArray(obj) ? objectToArr(newObj) : arrToObject(newObj);
 }
 /*
-	集合的种属概念
+	对象变数组
 */
-var aggregate = function(index, bl) {
+var objectToArr = function (obj) {
+	if (Array.isArray(obj)) return obj;
+	var result = [];
+	for (var key in obj) result.push(obj[key]);
+	return result;
+};
+/*
+	数组变对象
+*/
+var arrToObject = function (arr) {
+	if (_.isObject(arr)) return arr;
+	var result = {};
+	arr.forEach(function (item, index, arr) {
+		result[index] = item;
+	});
+	return result;
+};
+/*
+	随机
+*/
+var random = function () {
+	return Math.floor(Math.random() * 10);
+};
+/*
+	集合
+*/
+var aggregate = function (index, bl) {
 	return function (obj) {
 		var that = this;
 		var thatArg = arguments;
@@ -150,9 +218,6 @@ var aggregate = function(index, bl) {
 
 
 
-
-
-
 var _ = {};
 _.val = function (val) {
     return val;
@@ -165,138 +230,88 @@ _.fnVal = function (val) {
 
 
 
+/*
+★★★★动词★★★★
+*/
+
 /****************
 	复制
 ****************/
+
 /*
-	复制引用类型
-	1.全部复制
-	2.过滤复制--一开始我只要基础类型，我想的是传的参数，比如str，nub之类的，后来想那又能我要其他的，这种其他的可能性是没有立足点的，列举几十种策略都满足不了，所以直接抽象上升到迭代器，让用户自己控制
+	复制对象（对象也是最大的种了，没有再高的了）
 */
-_.clone = function(oldObj, iterator) {
-	iterator = !iterator ? function () {
-		return true;
-	} : iterator;
+_.clone = function (oldObj) {
 	// 这里可以判断我进来的是什么数据类型出去的是什么数据类型了
 	return objectTransformation(oldObj, processNewObject(oldObj, function (val, key, newObj) {
 		newObj[key] = val;
-	})).filter(iterator);
+	}));
 };
-
-
 
 /****************
 	随机
-	随机是Math.random()
-	用一说明多，一是基础，用一构建多
 ******************/
+
 /*
-	随机位数
-	单一的
-*/
-_.digit = function () {
-	return Math.ceil(Math.random() * 10);
-};
-/*
-	随机数字(这里的数字都是正整数)
-	数字属性--位数
-	一个一位数字，一个多位数字(数量关系)
+	随机数字
 */
 _.randomNumber = function (digit, digit2) {
-	var that = this;
-	// 单位一个数字
-	var n = function () {
-		return that.digit();
-	};
-	// 多位一个数字
-	var nn = function () {
-		return Math.ceil(Math.random() * Math.pow(10, digit));
-	};
-	// digit到digit2之间的一个数字
-	var nnn = function () {
-		return parseInt(digit + Math.random() * (digit2 - digit));
-	};
-	return arguments.length  === 2 ? nnn() : digit ? nn() : n();
+	switch (arguments.length) {
+		case 0 : return random();
+		case 1 : 
+			if (!_.isNumber(digit)) return random();
+			return Math.floor((Math.random() + '').replace(/\.0+/, '.') * Math.pow(10, digit));
+		case 2 : 
+			if (!_.isNumber(digit) || !_.isNumber(digit2)) return random();
+			return parseInt(digit + Math.random() * (digit2 - digit));
+	}
 };
+
 /*
 	随机字母
-	字母属性--大写，小写(忽略大小写)
 */
 _.randomAlphabet = function (digit) {
+	digit = _.isNumber(digit) ? digit : 1;
 	var arr = [];
-	for (var i = 0; i < (digit ? digit : 1); i++) {
-		//生成一个0到25的数字
-		arr.push(Math.ceil(Math.random() * 25));
-	}
+	for (var i = 0; i < digit; i++) arr.push(_.randomNumber(0, 25));
 	//大写字母'A'的ASCII是65,A~Z的ASCII码就是65 + 0~25;然后调用String.fromCharCode()
-	return String.fromCharCode.apply(null, arr.map(function (currentValue, index, array) {
-		return currentValue + 65;
+	var upperCase = String.fromCharCode.apply(null, arr.map(function (item, index, arr) {
+		return item + 65;
 	}));
+	var n = _.randomNumber(0, upperCase.length);
+	while (n--) {
+		var alphabet = upperCase[_.randomNumber(1, upperCase.length)];
+		upperCase = upperCase.replace(alphabet, alphabet.toLocaleLowerCase());
+	}
+	return upperCase;
 };
 /*
-	随机数字字母-随机字母数字
-	数字字母字母数字属性--位置(忽略大小写)，开端，结束
+	随机数字字母
 */
 _.randomNumberAlphabet = function (digit) {
-	// 默认9位
-	digit = digit ? digit : 9;
-	var s = Math.random().toString(16);
-	// 满足位数的同时满足有数字有字母
-	var d = /(?:\.[a-zA-Z]+\d+)|(?:\.\d+[a-zA-Z]+)/.test(s);
-	return s.length > digit && d ? s.substr(2, digit) : arguments.callee(digit);
+	digit = _.isNumber(digit) ? digit : 10;
+	var randomNumber = _.randomNumber(0, digit);
+	var randomString = _.randomNumber(randomNumber) + _.randomAlphabet(digit - randomNumber);
+	return _.shuffle(randomString.split('')).join('');
 };
 /*
 	随机颜色
 */
-_.randomColor = function(){
-	return '#' + Math.floor(Math.random() * parseInt('0xffffff',16).toString(10)).toString(16);
+_.randomColor = function (saturation, light) {
+	saturation = _.isString(saturation) ? saturation : '50%';
+	light = _.isString(light) ? light : '50%';
+	if (arguments.length == 1) light = saturation;
+	/*var r = (0, 60)
+	var r = (300, 360)
+	var g = (60, 180)
+	var b = (180, 300);*/
+	return 'hsl(' + _.randomNumber(0, 360) + ', ' + saturation + ', ' + light + ')';
 },
 
 
 /****************
-	谓词函数
-	谓词是有没有，是不是......
+	谓词
 ******************/
-/*
-	反转谓词结果，跟其他具体的谓词函数合为一个整体
-*/
-_.reversePredicate = function (predicate) {
-	return function () {
-		return !predicate.apply(null, arguments);
-	};
-};
-/*
-	判断一堆数据中是否存在一个，一种，多个，多种数据
-	存在是一，存在是多(数量关系)
-*/
-_.isExistence =	 function (data, value) {
-	// 现在只是单个存在，要添加多个存在，不但存在一，还要存在多
-	// 存在多
-	// 这里直接从多入手到一
-	var args = [].slice.call(arguments, 1);
-	// 纯值
-	var val = [];
-	// 谓词判断
-	var predicate = [];
-	args.forEach(function (item, index, arr) {
-		typeof item == 'function' ? predicate.push(item) : val.push(item);
-	});
-	val = val.length == 0 ? true : val.every(function (item, index, arr) {
-		for (let key in data) if (data[key] === item) return true;
-		return false;
-	});
-	predicate = predicate.length == 0 ? true : predicate.every(function (item, index, arr) {
-		for (let key in data) if (item(data[key])) return true;
-		return false;
-	});
-	return val && predicate;
-};
-/*
-	判断一个值是不是整数
-*/
-_.isInteger = function (num) {
-	return typeof num == 'number' && num % 1 === 0;
-};
 /*
 	判断值是不是NaN
 */
@@ -304,15 +319,43 @@ _.isNaN = function (n) {
 	return n !== n;
 };
 /*
-	区别undefined，null以外的值
+	判断一个值是不是数字类型
 */
-_.isExisty = function (x) {
-	return x != null;
+_.isNumber = function (n) {
+	return typeof n === 'number' && !_.isNaN(n);
 };
 /*
-	判断2个集合是否相等
+	判断一个值是不是整数
+*/
+_.isInteger = function (n) {
+	return _.isNumber(n) && n % 1 === 0;
+};
+/*
+	判断数据类型
+*/
+['Arguments', 'Function', 'String', 'Date', 'RegExp', 'Error', 'Array', 'Object', 'Boolean'].forEach(function(element, index, array) {
+	_['is' + element] = function(obj) {
+		return Object.prototype.toString.call(obj) === '[object ' + element + ']';
+	};
+});
+/*
+	是否过去
+*/
+_.isPast = function (time) {
+	if (!_.isNumber(time)) return false;
+	return (new Date(time)).getTime() < (new Date()).getTime();
+};
+/*
+	是否未来
+*/
+_.isFuture = function (time) {
+	return !_.isPast(time);
+};
+/*
+	判断2个对象是否相等
 */
 _.isEqual = function(a, b, aStack, bStack) {
+	if (!aStack || !bStack) if (!_.isObject(a) && !Array.isArray(a) || !_.isObject(b) && !Array.isArray(b)) return false;
 	var c1 = Object.prototype.toString.call(a);
 	// 类型不同直接out
 	if (c1 !== Object.prototype.toString.call(b)) return false;
@@ -343,7 +386,7 @@ _.isEqual = function(a, b, aStack, bStack) {
 		// 每个key
 		key = akeys[length];
 		// 开始判断了
-		if (!equal(a[key], b[key], aStack, bStack)) return false;
+		if (!_.isEqual(a[key], b[key], aStack, bStack)) return false;
 	}
 	// 这个维度验证通过，栈弹出
 
@@ -356,33 +399,69 @@ _.isEqual = function(a, b, aStack, bStack) {
 	return true;
 };
 /*
-	是否过去
+	判断一堆数据中是否存在一个，一种，多个，多种数据
+	存在是一，存在是多(数量关系)
 */
-_.past = function (date) {
-	return (new Date(date)).getTime() < (new Date()).getTime() || false;
+_.isExistence =	 function (data, value) {
+	// 现在只是单个存在，要添加多个存在，不但存在一，还要存在多
+	// 存在多
+	// 这里直接从多入手到一
+	var args = [].slice.call(arguments, 1);
+	// 纯值
+	var val = [];
+	// 谓词判断
+	var predicate = [];
+	args.forEach(function (item, index, arr) {
+		typeof item == 'function' ? predicate.push(item) : val.push(item);
+	});
+	val = val.length == 0 ? true : val.every(function (item, index, arr) {
+		for (let key in data) if (data[key] === item) return true;
+		return false;
+	});
+	predicate = predicate.length == 0 ? true : predicate.every(function (item, index, arr) {
+		for (let key in data) if (item(data[key])) return true;
+		return false;
+	});
+	return val && predicate;
 };
 /*
-	是否未来
+	反转谓词结果，跟其他具体的谓词函数合为一个整体
 */
-_.future = function (date) {
-	return !_.past(date);
+_.reversePredicate = function (predicate) {
+	return function () {
+		return !predicate.apply(null, arguments);
+	};
 };
-
-
 
 /****************
 	行为模式
 	重形式轻内容
 ****************/
 /*
+	迭代
+*/
+_.forEach = function (obj, iterator) {
+	Object.keys(obj).forEach(function (item, index, arr) {
+		iterator(obj[item], item, obj);
+	});
+};
+/*
+	过滤
+*/
+_.filter = function (oldObj, predicate) {
+	return objectTransformation(oldObj, processNewObject(oldObj, function (val, key, newObj) {
+		if (predicate(val, key, newObj)) newObj[key] = val;
+	}));
+};
+/*
 	重复行为
 	重复做直到达到目标，不达目的誓不罢休
 	但这里只是重复特定的值，万一我是要做其他更具体的事情呢？？？？
 */
-_.repeat = function (create, predicate, arr) {
+_.repeat = function (iterator, predicate, arr) {
 	arr = arr ? [] : arr;
 	// 创建一个新值
-	var res = create();
+	var res = iterator();
 	// 判断这个新值在某个条件中符合不符合
 	// 如果符合就添加到数据中
 	// 如果不符合接着递归直到符合
@@ -391,7 +470,7 @@ _.repeat = function (create, predicate, arr) {
 		arr.push(res);
 		return res;
 	// 没达到目的继续
-	} else this.repeat(createVal, predicate, arr);
+	} else _.repeat(iterator, predicate, arr);
 };
 /*
 	根据不同的数据类型做不同的事情
@@ -434,7 +513,7 @@ _.once = function (fn) {
 */
 _.after = function (times, fn) {
 	return function () {
-		if (--times < 1) return fn.apply(this, arguments);
+		if (--times < 1) return fn.apply(null, arguments);
 	};
 };
 /*
@@ -442,24 +521,33 @@ _.after = function (times, fn) {
 */
 _.before = function (times, fn) {
 	return function () {
-		if (--times > 0) return fn.apply(this, arguments);
+		if (--times > 0) return fn.apply(null, arguments);
 	};
 };
 /*
 	装饰行为
 */
 _.decorate = function () {
-	var args = [].slice.call(arguments);
+	var order;
+	var idx;
+	if (_.isBoolean(arguments[arguments.length - 1])) {
+	    order = arguments[arguments.length - 1];
+	    idx = arguments.length - 1;
+	} else {
+	    order = true;
+	    idx = arguments.length;
+	}
+	var arrFn = order ? 'push' : 'unshift'
+	var args = [].slice.call(arguments, 0, idx);
 	var add = function (fn) {
-		args.push(fn);
+	    args[arrFn](fn);
+	    console.log(args);
 	};
-	var go = function () {
-		// 每个方法都是独立的，之间没有关系，只是顺序，不像面向对象真的是包在里面的
-		[].forEach.call(args, function (item, index, arr) {
-			item.apply(args[0], arguments);
-		});
+	var go = function(obj, context) {
+	    [].forEach.call(args, function(item, index, arr) {
+	        item.apply(context || null, obj ? obj[item.name] : []);
+	    })
 	};
-	// 增加添加方法
 	go.add = add;
 	return go;
 };
@@ -489,8 +577,9 @@ _.state = function () {
 		// 倒序
 		if (one === link.tail.previous) direction = false;
 	};
-	var oneByOne = function (backflow) {
-		one.el();
+	var oneByOne = function (backflow, context) {
+		context = _.isBoolean(backflow) ? context : backflow;
+		one.el.call(context);
 		backflow ? void function () {
 			directionFn();
 		}() : void function () {
@@ -688,27 +777,6 @@ _.paraKey = function (obj, form) {
 		}
 	});
 }
-/*
-	对象变数组
-*/
-_.objectToArr = function (obj) {
-	if (Array.isArray(obj)) return obj;
-	var result = [];
-	for (var key in obj) result.push(obj[key]);
-	return result;
-};
-/*
-	数组变对象
-*/
-_.arrToObject = function (arr) {
-	if (_.isObject(arr)) return arr;
-	var result = {};
-	arr.forEach(function (item, index, arr) {
-		result[index] = item;
-	});
-	return result;
-};
-
 
 
 
@@ -719,7 +787,7 @@ _.arrToObject = function (arr) {
 	把一个对象转换为一个[key,value]形式的数组
 */
 _.pairs = function (oldObj) {
-	return _.objectToArr(processNewObject(oldObj, function (val, key, newArr) {
+	return objectToArr(processNewObject(oldObj, function (val, key, newArr) {
 		newArr.push([key, val]);
 	}, []));
 };
@@ -743,7 +811,25 @@ _.uniq = function (array) {
 	return repeat;
 };
 
+/****************
+	数据包裹
+****************/
+_.wrap = function (oldObj, addObj) {
+	return processCloneObject(oldObj, function (val, key, newObj) {
+		newObj[key] = _.extend({
+			value : val,
+		}, addObj[key]);
+	});
+}
 
+/****************
+	解除包裹
+****************/
+_.wrapBack = function (oldObj) {
+	return processCloneObject(oldObj, function (val, key, newObj) {
+		newObj[key] = val.value;
+	});
+};
 
 /****************
 	打乱顺序
@@ -752,7 +838,7 @@ _.shuffle = function(obj) {
     var length = obj.length;
     var shuffled = Array(length);
     for (var index = 0, rand; index < length; index++) {
-        rand = n(0, index);
+        rand = _.randomNumber(0, index);
         if (rand !== index) shuffled[index] = shuffled[rand];
         shuffled[rand] = obj[index];
     }
@@ -775,13 +861,13 @@ _.without = function(oldObj, del) {
 /*
 	删除空格
 */
-_.trim = function(oldObj) {
+_.trimObj = function(oldObj) {
 	var newObj = _.clone(oldObj);
 	for (var key in newObj) {
 		if (newObj[key] == null || newObj[key] == undefined) {
 			newObj[key] = '';
 		} else if (typeof newObj[key] == 'object') {
-			_.trim(newObj[key]);
+			_.trimObj(newObj[key]);
 		} else {
 			newObj[key] = newObj[key].toString().replace(/(^\s*)|(\s*$)/g,'');
 		}
@@ -1028,22 +1114,6 @@ _.createLink = function () {
 	// 继承方法
 	return _.extend(newLink, linkFn);
 };
-
-
-
-
-
-/*
-	判断数据类型
-*/
-['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Array', 'Object', 'Boolean'].forEach(function(element, index, array) {
-	_['is' + element] = function(obj) {
-		return Object.prototype.toString.call(obj) === '[object ' + element + ']';
-	};
-});
-
-
-
 
 
 // export default _;
