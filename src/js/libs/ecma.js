@@ -8,10 +8,12 @@
 2. 修改对象都要返回新的对象，不要在原有的对象上改♥♥♥♥
 3. 处理数组和对象一种是策略，都当对象处理，最后分离，因为他变成了统一质料♥♥♥♥
 4. 功能还是保持单一性，就像那个复制，我有加了复制之后的过滤，这是2个不同的功能，不需要耦合在一起♥♥♥♥
-5. 函数参数容错处理♥♥♥♥
+5. 函数参数容错处理♥♥♥♥一开始我把容错写在私有函数里了，这样对外函数体就感觉比较干净点，但觉得判断的容错逻辑应该独立出来，不和具体的私有功能函数逻辑耦合在一起，做到职责单一
 6. 解决对对象深度循环操作的问题----
     这样做，一开始想把它抽不来，后来发现没有东西抽出来，直接就递归了，现在我想把浅的深的分开来函数处理，最后在合起来，我不想把深浅耦合在一起♥♥♥♥
 7. 严谨命名变量名，函数名，函数参数名，属性名的命名，也是建立体系的一种训练♥♥♥♥
+    函数参数的命名，一会叫original一会叫object还是会引起误解，那该怎么命名呢，original还是不好，原始的只是这个事物的特性而已，不能代表这个事物，使这个事物称其为这个事物是原因是他的形式，而不是他的特性，你觉得叫collection会不会好很多呢？是的，不过如果有多个collection的时候就难以区分了，所以现在是写了他的状态，比如original，output，虽然我想写全但是太长了
+8. 长数据不用字符串拼接，以免导致数据格式错乱，像那个项目一样♥♥♥♥
 
 抽象是哲学的根本特点，代码亦如此。
 （理念和实体）（共相和殊相）（抽象和具象）都是相对的，有辩证性
@@ -90,18 +92,15 @@
     私有
 ****************/
 /*
-    处理对象
-    数组对象终归一家
+    输入输出迭代工厂
 */
-var processObject = function (callback) {
+var factory = function (callback) {
     callback = callback || function (original, output) {
         return output;
     };
     return function (original, iterator, array) {
-        if (!_.isObject(original) && !Array.isArray(original) || !_.isFunction(iterator)) return [];
-        var output = array || {};
         // 不但要处理新的对象还是处理在什么对象上迭代
-        output = callback(original, output);
+        var output = callback(original, array || {});
         Object.keys(original).forEach(function (currentValue, index, array) {
             iterator(original[currentValue], currentValue, output);
         });
@@ -111,19 +110,18 @@ var processObject = function (callback) {
 /*
     克隆体
 */
-var processCloneObject = processObject(function (original, output) {
+var factoryClone = factory(function (original, output) {
     for (var key in original) output[key] = original[key];
     return output;
 });
 /*
     新生体
 */
-var processNewObject = processObject();
+var factoryNew = factory();
 /*
     对象统一转换
 */
 var objectTransformation =  function (original, output) {
-    if (!_.isObject(original) && !Array.isArray(original) || !_.isObject(output) && !Array.isArray(output)) return [];
     return Array.isArray(original) ? objectToArr(output) : arrToObject(output);
 }
 /*
@@ -145,6 +143,32 @@ var arrToObject = function (array) {
         result[index] = currentValue;
     });
     return result;
+};
+/*
+    递归
+*/
+var recursive = function (collection, callback) {
+    var result = [];
+    for (var key in collection) {
+        if (Array.isArray(collection[key]) || _.isObject(collection[key])) {
+            result = result.concat(recursive(collection[key], callback), true);
+        } else {
+            result.push(callback(collection[key]));
+        }
+    }
+    return result;
+};
+/*
+    处理函数对象参数
+*/
+var processObject = function (value) {
+    if (!_.isObject(value) && !Array.isArray(value)) return []; else return value;
+};
+/*
+    处理函数
+*/
+var processFunction = function (value) {
+    return _.isFunction(value) ? value : _.identity;
 };
 /*
     随机
@@ -222,7 +246,7 @@ var aggregate = function (index, bl) {
 
 
 var _ = {};
-_.value = function (value) {
+_.identity = function (value) {
     return value;
 };
 _.fnVal = function (value) {
@@ -241,14 +265,54 @@ _.fnVal = function (value) {
     复制
 ****************/
 
-/*
-    复制对象（对象也是最大的种了，没有再高的了）
-*/
-_.clone = function (originalObject) {
-    // 这里可以判断我进来的是什么数据类型出去的是什么数据类型了
-    return objectTransformation(originalObject, processNewObject(originalObject, function (value, key, outputObject) {
-        outputObject[key] = value;
+_.clone = function (original) {
+    original = processObject(original);
+    return objectTransformation(original, factoryNew(original, function (value, key, output) {
+        output[key] = value;
     }));
+};
+
+/****************
+    迭代
+****************/
+
+_.forEach = function (collection, iterator) {
+    collection = processObject(collection);
+    iterator = processFunction(iterator);
+    Object.keys(collection).forEach(function (currentValue, index, array) {
+        iterator(collection[currentValue], currentValue, collection);
+    });
+};
+
+/****************
+    过滤
+****************/
+
+_.filter = function (original, predicate) {
+    original = processObject(original);
+    predicate = processFunction(predicate);
+    return objectTransformation(original, factoryNew(original, function (value, key, output) {
+        if (predicate(value, key, output)) output[key] = value;
+    }));
+};
+
+/****************
+    消抖
+****************/
+_.debounce = function (func, interval) {
+    var lock = true;
+    return function () {
+        if (!lock) {
+            return;
+        } else {
+            lock = false;
+            var timer = setTimeout(function () {
+                lock = true;
+                clearTimeout(timer);
+            }, interval || 1000);
+        }
+        func.apply(null, arguments);
+    };
 };
 
 /****************
@@ -311,14 +375,14 @@ _.randomColor = function (saturation, light) {
     var r = (300, 360)
     var g = (60, 180)
     var b = (180, 300);*/
-    return 'hsl(' + _.randomNumber(0, 360) + ', ' + saturation + ', ' + light + ')';
-},
+    return 'hsl(' + [_.randomNumber(0, 360), saturation, light].join(',') + ')';
+};
 
 
 
-/****************
-    谓词
-******************/
+/*
+★★★★谓词★★★★
+*/
 
 /*
     判断值是不是NaN
@@ -344,26 +408,11 @@ _.isInteger = function (n) {
 /*
     判断数据类型
 */
-['Arguments', 'Function', 'String', 'Date', 'RegExp', 'Object', 'Boolean'].forEach(function(element, index, array) {
-    _['is' + element] = function(obj) {
-        return Object.prototype.toString.call(obj) === '[object ' + element + ']';
+['Arguments', 'Function', 'String', 'Date', 'RegExp', 'Object', 'Boolean'].forEach(function (currentValue, index, array) {
+    _['is' + currentValue] = function(obj) {
+        return Object.prototype.toString.call(obj) === '[object ' + currentValue + ']';
     };
 });
-
-/*
-    是否过去
-*/
-_.isPast = function (time) {
-    if (!_.isNumber(time)) return false;
-    return (new Date(time)).getTime() < (new Date()).getTime();
-};
-
-/*
-    是否未来
-*/
-_.isFuture = function (time) {
-    return !_.isPast(time);
-};
 
 /*
     判断2个对象是否相等
@@ -403,92 +452,87 @@ _.isEqual = function(a, b, aStack, bStack) {
         if (!_.isEqual(a[key], b[key], aStack, bStack)) return false;
     }
     // 这个维度验证通过，栈弹出
-
     // 直接递归就可以了，为什么还要用到栈呢？？？？？
     // 因为防止对象自引用，导致的无限递归
-
     aStack.pop();
     bStack.pop();
     // 到这里就说明这一维度的数组的值相等
     return true;
 };
+
 /*
     判断一堆数据中是否存在一个，一种，多个，多种数据
 */
-var existence = function (obj) {
-    if (!_.isObject(obj) && !Array.isArray(obj)) return false;
-    if (arguments.length === 1) return false;
+var existence = function (collection) {
     // 现在只是单个存在，要添加多个存在，不但存在一，还要存在多
     // 存在多
-    // 这里直接从多入手到一
     var args = [].slice.call(arguments, 1);
+    if (!args.length) return false;
     // 纯值
-    var val = [];
+    var value = [];
     // 谓词判断
     var predicate = [];
-    args.forEach(function (item, index, arr) {
-        _.isFunction(item) ? predicate.push(item) : val.push(item);
+    args.forEach(function (currentValue, index, array) {
+        _.isFunction(currentValue) ? predicate.push(currentValue) : value.push(currentValue);
     });
-    val = val.length == 0 ? true : val.every(function (item, index, arr) {
-        for (let key in obj) if (obj[key] === item) return true;
+    value = value.length == 0 ? true : value.every(function (currentValue, index, array) {
+        for (let key in collection) if (collection[key] === currentValue) return true;
         return false;
     });
-    predicate = predicate.length == 0 ? true : predicate.every(function (item, index, arr) {
-        for (let key in obj) if (item(obj[key])) return true;
+    predicate = predicate.length == 0 ? true : predicate.every(function (currentValue, index, array) {
+        for (let key in collection) if (currentValue(collection[key])) return true;
         return false;
     });
-    return val && predicate;
+    return value && predicate;
 };
-_.isExistence = function (obj, valLsit, deep) {
-
+_.isExistence = function (collection, value, isDeep) {
+    collection = processObject(collection);
+    value = processObject(value);
+    if (isDeep !== true) {
+        value.unshift(collection);
+        return existence.apply(null, value);
+    } else {
+        value.unshift(_.value(collection, true));
+        return existence.apply(null, value);
+    }
 };
 /*
     反转谓词结果，跟其他具体的谓词函数合为一个整体
 */
-_.reversePredicate = function (predicate) {
+_.negate = function (predicate) {
+    predicate = processFunction(predicate);
     return function () {
         return !predicate.apply(null, arguments);
     };
 };
 
-/****************
-    行为模式
-    重形式轻内容
-****************/
-/*
-    迭代
-*/
-_.forEach = function (obj, iterator) {
-    Object.keys(obj).forEach(function (item, index, arr) {
-        iterator(obj[item], item, obj);
-    });
-};
-/*
-    过滤
-*/
-_.filter = function (oldObj, predicate) {
-    return objectTransformation(oldObj, processNewObject(oldObj, function (val, key, newObj) {
-        if (predicate(val, key, newObj)) newObj[key] = val;
-    }));
-};
+
+
+
+
+
+
+
+
+
 /*
     重复行为
     重复做直到达到目标，不达目的誓不罢休
-    但这里只是重复特定的值，万一我是要做其他更具体的事情呢？？？？
+    但这里只是重复特定的值，万一我是要做其他更具体的事情呢？？？？其他情况最终还是转化为一个值
 */
-_.repeat = function (iterator, predicate, arr) {
-    arr = arr ? [] : arr;
+_.repeat = function (iterator, predicate, array) {
+    array = array ? [] : array;
     // 创建一个新值
     var res = iterator();
     // 判断这个新值在某个条件中符合不符合
     // 如果符合就添加到数据中
     // 如果不符合接着递归直到符合
-    if (predicate(arr, res)) {
+    if (predicate(array, res)) {
         // 达到目的停止
-        arr.push(res);
+        array.push(res);
         return res;
     // 没达到目的继续
-    } else _.repeat(iterator, predicate, arr);
+    } else _.repeat(iterator, predicate, array);
 };
 /*
     根据不同的数据类型做不同的事情
@@ -498,22 +542,7 @@ _.whichData = function (data, arr, obj) {
     if (_.isObject(data)) return obj(data);
     if (Array.isArray(data)) return arr(data);
 };
-/*
-    消抖行为
-*/
-_.debounce = function(fn, interval) {
-    var num = 0;
-    return function() {
-        if (num) return; else {
-            num++;
-            var timer = setTimeout(function() {
-                num = 0;
-                clearTimeout(timer);
-            }, interval || 1000);
-        }
-        fn.apply(null, arguments);
-    };
-};
+
 /*
     单次行为
 */
@@ -654,16 +683,6 @@ _.change = function () {
         // ...
     };
 };
-/*
-    深浅
-    对象都有深浅，对于深的操作，对于浅的操作，但归根结底还是策略，还是不同的道路，不同的意见，不是真理，知识需要立足点，我觉的我可以写个策略的形式，至于策略的实际内容，比如深浅，比如参数的不确定性都通过传参的方式，因为这些都是变化的，是意见，唯有真理不变，真理不需要写if，真理只有一条路，呵呵哒
-    未完成。。。。。。
-*/
-_.depth = function () {
-    // 这个对策略来时只是内容
-    // ...
-};
-
 
 
 /****************
@@ -731,18 +750,23 @@ _.getObj = function () {
 /*
     寻找所有的对象的值
 */
-_.values = function (obj) {
-    var keys = Object.keys(obj);
-    var length = keys.length;
-    var val = [];
-    for (var i = 0; i < length; i++) val[i] = obj[keys[i]];
-    return val;
+var value = function (original) {
+    return factoryNew(original, function (value, key, output) {
+        output.push(value);
+    }, []);
+};
+_.value = function (object, isDeep) {
+    if (isDeep !== true) return value(object); else {
+        return recursive(object, function (currentValue) {
+            return currentValue;
+        });
+    }
 };
 /*
     过滤false的值，都返回真值
 */
 _.compact = function (oldObj) {
-    return objectTransformation(oldObj, processCloneObject(oldObj, function (val, key, newObj) {
+    return objectTransformation(oldObj, factoryClone(oldObj, function (val, key, newObj) {
         !val && delete newObj[key];
     }));
 };
@@ -765,7 +789,7 @@ _.invert = function (oldObj, arr) {
         });
     }
     surplus = arr ? surplus : function () {};
-    return processNewObject(oldObj, function (val, key, newObj) {
+    return factoryNew(oldObj, function (val, key, newObj) {
         surplus(key) ? newObj[key] = val : newObj[val] = key;
     });
 };
@@ -776,7 +800,7 @@ _.invert = function (oldObj, arr) {
 */
 _.paraVal = function (oldObj, form) {
     // 通过表的key找到obj的key后的值对应表的key的值
-    return processCloneObject(oldObj, function (val, key, newObj) {
+    return factoryClone(oldObj, function (val, key, newObj) {
         if (_.isObject(newObj[key]) && newObj[key] !== null) _.paraVal(newObj[key], form); else {
             if (key in form) {
                 newObj[key] = form[key][val];
@@ -788,7 +812,7 @@ _.paraVal = function (oldObj, form) {
     映射key
 */
 _.paraKey = function (obj, form) {
-    return processNewObject(obj, function (val, key, newObj) {
+    return factoryNew(obj, function (val, key, newObj) {
         // 占时不深映射，深浅之后统一处理
         for (let x in form) {
             if (key === form[x]) newObj[x] = val;
@@ -805,7 +829,7 @@ _.paraKey = function (obj, form) {
     把一个对象转换为一个[key,value]形式的数组
 */
 _.pairs = function (oldObj) {
-    return objectToArr(processNewObject(oldObj, function (val, key, newArr) {
+    return objectToArr(factoryNew(oldObj, function (val, key, newArr) {
         newArr.push([key, val]);
     }, []));
 };
@@ -833,7 +857,7 @@ _.uniq = function (array) {
     数据包裹
 ****************/
 _.wrap = function (oldObj, addObj) {
-    return processCloneObject(oldObj, function (val, key, newObj) {
+    return factoryClone(oldObj, function (val, key, newObj) {
         newObj[key] = _.extend({
             value : val,
         }, addObj[key]);
@@ -844,7 +868,7 @@ _.wrap = function (oldObj, addObj) {
     解除包裹
 ****************/
 _.wrapBack = function (oldObj) {
-    return processCloneObject(oldObj, function (val, key, newObj) {
+    return factoryClone(oldObj, function (val, key, newObj) {
         newObj[key] = val.value;
     });
 };
@@ -872,20 +896,20 @@ _.shuffle = function(obj) {
     删除元素
 */
 _.without = function(oldObj, del) {
-    return objectTransformation(oldObj, processCloneObject(oldObj, function (val, key, newObj) {
+    return objectTransformation(oldObj, factoryClone(oldObj, function (val, key, newObj) {
         val === del && delete newObj[key];
     }));
 };
 /*
     删除空格
 */
-_.trimObj = function(oldObj) {
+_.trim = function(oldObj) {
     var newObj = _.clone(oldObj);
     for (var key in newObj) {
         if (newObj[key] == null || newObj[key] == undefined) {
             newObj[key] = '';
         } else if (typeof newObj[key] == 'object') {
-            _.trimObj(newObj[key]);
+            _.trim(newObj[key]);
         } else {
             newObj[key] = newObj[key].toString().replace(/(^\s*)|(\s*$)/g,'');
         }
@@ -913,17 +937,6 @@ _.complement = aggregate(2);
     继承
 */
 _.extend = aggregate(0, true);
-
-
-
-/****************
-    扁平化
-****************/
-_.flatten = function(input, oldArr) {
-    return processNewObject(input, function (val, key, newArr) {
-        Array.isArray(val) ? newArr = newArr.concat(_.flatten(val, newArr)) : newArr.push(val);
-    }, oldArr || []);
-};
 
 
 
