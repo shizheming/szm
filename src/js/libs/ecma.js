@@ -1,6 +1,6 @@
 /*
 名称：ecma.js
-版本：2.0
+版本：2.2
 时间：2017.10
 
 更新：
@@ -151,7 +151,7 @@ var recursive = function (collection, callback) {
     var result = [];
     for (var key in collection) {
         if (Array.isArray(collection[key]) || _.isObject(collection[key])) {
-            result = result.concat(recursive(collection[key], callback), true);
+            result = result.concat(recursive(collection[key], callback));
         } else {
             result.push(callback(collection[key]));
         }
@@ -159,13 +159,19 @@ var recursive = function (collection, callback) {
     return result;
 };
 /*
-    处理函数对象参数
+    处理参数集合
 */
-var processObject = function (value) {
-    if (!_.isObject(value) && !Array.isArray(value)) return []; else return value;
+var processCollection = function (value) {
+    return !_.isObject(value) && !Array.isArray(value) ? [] : value;
 };
 /*
-    处理函数
+    处理数组
+*/
+var processArray = function (value) {
+    return Array.isArray(value) ? value : [];
+};
+/*
+    处理参数函数
 */
 var processFunction = function (value) {
     return _.isFunction(value) ? value : _.identity;
@@ -175,6 +181,25 @@ var processFunction = function (value) {
 */
 var random = function () {
     return Math.floor(Math.random() * 10);
+};
+/*
+    剩余参数
+*/
+var restArgs = function (func) {
+    return function () {
+        // 获得形参个数
+        var argumentsLength = func.length;
+        // rest参数的起始位置为最后一个形参位置
+        var startIndex = argumentsLength - 1;
+        // 最终需要的参数数组
+        var args = Array(argumentsLength);
+        // 设置rest参数
+        var rest = [].slice.call(arguments, startIndex);
+        // 设置最终调用时需要的参数
+        for (var i = 0; i < startIndex; i++) args[i] = arguments[i];
+        args[startIndex] = rest;
+        return func.apply(null, args);
+    };
 };
 /*
     集合
@@ -262,14 +287,30 @@ _.fnVal = function (value) {
 */
 
 /****************
+    柯理化-部分应用
+****************/
+
+_.partial = restArgs(function(func, boundArgs) {
+    return function() {
+        var position = 0, length = boundArgs.length;
+        var args = Array(length);
+        for (var i = 0; i < length; i++) {
+            args[i] = boundArgs[i];
+        }
+        while (position < arguments.length) args.push(arguments[position++]);
+        return func.apply(null, args);
+    };
+});
+
+/****************
     复制
 ****************/
 
-_.clone = function (original) {
-    original = processObject(original);
-    return objectTransformation(original, factoryNew(original, function (value, key, output) {
-        output[key] = value;
-    }));
+_.clone = function (original,  isDeep) {
+    original = processCollection(original);
+    return isDeep !== true ? objectTransformation(original, factoryNew(original, function (value, key, output) {
+            output[key] = value;
+        })) : JSON.parse(JSON.stringify(original));
 };
 
 /****************
@@ -277,7 +318,7 @@ _.clone = function (original) {
 ****************/
 
 _.forEach = function (collection, iterator) {
-    collection = processObject(collection);
+    collection = processCollection(collection);
     iterator = processFunction(iterator);
     Object.keys(collection).forEach(function (currentValue, index, array) {
         iterator(collection[currentValue], currentValue, collection);
@@ -289,7 +330,7 @@ _.forEach = function (collection, iterator) {
 ****************/
 
 _.filter = function (original, predicate) {
-    original = processObject(original);
+    original = processCollection(original);
     predicate = processFunction(predicate);
     return objectTransformation(original, factoryNew(original, function (value, key, output) {
         if (predicate(value, key, output)) output[key] = value;
@@ -299,7 +340,9 @@ _.filter = function (original, predicate) {
 /****************
     消抖
 ****************/
-_.debounce = function (func, interval) {
+
+_.debounce = function (func, wait) {
+    func = processFunction(func);
     var lock = true;
     return function () {
         if (!lock) {
@@ -309,9 +352,56 @@ _.debounce = function (func, interval) {
             var timer = setTimeout(function () {
                 lock = true;
                 clearTimeout(timer);
-            }, interval || 1000);
+            }, wait);
         }
-        func.apply(null, arguments);
+        return func.apply(this, arguments);
+    };
+};
+
+/****************
+    次数
+****************/
+
+/*
+    达到次数后才执行
+*/
+_.after = function (times, func) {
+    func = processFunction(func);
+    return function () {
+        if (--times < 1) return func.apply(this, arguments);
+    };
+};
+
+/*
+    多少次前可以执行函数
+*/
+_.before = function (times, func) {
+    func = processFunction(func);
+    var result;
+    return function () {
+        if (--times >= 0) return result = func.apply(this, arguments);
+        return result;
+    };
+};
+
+/*
+    单次
+*/
+_.once = _.partial(_.before, 1);
+
+/****************
+    装饰
+******************/
+
+_.decorate = function (before, after) {
+    before = processFunction(before);
+    after = processFunction(after);
+    return function (beforeArguments, afterArguments) {
+        beforeArguments = processArray(beforeArguments);
+        afterArguments = processArray(afterArguments);
+        arguments.length === 1 ? afterArguments = beforeArguments : '';
+        before.apply(this, beforeArguments);
+        return after.apply(this, afterArguments);
     };
 };
 
@@ -328,7 +418,7 @@ _.randomNumber = function (digit, digit2) {
         case 1 : 
             if (!_.isNumber(digit)) return random();
             return Math.floor((Math.random() + '').replace(/\.0+/, '.') * Math.pow(10, digit));
-        case 2 : 
+        default : 
             if (!_.isNumber(digit) || !_.isNumber(digit2)) return random();
             return parseInt(digit + Math.random() * (digit2 - digit));
     }
@@ -486,8 +576,8 @@ var existence = function (collection) {
     return value && predicate;
 };
 _.isExistence = function (collection, value, isDeep) {
-    collection = processObject(collection);
-    value = processObject(value);
+    collection = processCollection(collection);
+    value = processCollection(value);
     if (isDeep !== true) {
         value.unshift(collection);
         return existence.apply(null, value);
@@ -515,89 +605,6 @@ _.negate = function (predicate) {
 
 
 
-/*
-    重复行为
-    重复做直到达到目标，不达目的誓不罢休
-    但这里只是重复特定的值，万一我是要做其他更具体的事情呢？？？？其他情况最终还是转化为一个值
-*/
-_.repeat = function (iterator, predicate, array) {
-    array = array ? [] : array;
-    // 创建一个新值
-    var res = iterator();
-    // 判断这个新值在某个条件中符合不符合
-    // 如果符合就添加到数据中
-    // 如果不符合接着递归直到符合
-    if (predicate(array, res)) {
-        // 达到目的停止
-        array.push(res);
-        return res;
-    // 没达到目的继续
-    } else _.repeat(iterator, predicate, array);
-};
-/*
-    根据不同的数据类型做不同的事情
-    以后这种东西都要变成策略
-*/
-_.whichData = function (data, arr, obj) {
-    if (_.isObject(data)) return obj(data);
-    if (Array.isArray(data)) return arr(data);
-};
-
-/*
-    单次行为
-*/
-_.once = function (fn) {
-    var bl = true;
-    return function() {
-        var result;
-        if (bl) result = fn.apply(null, arguments);
-        bl = false;
-        return result;
-    };
-};
-/*
-    达到次数后才激活
-*/
-_.after = function (times, fn) {
-    return function () {
-        if (--times < 1) return fn.apply(null, arguments);
-    };
-};
-/*
-    规定方法调用次数
-*/
-_.before = function (times, fn) {
-    return function () {
-        if (--times > 0) return fn.apply(null, arguments);
-    };
-};
-/*
-    装饰行为
-*/
-_.decorate = function () {
-    var order;
-    var idx;
-    if (_.isBoolean(arguments[arguments.length - 1])) {
-        order = arguments[arguments.length - 1];
-        idx = arguments.length - 1;
-    } else {
-        order = true;
-        idx = arguments.length;
-    }
-    var arrFn = order ? 'push' : 'unshift'
-    var args = [].slice.call(arguments, 0, idx);
-    var add = function (fn) {
-        args[arrFn](fn);
-        console.log(args);
-    };
-    var go = function(obj, context) {
-        [].forEach.call(args, function(item, index, arr) {
-            item.apply(context || null, obj ? obj[item.name] : []);
-        })
-    };
-    go.add = add;
-    return go;
-};
 /*
     状态行为--形态
     2种状态，循环，回流
@@ -1145,6 +1152,56 @@ _.createLink = function () {
     // 继承方法
     return _.extend(newLink, linkFn);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+    重复行为
+    重复做直到达到目标，不达目的誓不罢休
+    但这里只是重复特定的值，万一我是要做其他更具体的事情呢？？？？其他情况最终还是转化为一个值
+*/
+_.repeat = function (iterator, predicate, array) {
+    array = array ? [] : array;
+    // 创建一个新值
+    var res = iterator();
+    // 判断这个新值在某个条件中符合不符合
+    // 如果符合就添加到数据中
+    // 如果不符合接着递归直到符合
+    if (predicate(array, res)) {
+        // 达到目的停止
+        array.push(res);
+        return res;
+    // 没达到目的继续
+    } else _.repeat(iterator, predicate, array);
+};
+/*
+    根据不同的数据类型做不同的事情
+    以后这种东西都要变成策略
+*/
+_.whichData = function (data, arr, obj) {
+    if (_.isObject(data)) return obj(data);
+    if (Array.isArray(data)) return arr(data);
+};
+
+
+
 
 
 // export default _;

@@ -1,7 +1,7 @@
 类型转换发生在静态类型语言的编译阶段，而强制类型转换则发生在动态类型语言的运行时。
 
 ToString------把非字符串类型强制转换成字符串
-对普通对象来说，除非自定义toString，否则toString返回内部属性[[class]]的值，如[object Obkect]，如果有对象自己的toString方法，字符串化时就会调用该方法并使用其返回值。
+对普通对象来说，除非自定义toString，否则toString返回内部属性[[class]]的值，如[object Object]，如果有对象自己的toString方法，字符串化时就会调用该方法并使用其返回值。
 把值转化为字符串，越过vlaueOf方法，直接调用toString方法。
 在JSON.stringify中，如果对象定义了toJSON方法，JSON字符串化时会首先调用该方法，然后用它的返回值来进行序列化
 var a = {
