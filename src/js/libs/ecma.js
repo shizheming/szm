@@ -1,5 +1,5 @@
 /*
-名称：ecma.js
+名称：tobe.js
 版本：2.2
 时间：2017.10
 
@@ -14,6 +14,11 @@
 7. 严谨命名变量名，函数名，函数参数名，属性名的命名，也是建立体系的一种训练♥♥♥♥
     函数参数的命名，一会叫original一会叫object还是会引起误解，那该怎么命名呢，original还是不好，原始的只是这个事物的特性而已，不能代表这个事物，使这个事物称其为这个事物是原因是他的形式，而不是他的特性，你觉得叫collection会不会好很多呢？是的，不过如果有多个collection的时候就难以区分了，所以现在是写了他的状态，比如original，output，虽然我想写全但是太长了
 8. 长数据不用字符串拼接，以免导致数据格式错乱，像那个项目一样♥♥♥♥
+9. 状态添加了设置当前状态♥♥♥♥
+9. 好多策略（比如先显示什么的时候好多if-else）
+10. 时间的控制比较蛋疼，比如我要获取3个月前的时间戳，1几小时前（反正就是要获得某一点的时间戳）
+11. 增加链式操作
+
 
 抽象是哲学的根本特点，代码亦如此。
 （理念和实体）（共相和殊相）（抽象和具象）都是相对的，有辩证性
@@ -34,55 +39,34 @@
 
 // 我现在用高阶函数只是存一些数据,状态,配置一些属性,还没有提升到进去一个函数出来另一个函数的能力
 
-/*
-    代码是种知识，那我们要如何获取知识，知识必须有立足点，必须具有普遍性，必然性，一般性，我们才能把握，那种处在神灭变化当中的我们无法把握，不能获取，所以我们只能把握那个具有，普遍性，必然性，一般性，的知识，
-*/
 
 /*
 ----关于页面----
 
 ♥♥♥♥状态♥♥♥♥
-    初始状态
-    修改状态
-    删除状态
-    添加状态
-    重置状态
-    当前状态
+初始状态，修改状态，删除状态，添加状态，重置状态，当前状态
 
 （在抽象弹窗抽象出通知的时候，我一度很困惑，这个概念总感觉是相当的具象，因为他限于人，并非动植物，或是无生命体，有局限性，所以具象，所以还不够通用，不够一般，那就再往上抽，把他的属差去掉，他的属差是什么，是人，是有理性，是主观主动性，然后想了想，“发出信息”就出来了，这就不限客观载体了，生命体能发出信息，非生命体也能发出信息，这样就是更加一般形式了）
 
 ♥♥♥♥数据♥♥♥♥
-大量的数据需要组织分类，vue的data里不能无限加各种单个杂乱的数据，不利于管理
-数据的独立性，单独的意义，这里是纯质料，数据，那在这个质料上我给他赋予了形式，什么形式（用户的形式，来源的形式，去向的形式）
-1. 展示给用户的数据
-2. 用户输入的数据
-3. 提交给后端的数据
-4. 从后端拿到的数据
 
 ♥♥♥♥可读函数♥♥♥♥
-还有就是有些判断和对象的赋值操作乍看之下看不出逻辑是什么意思，要联系上下文才看的我懂，所以最好分装成有名字解释的函数运行，读起来会好很多
+还有就是有些判断和对象的赋值操作乍看之下看不出逻辑是什么意思，要联系上下文才看的懂，所以最好封装成有名字的函数运行，读起来会好很多
 
 ♥♥♥♥ajax统一处理下♥♥♥♥
 
 ♥♥♥♥处理业务逻辑和处理数据分开♥♥♥♥
-主体业务逻辑不包含处理数据的部分，我的意思是那些是给人看的代码，和给计算机的代码分开，这里可以用装饰者，改初始挂的都先挂好，这样我就能专注业务逻辑了，不会一会写着业务逻辑，一遍处理数据
+主体业务逻辑不包含处理数据的部分，我的意思是那些是给人看的代码，和给计算机的代码分开，这样我就能专注业务逻辑了，不会一会写着业务逻辑，一遍处理数据
 
-状态的立体感，一个属性，一个变量太单薄，而且杂乱零散，用状态模式把页面的状态聚集一下
-9. 好多策略（比如先显示什么的时候好多if-else）
-11. 状态要添加下当前状态设置，因为不是每个状态都从初始开始
-12. 时间的控制比较蛋疼，比如我要获取3个月前的时间戳，1几小时前（反正就是要获得某一点的时间戳）
-----关于页面----
 */
 
 // 运动，静止
-// 除了纯质料和纯形式，一些事物都是质料和形式的辩证
-// 我是这样理解偏函数的，当我抽象出某个事物的种的时候我回去用偏函数，当我要记录某些状态变化的时候我会去用偏函数，也就是要分1步以上的我回去用偏函数，如果不是种，而只是某个函数的中一小部分功能的时候，即使这个功能很复用，我也会去写个小函数，在某个函数里面调用，而不会把他作为种在直接在外面调用
+// 我是这样理解偏函数的，当我抽象出某个事物的种的时候我会去用偏函数，当我要记录某些状态变化的时候我会去用偏函数，也就是要分1步以上的我回去用偏函数，如果不是种，而只是某个函数的中一小部分功能的时候，即使这个功能很复用，我也会去写个小函数，在某个函数里面调用，而不会把他作为种在直接在外面调用
 
 /* 
 ★★★★★★★★★★★★★★★★★★★★
 1. 我先不要太烦恼和纠结于寻找那个最大种同时让这个最大的种与我现在写的东西的种之间建立关系等级，因为这是终极目标，不可能一下子找到和建立联系的，那么我现在要掉转枪头，把切入点放在我已有的方法上，从我具体的方法出发，往上找他的形式，往下找他的质料，达到统一，辩证。也就是要训练思维，不能不找边际的乱想
-2. 质料和形式的统一
-3. 知识的立足点，是那个一般的东西
+2. 知识的立足点，是那个一般的东西
 ★★★★★★★★★★★★★★★★★★★★
 */
 
@@ -252,7 +236,6 @@ var linkOperation = (function () {
     }.bind(this);
     // 添加
     link.add = function (newElement, oldElement) {
-        if (!_.isFunction(newElement)) return;
         // 缺点在于一次只能插一个值
         var newNode = {
             element : newElement,
@@ -295,6 +278,7 @@ var linkOperation = (function () {
                 currentValue.next = newNode;
             }
         }
+        return this.display().length;
     };
     // 删除
     link.delete = function (element) {
@@ -314,6 +298,7 @@ var linkOperation = (function () {
         // 删除和添加就是替换
         this.add(newElement, oldElement);
         this.delete(oldElement);
+        return this.find(newElement);
     };
     // 寻找
     // 找到当前的
@@ -334,6 +319,7 @@ var linkOperation = (function () {
         var array = [];
         var lock = true;
         while (lock || currentValue.next !== this.head.next) {
+            if (!currentValue.next) return array;
             array.push(currentValue.next.element);
             currentValue = currentValue.next;
             lock = false;
@@ -413,18 +399,6 @@ var aggregate = function (index, bl) {
 
 
 var _ = {};
-
-/*
-★★★★动词★★★★
-*/
-
-/****************
-    原始迭代器
-****************/
-
-_.identity = function (value) {
-    return value;
-};
 
 /*
 ★★★★动词★★★★
@@ -552,17 +526,18 @@ _.decorate = function (before, after) {
     };
 };
 
-/*
+/****************
     状态
     2种方向，正序，倒序
-*/
+******************/
 
 _.state = function () {
     // 1. 静态
     // 首先要定义多个状态和状态的顺序
-    var stateAll = [].map.call(arguments, function (currentValue, index, array) {
-        return processFunction(currentValue);
+    var stateAll = [].filter.call(arguments, function (currentValue, index, array) {
+        return _.isFunction(currentValue);
     });
+    if (!stateAll.length) return;
     var link = _.link();
     stateAll.forEach(function (currentValue, index, array) {
         link.add(currentValue);
@@ -579,18 +554,16 @@ _.state = function () {
     };
     var oneByOne = function (isLeft, context) {
         context = _.isBoolean(isLeft) ? context : isLeft;
-        state.element.call(context);
-        isLeft ? void function () {
-            direction();
-        }() : void function () {
-            state = state.next;
-        }();
+        var back = state.element.call(context);
+        isLeft ? direction() : state = state.next;
+        return back;
     };
     // 2. 动态
     // 然后添加一些方法能动态的添加或是删除或是修改状态
     // 添加状态
     var addState = function (newState, oldState) {
-        link.add(newState, oldState);
+        var back = link.add(newState, oldState);
+        if (!back) return;
         // 正序替换
         if (oldState && (state.previous.previous.element === oldState)) state = link.find(newState);
         // 倒序替换
@@ -600,23 +573,29 @@ _.state = function () {
         if (!oldState && state.previous.element === newState) state = link.find(newState);
         // 倒序
         if (!oldState && state.next.next.element === newState) state = link.find(newState); 
+        return back;
     };
     // 替换状态
     var replaceState = function (newState, oldState) {
-        link.replace(newState, oldState);
+        var back = link.replace(newState, oldState);
+        if (!back) return;
         // 更新要替换的前一个或后一个的指针
         if (state.element === oldState) state = link.find(newState);
+        return back;
     };
     // 删除状态
-    var deleteState = function (state) {
+    var deleteState = function (oldState) {
+        if (!_.isFunction(oldState)) return;
         // 这里有个问题就是，有时删除的实体已经变成下一个要运行的实体了，例如我运行1，运行完1后，运行实体变成2，虽然紧接着我删除了2，可下次运行的是时候是运行2的实体，因为之前运行完1后，就更新了运行实体，添加，替换也有这个问题
-        if (state.element === state) direction();
-        link.delete(state);
+        if (state.element === oldState) direction();
+        return link.delete(oldState);
     };
     // 设置当前状态
     var setState = function (newState) {
-        state = link.find(newState);
-        oneByOne();
+        var element = link.find(newState);
+        if (!state) return;
+        state = element;
+        return oneByOne();
     };
     return {
         currState : oneByOne,
@@ -837,6 +816,14 @@ _.negate = function (predicate) {
 */
 
 /*
+    原始迭代器
+*/
+
+_.identity = function (value) {
+    return value;
+};
+
+/*
     链表
 */
 
@@ -858,7 +845,15 @@ _.link = function () {
     newLink.head.next = newLink.tail;
     newLink.head.previous = newLink.tail;
     // 继承方法
-    return _.extend(newLink, linkOperation);
+    newLink = _.extend(newLink, linkOperation);
+    // 初始化添加链表元素
+    var allLink = [].filter.call(arguments, function (currentValue, index, array) {
+        return _.isFunction(currentValue);
+    });
+    allLink.forEach(function (currentValue, index, array) {
+        newLink.add(currentValue);
+    });
+    return newLink;
 };
 
 
