@@ -1,7 +1,7 @@
 /*
 名称：tobe.js
-版本：2.3
-时间：2018.03
+版本：2.2
+时间：2017.10
 
 更新：
 1. 1.0的时候只是把一些觉得实用的常用的功能罗列的写出来，没有提升到抽象层面♥♥♥♥
@@ -15,16 +15,10 @@
     函数参数的命名，一会叫original一会叫object还是会引起误解，那该怎么命名呢，original还是不好，原始的只是这个事物的特性而已，不能代表这个事物，使这个事物称其为这个事物是原因是他的形式，而不是他的特性，你觉得叫collection会不会好很多呢？是的，不过如果有多个collection的时候就难以区分了，所以现在是写了他的状态，比如original，output，虽然我想写全但是太长了
 8. 长数据不用字符串拼接，以免导致数据格式错乱，像那个项目一样♥♥♥♥
 9. 状态添加了设置当前状态♥♥♥♥
-10. 给字符串的数字和数字之间做个转换（只处理最基本的类型，不处理对象）（比如穿1和'1'都可以，当然不是所有都可以，isNumber就不行）♥♥♥♥
-11. 时间的控制比较蛋疼，比如我要获取3个月前的时间戳，1几小时前（反正就是要获得某一点的时间戳）
-12. 增加链式操作
-13. 我发现业务逻辑里面好多地方都是相互交叉的耦合，很多很杂，比如说我在操作这个表格的时候，另外某个地方也要有变化，这就非常繁琐，能不能写个类似中介者的东西，虽然vue的数据绑定和watch很方便
-14. 怎么做到数据提交时候的正确性，也就是提交给后端的数据中不需要出现后端不要的字段，也就是我给自己用的字段也一并提交给后端了，我想到2个路子，一个是请求拿过来的数据我去删到只剩后端需要的字段，另一种是我新建一个后端需要的数据格式
-15. 用多态消灭条件语句
 
 
 抽象是哲学的根本特点，代码亦如此。
-（理念和实体）（共相和殊相）（抽象和具象）（现象和本质）（形式和内容）
+（理念和实体）（共相和殊相）（抽象和具象）都是相对的，有辩证性
 
 1. 抽象是什么？
     抽象是具象的反义词
@@ -156,7 +150,7 @@ var recursive = function (collection, callback) {
         if (Array.isArray(collection[key]) || _.isObject(collection[key])) {
             result = result.concat(recursive(collection[key], callback));
         } else {
-            result.push(callback(collection[key], key));
+            result.push(callback(collection[key]));
         }
     }
     return result;
@@ -452,66 +446,12 @@ _.forEach = function (collection, iterator) {
     过滤
 ****************/
 
-/*
-    过滤一些特定条件后的数据
-*/
-
 _.filter = function (original, predicate) {
     original = processCollection(original);
     predicate = processFunction(predicate);
     return objectTransformation(original, factoryNew(original, function (value, key, output) {
         if (predicate(value, key, output)) output[key] = value;
     }));
-};
-
-/*
-    过滤出所有对象的值
-*/
-
-var value = function (original) {
-    return factoryNew(original, function (value, key, output) {
-        output.push(value);
-    }, []);
-};
-_.value = function (collection, isDeep) {
-    if (isDeep !== true) return value(collection); else {
-        return recursive(collection, function (value, key) {
-            return value;
-        });
-    }
-};
-
-/*
-    过滤出所有对象的键
-*/
-
-_.key = function (original) {
-    return factoryNew(original, function (value, key, output) {
-        output.push(key);
-    }, []);
-};
-
-/*
-    通过value找key
-*/
-
-_.findKey = function (original, value) {
-    original = original = processCollection(original);
-    for (var key in original) if (original[key] == value) return key;
-};
-
-/*
-    通过值寻找所在的对象
-*/
-
-var findCollection = function (collection, value) {
-    collection = processCollection(collection);
-    return _.value(collection).indexOf(value) > -1 && collection;
-};
-_.findCollection = function (collection, value) {
-    return recursive(collection, function (value, key) {
-        return 111;
-    });
 };
 
 /****************
@@ -677,8 +617,10 @@ _.randomNumber = function (digit, digit2) {
     switch (arguments.length) {
         case 0 : return random();
         case 1 : 
+            if (!_.isNumber(digit)) return random();
             return Math.floor((Math.random() + '').replace(/\.0+/, '.') * Math.pow(10, digit));
         default : 
+            if (!_.isNumber(digit) || !_.isNumber(digit2)) return random();
             return parseInt(digit + Math.random() * (digit2 - digit));
     }
 };
@@ -688,6 +630,7 @@ _.randomNumber = function (digit, digit2) {
 */
 
 _.randomAlphabet = function (digit) {
+    digit = _.isNumber(digit) ? digit : 1;
     var array = [];
     for (var i = 0; i < digit; i++) array.push(_.randomNumber(0, 25));
     //大写字母'A'的ASCII是65,A~Z的ASCII码就是65 + 0~25;然后调用String.fromCharCode()
@@ -708,9 +651,10 @@ _.randomAlphabet = function (digit) {
 */
 
 _.randomNumberAlphabet = function (digit) {
+    digit = _.isNumber(digit) ? digit : 10;
     var number = _.randomNumber(0, digit);
     var string = _.randomNumber(number) + _.randomAlphabet(digit - number);
-    return _.isNaN(number) ? NaN : _.shuffle(string.split('')).join('');
+    return _.shuffle(string.split('')).join('');
 };
 
 /*
@@ -923,10 +867,21 @@ _.link = function () {
 
 
 
-
-
-
-
+/****************
+    寻找(过滤)
+****************/
+/*
+    通过value找key
+*/
+_.findKey = function (obj, value) {
+    for (var key in obj) if (obj[key] == value) return key;
+};
+/*
+    通过ke或是val寻找当前所在对象
+    这里有个问题就是，当里面嵌套的key和val一样的时候，就有些蛋疼了，他给了我里面的一个对象，我要的是外面一层的对象，还没有遍历到，所以要改进下，弄个广度优先遍历的
+    这个要改，我想了下就是先去维度吧，把他变成一维的，然后再在里面找，要全部找一遍，因为有可能有一样的，把找到的全部返回给外面，有具体业务逻辑决定
+    我加个是否需要深度查找不就好了么，
+*/
 _.getObj = function () {
     // 现在有2种情况
     var arr = [function oneVal (obj, one, depth, result) {
@@ -974,8 +929,21 @@ _.getObj = function () {
     }];
     return !_.isBoolean(arguments[arguments.length - 1]) ? arr[arguments.length % 2].apply(null, arguments) : arr[arguments.length % 3].apply(null, arguments);
 };
-
-
+/*
+    寻找所有的对象的值
+*/
+var value = function (original) {
+    return factoryNew(original, function (value, key, output) {
+        output.push(value);
+    }, []);
+};
+_.value = function (object, isDeep) {
+    if (isDeep !== true) return value(object); else {
+        return recursive(object, function (currentValue) {
+            return currentValue;
+        });
+    }
+};
 /*
     过滤false的值，都返回真值
 */
