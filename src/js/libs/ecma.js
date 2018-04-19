@@ -900,7 +900,7 @@ _.assign = function () {
     var result = factoryNew(_.chunk([].slice.call(arguments), 2), function (currentValue, key, output) {
         if (currentValue.length === 1) output.push(currentValue[0]); else output.push(assign(currentValue[0], currentValue[1]));
     },[]);
-    // if (result.length >= 2) result = _.assign(result);
+    result = result.length >= 2 ? _.assign.apply(null, result) : result[0];
     return result;
 };
 
