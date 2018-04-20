@@ -1235,7 +1235,41 @@ _.negate = function (predicate) {
     };
 };
 
+/****************
+    时间
+****************/
 
+/*
+    获取某个月份的天数
+*/
+
+_.getDays = function (year, month) {
+    return new Date(year, month, 0).getDate();
+};
+
+/*
+    时间格式化
+*/
+
+_.timeFormat = function (format, date) {
+    var time = _.isNumber(date) ? new Date(date) : new Date();
+    var o = { 
+        'M+' : time.getMonth() + 1,                 //月份 
+        'd+' : time.getDate(),                    //日 
+        'h+' : time.getHours(),                   //小时 
+        'm+' : time.getMinutes(),                 //分 
+        's+' : time.getSeconds(),                 //秒 
+        'q+' : Math.floor((time.getMonth() + 3) / 3), //季度 
+        'S'  : time.getMilliseconds()             //毫秒 
+    }; 
+    if (/(y+)/.test(format)) format = format.replace(RegExp.$1, (time.getFullYear() + '').substr(4 - RegExp.$1.length)); 
+    for (var k in o) {
+        if (new RegExp('(' + k + ')').test(format)) {
+            format = format.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
+        }
+    }
+    return format; 
+}
 
 /*
 ★★★★名词★★★★
@@ -1338,92 +1372,12 @@ _.wrapBack = function (oldObj) {
 
 
 
-/****************
-    时间
-****************/
-/*
-    获取某个月份的天数
-*/
-_.getDays = function(year, month) {
-    return new Date(year, month, 0).getDate();
-};
-/*
-    返回某一时间段日期信息
-*/
-_.date = function(time) {
-    var n = time ? new Date(time) : new Date();
-    return [n.getFullYear(), _.fillZero(n.getMonth() + 1), _.fillZero(n.getDate()), _.fillZero(n.getHours()), _.fillZero(n.getMinutes()), _.fillZero(n.getSeconds())];
-};
-/*
-    变成这种格式2017-08-20 11:09:25
-*/
-_.getTime = function (stamp) {
-    var time = this.date(stamp);
-    return time[0] + '-' + time[1] + '-' + time[2] + ' ' + time[3] + ':' + time[4] + ':' +  time[5];
-};
-/*
-    倒计时
-*/
-_.countDown = function(c, fn) {
-    // 有这么计划总情况需要处理
-    // 1.传的是日期 2107-12-24 14:11:00
-    // 2.传的是时间戳 1510012800000
-    if (/-/g.test(c)) c = (new Date(c)).getTime();
-    upDate(c, fn);
-    var timer = setInterval(function() {
-        if (!upDate(c, fn)) clearInterval(timer);
-    },1000);
-    function upDate(c, fn){
-        var d = new Date();
-        //获取当前时间戳
-        var nowTime = d.getTime();
-        var overTime = c;
-        //结束事件戳-当前时间戳 
-        var mist = parseInt((overTime - nowTime) / 1000);
-        var date = parseInt(mist / 86400);
-        //去天后的秒数
-        mist = mist % 86400    
-        var hours = parseInt(mist / 3600);
-        //去小时后的秒数
-        mist = mist % 3600;
-        var minutes = parseInt(mist / 60);
-        mist = mist % 60;
-        fn && fn(date, hours, minutes, mist);
-        return date + hours + minutes + mist;
-    }
-};
 
 
 
 /****************
     空间
 ****************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*未完成*/
 /*
@@ -1445,14 +1399,7 @@ _.repeat = function (iterator, predicate, array) {
     // 没达到目的继续
     } else _.repeat(iterator, predicate, array);
 };
-/*
-    根据不同的数据类型做不同的事情
-    以后这种东西都要变成策略
-*/
-_.whichData = function (data, arr, obj) {
-    if (_.isObject(data)) return obj(data);
-    if (Array.isArray(data)) return arr(data);
-};
+
 /*
     第三者
     发现很多模式都是通过第三者甚至第n者来进行对象与对象之间的访问的，比如中介者，代理
@@ -1463,7 +1410,7 @@ _.third = function () {
 };
 /*
     策略
-    访问对象的属性(数字-字符)
+    访问对象的属性
     未完成。。。。。。
 */
 _.strategy = function (road) {
