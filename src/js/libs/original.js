@@ -5,14 +5,12 @@
 
 /**************************es5*********************************/
 
-
 // 用来判断某个值是否为数组。如果是，则返回 true，否则返回 false。
 Array.isArray(value);
 
 function isArray(obj) {
 	return Object.prototype.toString.call(obj) === '[object Array]';
 }
-
 
 // 测试数组的所有元素是否都通过了指定函数的测试。
 Array.prototype.every(callback[, thisArg]);
@@ -21,7 +19,6 @@ function every(arr, fn, thisArg) {
 	for (var i = 0; i < arr.length; i++) if (!fn.call(thisArg, arr[i], i, arr)) return false;
 	return true;
 }
-
 
 // 使用指定的函数测试所有元素，并创建一个包含所有通过测试的元素的新数组。
 Array.prototype.filter(callback[, thisArg]);
@@ -32,14 +29,12 @@ function filter(arr, fn, thisArg) {
 	return result;
 }
 
-
 // 让数组的每一项都执行一次给定的函数
 Array.prototype.forEach(callback[, thisArg]);
 
 function forEach(arr, fn, thisArg) {
 	for (var i = 0 ,len = arr.length; i < len; i++) fn.call(thisArg, arr[i], i, arr);
 }
-
 
 // 返回给定元素能找在数组中找到的第一个索引值，否则返回-1。
 Array.prototype.indexOf(searchElement[, fromIndex = 0]);
@@ -53,7 +48,6 @@ function indexOf(arr, searchElement, fromIndex) {
 	return -1;
 }
 
-
 // 返回指定元素在数组中的最后一个的索引，如果不存在则返回 -1。从数组的后面向前查找，从 fromIndex 处开始。
 Array.prototype.lastIndexOf(searchElement[, fromIndex = arr.length - 1]);
 
@@ -66,7 +60,6 @@ function lastIndexOf(arr, searchElement, fromIndex) {
 	return -1;
 }
 
-
 // 返回一个由原数组中的每个元素调用一个指定方法后的返回值组成的新数组。
 Array.prototype.map(callback[, thisArg]);
 
@@ -76,7 +69,6 @@ function map(arr, callback, thisArg) {
 	return result;
 }
 
-
 // 接收一个函数作为累加器，数组中的每个值（从左到右）开始合并，最终为一个值。
 Array.prototype.reduce(callback,[initialValue]);
 
@@ -84,10 +76,9 @@ function reduce(arr, callback, initialValue) {
 	// 如果没有起始的值就从数组的第一个值开始
 	var i = initialValue ? 0 : 1;
 	initialValue = initialValue || arr[0];
-	for (var len = arr.length; i < len; i++) initialValue = callback(initialValue, arr[i], i, arr);
+	for (var len = arr.length; i < len; i++) initialValue += callback(initialValue, arr[i], i, arr);
 	return initialValue;
 }
-
 
 // 接受一个函数作为累加器，让每个值（从右到左，亦即从尾到头）缩减为一个值。（与 reduce() 的执行方向相反）
 Array.prototype.reduceRight(callback[, initialValue]);
@@ -100,7 +91,6 @@ function reduceRight(arr, callback, initialValue) {
 	return initialValue;
 }
 
-
 // 测试数组中的某些元素是否通过了指定函数的测试。
 Array.prototype.some(callback[, thisArg]);
 
@@ -110,15 +100,7 @@ function some(arr, fn, thisArg) {
 	return false;
 }
 
-
-
-
-
-
-
-
 /***************************es3********************************/
-
 
 // 将传入的数组或非数组值与原数组合并,组成一个新的数组并返回
 Array.prototype.concat(value1, value2, ..., valueN);
@@ -131,7 +113,7 @@ function concat() {
 	var k = 0;
 	for (var j = 1, argLen = arguments.length; j < argLen; j++) {
 		// 不是数组
-		if (!isArr(arguments[j])) {
+		if (!Array.isArray(arguments[j])) {
 			result[i + k] = arguments[j];
 			// 1.不是数组时要变
 			k++;
@@ -143,7 +125,6 @@ function concat() {
 	}
 	return result;
 }
-
 
 // 删除一个数组中的最后的一个元素，并且返回这个元素。
 Array.prototype.pop();
@@ -157,7 +138,6 @@ function pop(arr) {
 function pop (arr) {
 	return arr.splice(arr.length - 1, 1)[0];
 }
-
 
 // 添加一个或多个元素到数组的末尾，并返回数组新的长度
 Array.prototype.push(element1, ..., elementN);
@@ -187,11 +167,10 @@ function shift (arr) {
 	return arr.splice(0, 1)[0];
 }
 
-
 // 浅复制数组的一部分到一个新的数组，并返回这个新数组。
 Array.prototype.slice([begin[, end]]);
 
-function slice(arr, start, end) {
+function arraySlice(arr, start, end) {
 	var result = [];
 	var l = arr.length;
 	start = start ? start : 0;
@@ -203,7 +182,6 @@ function slice(arr, start, end) {
 	for (var i = 0; i < len; i++) result[i] = arr[i + start];
 	return result;
 }
-
 
 // 用新元素替换旧元素，以此修改数组的内容。
 Array.prototype.splice(start, deleteCount[, item1[, item2[, ...]]]);
@@ -299,14 +277,7 @@ function unshift(arr) {
 	return arr.length;
 }
 
-
-
-
-
-
-
 /*****************************es1*******************************/
-
 
 // 将数组中的所有元素连接成一个字符串。
 Array.prototype.join([separator = ',']);
@@ -318,7 +289,6 @@ function join(arr, separator) {
 	return result;
 }
 
-
 // 颠倒数组中元素的位置。第一个元素会成为最后一个，最后一个会成为第一个。
 Array.prototype.reverse();
 
@@ -328,7 +298,6 @@ function reverse(arr) {
 	for (var i = len - 1; i > -1; i--) result[len -1 - i] = arr[i];
 	for (var i = 0; i < len; i++) arr[i] = result[i];
 }
-
 
 // 返回一个字符串，表示指定的数组及其元素。
 Array.prototype.toString();
@@ -340,56 +309,367 @@ function tostring(arr) {
 	return result;
 }
 
+// Object
 
+/**************************es5*********************************/
 
+// 创建一个对象继承
+Object.create(proto, [propertiesObject]);
 
+var create = function (proto) {
+    function F() {}
+    F.prototype = proto;
+    return new F();
+};
+
+// 方法直接在一个对象上定义新的属性或修改现有属性，并返回该对象。
+Object.defineProperties(obj, props)
+
+function defineProperties (obj, properties) {
+	function converToDescriptor (desc) {
+		function hasProperty (obj, prop) {
+			return Object.prototype.hasOwnproperty.call(obj, prop);
+		}
+		function isCallable (v) {
+			return typeof v === 'function';
+		}
+		if (typeof desc !== 'object' || desc === null) {
+			throw new TypeError('bad, desc');
+		}
+		var d = {};
+		if (hasProperty(desc, 'enumerable')) {
+			d.enumerable = !!desc.enumerable;
+		}
+		if (hasProperty(desc, 'configurable')) {
+			d.configurable = !!desc.configurable;
+		}
+		if (hasProperty(desc, 'value')) {
+			d.value = !!desc.value;
+		}
+		if (hasProperty(desc, 'writable')) {
+			d.writable = !!desc.writable;
+		}
+		if (hasProperty(desc, 'get')) {
+			var g = desc.get;
+			if (!isCallable(g) && typeof g !== 'undefined') {
+				throw new TypeError('bad get');
+			}
+			d.get = g;
+		}
+		if (hasProperty(desc, 'set')) {
+			var s = desc.set;
+			if (!iscallable(s) && typeof s !== 'undefined') {
+				throw new TypeError('bad set');
+			}
+			d.set = s;
+		}
+		if (('get' in d || 'set' in d) && ('value' in d || 'writable' in d)) {
+			throw new TypeError('identity-confused descriptor');
+		}
+		return d;
+	}
+	if (typeof obj !== 'object' || obj === null) {
+		throw new TypeError('bad obj');
+	}
+	properties = Object(properties);
+	var keys = Object.keys(properties);
+	var descs = [];
+	for (var i = 0; i < keys.lengthl i++) {
+		descs.push([keys[i], converToDescriptor(properties[key[i]])]);
+	}
+	for (var i = 0; i < descs.length; i++) {
+		Object.defineProperty(obj, descs[i][0], descs[i][1]);
+	}
+	return obj;
+}
+
+// 返回一个由一个给定对象的自身可枚举属性组成的数组
+Object.keys(obj);
+
+function keys (obj) {
+	var result = [];
+	for (var prop in obj) if (Object.prototype.hasOwnProperty.call(obj, prop)) result.push(prop);
+}
+
+// Function
+
+/*****************************es1*******************************/
+
+// 返回绑定了this的新函数
+Function.prototype.bind();
+
+function bind (obj, oThis) {
+    var aArgs = [].slice.call(arguments, 2);
+    var fToBind = obj;
+    var fBound = function () {
+        return fToBind.apply(oThis, aArgs.concat([].slice.call(arguments)));
+    }
+    return fBound;
+}
+
+// Number
+
+/*****************************es3*******************************/
+
+// 小数点后面保留几位
+Number.prototype.toFixed();
+
+function toFixed (num, n) {
+    // 有几种情况
+    // 1. 四舍五入
+    // 2. 缺位补零
+    if (Object.prototype.toString.call(num) !== '[object Number]' || Object.prototype.toString.call(n) !== '[object Number]') return num;
+    var s = String(num).split('.');
+    var n2 = s[1] ? s[1] : '';
+    var l = '';
+    for (let i = 0; i < n; i++) l += '0';
+    var j = n2 + l;
+    s[1] = j.slice(0, n);
+    var k = Number(s[1]) + 1;
+    s[1] = j[n] > 4 ? k : s[1];
+    if (String(s[1]).length != n) {
+        s[0] = Number(s[0]) + 1;
+        s[1] = String(s[1]).slice(1);
+    }
+    s.splice(1, 0, '.');
+    return s.join('');
+}
+
+// String
+
+/*****************************es1*******************************/
+
+// 返回第一次出现字符串中的指定值的索引
+String.prototype.indexOf(searchValue[, fromIndex]);
+
+function indexOf (str, searchValue, formIndex) {
+    var len = str.length;
+    var i = formIndex || 0;
+    if (i >= len) return -1;
+    i = Math.max(i >= 0 ? i : len - Math.abs(i), 0);
+    for (; i < len; i++) if (str[i] === searchValue) return i;
+    return -1;
+}
+
+// 返回指定值在调用该方法的字符串中最后出现的位置
+String.prototype.lastIndexOf(searchValue[, fromIndex]);
+
+function lastIndexOf (str, searchValue, formIndex) {
+	var len = str.length;
+	var i = formIndex || len;
+	if (i > len) return -1;
+	i = Math.max(i >= 0 ? i : len - Math.abs(i), 0);
+	for (; i > -1; i--) if (str[i] === searchValue) return i;
+	return -1;
+}
+
+/*****************************es3*******************************/
+
+// 方法提取一个字符串的一部分，并返回一新的字符串。
+String.prototype.slice(beginSlice[, endSlice]);
+
+function stringSlice (str, a, b) {
+    var args = arguments;
+    if (args.length > 1) {
+        return funcContent(str, a, b);
+    } else return '';
+    function funcContent (str, a, b) {
+        var result = '';
+        var len = str.length;
+        var start = a ? a : len - Math.abs(a);
+        var end = b > 0 ? b - 1 : (len - Math.abs(b)) ? (len - Math.abs(b)) - 1 : len;
+        if (start > end) return '';
+        for (let i = start; i <= end; i++) result += str[i];
+        return result;
+    };
+}
+
+// 方法使用指定的分隔符字符串将一个String对象分割成字符串数组，以将字符串分隔为子字符串，以确定每个拆分的位置。
+String.prototype.split([separator[, limit]]);
+
+function split (str, separator, limit) {
+	limit = limit < Infinity && limit > -Infinity ? limit : 0;
+    // 正则能变出具体的字符，单具体的字符不能变出正则，只能抽象，这就是属加种差，所以趋向于那个大类，因为大类包含小类，就是把小类转化成大类，而不是用条件分支小类写一件事情，大类写一件事情，这是不对的，这是意见之路，不是真理之路
+    var rex = Object.prototype.toString.call(separator) == '[object RegExp]' ? separator : new RegExp('([^\b' + separator + '\b]+)', 'g');
+    var result = [];
+    var num = 1;
+    str.replace(rex, function (match, p1) {
+    	if (limit && num > limit) return;
+        result.push(p1);
+        num++;
+    });
+    return result;
+}
+
+/*****************************es5*******************************/
+
+// 方法会从一个字符串的两端删除空白字符。在这个上下文中的空白字符是所有的空白字符(space, tab, no-break space 等)
+String.prototype.trim();
+
+function trim (str) {
+	return str.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+}
+
+// Math
+
+/*****************************es1*******************************/
+
+// 函数返回一组数中的最大值。
+Math.max([value1[,value2, ...]]);
+
+function max () {
+    var min = 0;
+    [].forEach.call(arguments, function (a, b, c) {
+        a > min && (min = a);
+    });
+    return min;
+}
+
+// 函数返回一组数中的最小值。
+Math.min([value1[,value2, ...]]);
+
+function min () {
+    var max = Infinity;
+    [].forEach.call(arguments, function (a, b, c) {
+        a < max && (max = a);
+    });
+    return max;
+}
+
+// 函数返回大于或等于一个给定数字的最小整数。
+Math.ceil(x);
+
+function ceil (value) {
+    var result = String(value).split('.')
+    if (result.length === 1) return value;
+    return Number(result[0]) + 1;
+}
+
+// 返回小于或等于一个给定数字的最大整数。
+Math.floor(x);
+
+function floor (value) {
+	return Number(String(value).split('.')[0]);
+}
+
+// 函数返回一个数字四舍五入后最接近的整数。
+Math.round(x);
+
+function round (value) {
+    var result = String(value).split('.');
+    if (result.length === 1) return value;
+    return result[1][0] >= 5 ? Number(result[0]) + 1 : Number(result[0]);
+}
 
 
 
 // 模仿不了的
 
 // Array
+// 属性
+// es1
+Array.length;
+// 方法
 // es1
 Array.prototype.sort();
 // es3
 Array.prototype.toLocaleString();
 
+// Object
+// 方法
+// es5
+Object.defineProperty();
+Object.freeze();
+Object.getOwnPropertyDescriptor();
+Object.getOwnPropertyDescriptors();
+Object.getOwnPropertyNames();
+Object.getPrototypeOf();
+Object.isExtensible();
+Object.isFrozen();
+Object.isSealed();
+Object.preventExtensions();
+Object.prototype.hasOwnProperty();
+Object.prototype.isPrototypeOf();
+Object.seal();
+// es3
+Object.prototype.propertyIsEnumerable();
+Object.prototype.toLocaleString();
+// es1
+Object.prototype.toString();
+Object.prototype.valueOf();
 
+// Function
+// 属性
+// es1
+Function.length;
+Function.name;
+// 方法
+// es43
+Function.prototype.apply();
+// es1
+Function.prototype.call();
 
+// Number
+// 属性
+// es1
+Number.MAX_VALUE;
+Number.MIN_VALUE;
+Number.NEGATIVE_INFINITY;
+Number.NaN;
+Number.POSITIVE_INFINITY;
+// 方法
+// es3
+Number.prototype.toExponential();
+Number.prototype.toPrecision();
+// es1
+Number.prototype.toString();
+Number.prototype.valueOf();
 
+// String
+// 属性
+String.length;
+// 方法
+// es1
+String.fromCharCode();
+String.prototype.charAt();
+String.prototype.charCodeAt();
+String.prototype.toLowerCase();
+String.prototype.toUpperCase();
+String.prototype.toString();
+String.prototype.valueOf();
+// es3
+String.prototype.localeCompare();
+String.prototype.localeCompare();
+String.prototype.match();
+String.prototype.replace();
+String.prototype.search();
+String.prototype.toLocaleLowerCase();
+String.prototype.toLocaleUpperCase();
+// 功能和slice如此相似，有何意思？！
+/*String.prototype.substr();
+String.prototype.substring();*/
 
+// Boolean
+// 方法
+// es1
+Boolean.prototype.toString();
+Boolean.prototype.valueOf();
+
+// RegExp
+// 属性
+// es3
+RegExp.prototype.global;
+RegExp.prototype.ignoreCase;
+RegExp.prototype.multiline;
+RegExp.prototype.source;
+RegExp.lastIndex;
+// 方法
+RegExp.prototype.exec();
+RegExp.prototype.toString();
 
 // Math
-
-/***********es1**************/
-
-// Math.max();
-// Math.min();
-// 找最小最大值
-function findM(arr){
-	var min = Number.MAX_VALUE,
-		max = Number.MIN_VALUE,
-		minIndex = -1,
-		maxIndex = -1;
-	for(var i = 0,len = arr.length; i < len; i++){
-		if(min > arr[i]){
-			min = arr[i];
-			minIndex = i;
-		};
-		if(max < arr[i]){
-			max = arr[i];
-			maxIndex = i;
-		};
-	};
-	return {
-		min : min,
-		minIndex : minIndex,
-		max : max,
-		maxIndex : maxIndex
-	};
-}
-
-
+// 属性
+// es1
 Math.E;
 Math.LN10;
 Math.LN2;
@@ -398,311 +678,90 @@ Math.LOG2E;
 Math.PI;
 Math.SQRT1_2;
 Math.SQRT2;
-
-	Math.abs();
-	
-	Math.pow();
-	Math.random();
-	Math.ceil();
-	Math.floor();
-	Math.sqrt();
-
+// 方法
+// es1
+Math.abs();
 Math.acos();
-Math.asin();
 Math.atan();
+Math.atan2();
 Math.cos();
 Math.exp();
 Math.log();
+Math.pow();
+Math.random();
 Math.sin();
+Math.sqrt();
 Math.tan();
 
-
-
-
-// String----字符串几乎都不行
-/***********es1**************/
-String.fromCharCode();
-String.prototype.charAt();
-String.prototype.charCodeAt();
-String.prototype.indexOf();
-String.prototype.lastIndexOf();
-String.prototype.substring();
-String.prototype.toLowerCase();
-String.prototype.toUpperCase();
-String.prototype.valueOf();
-/***********es3**************/
-String.prototype.concat();
-String.prototype.localeCompare();
-String.prototype.match();
-String.prototype.replace();
-String.prototype.search();
-String.prototype.slice();
-String.prototype.split();
-String.prototype.substr();
-String.prototype.toLocaleLowerCase();
-String.prototype.toLocaleUpperCase();
-String.prototype.toString();
-/***********es5**************/
-String.prototype.trim();
-
-
-
-// Object----牵扯到原型和面向对象的方法先放一放，同样也是基本模仿不了的
-/*************es5***************/
-Object.create();
-Object.defineProperties();
-Object.defineProperty();
-Object.freeze();
-Object.getOwnPropertyDescriptor();
-Object.getOwnPropertyNames();
-Object.isExtensible();
-Object.isFrozen();
-Object.isSealed();
-Object.keys();
-Object.preventExtensions();
-
-/**************es3****************/
-Object.prototype.hasOwnProperty();
-Object.prototype.isPrototypeOf();
-Object.prototype.toLocaleString();
-
-/****************es1*****************/
-Object.prototype.toString();
-Object.prototype.valueOf();
-Object.seal();
-
-
-
-
-
-
-
-
-/************全局属性************/
-Infinity
-NaN
-undefined
-null
-/***************全局方法***************/
-eval();
-isFinite();
-isNaN();
-parseFloat();
-parseInt();
-decodeURI();
-decodeURIComponent();
-encodeURI();
-encodeURIComponent();
-
-
-
-/*****************DOM****************/
-
-/****************window******************/
-applicationCache;
-closed;
-document;
-frameElement;
-frames;
-history;
-	{
-		back(),
-		go();
-	}
-innerWidth;
-innerHeight;
-length;
-localStorage;
-location
-	{
-		ancestorOrigins :
-		DOMStringList
-		assign(),
-		hash :
-		host :
-		hostname :
-		href :
-		origin :
-		pathname :
-		port :
-		protocol :
-		reload(),
-		replace(),
-		search :
-	}
-name;
-navigator;
-opener;
-outerHeight;
-outerWidth;
-parent;
-screen;
-screenX;
-screenY;
-scrollX;
-scrollY;
-self;
-sessionStorage;
-status;
-statusbar;
-toolbar;
-top;
-
-
-
-// 全局事件
-onbeforeunload;
-onabort;
-onblur;
-onchange;
-onclick;
-onclose;
-oncontextmenu;
-ondblclick;
-onerror;
-onfocus;
-onhashchange;
-oninput;
-onkeydown;
-onkeypress;
-onkeyup;
-onload;
-onmousedown;
-onmousemove;
-onmouseout;
-onmouseover;
-onmouseup;
-onreset;
-onresize;
-onscroll;
-onselect;
-onstorage;
-onsubmit;
-ontouchstart;
-ontouchmove;
-ontouchend;
-ontouchcancel;
-onreadystatechange;
-window.getSelection().anchorOffset; 
-window.getSelection().focusOffset; 
-
-
-/**********document************/
-document.activeElement;
-document.anchors;
-document.applets;
-document.body;
-document.characterSet;
-document.compatMode;
-document.contentType;
-document.currentScript;
-document.defaultView;
-document.designMode;
-document.dir;
-document.doctype;
-document.documentElement;
-document.documentURI;
-document.domain;
-document.forms;
-document.head;
-document.images;
-document.implementation;
-document.lastModified;
-document.links;
-document.location;
-	{
-		ancestorOrigins :
-		DOMStringList
-		assign(),
-		hash :
-		host :
-		hostname :
-		href :
-		origin :
-		pathname :
-		port :
-		protocol :
-		reload(),
-		replace(),
-		search :
-	}
-document.origin;
-document.plugins;
-document.readyState;
-document.referrer;
-document.scripts;
-document.styleSheets;
-document.styleSheetSets;
-document.title;
-document.URL;
-document.visibilityState;
-document.createAttribute;
-document.createComment;
-document.createDocumentFragment();
-document.createElement();
-document.createEvent();
-document.createTextNode();
-document.elementFromPoint();
-document.getElementById();
-document.getElementsByClassName();
-document.getElementsByName();
-document.getElementsByTagName();
-document.hasFocus();
-document.importNode();
-document.querySelector();
-document.querySelectorAll();
-document.write();
-document.writeln();
-
-
-
-
-firstElementChild;
-children;
-lastElementChild;
-onafterscriptexecute
-onbeforescriptexecute;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Date
+// 方法
+// es1
+Date.UTC();
+Date.parse();// 有风险
+Date.prototype.getDate();
+Date.prototype.getDay();
+Date.prototype.getFullYear();
+Date.prototype.getHours();
+Date.prototype.getMilliseconds();
+Date.prototype.getMinutes();
+Date.prototype.getMonth();
+Date.prototype.getSeconds();
+Date.prototype.getTime();
+Date.prototype.getTimezoneOffset();
+Date.prototype.getUTCDate();
+Date.prototype.getUTCDay();
+Date.prototype.getUTCFullYear();
+Date.prototype.getUTCHours();
+Date.prototype.getUTCMilliseconds();
+Date.prototype.getUTCMinutes();
+Date.prototype.getUTCMonth();
+Date.prototype.getUTCSeconds();
+Date.prototype.setDate();
+Date.prototype.setFullYear();
+Date.prototype.setHours();
+Date.prototype.setMilliseconds();
+Date.prototype.setMinutes();
+Date.prototype.setMonth();
+Date.prototype.setSeconds();
+Date.prototype.setTime();
+Date.prototype.setUTCDate();
+Date.prototype.setUTCFullYear();
+Date.prototype.setUTCHours();
+Date.prototype.setUTCMilliseconds();
+Date.prototype.setUTCMinutes();
+Date.prototype.setUTCMonth();
+Date.prototype.setUTCSeconds();
+Date.prototype.toString();
+Date.prototype.toUTCString();
+Date.prototype.valueOf();
+// es3
+Date.prototype.toDateString();
+Date.prototype.toLocaleDateString();
+Date.prototype.toLocaleString();
+Date.prototype.toLocaleTimeString();
+Date.prototype.toTimeString();
+// es5
+Date.now();
+Date.prototype.toISOString();
+Date.prototype.toJSON();
+
+/*************************原生方法实现训练的分割线*************************/
+
+// Array - Object - Number - String - RegExp - Date - Math
+
+// Array方法
+/*
+	es5的方法只吃字符串
+	push对object比较有意思，在lenth属性，不是数字下标的话不会被替换
+	join只吃字符串
+*/
+
+// String
+/*
+	indexOf，lastIndexOf，slice，split吃数字和正则，
+*/
+
+/*************************call&apply训练的分割线**************************/
 
 
 

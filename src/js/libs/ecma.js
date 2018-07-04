@@ -31,6 +31,35 @@
 23. 等整理的差不多了，我要好好斟酌一下方法的名字
 24. 想想怎么像lodash那样按需加载，我要那个方法就加载哪里方法
 25. 把while循环也写成函数迭代的形式
+26. var a = [1,2,3]
+    var b = [a,b,c]
+    请问如何得到c数组
+    var c = [1,a,2,b,3,c]
+27. 交互中，点自己还是点别人的问题，还有就是位置，上一个是什么，下一个什么，前一个是什么，后一个是什么，也就是空间位置的问题，好好想想，会有收获的，就像一个记忆系统，分2中状态，当前状态，我总能感觉到现在的我，还有种就是过去的我
+28. 交互中的上下级关系怎么体现在数据中，比如说父级变了，子集也要变
+29. 上面只是1和2的关系，还有连环关系，1和2和3和。。。。连环关系，草，就像这个日历，没选月，日不能选，没选年，月日不能选，不能小看怎么个简单的日历组件，包含着及其丰富的逻辑
+30. 写模糊时间组件时候各种显示隐藏的状态也是相当蛋疼的，单显示，单隐藏，然后是满足什么条件隐藏，满足什么条件消失，也就是当前状态的管理
+31. 创建单个对象以后可以写关系系统把他嵌入到对象里面（一个关系网）状态的变更：一对一的变更，一对多的变更
+32. 写城市切换明白了，布局排版的变化如果不能用样式解决，最终还是可以通过改变数据结构来影响布局
+33. 写模糊日期明白了面向对象的优势，就是不同对象属性的独立性和整体性
+34. 写个数组交叉
+35. 看到sass的权限配置代码里嵌套5,6层的if-else和页面上4,5级联动效果的时候，我隐约感觉到为什么有时候要动态创建对象，而不是字面量的形式（比如我可以先创建一个平级对象，把属性完成后，再去动态创建这个对象的上下级关系）
+36. 递归循环做下队列，以免陷入死循环
+37. 把所有的功能都网上再找其他的方法，看看人家是怎么写的，不做井底之蛙，把一种功能的实现多元化，尽可能多的用不同的方法实现一种功能，（不要气馁，终究是要通过意见走向真理的）
+38. 这里要写个无限进一位的方法（数字加1不就进1了吗。。。。。）但有些不是数字，也就是有连带关系的
+39. 我在想有没有突破条件逻辑的写法，至少挣脱一些必须先判断才能做的事情（我现在想到的是从整体到局部写，就像画素描一样，先打框架，在抠细节，想想自己写的toFixed）
+
+
+
+
+
+
+
+
+
+
+
+
 
 抽象是哲学的根本特点，代码亦如此。
 （理念和实体）（共相和殊相）（抽象和具象）（现象和本质）（形式和内容）
@@ -82,10 +111,7 @@
 ★★★★★★★★★★★★★★★★★★★★
 */
 
-/*
-   这里随便写些，脑袋里浮现的概念 
-   时间，空间，位置，大小，重量，寻找
-*/
+
 
 /*
 阅读代码比阅读文章困难是因为，一段代码可能会依赖很多函数，你为了了解每个函数的作用不得不跳到其他代码块，这不符合我们的阅读习惯。 偶尔在一本书中看到这样一句话：“面向对象语言的问题是，它们永远都要随身携带那些隐式的环境。你只需要一个香蕉，但却得到一个拿着香蕉的大猩猩…以及整个丛林”。
@@ -93,7 +119,39 @@
 这就是纯函数
 */
 
+/*
+我现在写代码的一点就是抓住本质，远离意见，把意见都终归一统，具体点说就是怎样减少意见，就是减少if语句，如何减少if语句就是写完成所有的情况，就没有如果了，就是数组对象，终为对象，
+*/
 
+// 对柯理化的进一步理解
+var factory = function (callback, original, iterator, array) {
+    // 以前这是第一步
+    /*callback = callback || function (original, output) {
+        return output;
+    };*/
+    
+    // 现在没有手动分布返回新函数，而现在一开始把定义的函数全部写完整，直接一步返回结果，然后通过动态柯理化去控制参数，也就是说以前是手动柯理化，现在是自动柯理化
+
+    // 以前这是第二步
+    original = processCollection(original);
+    iterator = processFunction(iterator);
+    var output = callback(original, array || {});
+    Object.keys(original).forEach(function (currentValue, index, array) {
+        iterator(original[currentValue], currentValue, output);
+    });
+    return output;
+};
+
+var factoryClone = factory.bind('', function (original, output) {
+    _.forEach(original, function (currentValue, key, collection) {
+        output[key] = collection[key];
+    });
+    return output;
+});
+
+var factoryNew = factory.bind('', function (original, output) {
+    return output;
+});
 
 /****************
     私有
@@ -103,7 +161,7 @@
     输入输出迭代工厂
 */
 
-var factory = function (callback) {
+/*var factory = function (callback) {
     callback = callback || function (original, output) {
         return output;
     };
@@ -117,24 +175,24 @@ var factory = function (callback) {
         });
         return output;
     };
-};
+};*/
 
 /*
     克隆体
 */
 
-var factoryClone = factory(function (original, output) {
+/*var factoryClone = factory(function (original, output) {
     _.forEach(original, function (currentValue, key, collection) {
         output[key] = collection[key];
     });
     return output;
-});
+});*/
 
 /*
     新生体
 */
 
-var factoryNew = factory();
+// var factoryNew = factory();
 
 /*
     集合统一转换
