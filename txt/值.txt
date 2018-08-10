@@ -69,7 +69,7 @@ parseInt('42px')//42  解析 还有parseFloat
 NaN不等于NaN
 +0等于-0
 字符串和数字之间相等比较：将字符串强制转换为数字然后比较。
-其他类型和布尔值相等比较：将布尔值变成数字然后比较。如果其他类型是对象，那么通过valueOf或toString把对象变成字符串在比较。
+其他类型和布尔值相等比较：将布尔值变成数字然后比较。如果其他类型是对象，那么通过先调用valueOf，变成原始值，如果valueOf出来的还是对象，那么直接调用toString变成原始值
 var a = '42';
 var b = true;
 a == b //false
@@ -82,16 +82,19 @@ null和undefined的相等比较：在==中undefined和null是一回事，除此�
 
 typeof一个未声明的变量的时候不会报错，也只有他不会报错，其他情况下子在未声明的情况下使用都会报错，这个机制呵呵
 
-var obj = Object(obj);
+var obj = Object(a);
 这段代码的意义是：
-如果 obj 是一个对象，那么 Object(obj) 返回 obj
-如果 obj 是 undefined 或 null，那么 Object(obj) 返回一个 {}
-如果 obj 是一个原始值 (Primitive value)，那么 Object(obj) 返回一个被包裹的原始值:
-var obj = 2;
-obj = Object(obj); // 相当于 new Number(obj);
+如果 a 是一个对象，那么 Object(obj) 返回 obj
+如果 a 是 undefined 或 null，那么 Object(obj) 返回一个 {}
+如果 a 是一个原始值 (Primitive value)，那么 Object(obj) 返回一个被包裹的原始值:
+var a = 2;
+obj = Object(a); // 相当于 new Number(a);
 // => obj: Number {[[PrimitiveValue]]: 2}
 var value = obj.valueOf();
 // => value: 2
 一言以蔽之，Object(obj) 就是将传入的 obj 进行对象化。
 new和不new的关系是一样的
 Number(),Object(),Array(),string(),Boolean()这些对象包装器都是转换成对应的数据类型的
+
+new String(111) == new String(111)
+一开始会想为什么不相等，不是会调用valueOf来对比嘛，后来发现这是2个对象，在没有原始值的情况下不会隐式调用valueOf

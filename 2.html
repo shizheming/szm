@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+    body{text-align: center;}
+    #text{background: #03a9f4;font-size: 22px;}
+    </style>
+    <script src="./src/js/libs/ecma.js"></script>
+</head>
+
+<body>
+<div id="div">
+    <div id="runState">运行状态</div>
+    <div id="deleteState">删除状态</div>
+    <div id="addState">添加状态</div>
+    <div id="replaceState">替换状态</div>
+    <div id="setState">设置当前状态</div>
+    <div id="text"></div>
+    <hr>
+
+
+    <select name="" id="select1">
+        <option value="0">1111111</option>
+        <option value="1">2222222222</option>
+        <option value="2">3233333333333333</option>
+        <option value="3">4344444444444444444444</option>
+    </select>
+    <select name="" id="select2"></select>
+    <select name="" id="select3"></select>
+    <select name="" id="select4">
+        <option value="">我是一，我需要多才能触发</option>
+        <option value="">bbbbbbbbbbb</option>
+        <option value="">cccccccccccc</option>
+        <option value="">dddddddddddd</option>
+        <option value="">eeeeeeeeeee</option>
+    </select>
+    <ul id="list1"></ul>
+    <ul id="list2"></ul>
+    <span id="span">123123
+    sdfsdfasdf
+    )(*&^%$#@!~</span>
+</div>
+<script>
+
+// demo
+var selectObject1 = {
+    name : 'selectRelation1',
+    business : [function getData (a) {
+        var h = _.randomNumber();
+        var li = '';
+        for (var i = 0; i < h; i++) li += '<li>' + _.randomNumber(_.randomNumber()) +'</li>';
+        list1.innerHTML = li;
+    }, function changeColor () {
+        select1.style.backgroundColor = _.randomColor();
+    }, function changeSelector1FontSize () {
+        select1.style.fontSize = '22px';
+    }],
+    relation : [{
+        relation : 'getData',
+        name : 'createOption',
+        behavior : function (data, b) {
+            var h = _.randomNumber();
+            var option = '';
+            for (var i = 0; i < h; i++) option += '<option value="' + i + '">' + _.randomNumberAlphabet(10) + b + '</option>'
+            select2.innerHTML = option;
+            select2.onchange = function () {
+                newSelect2.getData('ddd', 2222222222222);
+                newSelect1.changeSelector1FontSize();
+            };
+            // newSelect1.build('getData', 'changeUl2BackgroundColor2');
+
+        },
+    }, {
+        relation : 'changeColor',
+        name : 'changeSelector2BackgroundColor',
+        behavior : function () {
+            select2.style.backgroundColor = _.randomColor();
+        },
+    }, {
+        name : 'changeBodyBackgroundColor',
+        behavior : function () {
+            console.log(1)
+            document.body.style.backgroundColor = '#ccc';
+        },
+        dynamic : true,
+    }, {
+        name : 'changeUl1BackgroundColor',
+        behavior : function nn () {
+            list1.style.backgroundColor = '#ccc';
+        },
+        dynamic : true,
+    }, {
+        // relation : 'getData',
+        name : 'changeUl2BackgroundColor2',
+        behavior : function nn () {
+            list2.style.backgroundColor = 'yellow';
+        },
+        dynamic : true,
+    }],
+    more : [],
+};
+
+var selectObject2 = {
+    name : 'selectRelation2',
+    business : [function getData (a) {
+        var h = _.randomNumber();
+        var li = '';
+        for (var i = 0; i < h; i++) li += '<li>' + _.randomNumber(_.randomNumber()) +'</li>';
+        list2.innerHTML = li;
+    }],
+    relation : [{
+        relation : 'getData',
+        name : 'createOption',
+        behavior : function (data, b) {
+            var h = _.randomNumber();
+            var option = '';
+            for (var i = 0; i < h; i++) option += '<option value="">' + _.randomNumberAlphabet(10) + b + '</option>'
+            select3.innerHTML = option;
+        },
+    }],
+    more : [],
+};
+
+// 多对一
+var selectObject4 = {
+    name : 'selectRelation4',
+    business : [],
+    relation : [],
+    more : [{
+        name : [['selectRelation1', 'changeSelector1FontSize'], ['selectRelation2', 'getData']],
+        condition : [function () {
+            // alert(1);
+            console.log(2);
+            return select1.value == 1;
+        }, function () {
+            // alert(2);
+            console.log(3);
+            return select1.value == 1;
+        }],
+        relation : function () {
+            select4.style.border = '10px solid yellow';
+        }
+    }]
+}
+
+var newSelect1 = createRelation(selectObject1);
+var newSelect4 = createRelation(selectObject4);
+var newSelect2 = createRelation(selectObject2);
+
+select1.onchange = function () {
+    
+    newSelect1.build('changeSelector1FontSize', 'changeBodyBackgroundColor');
+    newSelect1.getData('xxxxxxxxxxxxxxxxxxx', 111111);
+    newSelect1.changeColor();
+
+    // newSelect1.relieve('getData');
+};
+
+
+// 这么庞大的数据结构怎么检测???
+// 看看echart
+
+</script>
+
+
+</body>
+</html>
+
+<script>
+
+
+runState.onclick = function () {
+    obj.currState(true);
+};
+// yes
+deleteState.onclick = function () {
+    obj.deleteState(t4);
+};
+// no
+addState.onclick = function () {
+    // yes
+    // obj.addState(s1);
+    // no
+    obj.addState(s1, t2);
+};
+// yes
+replaceState.onclick = function () {
+    obj.replaceState(s2, t2);
+};
+// yes
+setState.onclick = function () {
+    obj.setState(t2);
+};
+
+
+
+
+function s1 () {
+    text.innerHTML = '我是添加的';
+};
+
+function s2 () {
+    text.innerHTML = '我是替换的';
+};
+
+
+
+function t1 () {
+    text.innerHTML = 1;
+};
+
+function t2 () {
+    text.innerHTML = 2;
+};
+
+function t3 () {
+    text.innerHTML = 3;
+};
+
+function t4 () {
+    text.innerHTML = 4;
+};
+
+function t5 () {
+    text.innerHTML = 5;
+};
+
+var obj = _.state(t1, t2, t3, t4, t5);
+
+
+
+
+
+
+
+
+
+
+</script>

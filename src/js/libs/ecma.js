@@ -48,7 +48,7 @@
 37. 把所有的功能都网上再找其他的方法，看看人家是怎么写的，不做井底之蛙，把一种功能的实现多元化，尽可能多的用不同的方法实现一种功能，（不要气馁，终究是要通过意见走向真理的）
 38. 这里要写个无限进一位的方法（数字加1不就进1了吗。。。。。）但有些不是数字，也就是有连带关系的
 39. 我在想有没有突破条件逻辑的写法，至少挣脱一些必须先判断才能做的事情（我现在想到的是从整体到局部写，就像画素描一样，先打框架，在抠细节，想想自己写的toFixed）
-
+40. 加map，every，some
 
 
 
@@ -64,17 +64,7 @@
 抽象是哲学的根本特点，代码亦如此。
 （理念和实体）（共相和殊相）（抽象和具象）（现象和本质）（形式和内容）
 
-1. 抽象是什么？
-    抽象是具象的反义词
-2. 为什么要抽象？
-    因为让别人看的一脸懵笔的感觉很爽。
-    因为抽象是我们创建实体的起点，必经之路，我们不能直接从tab切换的业务代码变成另一个拖拽排序的东西，我们只有从中抽象出数据类型，语法，等等，重新构建另一个，这就是从实体到抽象，然后再从抽象到实体的这么一个过程，所以是必经之路，而复用只是抽象附带的这么一个特性而已。
-3. 怎么抽象？
-    单个抽象：抽象行为，抽象属性，抽象种属概念（比较难）
-    多个抽象：抽象相同的部分和不同的部分，抽象不变的和变化的（比上面容易，因为有比较了）
-4. 抽象出什么来？
-    抽象出形式，抽象出质料，任何事物都是形式和质料的统一
-5. 抽象的程度
+抽象的程度
     抽象的程度越深，那抽象出来的离抽象本身最近，越一般，与其他抽象越紧密，如果2个抽象依旧没有关系，就说明抽象的程度没有达到联系的那一层，需继续抽象
 */
 
@@ -121,6 +111,12 @@
 
 /*
 我现在写代码的一点就是抓住本质，远离意见，把意见都终归一统，具体点说就是怎样减少意见，就是减少if语句，如何减少if语句就是写完成所有的情况，就没有如果了，就是数组对象，终为对象，
+*/
+
+
+
+/*
+别看了点思想就瞧不起技巧了，技巧是基础，没有技巧，你的思想也就不能实体化
 */
 
 // 对柯理化的进一步理解
@@ -321,6 +317,7 @@ var linkOperation = (function () {
     }.bind(this);
     // 添加
     link.add = function (newElement, oldElement) {
+        var lastLength = this.display().length;
         // 缺点在于一次只能插一个值
         var newNode = {
             element : newElement,
@@ -354,7 +351,7 @@ var linkOperation = (function () {
         // 2个参数是找到第2个参数后面插入
         } else {
             var currentValue = this.find(oldElement);
-            if (!currentValue) return;
+            if (!currentValue) return false;
             // 判断是不是最后一个
             if (currentValue === this.tail.previous) addLast(); else {
                 newNode.next = currentValue.next;
@@ -363,7 +360,7 @@ var linkOperation = (function () {
                 currentValue.next = newNode;
             }
         }
-        return this.display().length;
+        return lastLength !== this.display().length;
     };
     // 删除
     link.delete = function (element) {
@@ -533,6 +530,7 @@ var findCollection = function (collection, value) {
     } else return valueResult;
 };
 _.findCollection = function (collection, value, callback, isDeep) {
+    if (!collection) return;
     isDeep = _.isBoolean(callback) ? callback : isDeep;
     callback = processFunction(callback);
     var result = [];
@@ -781,7 +779,7 @@ _.pairs = function (original) {
     删除
 ****************/
 
-var removeSomething = function(collection, deleteCollection, type) {
+var removeSomething = function (collection, deleteCollection, type) {
     var isArrayShift = type === 'key' ? false : true;
     var result = objectTransformation(collection, factoryNew(collection, function (currentValue, key, output) {
         if (type === 'value' && !_.isExistence(deleteCollection, [currentValue])) output[key] = currentValue;
@@ -1004,10 +1002,9 @@ _.decorate = function (before, after) {
     before = processFunction(before);
     after = processFunction(after);
     return function (beforeArguments, afterArguments) {
-        beforeArguments = processArray(beforeArguments);
-        afterArguments = processArray(afterArguments);
-        arguments.length === 1 ? afterArguments = beforeArguments : '';
-        before.apply(this, beforeArguments);
+        beforeArguments = beforeArguments === undefined ? [] : [beforeArguments];
+        afterArguments = afterArguments === undefined ? [] : [afterArguments];
+        afterArguments.unshift(before.apply(this, beforeArguments));
         return after.apply(this, afterArguments);
     };
 };
@@ -1017,7 +1014,7 @@ _.decorate = function (before, after) {
     2种方向，正序，倒序
 ******************/
 
-_.state = function () {
+/*_.state = function () {
     // 1. 静态
     // 首先要定义多个状态和状态的顺序
     var stateAll = [].filter.call(arguments, function (currentValue, index, array) {
@@ -1031,7 +1028,13 @@ _.state = function () {
     var state = link.find(stateAll[0]);
     // 方向
     var left = true;
+    // 记录上一次的方向（像这种东西现在来说都很零散，需要了，想到了，才会去写，以后要形成一整套概念体系才行）
+    var previousLeft = true;
+    var wLeft = false;
+
+
     var direction = function () {
+        previousLeft = left;
         state = left ? state.next : state.previous;
         // 正序
         if (state === link.head.next) left = true;
@@ -1050,15 +1053,9 @@ _.state = function () {
     var addState = function (newState, oldState) {
         var back = link.add(newState, oldState);
         if (!back) return;
-        // 正序替换
-        if (oldState && (state.previous.previous.element === oldState)) state = link.find(newState);
-        // 倒序替换
-        if (oldState && (state.element === oldState)) state = link.find(newState);
-        // 加在末尾的情况
-        // 正序
-        if (!oldState && state.previous.element === newState) state = link.find(newState);
-        // 倒序
-        if (!oldState && state.next.next.element === newState) state = link.find(newState); 
+        newState = link.find(newState);
+        if (state.element === newState.next.element) state = newState;
+        if (state.element === newState.previous.element) state = newState;
         return back;
     };
     // 替换状态
@@ -1072,24 +1069,107 @@ _.state = function () {
     // 删除状态
     var deleteState = function (oldState) {
         if (!_.isFunction(oldState)) return;
-        // 这里有个问题就是，有时删除的实体已经变成下一个要运行的实体了，例如我运行1，运行完1后，运行实体变成2，虽然紧接着我删除了2，可下次运行的是时候是运行2的实体，因为之前运行完1后，就更新了运行实体，添加，替换也有这个问题
+        // 这里有个问题就是，有时删除的对象已经变成下一个要运行的对象了，例如我运行1，运行完1后，运行对象变成2，虽然紧接着我删除了2，可下次运行的是时候是运行2的对象，因为之前运行完1后，就更新了运行对象，添加，替换也有这个问题
         if (state.element === oldState) direction();
         return link.delete(oldState);
     };
     // 设置当前状态
-    var setState = function (newState) {
+    var setState = function (newState, isLeft) {
         var element = link.find(newState);
-        if (!state) return;
+        if (!element) return;
         state = element;
-        return oneByOne();
+        left = _.isBoolean(isLeft) ? isLeft : previousLeft;
+        return oneByOne(wLeft);
+    };
+    var one = function (isLeft, context) {
+        wLeft = isLeft;
+        return oneByOne(isLeft, context);
     };
     return {
-        currState : oneByOne,
+        currState : one,
         addState : addState,
         replaceState : replaceState,
         deleteState : deleteState,
         setState : setState,
     };
+};*/
+var StateFunc;
+(function () {
+    StateFunc = function () {
+        var arg = arguments[0];
+        // 1. 静态
+        // 首先要定义多个状态和状态的顺序
+        var stateAll = [].filter.call(arg, function (currentValue, index, array) {
+            return _.isFunction(currentValue);
+        });
+        if (!stateAll.length) return;
+        this.link = _.link();
+        stateAll.forEach(function (currentValue, index, array) {
+            this.link.add(currentValue);
+        }, this);
+        this.state = this.link.find(stateAll[0]);
+
+        // 方向
+        this.left = true;
+        // 记录上一次的方向（像这种东西现在来说都很零散，需要了，想到了，才会去写，以后要形成一整套概念体系才行）
+        this.previousLeft = true;
+        var wLeft = false;
+    };
+    var direction = function () {
+        this.previousLeft = this.left;
+        this.state = this.left ? this.state.next : this.state.previous;
+        // 正序
+        if (this.state === this.link.head.next) this.left = true;
+        // 倒序
+        if (this.state === this.link.tail.previous) this.left = false;
+    };
+    var oneByOne = function (isLeft, context) {
+        context = _.isBoolean(isLeft) ? context : isLeft;
+        var back = this.state.element.call(context);
+        isLeft ? direction.call(this) : this.state = this.state.next;
+        return back;
+    };
+    // 2. 动态
+    // 然后添加一些方法能动态的添加或是删除或是修改状态
+    // 添加状态
+    StateFunc.prototype.addState = function (newState, oldState) {
+        var back = this.link.add(newState, oldState);
+        if (!back) return;
+        newState = this.link.find(newState);
+        if (this.state.element === newState.next.element) this.state = newState;
+        if (this.state.element === newState.previous.element) this.state = newState;
+        return back;
+    };
+    // 替换状态
+    StateFunc.prototype.replaceState = function (newState, oldState) {
+        var back = this.link.replace(newState, oldState);
+        if (!back) return;
+        // 更新要替换的前一个或后一个的指针
+        if (this.state.element === oldState) this.state = this.link.find(newState);
+        return back;
+    };
+    // 删除状态
+    StateFunc.prototype.deleteState = function (oldState) {
+        if (!_.isFunction(oldState)) return;
+        // 这里有个问题就是，有时删除的对象已经变成下一个要运行的对象了，例如我运行1，运行完1后，运行对象变成2，虽然紧接着我删除了2，可下次运行的是时候是运行2的对象，因为之前运行完1后，就更新了运行对象，添加，替换也有这个问题
+        if (this.state.element === oldState) direction.call(this);
+        return this.link.delete(oldState);
+    };
+    // 设置当前状态
+    StateFunc.prototype.setState = function (newState, isLeft) {
+        var element = this.link.find(newState);
+        if (!element) return;
+        this.state = element;
+        this.left = _.isBoolean(isLeft) ? isLeft : this.previousLeft;
+        return oneByOne.call(this, wLeft);
+    };
+    StateFunc.prototype.currState = function (isLeft, context) {
+        wLeft = isLeft;
+        return oneByOne.call(this, isLeft, context);
+    };
+})();
+_.state = function () {
+    return new StateFunc(arguments);
 };
 
 /****************
@@ -1185,6 +1265,22 @@ _.isNumber = function (n) {
 
 _.isInteger = function (n) {
     return _.isNumber(n) && n % 1 === 0;
+};
+
+/*
+    判断一个值是不是奇数
+*/
+
+_.isOdd = function (n) {
+    return Math.abs(n % 2) === 1;
+};
+
+/*
+    判断一个值是不是偶数
+*/
+
+_.isEven = function (n) {
+    return n % 2 === 0;
 };
 
 /*
@@ -1374,6 +1470,228 @@ _.link = function () {
     return newLink;
 };
 
+/*
+    关系
+
+    关系结构
+    业务代码是一对一的关系（只保证主线），那什么会写成关系呢，就是一个对象的变化会依赖于另一个对象，而独立于xxxx（xxxx还没想好是什么）
+
+    建立关系
+    断绝关系
+
+    这有点声明式的意思了，我只定义和声明，要怎么干交给函数就好了
+
+    然后要把他变成动态的
+    建立关系，解除关系
+
+    我想其实动态的任何动作都能静态化，我的意思是把要动态的内容准备好，然后按个开关，当然小动作我觉得不必了，比如删除，但是我觉得动态添加或是替换还是可以尝试一下的
+
+    我在思考我是关系跟着当前对象呢，还是跟着自己
+    先跟着有关系的对象吧，先不要一下子把可读性变得很差
+
+    我发现我喜欢不动的代码，把一切都准备好，然后只要按下一个按钮，程序就自动运行了，我这个指的是写代码的时候，好像这就有点声明式的意思了
+*/
+
+// 全部的关系都放在这里
+var allRelation = [];
+// 全部的还没绑上的多对一的关系
+var multiToOne = [];
+
+// 方法
+var funcRelation = {
+    build : function (name, bindName) {
+        // 先判断他存不存在，在已建立的里面找
+        var dynamicObj = this.dynamic.filter(function (currentValue, index, array) {
+            return currentValue.relation === name && currentValue.name === bindName;
+        });
+        // 已经有了的情况下的替换
+        if (dynamicObj.length) {
+            this[name] = dynamicObj[0].func;
+            return;
+        }
+        // 初次的建立
+        var findObj = _.findCollection(this.dynamic, {
+            key : 'name',
+            value : bindName
+        }, true);
+        findObj = findObj[0];
+        var func = _.decorate(this.original.business.filter(function (currentValue, index, array) {
+            return currentValue.name === name;
+        })[0], findObj.func);
+        findObj.dynamic = false;
+        findObj.func = func;
+        findObj.relation = name;
+        this[name] = func;
+    },
+    relieve : function (name) {
+        this[name] = this.original.business.filter(function (currentValue, index, array) {
+            return currentValue.name === name;
+        })[0];
+    },
+    // 这里的关系是一一对应的，怎么之后升级成一对多，甚至是多对一
+    // 怎么理解一既是多，多既是一
+
+    // 我觉得替换也是建立关系的一种
+    /*replace : function (beforeName, afterName) {
+        
+    }*/
+};
+
+// 建立联系，初始化
+var createRelation = function (obj) {
+    var result = {
+        dynamic : [],
+        original : obj,
+        // 自己的数据
+    };
+    // 1. 先绑上业务的函数
+    obj.business.forEach(function (currentValue, index, array) {
+        var findRelation = _.findCollection(obj.relation, {
+            key : 'relation',
+            value : currentValue.name,
+        }, function (currentValue, key, collection, level) {
+            return !currentValue.dynamic;
+        }, true);
+
+        if (!findRelation.length) {
+            // 暂时没有关系的时候还是得运行原来的，不能把原来的都干掉
+            result[currentValue.name] = currentValue;
+        } else {
+            findRelation = findRelation[0];
+            let func = _.decorate(currentValue, findRelation.behavior);
+            result[currentValue.name] = func;
+            result.dynamic.push({
+                relation : findRelation.relation,
+                name : findRelation.name,
+                func : func,
+                dynamic : false,
+            });
+        }
+            
+        
+    });
+    // 2. 处理剩余的dynamic = true的情况
+    obj.relation.filter(function (currentValue, index, array) {
+        return currentValue.dynamic;
+    }).forEach(function (currentValue, index, array) {
+        result.dynamic.push({
+            relation : currentValue.relation,
+            name : currentValue.name,
+            func : currentValue.behavior,
+            dynamic : true
+        });
+    });
+
+    result.name = obj.name;
+
+
+
+
+    var inheritFunc = {};
+    _.forEach(result, function (value, key, object) {
+        inheritFunc[key] = {
+            configurable : true,
+            enumerable : true,
+            value : value,
+            writable : true,
+        };
+    });
+    var output = Object.create(funcRelation, inheritFunc);
+    allRelation.push(output);
+
+    // 处理more，多对一的情况
+    // 遗留的more就是multiToOne里面的值
+    multiToOne.forEach(function (currentValue, index, array) {
+        currentValue.name.forEach(function (item, idx, arr) {
+            var func = currentValue.condition.reduce(function (a, b) {
+                return _.decorate(a, b);
+            });
+            var findRelation = _.findCollection(allRelation, {
+                key : 'name',
+                value : item[0],
+            }, function (currentValue, key, collection, level) {
+                return currentValue.original;
+            }, true);
+            
+            if (findRelation.length) {
+                findRelation[0][item[1]] = _.decorate(item[0][item[1]], func);
+                multiToOne = _.removeValue(multiToOne, [currentValue]);
+            }
+        });
+    });
+    // 当前的more
+    obj.more.forEach(function (currentValue, index, array) {
+        currentValue.name.forEach(function (item, idx, arr) {
+            var func = currentValue.condition.reduce(function (a, b) {
+                return _.decorate(a, b);
+            });
+            var findRelation = _.findCollection(allRelation, {
+                key : 'name',
+                value : item[0],
+            }, function (currentValue, key, collection, level) {
+                return currentValue.original;
+            }, true);
+            
+            if (!findRelation.length) {
+                multiToOne.push({
+                    name : [item],
+                    condition : currentValue.condition,
+                    relation : currentValue.relation,
+                });
+                return;
+            }
+
+            if (item[1] in findRelation[0]) findRelation[0][item[1]] = _.decorate(item[0][item[1]], func);
+        });
+    });
+
+
+    return output;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1428,8 +1746,60 @@ _.wrapBack = function (oldObj) {
 
 
 
-
-
+// 解决浮点数
+// 加法
+var aaaa = {
+    accAdd : function(arg1, arg2) {
+        var r1, r2, m;
+        try {
+            r1 = arg1.toString().split(".")[1].length;
+        } catch(e) {
+            r1 = 0
+        }
+        try {
+            r2 = arg2.toString().split(".")[1].length;
+        } catch(e) {
+            r2 = 0
+        }
+        m = Math.pow(10, Math.max(r1, r2));
+        return (_.accMul(arg1, m) + _.accMul(arg2, m)) / m;
+    },
+    // 减法
+    accSub : function(arg1, arg2){      
+        return _.accAdd(arg1, -arg2);  
+    },
+    // 乘法
+    accMul : function(arg1, arg2) {
+        var m = 0,
+            s1 = arg1.toString(),
+            s2 = arg2.toString();
+        try {
+            m += s1.split(".")[1].length;
+        } catch(e) {}
+        try {
+            m += s2.split(".")[1].length;
+        } catch(e) {}
+        return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
+    },
+    // 除法
+    accDiv : function(arg1, arg2) {
+        var t1 = 0,
+            t2 = 0,
+            r1,
+            r2;
+        try {
+            t1 = arg1.toString().split(".")[1].length;
+        } catch(e) {}
+        try {
+            t2 = arg2.toString().split(".")[1].length;
+        } catch(e) {}
+        with(Math) {
+            r1 = Number(arg1.toString().replace(".", ""));
+            r2 = Number(arg2.toString().replace(".", ""));
+            return (r1 / r2) * pow(10, t2 - t1);
+        }
+    },
+}
 
 
 
