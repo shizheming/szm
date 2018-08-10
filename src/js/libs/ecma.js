@@ -1496,6 +1496,8 @@ _.link = function () {
 var allRelation = [];
 // 全部的还没绑上的多对一的关系
 var multiToOne = [];
+// 还没绑定一对一的关系，就先绑定多对一的关系的数据缓存， 因为之后如果这个要绑定一对一了，能完成正确的顺序
+var multi = [];
 
 // 方法
 var funcRelation = {
@@ -1600,6 +1602,7 @@ var createRelation = function (obj) {
     allRelation.push(output);
 
     // 处理more，多对一的情况
+
     // 遗留的more就是multiToOne里面的值
     multiToOne.forEach(function (currentValue, index, array) {
         currentValue.name.forEach(function (item, idx, arr) {
@@ -1614,7 +1617,7 @@ var createRelation = function (obj) {
             }, true);
             
             if (findRelation.length) {
-                findRelation[0][item[1]] = _.decorate(item[0][item[1]], func);
+                findRelation[0][item[1]] = _.decorate(findRelation[0][item[1]], func);
                 multiToOne = _.removeValue(multiToOne, [currentValue]);
             }
         });
@@ -1640,8 +1643,19 @@ var createRelation = function (obj) {
                 });
                 return;
             }
+            findRelation = findRelation[0];
+            if (item[1] in findRelation) {
+                let dynamic = _.findCollection(findRelation.dynamic, {
+                    key : 'relation',
+                    value : [item[1]]
+                });
+                /*if (!dynamic.length) {
+                    multi.push({
 
-            if (item[1] in findRelation[0]) findRelation[0][item[1]] = _.decorate(item[0][item[1]], func);
+                    });
+                }*/
+                findRelation[item[1]] = _.decorate(findRelation[item[1]], func);
+            }
         });
     });
 

@@ -66,7 +66,7 @@ var selectObject1 = {
             for (var i = 0; i < h; i++) option += '<option value="' + i + '">' + _.randomNumberAlphabet(10) + b + '</option>'
             select2.innerHTML = option;
             select2.onchange = function () {
-                newSelect2.getData('ddd', 2222222222222);
+                // newSelect2.getData('ddd', 2222222222222);
                 newSelect1.changeSelector1FontSize();
             };
             // newSelect1.build('getData', 'changeUl2BackgroundColor2');
@@ -81,7 +81,7 @@ var selectObject1 = {
     }, {
         name : 'changeBodyBackgroundColor',
         behavior : function () {
-            console.log(1)
+            // console.log(1)
             document.body.style.backgroundColor = '#ccc';
         },
         dynamic : true,
@@ -118,6 +118,7 @@ var selectObject2 = {
             var option = '';
             for (var i = 0; i < h; i++) option += '<option value="">' + _.randomNumberAlphabet(10) + b + '</option>'
             select3.innerHTML = option;
+        console.log(1);
         },
     }],
     more : [],
@@ -146,8 +147,8 @@ var selectObject4 = {
 }
 
 var newSelect1 = createRelation(selectObject1);
-var newSelect4 = createRelation(selectObject4);
 var newSelect2 = createRelation(selectObject2);
+var newSelect4 = createRelation(selectObject4);
 
 select1.onchange = function () {
     
