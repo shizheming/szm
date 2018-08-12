@@ -1511,6 +1511,7 @@ var funcRelation = {
             this[name] = dynamicObj[0].func;
             return;
         }
+
         // 初次的建立
         var findObj = _.findCollection(this.dynamic, {
             key : 'name',
@@ -1520,6 +1521,18 @@ var funcRelation = {
         var func = _.decorate(this.original.business.filter(function (currentValue, index, array) {
             return currentValue.name === name;
         })[0], findObj.func);
+
+        var findName = _.findCollection(this.dynamic, {
+            key : 'relation',
+            value : name,
+        }, function (currentValue, key, collection, level) {
+        	return !currentValue.name;
+        }, true);
+        findName = findName[0];
+        if (findName.multiToOne) {
+        	func = _.decorate(func, findName.multiToOne);
+        }
+
         findObj.dynamic = false;
         findObj.func = func;
         findObj.relation = name;
@@ -1533,10 +1546,6 @@ var funcRelation = {
     // 这里的关系是一一对应的，怎么之后升级成一对多，甚至是多对一
     // 怎么理解一既是多，多既是一
 
-    // 我觉得替换也是建立关系的一种
-    /*replace : function (beforeName, afterName) {
-        
-    }*/
 };
 
 // 建立联系，初始化
@@ -1558,6 +1567,12 @@ var createRelation = function (obj) {
         if (!findRelation.length) {
             // 暂时没有关系的时候还是得运行原来的，不能把原来的都干掉
             result[currentValue.name] = currentValue;
+            result.dynamic.push({
+                relation : currentValue.name,
+                name : undefined,
+                func : undefined,
+                dynamic : true,
+            });
         } else {
             findRelation = findRelation[0];
             let func = _.decorate(currentValue, findRelation.behavior);
@@ -1606,9 +1621,7 @@ var createRelation = function (obj) {
     // 遗留的more就是multiToOne里面的值
     multiToOne.forEach(function (currentValue, index, array) {
         currentValue.name.forEach(function (item, idx, arr) {
-            var func = currentValue.condition.reduce(function (a, b) {
-                return _.decorate(a, b);
-            });
+        	
             var findRelation = _.findCollection(allRelation, {
                 key : 'name',
                 value : item[0],
@@ -1617,7 +1630,7 @@ var createRelation = function (obj) {
             }, true);
             
             if (findRelation.length) {
-                findRelation[0][item[1]] = _.decorate(findRelation[0][item[1]], func);
+                findRelation[0][item[1]] = _.decorate(findRelation[0][item[1]], currentValue.relation);
                 multiToOne = _.removeValue(multiToOne, [currentValue]);
             }
         });
@@ -1625,9 +1638,7 @@ var createRelation = function (obj) {
     // 当前的more
     obj.more.forEach(function (currentValue, index, array) {
         currentValue.name.forEach(function (item, idx, arr) {
-            var func = currentValue.condition.reduce(function (a, b) {
-                return _.decorate(a, b);
-            });
+
             var findRelation = _.findCollection(allRelation, {
                 key : 'name',
                 value : item[0],
@@ -1638,23 +1649,28 @@ var createRelation = function (obj) {
             if (!findRelation.length) {
                 multiToOne.push({
                     name : [item],
-                    condition : currentValue.condition,
                     relation : currentValue.relation,
                 });
                 return;
             }
             findRelation = findRelation[0];
             if (item[1] in findRelation) {
-                let dynamic = _.findCollection(findRelation.dynamic, {
+                /*let dynamic = _.findCollection(findRelation.dynamic, {
                     key : 'relation',
                     value : [item[1]]
                 });
-                /*if (!dynamic.length) {
+                if (!dynamic.length) {
                     multi.push({
 
                     });
                 }*/
-                findRelation[item[1]] = _.decorate(findRelation[item[1]], func);
+                findRelation[item[1]] = _.decorate(findRelation[item[1]], currentValue.relation);
+                let findObj = _.findCollection(findRelation.dynamic, {
+                	key : 'relation',
+                	value : item[1],
+                }, true);
+                findObj = findObj[0];
+                findObj.multiToOne = currentValue.relation;
             }
         });
     });

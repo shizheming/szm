@@ -52,10 +52,12 @@ var selectObject1 = {
         var li = '';
         for (var i = 0; i < h; i++) li += '<li>' + _.randomNumber(_.randomNumber()) +'</li>';
         list1.innerHTML = li;
+        console.log('selectObject1--business--getData');
     }, function changeColor () {
         select1.style.backgroundColor = _.randomColor();
     }, function changeSelector1FontSize () {
         select1.style.fontSize = '22px';
+        console.log('selectObject1--business--changeSelector1FontSize')
     }],
     relation : [{
         relation : 'getData',
@@ -66,9 +68,10 @@ var selectObject1 = {
             for (var i = 0; i < h; i++) option += '<option value="' + i + '">' + _.randomNumberAlphabet(10) + b + '</option>'
             select2.innerHTML = option;
             select2.onchange = function () {
-                // newSelect2.getData('ddd', 2222222222222);
-                newSelect1.changeSelector1FontSize();
+                newSelect2.getData('ddd', 2222222222222);
+                newSelect1.changeSelector1FontSize(123,456,789);
             };
+            console.log('selectObject1--relation--createOption');
             // newSelect1.build('getData', 'changeUl2BackgroundColor2');
 
         },
@@ -81,8 +84,8 @@ var selectObject1 = {
     }, {
         name : 'changeBodyBackgroundColor',
         behavior : function () {
-            // console.log(1)
             document.body.style.backgroundColor = '#ccc';
+            console.log('selectObject1--relation--changeBodyBackgroundColor')
         },
         dynamic : true,
     }, {
@@ -109,6 +112,7 @@ var selectObject2 = {
         var li = '';
         for (var i = 0; i < h; i++) li += '<li>' + _.randomNumber(_.randomNumber()) +'</li>';
         list2.innerHTML = li;
+        console.log('selectObject2--business--getData');
     }],
     relation : [{
         relation : 'getData',
@@ -118,8 +122,8 @@ var selectObject2 = {
             var option = '';
             for (var i = 0; i < h; i++) option += '<option value="">' + _.randomNumberAlphabet(10) + b + '</option>'
             select3.innerHTML = option;
-        console.log(1);
-        },
+            console.log('selectObject2--relation--createOption');
+         },
     }],
     more : [],
 };
@@ -131,17 +135,10 @@ var selectObject4 = {
     relation : [],
     more : [{
         name : [['selectRelation1', 'changeSelector1FontSize'], ['selectRelation2', 'getData']],
-        condition : [function () {
-            // alert(1);
-            console.log(2);
-            return select1.value == 1;
-        }, function () {
-            // alert(2);
-            console.log(3);
-            return select1.value == 1;
-        }],
-        relation : function () {
-            select4.style.border = '10px solid yellow';
+        relation : function (a, b, c) {
+
+            console.log('多对一selectObject4');
+            select4.style.border = '10px solid ' + _.randomColor();
         }
     }]
 }
@@ -162,6 +159,10 @@ select1.onchange = function () {
 
 // 这么庞大的数据结构怎么检测???
 // 看看echart
+
+
+
+// 之后可以写个关于顺序的东西
 
 </script>
 
