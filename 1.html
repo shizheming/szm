@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    
+</head>
+<script src="./jquery.js"></script>
+<body>
+
+
+</body>
+</html>
+
+
+
+<script>
+// 能够终止迭代的方法
+// some和every能提早终止，forEach不能终止
+
+
+
+
+// 复制对象的一种方法--浅复制
+function copy(obj) {
+  var copy = Object.create(Object.getPrototypeOf(obj));
+  var propNames = Object.getOwnPropertyNames(obj);
+
+  propNames.forEach(function(name) {
+    var desc = Object.getOwnPropertyDescriptor(obj, name);
+    Object.defineProperty(copy, name, desc);
+  });
+
+  return copy;
+}
+
+var obj1 = { a: 1, b: 2, c:[99] };
+var obj2 = copy(obj1); // obj2 looks like obj1 now
+
+
+
+// push方法用在对象上
+var obj = {
+    length: 0,
+
+    addElem: function addElem (elem) {
+        // obj.length is automatically incremented 
+        // every time an element is added.
+        [].push.call(this, elem);
+    }
+};
+
+// Let's add some empty objects just to illustrate.
+obj.addElem({});
+obj.addElem({});
+console.log(obj.length);
+// → 2
+
+
+
+// 去维度的另一种方法
+// 当处理某个问题的方法越来越多的时候，我的提炼普遍的定律也就越发的清晰可见，现在我就是没有太多可观察的各种方法，以至于不知道怎么抓住本质去写一个方法，不知从何入手
+var flattened = [[0, 1], [2, 3], [4, 5]].reduce(
+  function(a, b) {
+    return a.concat(b);
+  },
+  []
+);
+// flattened is [0, 1, 2, 3, 4, 5]
+
+
+
+// 计算数组中每个元素出现的次数
+var names = ['Alice', 'Bob', 'Tiff', 'Bruce', 'Alice'];
+
+var countedNames = names.reduce(function (allNames, name) { 
+  if (name in allNames) {
+    allNames[name]++;
+  }
+  else {
+    allNames[name] = 1;
+  }
+  return allNames;
+}, {});
+// countedNames is:
+// { 'Alice': 2, 'Bob': 1, 'Tiff': 1, 'Bruce': 1 }
+
+
+
+
+
+// 数组去重
+let arr = [1,2,1,2,3,5,4,5,3,4,4,4,4];
+let result = arr.sort().reduce((init, current)=>{
+    if(init.length===0 || init[init.length-1]!==current){
+        init.push(current);
+    }
+    return init;
+}, []);
+console.log(result); //[1,2,3,4,5]
+
+
+
+
+// 类数组变数组
+var unboundSlice = Array.prototype.slice;
+var slice = Function.prototype.call.bind(unboundSlice);
+
+function list() {
+  return slice(arguments);
+}
+
+var list1 = list(1, 2, 3); // [1, 2, 3]
+
+
+
+
+// 同样可以做2018-10-11 11:11:25这种格式
+new Date().toLocaleString();
+// hour12 表示是使用十二小时制还是二十四小时制，默认值视 locales 而定。例子如下：
+const date = new Date();
+date.toLocaleString('zh', { hour12: true });        
+//2018/4/4 下午6:57:36
+date.toLocaleString('zh', { hour12: false });       
+//2018/4/4 18:57:36之后就是格式化年月日时分秒星期等
+
+// 同样可以模拟1,234,567,890这种格式
+var a = 1234567890;
+a.toLocaleString();
+
+let num = 2333333;
+num.toLocaleString('zh', { style: 'decimal' });   //2,333,333
+num.toLocaleString('zh', { style: 'percent' });   //233,333,300%
+
+num.toLocaleString('zh', { style: 'currency', currency: 'CNY' });    //￥2,333,333.00
+num.toLocaleString('zh', { style: 'currency', currency: 'cny', currencyDisplay: 'code' });      //CNY2,333,333.00
+num.toLocaleString('zh', { style: 'currency', currency: 'cny', currencyDisplay: 'name' });      //2,333,333.00人民币
+
+// 最后是两组相当强大的属性，某些场景下能带来极大的便利。第一组是 minimumIntegerDigits、 minimumFractionDigits 与  maximumFractionDigits，用于指定整数最少位数与小数的最少和最多位数，不够则用0去凑。简单说，自动补0！具体例子如下：
+let num2 = 2333.3;
+num2.toLocaleString('zh', { minimumIntegerDigits: 5 });        //02,333.3
+//如果不想有分隔符，可以指定useGrouping为false
+num2.toLocaleString('zh', { minimumIntegerDigits: 5, useGrouping: false });        //02333.3
+num2.toLocaleString('zh', { minimumFractionDigits: 2, useGrouping: false });     //2333.30
+
+num2 = 666.666
+num2.toLocaleString('zh', { maximumFractionDigits: 2, useGrouping: false });     //666.67
+
+
+var a = {b:1}
+a.toString()
+// "[object Object]"
+a.toString = function () {return 99999999999}
+a+1
+// 100000000000
+a.toString = function () {return '888'}
+a*1
+// 888
+a+1
+// "8881"
+a.valueOf = function () {return 777}
+a*1
+// 777
+a+1
+// 778
+a.toString()
+// "888"
+
+// 计算的时候调用valueOf，如果重写了，就调用自己的
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var o = {};
+Object.defineProperty(o, "b", {
+    writable : true,
+
+});
+Object.defineProperty(o, "b", {
+    value : 82482384234,
+    writable : false
+});
+Object.defineProperty(o, "b", {
+    value : 82482384234,
+});
+
+var b = function () {};
+var g = new b();
+var d = Object.getOwnPropertyDescriptor(window, 'g');
+// console.log(d)
+
+
+var ssss = {
+    a : 1,
+    b : {}
+};
+var ba = Object.seal(ssss);
+
+
+
+var a = {};
+Object.defineProperty(a, 'c', {
+    writable : false,
+    value : 123,
+    enumerable : false,
+    configurable : true
+});
+var b = Object.assign(a);
+
+Object.defineProperty(b, 'c', {
+    value : 4444,
+    configurable : false
+});
+
+console.log(Object.getOwnPropertyDescriptor(a, 'c'));
+console.log(Object.getOwnPropertyDescriptor(b, 'c'));
+
+
+
+var obj = {};
+Object.defineProperty(obj, 'c', {
+    writable : false,
+    value : 123,
+    enumerable : false,
+    configurable : true
+});
+var aa = Object.create(
+  Object.getPrototypeOf(obj), 
+  Object.getOwnPropertyDescriptors(obj) 
+);
+Object.defineProperty(aa, 'c', {
+    value : 4444,
+    configurable : false
+});
+
+/*console.log(Object.getOwnPropertyDescriptor(obj, 'c'));
+console.log(Object.getOwnPropertyDescriptor(aa, 'c'));*/
+
+
+// 深合并
+function deepMerge(obj1, obj2) {
+  var key;
+  for(key in obj2) {
+    // 如果target(也就是obj1[key])存在，且是对象的话再去调用deepMerge，否则就是obj1[key]里面没这个对象，需要与obj2[key]合并
+    obj1[key] = obj1[key] && obj1[key].toString() === "[object Object]" ?
+    this.deepMerge(obj1[key], obj2[key]) : obj1[key] = obj2[key];
+  }
+  return obj1;
+}
+
+
+
+
+
+var a = function (a1) {
+
+    return function (a2) {
+
+        return function (a3) {
+
+            return function (a4) {
+
+                return a1 * a2 * a3 *a4;
+            }
+        }
+    };
+};
+var b1 = a(2);
+var b2 = b1(3);
+var b3 = b2(4);
+
+
+function bbbbbb (v, f) {
+    return v - f;
+}
+function vcvc (a, b) {
+    return a - b;
+}
+var hg = bbbbbb.bind('', 100);
+var jh = vcvc.bind('', 98);
+
+
+
+
+
+function asa(a,b,c,d) {
+    return a - b - c - d;
+}
+
+var bbbba1 = asa.bind('', 100);
+var bbbba2 = bbbba1.bind('', 51);
+var bbbba3 = bbbba2.bind('', 12);
+
+
+
+
+
+
+var a = {
+    b : 123
+}
+function vg (b) {
+    return this.b + b;
+}
+var g = vg.bind(a, 1);
+console.log(g(88));
+
+
+// 快捷调用
+var unboundSlice = Array.prototype.slice;
+var slice = Function.prototype.apply.bind(unboundSlice, [5,6,7,8], [1]);
+
+
+// slice(arguments);
+
+
+
+
+
+
+var hp = {
+    v : 9999
+};
+
+(function (data, key, val) {
+    Object.defineProperty(data, key, {
+        configurable : false,
+        enumerable : true,
+        get : function () {
+            console.log('get');
+            return val;
+        },
+        set : function (x) {
+            console.log('set');
+            val = x;
+        }
+    });
+})(hp, 'v', hp.v);
+
+
+
+
+
+
+
+// apply方式调用时，估计是一个小bug，只要是 Object，还有length，它就当作数组处理了，实际和 Array 没有任何关系，任何函数都会这样。
+
+//方便你复制到 Console 中测试，在此再写一遍
+var iAmArray = function(){
+    return arguments;
+};
+
+var iHaveLength = function(length){
+    this.length = length || 5;
+    this[2] = "第三个元素";
+};
+
+/*
+   只要是 Object，还有length，他就当作数组处理了。
+*/
+iAmArray.apply(null, new iHaveLength());
+/*
+    [undefined, undefined, "第三个元素", undefined, undefined]
+*/
+iAmArray.apply(null, new iHaveLength(3));
+/*
+    [undefined, undefined, "第三个元素"]
+*/
+
+// 创建能循环的数组Array(n)，这样创建是不能循序的
+// Array.apply(null, Array(n))
+// [undefined, undefined, .....]
+// Array(n)
+// [empty × n]
+
+
+
+
+var a = [[[[[[[[[[]]]]]]]]]];
+
+function xxxxx (obj) {
+    var list = 0;
+    function objectFilter (obj) {
+        for (let i in obj) {
+            if (obj.constructor == Object && (obj[i] == 0 || obj[i] == "" || JSON.stringify(obj[i]) == "{}" || JSON.stringify(obj[i]) == "[]")) {
+              delete obj[i];
+              list++;
+            } else if (obj[i].constructor == Object || obj[i].constructor == Array) {
+                objectFilter(obj[i]);
+            }
+        }
+        return obj;
+    }
+    function bbbbb (obj) {
+        if (list == 0) {
+         return 11111;
+        } else {
+            list = 0;
+            objectFilter(obj);
+            if (list != 0) bbbbb(obj);
+        }
+        return obj;
+    }
+
+    return bbbbb(objectFilter(obj));
+}
+
+/*{
+    a:1,
+    b:{
+        c:{
+            d:0,
+        }
+    }
+}
+*/
+
+
+// 使用 indexOf 统计一个字符串中某个字母出现的次数
+var str = 'To be, or not to be, that is the question.';
+var count = 0;
+var pos = str.indexOf('e');
+
+while (pos !== -1) {
+  count++;
+  pos = str.indexOf('e', pos + 1);
+}
+
+console.log(count); // displays 4
+
+// 中文排序
+function defaultSort(){
+    var a="博,啊,吃,世,中,超";
+    a=a.split(",");
+    a.sort();
+    console.log(a);
+}
+defaultSort();
+function cusSort(){
+    var a="施哲明,啊,吃,施哲,中,超,的,施哲啊";
+    a=a.split(",");
+    a.sort(function(a,b){
+      return a.localeCompare(b, 'zh');
+    });
+    console.log(a);
+}
+cusSort();
+// 数组里面的对象也能排序
+var arrName = [{
+    name : 'Tarzan'
+}, {
+    name : 'Cheeta'
+}, {
+    name : 'Jane'
+}];
+
+var rra = arrName.sort(function (a, b) {
+    return a.name.localeCompare(b.name);
+});
+
+
+// 用字符串替换而不是拼接
+/*let y = '<div>cc aa ~ bb 佣金为ee</div>';
+let result = '';
+y = y.replace(/cc/, self[key1][key4]);
+r.forEach((currentValue, index, array) => {
+    var a = currentValue.iOneMin;
+    var b = currentValue.iOneMax;
+    var c = s.replace(/a/, currentValue.iOneRate);
+    result += y.replace(/aa/, a).replace(/bb/, b).replace(/ee/, c);
+});*/
+
+
+
+
+
+// replace能够一次性替换多个
+function replacer(match, p1, p2, p3, offset, string) {
+  // p1 is nondigits, p2 digits, and p3 non-alphanumerics
+  console.log(match)
+  return [p1, p2, p3].join(' - ');
+}
+var newString = 'abc12345#$*%'.replace(/([^\d]*)(\d*)([^\w]*)/, replacer);
+console.log(newString);  // abc - 12345 - #$*%
+
+
+// 这样就能在&&里面用表达式了
+'this.fillbackLoupan' && '(this.selectedLoupanList = this.fillbackLoupan)';
+
+
+
+
+
+// 使用行内函数和正则来避免循环
+// 用字符串来动态创建数据
+var str = 'x-x_';
+var retArr = [];
+str.replace(/(x_*)|(-)/g, function(match, p1, p2) {
+    if (p1) { retArr.push({ on: true, length: p1.length }); }
+    if (p2) { retArr.push({ on: false, length: 1 }); }
+});
+
+console.log(retArr);
+
+
+
+// 能用正则匹配分隔就意味着我并不需要一个死的值而是一类值一群值，把具体的值又往高了抽象（属加种差）（定义）
+var myString = "Hello 1 word. Sentence number 2.";
+var splits = myString.split(/(\d)/);
+console.log(splits);
+
+
+// g和lastIndex配着用，这样用助于全局匹配的时候做分布处理
+var gip = 'hi1hi2hi3hi';
+var re = /(hi)/g;
+while (re.lastIndex < gip.length/*re.exec(gip) !== null*/) {
+    console.log(re.exec(gip));
+}
+
+
+
+// test也能用g去全局匹配
+var hjg = '234szm56fghkszm34tszmtyszm';
+var vc = /szm/g;
+var hg;
+while (hg = vc.test(hjg)) {
+    console.log(hg, vc.lastIndex);
+}
+
+
+
+Math.round(-9.5);
+Math.round(-9.6);
+// round取最接近,比如－9.6,它更靠近－10,所以Math.round(-9.6)取－10,－9.5与－10和－9一样近,这时取最大值,为－9,在比如9.5,在10与9一样近就取10 这是ROUND不得不说的秘密.
+
+
+
+
++new Date();
+// 获得时间戳
+
+// +-号元算符隐转
+console.log(undefined === -undefined);
+console.log(undefined === +undefined);
+
+
+// 直接用原生的和用原生加call得出的结果不一样，因为Object上的toString和Array，Function上的toString返回的格式不一样，而call里面的thisobj就是对象，相当于调用对象上的toString，不管传进去的是字符串还是数字都当成对象了，所以返回的是Object上toString方法返回的格式
+var toString = Object.prototype.toString;
+console.log(toString.call(function(){}));
+console.log(function(){}.toString());
+console.log(toString.call(123));
+console.log(Number(123).toString());
+console.log(toString.call('xxxx'));
+console.log('xxxx'.toString());
+console.log(toString.call({}));
+console.log({}.toString());
+console.log(toString.call([4,5]));
+console.log([4,5].toString());
+
+// 1.他是把所有的方法当做函数的属性写在函数上面，而他有支持链式写法，很好奇他是怎么写的，一开始我以为他是通过遍历所有的方法复制到下划线对象的原型上去，后来发现他是在原型中直接调用已有的方法了
+// 这里以一个_.first方法为例链式调用
+// 2.为什么他的链式传参能传给对象，而方法直接调用不用传参就可以，就像我们直接用原生一样，比如[2,3,4].push(5)，他其实是利用把传给对象的参数变成自己的属性this.xx=参数，然后传给原型方法，实例化后原型方法就能获取刚刚添加上去的对象属性了。
+/*(function(){
+    var root = this;
+    var push = Array.prototype.push;
+    var _ = function(obj){
+        if(obj instanceof _) return obj;
+        if(!(this instanceof _)) return new _(obj);
+        this._wrapped = obj;
+    };
+    root._ = _;
+    _.first = function(array,n,guard){
+        console.log(array)
+        if(array == null) return void 0;
+        if(n == null || guard) return array[0];
+    };
+    _.functions = function(obj){
+        var names = [];
+        for(var key in obj){
+            names.push(key);
+        }
+        return names.sort();
+    };
+    _.mixin = function(obj){
+        _.functions(obj).forEach(function(name){
+            var func = _[name] = obj[name];
+            _.prototype[name] = function(){
+                var args = [this._wrapped];
+                return func.apply(_,args);
+            };
+        });
+    };
+    _.mixin(_);
+}).call(this);*/
+
+// 有些写法window作为参数传进函数，因为参数是局部变量，局部变量在作用域链上访问快
+(function(that) {
+    // ...
+})(window);
+
+// 这样创建对象原型方法厉害，不用每次创建都写a.prototype了，而且原型里面能很方便的用私有变量
+function a(){}
+(function(){
+    var b = 100;
+    this.a1 = function(){
+        return b
+    };
+    this.a2 = function(val){
+        b = val;
+    };
+}).call(a.prototype);
+
+var vsObject = {
+    0 : 10,
+    1 : 12,
+    2 : 13
+};
+var vsArray = [10, 11, 12];
+var vsString = '123456789';
+var vsNumber = 1234567890;
+var vsRegExp = /123456789/;
+var vsDate = new Date();
+var vsResut = '1'.split.call(vsRegExp, 3);
+console.log(vsResut, vsRegExp)
+
+
+var hc = function (obj) {
+    var value = obj.value;
+    Object.defineProperty(obj.content, obj.name, {
+        enumerable : true,
+        configurable : false,
+        set : function (val) {
+            value !== undefined && (value = val);
+            obj.set && obj.set(val);
+        },
+        get : function () {
+            return value;
+        }
+    });
+};
+
+var xxu = {};
+hc({
+    content : xxu,
+    name : 'a',
+    value : 888,
+    set : function (val) {
+        document.body.innerHTML = val;
+    }
+});
+
+
+// 变数字
++'234'
+// 变字符串
+'' + 123
+// 变布尔
+!!123
+// 转义引号
+"asdf\"sdfdf\""
+
+
+
+
+
+// 数字字面量的方法调用
+// 主要区分浮点数的小数点还是调用方法的点运算符
+1..toString();
+1 .toString();
+(1).toString();
+1.0.toString();
+
+// isNaN的bug
+isNaN('sdfds')
+// true
+
+// 区别2个零
+3/-0
+-Infinity
+3/0
+Infinity
+
+
+// 以前一直以为第二个会覆盖第一个变成undefined，如果是显性赋值的话肯定会覆盖，但是这里只是提升了2个相同名字的变量而已，之后才是赋值1234
+var qwertyuiop = 1234;
+var qwertyuiop;
+
+console.log(qwertyuiop);
+
+
+// 构造函数用apply，这里用apply还是只是一种形式，我们需要数组的形式来传参
+function aaaa (bbbb) {
+    return new (Function.prototype.bind.apply(Date, [null].concat(bbbb)));
+}
+
+// 创建一个原型为null的空对象，目的是创建一个最干净的只有数据的数据结构
+var o = Object.create(null);
+
+// in是遍历出可枚举的自有的和继承的属性
+// Object.keys遍历出可枚举的自有属性
+// Object.getOwnPropertyNames遍历出可枚举和不可枚举的自有属性
+// getAllPropertyNames遍历出对象所有属性，包括可枚举的不可枚举的继承的自有的
+// Object.prototype.hasOwnProperty判断某个属性是不是对象的自有属性，包括可枚举和不可枚举
+function getAllPropertyNames (obj) {
+    var result = [];
+    while (obj) {
+        result = result.concat(Object.getOwnPropertyNames(obj));
+        obj = Object.getPrototypeOf(obj);
+    }
+    return result;
+}
+
+
+
+// foEach不会有任何反应，应为没有真正的内容，他只是有个length属性，length属性和真正的内容没有必然联系
+Array(10).forEach(function(a) {console.log(a)})
+
+
+// apply,会把空缺的元素变成undefiend，所以可以通过apply来批量创建undefined空元素数组
+function aaa(){
+    return [].slice.call(arguments);
+}
+aaa.apply(null,[,,,])
+// [undefined, undefined, undefined]
+Array.apply(null, Array(10));
+// [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined]
+
+
+
+
+// 查看谁调用了我
+function axx(){
+    alert(axx.caller); // 打印函数a的调用函数
+}
+function bxx(){
+    axx()
+}
+bxx()
+
+
+
+
+// 注意2个点，一个自身值的递增，一个返回值
+var a = 1;
+console.log((a++) + (++a) - (a++) - (++a), a);
+/*1   a = 2
+3   a = 3
+3   a = 4
+5   a = 5*/
+
+var a = 1;
+console.log((++a) + (++a) - (--a) - (++a), a);
+/*2   a = 2
+3   a = 3
+2   a = 2
+3   a = 3*/
+
+
+
+
+var m=1,n=2;
+m=[n,(n=m)][0]
+</script>
+
+
+
