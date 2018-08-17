@@ -21,6 +21,10 @@
     <hr>
 
 
+
+
+
+
     <select name="" id="select1">
         <option value="0">1111111</option>
         <option value="1">2222222222</option>
@@ -36,133 +40,120 @@
         <option value="">dddddddddddd</option>
         <option value="">eeeeeeeeeee</option>
     </select>
+    <h1>ul1</h1>
     <ul id="list1"></ul>
+    <h1>ul2</h1>
     <ul id="list2"></ul>
-    <span id="span">123123
-    sdfsdfasdf
-    )(*&^%$#@!~</span>
 </div>
 <script>
 
-// demo
-var selectObject1 = {
-    name : 'selectRelation1',
-    business : [function getData (a) {
-        var h = _.randomNumber();
-        var li = '';
-        for (var i = 0; i < h; i++) li += '<li>' + _.randomNumber(_.randomNumber()) +'</li>';
-        list1.innerHTML = li;
-        console.log('selectObject1--business--getData');
-    }, function changeColor () {
-        select1.style.backgroundColor = _.randomColor();
-    }, function changeSelector1FontSize () {
-        select1.style.fontSize = '22px';
-        console.log('selectObject1--business--changeSelector1FontSize')
-    }],
-    relation : [{
-        relation : 'getData',
-        name : 'createOption',
-        behavior : function (data, b) {
+// demo2
+var bigObj = [{
+        relationName : 'selector2GetData',
+        content : function list1GetData (a, b, c) {
+            var h = _.randomNumber();
+            var li = '';
+            for (var i = 0; i < h; i++) li += '<li>' + _.randomNumber(_.randomNumber()) +'</li>';
+            list1.innerHTML = li;
+            console.log('list1GetData');
+            return [a + 1, b + 1, c + 1];
+        }
+    }, {
+        relationName : 'changeSelector2BackgroundColor',
+        content : function selector1ChangeColor () {
+            select1.style.backgroundColor = _.randomColor();
+        }, 
+    }, {
+        content : function selector1ChangeSelector1FontSize (a, b, c) {
+            select1.style.fontSize = '22px';
+            return [a + 1, b + 1, c +1];
+        }
+    }, {
+        relationName : 'changeUl1BackgroundColor',
+        content : function selector2GetData (a, b, c) {
+            var that = this;
             var h = _.randomNumber();
             var option = '';
-            for (var i = 0; i < h; i++) option += '<option value="' + i + '">' + _.randomNumberAlphabet(10) + b + '</option>'
+            for (var i = 0; i < h; i++) option += '<option value="' + i + '">' + _.randomNumberAlphabet(10) + '</option>'
             select2.innerHTML = option;
             select2.onchange = function () {
-                newSelect2.getData('ddd', 2222222222222);
-                newSelect1.changeSelector1FontSize(123,456,789);
+                that.list2GetData();
             };
-            console.log('selectObject1--relation--createOption');
-            // newSelect1.build('getData', 'changeUl2BackgroundColor2');
-
+            console.log('selector2GetData', a, b, c);
+            return [a + 1, b + 1, c + 1];
         },
     }, {
-        relation : 'changeColor',
-        name : 'changeSelector2BackgroundColor',
-        behavior : function () {
+        relationName : 'changeUl1BackgroundColor',
+        content : function changeSelector2BackgroundColor () {
             select2.style.backgroundColor = _.randomColor();
         },
     }, {
-        name : 'changeBodyBackgroundColor',
-        behavior : function () {
-            document.body.style.backgroundColor = '#ccc';
-            console.log('selectObject1--relation--changeBodyBackgroundColor')
+        content : function changeBodyBackgroundColor () {
+            document.body.style.backgroundColor = _.randomColor();
         },
-        dynamic : true,
     }, {
-        name : 'changeUl1BackgroundColor',
-        behavior : function nn () {
-            list1.style.backgroundColor = '#ccc';
+        content : function changeUl1BackgroundColor (a, b, c) {
+            list1.style.backgroundColor = _.randomColor();
+            console.log('changeUl1BackgroundColor', a, b, c);
         },
-        dynamic : true,
     }, {
-        // relation : 'getData',
-        name : 'changeUl2BackgroundColor2',
-        behavior : function nn () {
+        content : function changeUl2BackgroundColor2 () {
             list2.style.backgroundColor = 'yellow';
         },
-        dynamic : true,
-    }],
-    more : [],
-};
-
-var selectObject2 = {
-    name : 'selectRelation2',
-    business : [function getData (a) {
-        var h = _.randomNumber();
-        var li = '';
-        for (var i = 0; i < h; i++) li += '<li>' + _.randomNumber(_.randomNumber()) +'</li>';
-        list2.innerHTML = li;
-        console.log('selectObject2--business--getData');
-    }],
-    relation : [{
-        relation : 'getData',
-        name : 'createOption',
-        behavior : function (data, b) {
+    }, {
+        relationName : 'select3GetData',
+        content : function list2GetData (a, b, c) {
+            var h = _.randomNumber();
+            var li = '';
+            for (var i = 0; i < h; i++) li += '<li>' + _.randomNumber(_.randomNumber()) +'</li>';
+            list2.innerHTML = li;
+            return [a + 1, b + 1, c + 1];
+        }
+    }, {
+        content : function select3GetData (a, b, c) {
+            var that = this;
             var h = _.randomNumber();
             var option = '';
-            for (var i = 0; i < h; i++) option += '<option value="">' + _.randomNumberAlphabet(10) + b + '</option>'
+            for (var i = 0; i < h; i++) option += '<option value="">' + _.randomNumberAlphabet(10) + '</option>'
             select3.innerHTML = option;
-            console.log('selectObject2--relation--createOption');
-         },
-    }],
-    more : [],
-};
-
-// 多对一
-var selectObject4 = {
-    name : 'selectRelation4',
-    business : [],
-    relation : [],
-    more : [{
-        name : [['selectRelation1', 'changeSelector1FontSize'], ['selectRelation2', 'getData']],
-        relation : function (a, b, c) {
-
-            console.log('多对一selectObject4');
+            select3.onchange = function () {
+                that.select4ChangeBorderColor();
+            };
+            return [a + 1, b + 1, c + 1];
+        },
+    }, {
+        content : function select4ChangeBorderColor (a, b, c) {
             select4.style.border = '10px solid ' + _.randomColor();
+            console.log('select4ChangeBorderColor');
         }
-    }]
-}
+}];
 
-var newSelect1 = createRelation(selectObject1);
-var newSelect2 = createRelation(selectObject2);
-var newSelect4 = createRelation(selectObject4);
+
+var haha = _.createRelation(bigObj);
+
+
 
 select1.onchange = function () {
-    
-    newSelect1.build('changeSelector1FontSize', 'changeBodyBackgroundColor');
-    newSelect1.getData('xxxxxxxxxxxxxxxxxxx', 111111);
-    newSelect1.changeColor();
-
-    // newSelect1.relieve('getData');
-};
-
-
-// 这么庞大的数据结构怎么检测???
-// 看看echart
+    haha.list1GetData(1, 2, 3);
+}
 
 
 
-// 之后可以写个关于顺序的东西
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </script>
 
@@ -230,6 +221,7 @@ function t5 () {
 };
 
 var obj = _.state(t1, t2, t3, t4, t5);
+
 
 
 

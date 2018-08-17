@@ -1001,11 +1001,10 @@ _.once = _.partial(_.before, 1);
 _.decorate = function (before, after) {
     before = processFunction(before);
     after = processFunction(after);
-    return function (beforeArguments, afterArguments) {
-        beforeArguments = beforeArguments === undefined ? [] : [beforeArguments];
-        afterArguments = afterArguments === undefined ? [] : [afterArguments];
-        afterArguments.unshift(before.apply(this, beforeArguments));
-        return after.apply(this, afterArguments);
+    return function () {
+        var beforeResult = before.apply(this, arguments);
+        beforeResult = Array.isArray(beforeResult) ? beforeResult : [];
+        return after.apply(this, beforeResult);
     };
 };
 
@@ -1014,85 +1013,6 @@ _.decorate = function (before, after) {
     2种方向，正序，倒序
 ******************/
 
-/*_.state = function () {
-    // 1. 静态
-    // 首先要定义多个状态和状态的顺序
-    var stateAll = [].filter.call(arguments, function (currentValue, index, array) {
-        return _.isFunction(currentValue);
-    });
-    if (!stateAll.length) return;
-    var link = _.link();
-    stateAll.forEach(function (currentValue, index, array) {
-        link.add(currentValue);
-    });
-    var state = link.find(stateAll[0]);
-    // 方向
-    var left = true;
-    // 记录上一次的方向（像这种东西现在来说都很零散，需要了，想到了，才会去写，以后要形成一整套概念体系才行）
-    var previousLeft = true;
-    var wLeft = false;
-
-
-    var direction = function () {
-        previousLeft = left;
-        state = left ? state.next : state.previous;
-        // 正序
-        if (state === link.head.next) left = true;
-        // 倒序
-        if (state === link.tail.previous) left = false;
-    };
-    var oneByOne = function (isLeft, context) {
-        context = _.isBoolean(isLeft) ? context : isLeft;
-        var back = state.element.call(context);
-        isLeft ? direction() : state = state.next;
-        return back;
-    };
-    // 2. 动态
-    // 然后添加一些方法能动态的添加或是删除或是修改状态
-    // 添加状态
-    var addState = function (newState, oldState) {
-        var back = link.add(newState, oldState);
-        if (!back) return;
-        newState = link.find(newState);
-        if (state.element === newState.next.element) state = newState;
-        if (state.element === newState.previous.element) state = newState;
-        return back;
-    };
-    // 替换状态
-    var replaceState = function (newState, oldState) {
-        var back = link.replace(newState, oldState);
-        if (!back) return;
-        // 更新要替换的前一个或后一个的指针
-        if (state.element === oldState) state = link.find(newState);
-        return back;
-    };
-    // 删除状态
-    var deleteState = function (oldState) {
-        if (!_.isFunction(oldState)) return;
-        // 这里有个问题就是，有时删除的对象已经变成下一个要运行的对象了，例如我运行1，运行完1后，运行对象变成2，虽然紧接着我删除了2，可下次运行的是时候是运行2的对象，因为之前运行完1后，就更新了运行对象，添加，替换也有这个问题
-        if (state.element === oldState) direction();
-        return link.delete(oldState);
-    };
-    // 设置当前状态
-    var setState = function (newState, isLeft) {
-        var element = link.find(newState);
-        if (!element) return;
-        state = element;
-        left = _.isBoolean(isLeft) ? isLeft : previousLeft;
-        return oneByOne(wLeft);
-    };
-    var one = function (isLeft, context) {
-        wLeft = isLeft;
-        return oneByOne(isLeft, context);
-    };
-    return {
-        currState : one,
-        addState : addState,
-        replaceState : replaceState,
-        deleteState : deleteState,
-        setState : setState,
-    };
-};*/
 var StateFunc;
 (function () {
     StateFunc = function () {
@@ -1357,11 +1277,11 @@ var existence = function (collection) {
         _.isFunction(currentValue) ? predicate.push(currentValue) : value.push(currentValue);
     });
     value = value.length == 0 ? true : value.every(function (currentValue, index, array) {
-        for (let key in collection) if (collection[key] === currentValue) return true;
+        for (var key in collection) if (collection[key] === currentValue) return true;
         return false;
     });
     predicate = predicate.length == 0 ? true : predicate.every(function (currentValue, index, array) {
-        for (let key in collection) if (currentValue(collection[key])) return true;
+        for (var key in collection) if (currentValue(collection[key])) return true;
         return false;
     });
     return value && predicate;
@@ -1476,15 +1396,12 @@ _.link = function () {
     关系结构
     业务代码是一对一的关系（只保证主线），那什么会写成关系呢，就是一个对象的变化会依赖于另一个对象，而独立于xxxx（xxxx还没想好是什么）
 
-    建立关系
-    断绝关系
-
     这有点声明式的意思了，我只定义和声明，要怎么干交给函数就好了
 
     然后要把他变成动态的
     建立关系，解除关系
 
-    我想其实动态的任何动作都能静态化，我的意思是把要动态的内容准备好，然后按个开关，当然小动作我觉得不必了，比如删除，但是我觉得动态添加或是替换还是可以尝试一下的
+    我想其实动态的任何动作都能静态化，我的意思是把要动态的内容准备好，然后按个开关，去自动完成事情
 
     我在思考我是关系跟着当前对象呢，还是跟着自己
     先跟着有关系的对象吧，先不要一下子把可读性变得很差
@@ -1492,200 +1409,65 @@ _.link = function () {
     我发现我喜欢不动的代码，把一切都准备好，然后只要按下一个按钮，程序就自动运行了，我这个指的是写代码的时候，好像这就有点声明式的意思了
 */
 
-// 全部的关系都放在这里
-var allRelation = [];
-// 全部的还没绑上的多对一的关系
-var multiToOne = [];
-// 还没绑定一对一的关系，就先绑定多对一的关系的数据缓存， 因为之后如果这个要绑定一对一了，能完成正确的顺序
-var multi = [];
+// 这里完成了一对一，一对多，多对一的关系，单方向上就只有一对一
 
 // 方法
 var funcRelation = {
     build : function (name, bindName) {
-        // 先判断他存不存在，在已建立的里面找
-        var dynamicObj = this.dynamic.filter(function (currentValue, index, array) {
-            return currentValue.relation === name && currentValue.name === bindName;
+        var findName = this.original.filter(function (currentValue, index, array) {
+            return currentValue.content.name === name;
         });
-        // 已经有了的情况下的替换
-        if (dynamicObj.length) {
-            this[name] = dynamicObj[0].func;
-            return;
-        }
-
-        // 初次的建立
-        var findObj = _.findCollection(this.dynamic, {
-            key : 'name',
-            value : bindName
-        }, true);
-        findObj = findObj[0];
-        var func = _.decorate(this.original.business.filter(function (currentValue, index, array) {
-            return currentValue.name === name;
-        })[0], findObj.func);
-
-        var findName = _.findCollection(this.dynamic, {
-            key : 'relation',
-            value : name,
-        }, function (currentValue, key, collection, level) {
-        	return !currentValue.name;
-        }, true);
-        findName = findName[0];
-        if (findName.multiToOne) {
-        	func = _.decorate(func, findName.multiToOne);
-        }
-
-        findObj.dynamic = false;
-        findObj.func = func;
-        findObj.relation = name;
-        this[name] = func;
+        var findBindName = this.original.filter(function (currentValue, index, array) {
+            return currentValue.content.name === bindName;
+        });
+        this[name] = _.decorate(findName[0].content, findBindName[0].content);
+        findName[0].relationName = findBindName[0].content.name;
     },
     relieve : function (name) {
-        this[name] = this.original.business.filter(function (currentValue, index, array) {
-            return currentValue.name === name;
-        })[0];
+        var findName = this.original.filter(function (currentValue, index, array) {
+            return currentValue.content.name === name;
+        });
+        this[name] = findName.content;
     },
-    // 这里的关系是一一对应的，怎么之后升级成一对多，甚至是多对一
-    // 怎么理解一既是多，多既是一
 
 };
 
-// 建立联系，初始化
-var createRelation = function (obj) {
-    var result = {
-        dynamic : [],
-        original : obj,
-        // 自己的数据
-    };
-    // 1. 先绑上业务的函数
-    obj.business.forEach(function (currentValue, index, array) {
-        var findRelation = _.findCollection(obj.relation, {
-            key : 'relation',
-            value : currentValue.name,
-        }, function (currentValue, key, collection, level) {
-            return !currentValue.dynamic;
-        }, true);
-
-        if (!findRelation.length) {
-            // 暂时没有关系的时候还是得运行原来的，不能把原来的都干掉
-            result[currentValue.name] = currentValue;
-            result.dynamic.push({
-                relation : currentValue.name,
-                name : undefined,
-                func : undefined,
-                dynamic : true,
-            });
-        } else {
-            findRelation = findRelation[0];
-            let func = _.decorate(currentValue, findRelation.behavior);
-            result[currentValue.name] = func;
-            result.dynamic.push({
-                relation : findRelation.relation,
-                name : findRelation.name,
-                func : func,
-                dynamic : false,
-            });
+// 绑定一对一
+var oneByOne = function (obj, result, current, currentRelation) {
+    obj.forEach(function (currentValue, index, array) {
+        // current, currentRelation是判断联动关系的
+        var relationName = currentValue.relationName;
+        var func = currentValue.content;
+        if (current) {
+            if (currentValue !== current) return;
+            relationName = currentRelation;
+            func = result[currentValue.content.name];
         }
-            
-        
+        var findRelation;
+        if (relationName) {
+            findRelation = array.filter(function (item, idx, arr) {
+                return item.content.name === relationName;
+            });
+            func = _.decorate(func, findRelation[0].content);
+        }
+        result[currentValue.content.name] = func;
+
+        if (relationName && findRelation[0].relationName) {
+            oneByOne(obj, result, currentValue, findRelation[0].relationName);
+        }
     });
-    // 2. 处理剩余的dynamic = true的情况
-    obj.relation.filter(function (currentValue, index, array) {
-        return currentValue.dynamic;
-    }).forEach(function (currentValue, index, array) {
-        result.dynamic.push({
-            relation : currentValue.relation,
-            name : currentValue.name,
-            func : currentValue.behavior,
-            dynamic : true
-        });
-    });
+};
 
-    result.name = obj.name;
+// 建立联系，初始化
+_.createRelation = function (obj) {
+    var result = Object.create(funcRelation);
+    result.original = obj;
 
+    // 一对一和一对多的情况
+    oneByOne(obj, result);
 
-
-
-    var inheritFunc = {};
-    _.forEach(result, function (value, key, object) {
-        inheritFunc[key] = {
-            configurable : true,
-            enumerable : true,
-            value : value,
-            writable : true,
-        };
-    });
-    var output = Object.create(funcRelation, inheritFunc);
-    allRelation.push(output);
-
-    // 处理more，多对一的情况
-
-    // 遗留的more就是multiToOne里面的值
-    multiToOne.forEach(function (currentValue, index, array) {
-        currentValue.name.forEach(function (item, idx, arr) {
-        	
-            var findRelation = _.findCollection(allRelation, {
-                key : 'name',
-                value : item[0],
-            }, function (currentValue, key, collection, level) {
-                return currentValue.original;
-            }, true);
-            
-            if (findRelation.length) {
-                findRelation[0][item[1]] = _.decorate(findRelation[0][item[1]], currentValue.relation);
-                multiToOne = _.removeValue(multiToOne, [currentValue]);
-            }
-        });
-    });
-    // 当前的more
-    obj.more.forEach(function (currentValue, index, array) {
-        currentValue.name.forEach(function (item, idx, arr) {
-
-            var findRelation = _.findCollection(allRelation, {
-                key : 'name',
-                value : item[0],
-            }, function (currentValue, key, collection, level) {
-                return currentValue.original;
-            }, true);
-            
-            if (!findRelation.length) {
-                multiToOne.push({
-                    name : [item],
-                    relation : currentValue.relation,
-                });
-                return;
-            }
-            findRelation = findRelation[0];
-            if (item[1] in findRelation) {
-                /*let dynamic = _.findCollection(findRelation.dynamic, {
-                    key : 'relation',
-                    value : [item[1]]
-                });
-                if (!dynamic.length) {
-                    multi.push({
-
-                    });
-                }*/
-                findRelation[item[1]] = _.decorate(findRelation[item[1]], currentValue.relation);
-                let findObj = _.findCollection(findRelation.dynamic, {
-                	key : 'relation',
-                	value : item[1],
-                }, true);
-                findObj = findObj[0];
-                findObj.multiToOne = currentValue.relation;
-            }
-        });
-    });
-
-
-    return output;
+    return result;
 }
-
-
-
-
-
-
-
-
 
 
 
