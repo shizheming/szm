@@ -561,6 +561,33 @@ function round (value) {
     return result[1][0] >= 5 ? Number(result[0]) + 1 : Number(result[0]);
 }
 
+// Math
+
+/*****************************es3*******************************/
+
+// 时间格式化--模拟他的一种功能
+Date.prototype.toLocaleString();
+
+function timeFormat (format, date) {
+    var time = _.isNumber(date) ? new Date(date) : new Date();
+    var o = { 
+        'M+' : time.getMonth() + 1,                 //月份 
+        'd+' : time.getDate(),                    //日 
+        'h+' : time.getHours(),                   //小时 
+        'm+' : time.getMinutes(),                 //分 
+        's+' : time.getSeconds(),                 //秒 
+        'q+' : Math.floor((time.getMonth() + 3) / 3), //季度 
+        'S'  : time.getMilliseconds()             //毫秒 
+    }; 
+    if (/(y+)/.test(format)) format = format.replace(RegExp.$1, (time.getFullYear() + '').substr(4 - RegExp.$1.length)); 
+    for (var k in o) {
+        if (new RegExp('(' + k + ')').test(format)) {
+            format = format.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
+        }
+    }
+    return format; 
+}
+
 
 
 // 模仿不了的
@@ -737,7 +764,6 @@ Date.prototype.valueOf();
 // es3
 Date.prototype.toDateString();
 Date.prototype.toLocaleDateString();
-Date.prototype.toLocaleString();
 Date.prototype.toLocaleTimeString();
 Date.prototype.toTimeString();
 // es5

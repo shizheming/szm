@@ -4,25 +4,6 @@
 时间：2018.04
 
 更新：
-1. 1.0的时候只是把一些觉得实用的常用的功能罗列的写出来，没有提升到抽象层面♥♥♥♥
-2. 修改对象都要返回新的对象，不要在原有的对象上改♥♥♥♥
-3. 处理数组和对象一种是策略，都当对象处理，最后分离，因为他变成了统一质料♥♥♥♥
-4. 功能还是保持单一性，就像那个复制，我有加了复制之后的过滤，这是2个不同的功能，不需要耦合在一起♥♥♥♥
-5. 函数参数容错处理♥♥♥♥一开始我把容错写在私有函数里了，这样对外函数体就感觉比较干净点，但觉得判断的容错逻辑应该独立出来，不和具体的私有功能函数逻辑耦合在一起，做到职责单一
-6. 解决对对象深度循环操作的问题----
-    这样做，一开始想把它抽出来，后来发现没有东西抽出来，直接就递归了，现在我想把浅的深的分开来函数处理，最后在合起来，我不想把深浅耦合在一起♥♥♥♥
-7. 严谨命名变量名，函数名，函数参数名，属性名的命名，也是建立体系的一种训练♥♥♥♥
-    函数参数的命名，一会叫original一会叫object还是会引起误解，那该怎么命名呢，original还是不好，原始的只是这个事物的特性而已，不能代表这个事物，使这个事物称其为这个事物是原因是他的形式，而不是他的特性，你觉得叫collection会不会好很多呢？是的，不过如果有多个collection的时候就难以区分了，所以现在是写了他的状态，比如original，output，虽然我想写全但是太长了
-8. 长数据不用字符串拼接，以免导致数据格式错乱，像那个项目一样♥♥♥♥
-9. 状态添加了设置当前状态♥♥♥♥
-10. 给字符串的数字和数字之间做个转换（只处理最基本的类型，不处理对象）（比如传1和'1'都可以，当然不是所有都可以，isNumber就不行）♥♥♥♥
-11. 递归迭代的时候我怎么知道我在第几层？？全是对象还好办，如果里面有数组怎么办，要不要把数组算一层，因为数组也是对象♥♥♥♥
-12. 现在写的方法都是以一维集合为数据源，不以单个基础值为单位♥♥♥♥
-13. 怎么做到数据提交时候的正确性，也就是提交给后端的数据中不需要出现后端不要的字段，也就是我给自己用的字段也一并提交给后端了，我想到2个路子，一个是请求拿过来的数据我去删到只剩后端需要的字段，另一种是我新建一个后端需要的数据格式♥♥♥♥
-14. 写一个把后端过来的数据中的字符串数字变为数字♥♥♥♥
-15. 用多态消灭条件语句（如果只是if-else的话还是条件或三元吧，多态在多种条件选择的时候才能体现优势）♥♥♥♥
-16. 获取后端的数据要处理下没有值的情况，以免前端报错♥♥♥♥
-17. 重新写下关于值的交集并集差集，关于键的交集并集差集♥♥♥♥
 18. 时间的控制比较蛋疼，比如我要获取3个月前的时间戳，1几小时前（反正就是要获得某一点的时间戳）
 19. 增加链式操作
 20. 我发现业务逻辑里面好多地方都是相互交叉的耦合，很多很杂，比如说我在操作这个表格的时候，另外某个地方也要有变化，这就非常繁琐，能不能写个类似中介者的东西，虽然vue的数据绑定和watch很方便
@@ -50,15 +31,7 @@
 39. 我在想有没有突破条件逻辑的写法，至少挣脱一些必须先判断才能做的事情（我现在想到的是从整体到局部写，就像画素描一样，先打框架，在抠细节，想想自己写的toFixed）
 40. 加map，every，some
 41. 这么庞大的数据结构怎么检测???
-42. 之后可以写个关于顺序的东西
-
-
-
-
-
-
-
-
+42. 等形成了一定的体系核心代码后可以给自己的核心代码写插件和接口，能组装起来
 
 
 抽象是哲学的根本特点，代码亦如此。
@@ -67,9 +40,6 @@
 抽象的程度
     抽象的程度越深，那抽象出来的离抽象本身最近，越一般，与其他抽象越紧密，如果2个抽象依旧没有关系，就说明抽象的程度没有达到联系的那一层，需继续抽象
 */
-
-// 我现在用高阶函数只是存一些数据,状态,配置一些属性,还没有提升到进去一个函数出来另一个函数的能力
-
 
 /*
 ----关于页面----
@@ -84,24 +54,18 @@
 ♥♥♥♥可读函数♥♥♥♥
 还有就是有些判断和对象的赋值操作乍看之下看不出逻辑是什么意思，要联系上下文才看的懂，所以最好封装成有名字的函数运行，读起来会好很多
 
-♥♥♥♥ajax统一处理下♥♥♥♥
 
 ♥♥♥♥处理业务逻辑和处理数据分开♥♥♥♥
 主体业务逻辑不包含处理数据的部分，我的意思是那些是给人看的代码，和给计算机的代码分开，这样我就能专注业务逻辑了，不会一会写着业务逻辑，一遍处理数据
 
 */
 
-// 运动，静止
-// 我是这样理解偏函数的，当我抽象出某个事物的种的时候我会去用偏函数，当我要记录某些状态变化的时候我会去用偏函数，也就是要分1步以上的我回去用偏函数，如果不是种，而只是某个函数的中一小部分功能的时候，即使这个功能很复用，我也会去写个小函数，在某个函数里面调用，而不会把他作为种在直接在外面调用
-
 /* 
 ★★★★★★★★★★★★★★★★★★★★
-1. 我先不要太烦恼和纠结于寻找那个最大种同时让这个最大的种与我现在写的东西的种之间建立关系等级，因为这是终极目标，不可能一下子找到和建立联系的，那么我现在要掉转枪头，把切入点放在我已有的方法上，从我具体的方法出发，往上找他的形式，往下找他的质料，达到统一，辩证。也就是要训练思维，不能不找边际的乱想
-2. 知识的立足点，是那个一般的东西
+我先不要太烦恼和纠结于寻找那个最大种同时让这个最大的种与我现在写的东西的种之间建立关系等级，因为这是终极目标，不可能一下子找到和建立联系的，那么我现在要掉转枪头，把切入点放在我已有的方法上，从我具体的方法出发，往上找他的形式，往下找他的质料，
+
 ★★★★★★★★★★★★★★★★★★★★
 */
-
-
 
 /*
 阅读代码比阅读文章困难是因为，一段代码可能会依赖很多函数，你为了了解每个函数的作用不得不跳到其他代码块，这不符合我们的阅读习惯。 偶尔在一本书中看到这样一句话：“面向对象语言的问题是，它们永远都要随身携带那些隐式的环境。你只需要一个香蕉，但却得到一个拿着香蕉的大猩猩…以及整个丛林”。
@@ -109,14 +73,12 @@
 这就是纯函数
 */
 
-/*
-我现在写代码的一点就是抓住本质，远离意见，把意见都终归一统，具体点说就是怎样减少意见，就是减少if语句，如何减少if语句就是写完成所有的情况，就没有如果了，就是数组对象，终为对象，
-*/
-
-
+/****************
+    私有
+****************/
 
 /*
-别看了点思想就瞧不起技巧了，技巧是基础，没有技巧，你的思想也就不能实体化
+    输入输出迭代工厂
 */
 
 // 对柯理化的进一步理解
@@ -148,47 +110,6 @@ var factoryClone = factory.bind('', function (original, output) {
 var factoryNew = factory.bind('', function (original, output) {
     return output;
 });
-
-/****************
-    私有
-****************/
-
-/*
-    输入输出迭代工厂
-*/
-
-/*var factory = function (callback) {
-    callback = callback || function (original, output) {
-        return output;
-    };
-    return function (original, iterator, array) {
-        original = processCollection(original);
-        iterator = processFunction(iterator);
-        // 不但要处理新的对象还是处理在什么对象上迭代
-        var output = callback(original, array || {});
-        Object.keys(original).forEach(function (currentValue, index, array) {
-            iterator(original[currentValue], currentValue, output);
-        });
-        return output;
-    };
-};*/
-
-/*
-    克隆体
-*/
-
-/*var factoryClone = factory(function (original, output) {
-    _.forEach(original, function (currentValue, key, collection) {
-        output[key] = collection[key];
-    });
-    return output;
-});*/
-
-/*
-    新生体
-*/
-
-// var factoryNew = factory();
 
 /*
     集合统一转换
@@ -270,174 +191,11 @@ var random = function () {
     return Math.floor(Math.random() * 10);
 };
 
-/*
-    剩余参数
-*/
-
-var restArgs = function (func) {
-    return function () {
-        // 获得形参个数
-        var argumentsLength = func.length;
-        // rest参数的起始位置为最后一个形参位置
-        var startIndex = argumentsLength - 1;
-        // 最终需要的参数数组
-        var args = Array(argumentsLength);
-        // 设置rest参数
-        var rest = [].slice.call(arguments, startIndex);
-        // 设置最终调用时需要的参数
-        for (var i = 0; i < startIndex; i++) args[i] = arguments[i];
-        args[startIndex] = rest;
-        return func.apply(null, args);
-    };
-};
-
-/*
-    链表--循环双向链表
-    这张图大致是这样的所有链表真正用的元素之外有一个head一个tail，head的previous是tail，tail的next是head，而head的next是第一，tail的previous是最后一个，所有对象之间也是双向的，循环的关键在于第一和最后一个是双向的，这样头尾实体就循环连起来了。
-    1. 空白链表
-    head←----→tail
-      ↑--------↑
-    2. 一个对象的链表
-    head----→object←----tail
-      ↑------------------↑
-    3. 多个对象链表
-    head----→object←----→object←----tail
-      ↑        ↑------------↑        ↑
-       ------------------------------
-*/
-
-var linkOperation = (function () {
-    var link = {};
-    // 判断是否头尾相连，也就是链表里面有没有元素
-    var isEmptyLink = function (element) {
-        return element.head.next === element.head.previous;
-    };
-    var isLast = function (element) {
-        return element === this.tail.previous
-    }.bind(this);
-    // 添加
-    link.add = function (newElement, oldElement) {
-        var lastLength = this.display().length;
-        // 缺点在于一次只能插一个值
-        var newNode = {
-            element : newElement,
-            next : null,
-            previous : null
-        };
-        // 插入尾部
-        var addLast = function () {
-            // 这里是链表里面没有元素的情况下
-            if (isEmptyLink(this)) {
-                // 更新头尾
-                this.head.next = newNode;
-                this.tail.previous = newNode;
-            } else {
-                // 这里是链表里面有元素的情况下
-                // 新元素下一个连第一个
-                newNode.next = this.head.next;
-                // 新元素上一个连最后一个
-                newNode.previous = this.tail.previous;
-                // 更新第一个的上一个的指向
-                this.head.next.previous = newNode;
-                // 更新最后一个的下一个的指向
-                this.tail.previous.next = newNode;
-                // 更新尾巴的上一个的指向
-                this.tail.previous = newNode;
-            }
-        }.bind(this);
-        // 1个参数直接添加到尾部
-        if (!oldElement) {
-            addLast();
-        // 2个参数是找到第2个参数后面插入
-        } else {
-            var currentValue = this.find(oldElement);
-            if (!currentValue) return false;
-            // 判断是不是最后一个
-            if (currentValue === this.tail.previous) addLast(); else {
-                newNode.next = currentValue.next;
-                newNode.previous = currentValue;
-                currentValue.next.previous = newNode;
-                currentValue.next = newNode;
-            }
-        }
-        return lastLength !== this.display().length;
-    };
-    // 删除
-    link.delete = function (element) {
-        var currentValue = this.find(element);
-        // 没找到
-        if (!currentValue) return;
-        // 有2种可能需要判断，一种是删头，一种是删尾，就需要调整虚体头尾的next和previous的指向了
-        if (this.head.next === currentValue) this.head.next = currentValue.next;
-        if (this.tail.previous === currentValue) this.tail.previous = currentValue.previous;
-        currentValue.previous.next = currentValue.next;
-        currentValue.next.previous = currentValue.previous;
-        // 返回被删除的对象
-        return currentValue;
-    };
-    // 替换
-    link.replace = function (newElement, oldElement) {
-        // 删除和添加就是替换
-        this.add(newElement, oldElement);
-        this.delete(oldElement);
-        return this.find(newElement);
-    };
-    // 寻找
-    // 找到当前的
-    link.find = function (element) {
-        // 头尾不给找，排除在外，头尾相连也不给找，因为本身里面就没有东西，还没添加呢
-        if (element === 'head' || element === 'tail' || isEmptyLink(this)) return;
-        // 这里用this，因为head是创建链表时候独立存在的，link是没有head的，find调的时候也要用this，应为如果用link，里面this又指向link了，而link是没有head的
-        var currentValue = this.head;
-        // 要避免无限循环
-        while (currentValue.element != element && currentValue !== this.tail.previous) {
-            currentValue = currentValue.next;
-        }
-        return currentValue.element !== element ? false : currentValue;
-    };
-    // 展示
-    link.display = function () {
-        var currentValue = this.head;
-        var array = [];
-        var lock = true;
-        while (lock || currentValue.next !== this.head.next) {
-            if (!currentValue.next) return array;
-            array.push(currentValue.next.element);
-            currentValue = currentValue.next;
-            lock = false;
-        }
-        return array;
-    };
-    return link;
-})();
-
-
-
 var _ = {};
 
 /*
 ★★★★动词★★★★
 */
-
-/****************
-    柯理化-部分应用
-****************/
-
-/*
-    左柯理
-*/
-
-_.partial = restArgs(function(func, boundArgs) {
-    return function() {
-        var position = 0, length = boundArgs.length;
-        var args = Array(length);
-        for (var i = 0; i < length; i++) {
-            args[i] = boundArgs[i];
-        }
-        while (position < arguments.length) args.push(arguments[position++]);
-        return func.apply(null, args);
-    };
-});
 
 /****************
     复制
@@ -992,7 +750,7 @@ _.before = function (times, func) {
     单次
 */
 
-_.once = _.partial(_.before, 1);
+_.once = _.before.bind('', 1);
 
 /****************
     装饰
@@ -1006,90 +764,6 @@ _.decorate = function (before, after) {
         beforeResult = Array.isArray(beforeResult) ? beforeResult : [];
         return after.apply(this, beforeResult);
     };
-};
-
-/****************
-    状态
-    2种方向，正序，倒序
-******************/
-
-var StateFunc;
-(function () {
-    StateFunc = function () {
-        var arg = arguments[0];
-        // 1. 静态
-        // 首先要定义多个状态和状态的顺序
-        var stateAll = [].filter.call(arg, function (currentValue, index, array) {
-            return _.isFunction(currentValue);
-        });
-        if (!stateAll.length) return;
-        this.link = _.link();
-        stateAll.forEach(function (currentValue, index, array) {
-            this.link.add(currentValue);
-        }, this);
-        this.state = this.link.find(stateAll[0]);
-
-        // 方向
-        this.left = true;
-        // 记录上一次的方向（像这种东西现在来说都很零散，需要了，想到了，才会去写，以后要形成一整套概念体系才行）
-        this.previousLeft = true;
-        var wLeft = false;
-    };
-    var direction = function () {
-        this.previousLeft = this.left;
-        this.state = this.left ? this.state.next : this.state.previous;
-        // 正序
-        if (this.state === this.link.head.next) this.left = true;
-        // 倒序
-        if (this.state === this.link.tail.previous) this.left = false;
-    };
-    var oneByOne = function (isLeft, context) {
-        context = _.isBoolean(isLeft) ? context : isLeft;
-        var back = this.state.element.call(context);
-        isLeft ? direction.call(this) : this.state = this.state.next;
-        return back;
-    };
-    // 2. 动态
-    // 然后添加一些方法能动态的添加或是删除或是修改状态
-    // 添加状态
-    StateFunc.prototype.addState = function (newState, oldState) {
-        var back = this.link.add(newState, oldState);
-        if (!back) return;
-        newState = this.link.find(newState);
-        if (this.state.element === newState.next.element) this.state = newState;
-        if (this.state.element === newState.previous.element) this.state = newState;
-        return back;
-    };
-    // 替换状态
-    StateFunc.prototype.replaceState = function (newState, oldState) {
-        var back = this.link.replace(newState, oldState);
-        if (!back) return;
-        // 更新要替换的前一个或后一个的指针
-        if (this.state.element === oldState) this.state = this.link.find(newState);
-        return back;
-    };
-    // 删除状态
-    StateFunc.prototype.deleteState = function (oldState) {
-        if (!_.isFunction(oldState)) return;
-        // 这里有个问题就是，有时删除的对象已经变成下一个要运行的对象了，例如我运行1，运行完1后，运行对象变成2，虽然紧接着我删除了2，可下次运行的是时候是运行2的对象，因为之前运行完1后，就更新了运行对象，添加，替换也有这个问题
-        if (this.state.element === oldState) direction.call(this);
-        return this.link.delete(oldState);
-    };
-    // 设置当前状态
-    StateFunc.prototype.setState = function (newState, isLeft) {
-        var element = this.link.find(newState);
-        if (!element) return;
-        this.state = element;
-        this.left = _.isBoolean(isLeft) ? isLeft : this.previousLeft;
-        return oneByOne.call(this, wLeft);
-    };
-    StateFunc.prototype.currState = function (isLeft, context) {
-        wLeft = isLeft;
-        return oneByOne.call(this, isLeft, context);
-    };
-})();
-_.state = function () {
-    return new StateFunc(arguments);
 };
 
 /****************
@@ -1322,30 +996,6 @@ _.getDays = function (year, month) {
 };
 
 /*
-    时间格式化
-*/
-
-_.timeFormat = function (format, date) {
-    var time = _.isNumber(date) ? new Date(date) : new Date();
-    var o = { 
-        'M+' : time.getMonth() + 1,                 //月份 
-        'd+' : time.getDate(),                    //日 
-        'h+' : time.getHours(),                   //小时 
-        'm+' : time.getMinutes(),                 //分 
-        's+' : time.getSeconds(),                 //秒 
-        'q+' : Math.floor((time.getMonth() + 3) / 3), //季度 
-        'S'  : time.getMilliseconds()             //毫秒 
-    }; 
-    if (/(y+)/.test(format)) format = format.replace(RegExp.$1, (time.getFullYear() + '').substr(4 - RegExp.$1.length)); 
-    for (var k in o) {
-        if (new RegExp('(' + k + ')').test(format)) {
-            format = format.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
-        }
-    }
-    return format; 
-}
-
-/*
 ★★★★名词★★★★
 */
 
@@ -1356,152 +1006,6 @@ _.timeFormat = function (format, date) {
 _.identity = function (value) {
     return value;
 };
-
-/*
-    链表
-*/
-
-_.link = function () {
-    var newLink = {};
-    // 头节点
-    newLink.head = {
-        element : 'head',
-        next : null,
-        previous : null
-    };
-    // 尾节点
-    newLink.tail = {
-        element : 'tail',
-        next : newLink.head,
-        previous : newLink.head
-    };
-    // 头尾相连
-    newLink.head.next = newLink.tail;
-    newLink.head.previous = newLink.tail;
-    // 继承方法
-    newLink = Object.assign(newLink, linkOperation);
-    // 初始化添加链表元素
-    var allLink = [].filter.call(arguments, function (currentValue, index, array) {
-        return _.isFunction(currentValue);
-    });
-    allLink.forEach(function (currentValue, index, array) {
-        newLink.add(currentValue);
-    });
-    return newLink;
-};
-
-/*
-    关系
-
-    关系结构
-    业务代码是一对一的关系（只保证主线），那什么会写成关系呢，就是一个对象的变化会依赖于另一个对象，而独立于xxxx（xxxx还没想好是什么）
-
-    这有点声明式的意思了，我只定义和声明，要怎么干交给函数就好了
-
-    然后要把他变成动态的
-    建立关系，解除关系
-
-    我想其实动态的任何动作都能静态化，我的意思是把要动态的内容准备好，然后按个开关，去自动完成事情
-
-    我在思考我是关系跟着当前对象呢，还是跟着自己
-    先跟着有关系的对象吧，先不要一下子把可读性变得很差
-
-    我发现我喜欢不动的代码，把一切都准备好，然后只要按下一个按钮，程序就自动运行了，我这个指的是写代码的时候，好像这就有点声明式的意思了
-*/
-
-// 这里完成了一对一，一对多，多对一的关系，单方向上就只有一对一
-
-// 方法
-var funcRelation = {
-    build : function (name, bindName) {
-        var findName = this.original.filter(function (currentValue, index, array) {
-            return currentValue.content.name === name;
-        });
-        var findBindName = this.original.filter(function (currentValue, index, array) {
-            return currentValue.content.name === bindName;
-        });
-        this[name] = _.decorate(findName[0].content, findBindName[0].content);
-        findName[0].relationName = findBindName[0].content.name;
-    },
-    relieve : function (name) {
-        var findName = this.original.filter(function (currentValue, index, array) {
-            return currentValue.content.name === name;
-        });
-        this[name] = findName.content;
-    },
-
-};
-
-// 绑定一对一
-var oneByOne = function (obj, result, current, currentRelation) {
-    obj.forEach(function (currentValue, index, array) {
-        // current, currentRelation是判断联动关系的
-        var relationName = currentValue.relationName;
-        var func = currentValue.content;
-        if (current) {
-            if (currentValue !== current) return;
-            relationName = currentRelation;
-            func = result[currentValue.content.name];
-        }
-        var findRelation;
-        if (relationName) {
-            findRelation = array.filter(function (item, idx, arr) {
-                return item.content.name === relationName;
-            });
-            func = _.decorate(func, findRelation[0].content);
-        }
-        result[currentValue.content.name] = func;
-
-        if (relationName && findRelation[0].relationName) {
-            oneByOne(obj, result, currentValue, findRelation[0].relationName);
-        }
-    });
-};
-
-// 建立联系，初始化
-_.createRelation = function (obj) {
-    var result = Object.create(funcRelation);
-    result.original = obj;
-
-    // 一对一和一对多的情况
-    oneByOne(obj, result);
-
-    return result;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

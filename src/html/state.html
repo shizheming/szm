@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <!-- <script src="../../stateMachineOld.js"></script> -->
+    <script src="../../stateMachine.js"></script>
+    <!-- <script src="../js/system/state.js"></script> -->
+</head>
+<body>
+</body>
+</html>
+<script>
+var xx = {
+    init: 'a',
+    transitions: [
+        {
+            name : 'j1',
+            from : 'a',
+            to : 'b'
+        },
+        {
+            name : 'j2',
+            from : 'b',
+            to : 'c'
+        },
+    ],
+    methods : {
+        onb : function (a) {
+            console.log(a, this);
+            alert(555);
+        }
+    }
+};
+var fsm = new StateMachine(xx);
+
+
+
+</script>
