@@ -11,6 +11,23 @@
 <script src="../js/libs/ecma.js"></script>
 <script src="../js/system/strategy.js"></script>
 <script>
+var condition = [function () {
+    return a > b;
+}, function () {
+    return a < b;
+}, function () {
+    return a === b;
+}];
+var strategy = [function () {
+    alert('a > b');
+}, function () {
+    alert('a < b');
+}, function () {
+    alert('a === b');
+}];
+
+
+
 var aaa = [{
     condition : function (a, b) {
         return a > b;

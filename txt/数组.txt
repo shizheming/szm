@@ -12,10 +12,6 @@ var obj = {
 	b : 2,
 	c : 3
 };
-var nub = 123123123;
-var fn = function () {
-	return [123];
-};
 var arr = Array.prototype.slice.call(str);
 console.log(arr);
 console.log(Array.from(obj));
