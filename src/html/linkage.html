@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <select name="" id="select1">
+        <option value="0">1111111</option>
+        <option value="1">2222222222</option>
+        <option value="2">3233333333333333</option>
+        <option value="3">4344444444444444444444</option>
+    </select>
+    <select name="" id="select2"></select>
+    <select name="" id="select3"></select>
+    <select name="" id="select4">
+        <option value="">我是一，我需要多才能触发</option>
+        <option value="">bbbbbbbbbbb</option>
+        <option value="">cccccccccccc</option>
+        <option value="">dddddddddddd</option>
+        <option value="">eeeeeeeeeee</option>
+    </select>
+    <h1>ul1</h1>
+    <ul id="list1"></ul>
+    <h1>ul2</h1>
+    <ul id="list2"></ul>
+</body>
+</html>
+<script src="../js/libs/ecma.js"></script>
+<script src="../js/system/linkage.js"></script>
+<script>
+// 我发现关系的根本并不局限于之前写的连带函数关系，更多的本质上是建立联系和说明，至于的函数是最终落实在这个上面而已
+
+// 关系表--我觉的这应该是自动生成的，而并不是手动静态创建的
+// 可是我不手动的写关系表，怎么把2个不同的东西联系起来，来告诉程序这2个是有关系的
+// 所以还是要手动写关系表
+
+function a1 () {
+    alert('a1');
+}
+function a2 () {
+    alert('a2');
+}
+function a3 () {
+    alert('a3');
+}
+function a4 () {
+    alert('a4');
+}
+function a5 () {
+    alert('a5');
+}
+function a6 () {
+    alert('a6');
+}
+
+
+var relationshipTable = [{
+    n : 'a1',
+    rn : 'a2'
+}, {
+    n : 'a3',
+    rn: 'a4'
+}, {
+    n : 'a5',
+    rn: 'a6'
+}];
+
+
+
+
+
+var bigObj = [{
+        relationName : 'selector2GetData',
+        content : function list1GetData (a, b, c) {
+            var h = _.randomNumber();
+            var li = '';
+            for (var i = 0; i < h; i++) li += '<li>' + _.randomNumber(_.randomNumber()) +'</li>';
+            list1.innerHTML = li;
+            console.log('list1GetData');
+            return [a + 1, b + 1, c + 1];
+        }
+    }, {
+        relationName : 'changeSelector2BackgroundColor',
+        content : function selector1ChangeColor () {
+            select1.style.backgroundColor = _.randomColor();
+        }, 
+    }, {
+        content : function selector1ChangeSelector1FontSize (a, b, c) {
+            select1.style.fontSize = '22px';
+            return [a + 1, b + 1, c +1];
+        }
+    }, {
+        relationName : 'changeUl1BackgroundColor',
+        content : function selector2GetData (a, b, c) {
+            var that = this;
+            var h = _.randomNumber();
+            var option = '';
+            for (var i = 0; i < h; i++) option += '<option value="' + i + '">' + _.randomNumberAlphabet(10) + '</option>'
+            select2.innerHTML = option;
+            select2.onchange = function () {
+                that.list2GetData();
+            };
+            console.log('selector2GetData', a, b, c);
+            return [a + 1, b + 1, c + 1];
+        },
+    }, {
+        relationName : 'changeUl1BackgroundColor',
+        content : function changeSelector2BackgroundColor () {
+            select2.style.backgroundColor = _.randomColor();
+        },
+    }, {
+        content : function changeBodyBackgroundColor () {
+            document.body.style.backgroundColor = _.randomColor();
+        },
+    }, {
+        content : function changeUl1BackgroundColor (a, b, c) {
+            list1.style.backgroundColor = _.randomColor();
+            console.log('changeUl1BackgroundColor', a, b, c);
+        },
+    }, {
+        content : function changeUl2BackgroundColor2 () {
+            list2.style.backgroundColor = 'yellow';
+        },
+    }, {
+        relationName : 'select3GetData',
+        content : function list2GetData (a, b, c) {
+            var h = _.randomNumber();
+            var li = '';
+            for (var i = 0; i < h; i++) li += '<li>' + _.randomNumber(_.randomNumber()) +'</li>';
+            list2.innerHTML = li;
+            return [a + 1, b + 1, c + 1];
+        }
+    }, {
+        content : function select3GetData (a, b, c) {
+            var that = this;
+            var h = _.randomNumber();
+            var option = '';
+            for (var i = 0; i < h; i++) option += '<option value="">' + _.randomNumberAlphabet(10) + '</option>'
+            select3.innerHTML = option;
+            select3.onchange = function () {
+                that.select4ChangeBorderColor();
+            };
+            return [a + 1, b + 1, c + 1];
+        },
+    }, {
+        content : function select4ChangeBorderColor (a, b, c) {
+            select4.style.border = '10px solid ' + _.randomColor();
+            console.log('select4ChangeBorderColor');
+        }
+}];
+
+
+var haha = _.createRelation(bigObj);
+
+
+
+select1.onchange = function () {
+    haha.list1GetData(1, 2, 3);
+}
+
+</script>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>strategy</title>
+</head>
+<body>
+    
+</body>
+</html>
+<script src="../js/libs/ecma.js"></script>
+<script src="../js/system/relationship.js"></script>
+<script src="../js/system/strategy2.0.js"></script>
+<script>
+
+
+function c1 (a, b) {
+    return a > b;
+}
+function c2 (a, b) {
+    return a + b === 3;
+}
+function c3 (a, b) {
+    return a === b;
+}
+function c4 (a, b) {
+    return false;
+}
+
+function s1 (v) {
+    alert('a > b, a + b === 3' + v);
+}
+function s2 () {
+    alert('a + b === 3');
+}
+function s3 () {
+    alert('a === b');
+}
+function s4 (v) {
+    alert('s4' + v);
+}
+function s5 (v) {
+    alert('s5' + v);
+}
+
+
+var relationshipTable = [{
+    n : [c1, c2],
+    rn : [s1, s4]
+}, {
+    n : c4,
+    rn: s2
+}, {
+    n : c3,
+    rn: [s3, s4, s5]
+}];
+
+var uu = _.strategy(relationshipTable, function (a) {
+    console.log(a);
+    alert('我是间断性');
+})(2, 1)(11212444)('heheda');
+
+
+</script>

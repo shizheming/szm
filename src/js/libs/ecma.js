@@ -32,6 +32,7 @@
 40. 加map，every，some
 41. 这么庞大的数据结构怎么检测???
 42. 等形成了一定的体系核心代码后可以给自己的核心代码写插件和接口，能组装起来
+43. _.isExistence有思考，能传谓词函数来判断基本类型，那如果我真的是要判断引用类型呢，就挂了
 
 
 抽象是哲学的根本特点，代码亦如此。
@@ -116,7 +117,7 @@ var factoryNew = factory.bind('', function (original, output) {
 */
 
 var objectTransformation =  function (original, output, isArrayShift) {
-    return Array.isArray(original) ? transformation(output, [], isArrayShift) : transformation(output, {});
+    return _.isArray(original) ? transformation(output, [], isArrayShift) : transformation(output, {});
 }
 
 /*
@@ -144,7 +145,7 @@ var recursive = function (collection, baseCallback, ObjectCallback, level) {
         value : [],
     };
     _.forEach(collection, function (currentValue, key, collection) {
-        if (Array.isArray(currentValue) || _.isObject(currentValue)) {
+        if (_.isArray(currentValue) || _.isObject(currentValue)) {
             // 对象值的时候一个断点回调
             var output = ObjectCallback(currentValue, key, collection, level);
             output && result.collection.push(output);
@@ -164,7 +165,7 @@ var recursive = function (collection, baseCallback, ObjectCallback, level) {
 */
 
 var processCollection = function (value) {
-    return !_.isObject(value) && !Array.isArray(value) ? [] : value;
+    return !_.isObject(value) && !_.isArray(value) ? [] : value;
 };
 
 /*
@@ -172,7 +173,7 @@ var processCollection = function (value) {
 */
 
 var processArray = function (value) {
-    return Array.isArray(value) ? value : [];
+    return _.isArray(value) ? value : [];
 };
 
 /*
@@ -255,7 +256,7 @@ _.filterFalse = function (collection) {
 
 var value = function (original) {
     return factoryNew(original, function (value, key, output) {
-        Array.isArray(value) || _.isObject(value) ? _.forEach(value, function (currentValue, key, collection) {
+        _.isArray(value) || _.isObject(value) ? _.forEach(value, function (currentValue, key, collection) {
             output.push(currentValue);
         }) : output.push(value);
     }, []);
@@ -687,7 +688,7 @@ var assign = function (original, basics) {
     }, []);
     // 处理基础值的键
     var basicsObject = _.filter(basics, function (currentValue, key, collection) {
-        var isCite = _.isObject(currentValue) || Array.isArray(currentValue);
+        var isCite = _.isObject(currentValue) || _.isArray(currentValue);
         return !isCite || isCite && !Object.keys(currentValue).length;
     });
     _.forEach(basicsCollection.sort(function (a, b) {
@@ -761,7 +762,7 @@ _.decorate = function (before, after) {
     after = processFunction(after);
     return function () {
         var beforeResult = before.apply(this, arguments);
-        beforeResult = Array.isArray(beforeResult) ? beforeResult : [];
+        beforeResult = _.isArray(beforeResult) ? beforeResult : [];
         return after.apply(this, beforeResult);
     };
 };
@@ -881,7 +882,7 @@ _.isEven = function (n) {
     判断数据类型
 */
 
-['Arguments', 'Function', 'String', 'Date', 'RegExp', 'Object', 'Boolean'].forEach(function (currentValue, index, array) {
+['Arguments', 'Array', 'Function', 'String', 'Date', 'RegExp', 'Object', 'Boolean'].forEach(function (currentValue, index, array) {
     _['is' + currentValue] = function (obj) {
         return Object.prototype.toString.call(obj) === '[object ' + currentValue + ']';
     };
@@ -892,7 +893,7 @@ _.isEven = function (n) {
 */
 
 _.isEqual = function (a, b, aStack, bStack) {
-    if (!aStack || !bStack) if (!_.isObject(a) && !Array.isArray(a) || !_.isObject(b) && !Array.isArray(b)) return false;
+    if (!aStack || !bStack) if (!_.isObject(a) && !_.isArray(a) || !_.isObject(b) && !_.isArray(b)) return false;
     var c1 = Object.prototype.toString.call(a);
     // 类型不同直接out
     if (c1 !== Object.prototype.toString.call(b)) return false;

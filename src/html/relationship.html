@@ -2,120 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>relationship</title>
 </head>
 <body>
-    <select name="" id="select1">
-        <option value="0">1111111</option>
-        <option value="1">2222222222</option>
-        <option value="2">3233333333333333</option>
-        <option value="3">4344444444444444444444</option>
-    </select>
-    <select name="" id="select2"></select>
-    <select name="" id="select3"></select>
-    <select name="" id="select4">
-        <option value="">我是一，我需要多才能触发</option>
-        <option value="">bbbbbbbbbbb</option>
-        <option value="">cccccccccccc</option>
-        <option value="">dddddddddddd</option>
-        <option value="">eeeeeeeeeee</option>
-    </select>
-    <h1>ul1</h1>
-    <ul id="list1"></ul>
-    <h1>ul2</h1>
-    <ul id="list2"></ul>
+    
 </body>
 </html>
 <script src="../js/libs/ecma.js"></script>
 <script src="../js/system/relationship.js"></script>
 <script>
-var bigObj = [{
-        relationName : 'selector2GetData',
-        content : function list1GetData (a, b, c) {
-            var h = _.randomNumber();
-            var li = '';
-            for (var i = 0; i < h; i++) li += '<li>' + _.randomNumber(_.randomNumber()) +'</li>';
-            list1.innerHTML = li;
-            console.log('list1GetData');
-            return [a + 1, b + 1, c + 1];
-        }
-    }, {
-        relationName : 'changeSelector2BackgroundColor',
-        content : function selector1ChangeColor () {
-            select1.style.backgroundColor = _.randomColor();
-        }, 
-    }, {
-        content : function selector1ChangeSelector1FontSize (a, b, c) {
-            select1.style.fontSize = '22px';
-            return [a + 1, b + 1, c +1];
-        }
-    }, {
-        relationName : 'changeUl1BackgroundColor',
-        content : function selector2GetData (a, b, c) {
-            var that = this;
-            var h = _.randomNumber();
-            var option = '';
-            for (var i = 0; i < h; i++) option += '<option value="' + i + '">' + _.randomNumberAlphabet(10) + '</option>'
-            select2.innerHTML = option;
-            select2.onchange = function () {
-                that.list2GetData();
-            };
-            console.log('selector2GetData', a, b, c);
-            return [a + 1, b + 1, c + 1];
-        },
-    }, {
-        relationName : 'changeUl1BackgroundColor',
-        content : function changeSelector2BackgroundColor () {
-            select2.style.backgroundColor = _.randomColor();
-        },
-    }, {
-        content : function changeBodyBackgroundColor () {
-            document.body.style.backgroundColor = _.randomColor();
-        },
-    }, {
-        content : function changeUl1BackgroundColor (a, b, c) {
-            list1.style.backgroundColor = _.randomColor();
-            console.log('changeUl1BackgroundColor', a, b, c);
-        },
-    }, {
-        content : function changeUl2BackgroundColor2 () {
-            list2.style.backgroundColor = 'yellow';
-        },
-    }, {
-        relationName : 'select3GetData',
-        content : function list2GetData (a, b, c) {
-            var h = _.randomNumber();
-            var li = '';
-            for (var i = 0; i < h; i++) li += '<li>' + _.randomNumber(_.randomNumber()) +'</li>';
-            list2.innerHTML = li;
-            return [a + 1, b + 1, c + 1];
-        }
-    }, {
-        content : function select3GetData (a, b, c) {
-            var that = this;
-            var h = _.randomNumber();
-            var option = '';
-            for (var i = 0; i < h; i++) option += '<option value="">' + _.randomNumberAlphabet(10) + '</option>'
-            select3.innerHTML = option;
-            select3.onchange = function () {
-                that.select4ChangeBorderColor();
-            };
-            return [a + 1, b + 1, c + 1];
-        },
-    }, {
-        content : function select4ChangeBorderColor (a, b, c) {
-            select4.style.border = '10px solid ' + _.randomColor();
-            console.log('select4ChangeBorderColor');
-        }
+
+function a () {
+    alert(arguments.callee.name);
+}
+function b () {
+    alert(arguments.callee.name);
+}
+function c () {
+    alert(arguments.callee.name);
+}
+function d () {
+    alert(arguments.callee.name);
+}
+function e () {
+    alert(arguments.callee.name);
+}
+function f () {
+    alert(arguments.callee.name);
+}
+function g () {
+    alert(arguments.callee.name);
+}
+
+
+var relationshipTable = [{
+    // 一对多
+    n : a,
+    rn : [b, c, d]
+}, {
+    // 一对一
+    n : b,
+    rn: c
+}, {
+    // 多对一
+    n : [e, f, g],
+    rn: d
+}, {
+    // 多对多
+    n : [a, c, e],
+    rn: [b, d]
 }];
 
+// 其实我觉得本质上就都是一对一，只是一对一多了后，自然而然就产生了一对多，多对一，多对多，虽然本质的理论上是就是一对一，但这是要对用户用的，人们总是希望这东西越简单越强大越方便的使用，所以多肯定是要的，多是一提升的一种形式，就像洗衣机的各种模式一样，本质上没有什么模式，有的只是时间转速温度的不一样，而那么多组合人们是记不住的，所以把一套的参数提升到模式的形式后，便于人类的理解而已，方便
 
-var haha = _.createRelation(bigObj);
-
-
-
-select1.onchange = function () {
-    haha.list1GetData(1, 2, 3);
-}
+console.log(_.relationship(relationshipTable));
 
 </script>

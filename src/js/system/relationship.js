@@ -1,81 +1,63 @@
 /*
-    关系：（属性，一和多，静和动，时间和空间，间断和连续）
-    内容：
-        完成了一对一，一对多，多对一的关系，单方向上就只有一对一，完成了动静，同时加上了时间，在不同的时间上有可能对象不同的关系，只有初始化关系的时候是不够的，无法再其他时间里变化关系，所以添加了建立和解除的属性方法来解决在时间上的变化。
-    衍生：
-        力，方向，顺序
-    说明：
-        始终是面向函数，从函数出发来考虑
-        落实在函数上就是A函数被调用后，会触发与A函数有关系的B函数，B函数被调用后，会触发与B函数有关系的C函数，以此类推，也就是说调用运行都是一下子连着触发的，如果有了间断，那么被连带的函数能够自行判断是否执行
-    属性（方法）：
-        1建立关系
-        2解除关系
-    感想：
-        这有点声明式的意思了，我只定义和声明，要怎么干交给函数就好了
-        我发现我喜欢不动的代码，把一切都准备好，然后只要按下一个按钮，程序就自动运行了，我这个指的是写代码的时候，好像这就有点声明式的意思了
-        我写的关系，就像vue的watch，不过人家是数据驱动，我这里是函数驱动,
-        顺序和关系从内容上来看几乎是差不多的，只是用处和关注点不一样，也就是形式不一样，我现在在专注形式帮助我形成体系，
-    改进：
-        1把关系变成软软嵌入的，而不是现在的硬嵌入，
-        2建立关系的同时，建立一张直观的关系表，需要看的时候一目了然，
-        3增加间断和连续的概念
-        4把空间概念引入，把关系的名称和关系体分开，关系名称单独写一个地方形成一个关系表
+
+关系表数据操作
+
+问题：1. 我在设计关系表的时候遇到了这样一个问题，就是在多对一的时候我是运行了多里面的一个，就会触发关系的那个一，还是要全部的多都运行过，才会触发关系的那个一，比较纠结这个问题，2种情况，然后我会试着询问同事，有没有第三种，第四种，第n种情况
+回答：1. 梳理了一下，有2点，第一，关系没有动态的，那种连带触发的是对象行为本身，不是关系，关系只是静态说明，第二，上面说的怎么触发关系函数本身理解上就存在不同点，关系只是说明，a和b有关系，并不是a运行了，b一定要运行一样，只起到说明作用，然后就是关系表只表明他们之间有关系，至于是什么关系并不赋予，只有当调用某个特定的方法后，才会确立实在关系，比如我调用了连带方法，那么关系表的关系表明的就是连带关系，而我调用了策略方法的时候，关系表就代表的是条件头和条件体的关系了，至于在多对一的多条件的情况下怎么触发条件体那是这个方法所做的事情了（我是满足一个条件就触发，还是全部条件都要满足，还是满足第几个，还是。。。。。。），并不是关系表所考虑的范围内
+
+1. 把多变成一，对外面向用户我用了多，而对内在我能控制的情况下，我坚持一
+2. 变成一我不知道有什么优势，但我清楚要脱离用形的数据来说明说句之间的关系，而是往对象上打点的方式来说明，脱离形
+
 */
+_.relationship = function (relationshipTable, a, b, c, d) {
+    var oneOnOneRelationshipTable = [];
 
-// 方法
-var funcRelation = {
-    // 建立关系
-    build : function (name, bindName) {
-        var findName = this.original.filter(function (currentValue, index, array) {
-            return currentValue.content.name === name;
-        });
-        var findBindName = this.original.filter(function (currentValue, index, array) {
-            return currentValue.content.name === bindName;
-        });
-        this[name] = _.decorate(findName[0].content, findBindName[0].content);
-        findName[0].relationName = findBindName[0].content.name;
-    },
-    // 解除关系
-    relieve : function (name) {
-        var findName = this.original.filter(function (currentValue, index, array) {
-            return currentValue.content.name === name;
-        });
-        this[name] = findName.content;
-    },
-
-};
-
-// 绑定一对一
-var oneByOne = function (obj, result, current, currentRelation) {
-    obj.forEach(function (currentValue, index, array) {
-        // current, currentRelation是判断联动关系的
-        var relationName = currentValue.relationName;
-        var func = currentValue.content;
-        if (current) {
-            if (currentValue !== current) return;
-            relationName = currentRelation;
-            func = result[currentValue.content.name];
+    relationshipTable.forEach(function (currentValue, index, array) {
+        // 一对一
+        if (!_.isArray(currentValue.n) && !_.isArray(currentValue.rn)) {
+            // 打点说明这是一对一的关系
+            currentValue.oneMany = 'one-to-one';
+            oneOnOneRelationshipTable.push(currentValue);
+            a && a(currentValue);
         }
-        var findRelation;
-        if (relationName) {
-            findRelation = array.filter(function (item, idx, arr) {
-                return item.content.name === relationName;
+        // 一对多
+        if (!_.isArray(currentValue.n) && _.isArray(currentValue.rn)) {
+            currentValue.rn.forEach(function (item, idx, arr) {
+                var newObj = {};
+                newObj.n = currentValue.n;
+                newObj.rn = item;
+                // 打点说明这是一对多的关系
+                newObj.oneMany = 'one-to-many';
+                oneOnOneRelationshipTable.push(newObj);
             });
-            func = _.decorate(func, findRelation[0].content);
+            b && b(currentValue);
         }
-        result[currentValue.content.name] = func;
-
-        if (relationName && findRelation[0].relationName) {
-            oneByOne(obj, result, currentValue, findRelation[0].relationName);
+        // 多对一
+        if (_.isArray(currentValue.n) && !_.isArray(currentValue.rn)) {
+            currentValue.n.forEach(function (item, idx, arr) {
+                var newObj = {};
+                newObj.n = item;
+                newObj.rn = currentValue.rn;
+                // 打点说明这是多对一的关系
+                newObj.oneMany = 'many-to-one';
+                oneOnOneRelationshipTable.push(newObj);
+            });
+            c && c(currentValue);
+        }
+        // 多对多
+        if (_.isArray(currentValue.n) && _.isArray(currentValue.rn)) {
+            currentValue.rn.forEach(function (item, idx, arr) {
+                currentValue.n.forEach(function (a, b, c) {
+                    var newObj = {};
+                    newObj.n = a;
+                    newObj.rn = item;
+                    // 打点说明这是多对多的关系
+                    newObj.oneMany = 'many-to-many';
+                    oneOnOneRelationshipTable.push(newObj);
+                });
+            });
+            d && d(currentValue);
         }
     });
+    return oneOnOneRelationshipTable;
 };
-
-// 建立联系，初始化
-_.createRelation = function (obj) {
-    var result = Object.create(funcRelation);
-    result.original = obj;
-    // 一对一和一对多的情况
-    oneByOne(obj, result);
-    return result;
-}

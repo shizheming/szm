@@ -1,27 +1,4 @@
 module.exports = {
-	// 策略模式
-	/*function suanfa() {
-		var suanfa = {
-			sale : function(benjin, baifenbi) {
-				return benjin * baifenbi;
-			},
-			jian : function(benjin, jiane) {
-				return benjin - jiane;
-			},
-			normal : function(benjin) {
-				return benjin * 2;
-			}
-		};
-		return suanfa[arguments[0]].apply(null, [].splice.call(arguments, 1));
-	}
-
-	// 夏天
-	console.log(suanfa('sale', 100, 0.12));
-	// 冬天
-	console.log(suanfa('jian', 200, 111));
-	// 春天
-	console.log(suanfa('normal', 300));*/
-
 	// 代理模式
 	// 图片预加载
 	/*var myImage = (function() {
