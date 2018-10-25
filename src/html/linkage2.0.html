@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>linkage</title>
+</head>
+<body>
+
+</body>
+</html>
+<script src="../js/libs/ecma.js"></script>
+<script src="../js/system/relationship.js"></script>
+<script src="../js/system/linkage2.0.js"></script>
+<script>
+
+
+function a1 () {
+    alert('a1');
+}
+function a2 () {
+    alert('a2');
+}
+function a3 () {
+    alert('a3');
+}
+function a4 () {
+    alert('a4');
+}
+function a5 () {
+    alert('a5');
+}
+function a6 () {
+    alert('a6');
+}
+
+
+var relationshipTable = [{
+    // 一对一联动
+    n : a1,
+    rn : a2
+}, {
+    // 一对多联动
+    n : a3,
+    rn: [a4, a5]
+}, {
+    // 多对一联动
+    n : [a5, a2, a3],
+    rn: a6
+}, {
+    // 多对多联动
+    n : [a5, a4, a3],
+    rn: [a6, a1, a4]
+}];
+
+var aaaa = _.linkage(relationshipTable);
+</script>

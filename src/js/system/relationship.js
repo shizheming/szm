@@ -7,7 +7,7 @@
 
 1. 把多变成一，对外面向用户我用了多，而对内在我能控制的情况下，我坚持一
 2. 变成一我不知道有什么优势，但我清楚要脱离用形的数据来说明说句之间的关系，而是往对象上打点的方式来说明，脱离形
-
+3. 我发现关系的根本并不局限于之前写的连带函数关系，更多的本质上是建立联系和说明，至于的函数是最终落实在这个上面而已
 */
 _.relationship = function (relationshipTable, a, b, c, d) {
     var oneOnOneRelationshipTable = [];
@@ -15,10 +15,8 @@ _.relationship = function (relationshipTable, a, b, c, d) {
     relationshipTable.forEach(function (currentValue, index, array) {
         // 一对一
         if (!_.isArray(currentValue.n) && !_.isArray(currentValue.rn)) {
-            // 打点说明这是一对一的关系
-            currentValue.oneMany = 'one-to-one';
             oneOnOneRelationshipTable.push(currentValue);
-            a && a(currentValue);
+            a && a(currentValue, index, array);
         }
         // 一对多
         if (!_.isArray(currentValue.n) && _.isArray(currentValue.rn)) {
@@ -26,11 +24,9 @@ _.relationship = function (relationshipTable, a, b, c, d) {
                 var newObj = {};
                 newObj.n = currentValue.n;
                 newObj.rn = item;
-                // 打点说明这是一对多的关系
-                newObj.oneMany = 'one-to-many';
                 oneOnOneRelationshipTable.push(newObj);
             });
-            b && b(currentValue);
+            b && b(currentValue, index, array);
         }
         // 多对一
         if (_.isArray(currentValue.n) && !_.isArray(currentValue.rn)) {
@@ -38,11 +34,9 @@ _.relationship = function (relationshipTable, a, b, c, d) {
                 var newObj = {};
                 newObj.n = item;
                 newObj.rn = currentValue.rn;
-                // 打点说明这是多对一的关系
-                newObj.oneMany = 'many-to-one';
                 oneOnOneRelationshipTable.push(newObj);
             });
-            c && c(currentValue);
+            c && c(currentValue, index, array);
         }
         // 多对多
         if (_.isArray(currentValue.n) && _.isArray(currentValue.rn)) {
@@ -51,12 +45,10 @@ _.relationship = function (relationshipTable, a, b, c, d) {
                     var newObj = {};
                     newObj.n = a;
                     newObj.rn = item;
-                    // 打点说明这是多对多的关系
-                    newObj.oneMany = 'many-to-many';
                     oneOnOneRelationshipTable.push(newObj);
                 });
             });
-            d && d(currentValue);
+            d && d(currentValue, index, array);
         }
     });
     return oneOnOneRelationshipTable;
