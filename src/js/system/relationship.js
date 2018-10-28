@@ -10,13 +10,15 @@
 3. 我发现关系的根本并不局限于之前写的连带函数关系，更多的本质上是建立联系和说明，至于的函数是最终落实在这个上面而已
 */
 _.relationship = function (relationshipTable, a, b, c, d) {
+    // 多变一最后分解的对象，要吐出去的
     var oneOnOneRelationshipTable = [];
-
+    // 回调函数返回的结果集
+    var result = [];
     relationshipTable.forEach(function (currentValue, index, array) {
         // 一对一
         if (!_.isArray(currentValue.n) && !_.isArray(currentValue.rn)) {
             oneOnOneRelationshipTable.push(currentValue);
-            a && a(currentValue, index, array);
+            a && result.push(a(currentValue, index, array));
         }
         // 一对多
         if (!_.isArray(currentValue.n) && _.isArray(currentValue.rn)) {
@@ -26,7 +28,7 @@ _.relationship = function (relationshipTable, a, b, c, d) {
                 newObj.rn = item;
                 oneOnOneRelationshipTable.push(newObj);
             });
-            b && b(currentValue, index, array);
+            b && result.push(b(currentValue, index, array));
         }
         // 多对一
         if (_.isArray(currentValue.n) && !_.isArray(currentValue.rn)) {
@@ -36,7 +38,7 @@ _.relationship = function (relationshipTable, a, b, c, d) {
                 newObj.rn = currentValue.rn;
                 oneOnOneRelationshipTable.push(newObj);
             });
-            c && c(currentValue, index, array);
+            c && result.push(c(currentValue, index, array));
         }
         // 多对多
         if (_.isArray(currentValue.n) && _.isArray(currentValue.rn)) {
@@ -48,8 +50,11 @@ _.relationship = function (relationshipTable, a, b, c, d) {
                     oneOnOneRelationshipTable.push(newObj);
                 });
             });
-            d && d(currentValue, index, array);
+            d && result.push(d(currentValue, index, array));
         }
     });
-    return oneOnOneRelationshipTable;
+    return {
+        one : oneOnOneRelationshipTable,
+        callback : result
+    };
 };

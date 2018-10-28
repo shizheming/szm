@@ -22,9 +22,11 @@ _.strategy = function (relationshipTable, interrupted) {
     // 这一步暂缓了条件头的处理，我们在运行下面的函数之前能随意的修改条件头
     return function () {
         var args = arguments;
+        // 最后要运行的函数集合
         var result = [];
         // 间断性要传出去的值
         var relation;
+        // 全部运行完要返回给用户的东西
         var returnResult = [];
         _.relationship(relationshipTable, function (currentValue, index, array) {
             if (currentValue.n.apply(null, args)) {
