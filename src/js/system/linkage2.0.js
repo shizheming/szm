@@ -30,6 +30,8 @@
     说明：
         1. 以多为出发点的联动跟策略是不一样的，用户需要手动调了所有的多才会出触发对应的联动关系
         2. 一对多的传参就是每个多接受一的结果，多之间平级什么联系
+        3. 传参的时候必须要穿数组，不然无法传递多个值
+        4. 多级联动时，每个项自己联动完，判断做一件是否需要接着联动的事情就好了
 
 */
 
@@ -39,7 +41,13 @@
 _.linkage = function (relationshipTable) {
     var relationship =  _.relationship(relationshipTable, function (currentValue, index, array) {
         var obj = {};
-        obj[currentValue.n.name] = _.decorate(currentValue.n, currentValue.rn);
+        obj[currentValue.n.name] = function () {
+            var result = _.decorate(currentValue.n, currentValue.rn)();
+            // 这里写多级联动的判断吗？？？
+            if (Object.keys(this).indexOf(currentValue.rn.name) > -1) this[currentValue.rn.name]();
+            return result;
+        };
+
         return obj;
     }, function (currentValue, index, array) {
         var obj = {};
@@ -55,7 +63,10 @@ _.linkage = function (relationshipTable) {
         obj[currentValue.n.name] = decorate;
         return obj;
     }, function (currentValue, index, array) {
+        var isActive = false;
+        var obj = {};
 
+        // return obj;
     }, function (currentValue, index, array) {
 
     });
