@@ -23,7 +23,7 @@
                     好，回到我在这个要不要条件触发联动的上面，其实和上面讲的是一回事情，一个是我抽象了，如果有条件就写在联动体里面就好了，另一个就是我得加上这么一个操作给用户方便使用，甚至以后要加其他一些什么东西，我还是觉得这东西没有什么好坏对错之分，至少现在我倾向于面向实体，多是必须的，一占时是个美好的愿望但这个多并不是无意义的任意网上加，而是我的找到那么几个有规律的概念才行，找到了有规律的那么一些个概念的话，我的体系核心的内容也就基本确定了，可以说成功了一半
             那结论是什么？
             结论就是先完成基本联动，至于条件之后再引入，因为老实说还没想好条件这个概念应该放在什么位置
-        7联动关系其实是交叉的，一张表的某一项的联动结束了，如果被联动的函数本身又是某一项的联动头，那么接着联动，知道运行完整个联动关系为止，当然，会变得无限调用停不下来，可以弄个开关是把，这里又可以插入间断性了
+        7联动关系其实是交叉的，一张表的某一项的联动结束了，如果被联动的函数本身又是某一项的联动头，那么接着联动，知道运行完整个联动关系为止，当然，会变得无限调用停不下来，可以弄个开关是把，这里又可以插入间断性了（1.0的时候做的是一层层把关联到底的全部包起来）
     思考：
         怎么算动了
         我的纠结的点在于，a动了，我告知b了，至于b动不动那就不管a的事情了，a已经把信息值传给b了，那如果只是告示信息给需要联动的一方，那叫什么联动嘛，我觉得就是另外的一个概念了，是把，所以还是要动起来，那么体现在哪里，就是函数被调用，函数是一等公民嘛！！！！
@@ -39,15 +39,11 @@
 
 
 _.linkage = function (relationshipTable) {
-    var relationship =  _.relationship(relationshipTable, function (currentValue, index, array) {
-        var obj = {};
-        obj[currentValue.n.name] = function () {
-            var result = _.decorate(currentValue.n, currentValue.rn)();
-            // 这里写多级联动的判断吗？？？
-            if (Object.keys(this).indexOf(currentValue.rn.name) > -1) this[currentValue.rn.name]();
-            return result;
-        };
+    var cloneObj = _.clone(relationshipTable);
 
+    var relationship =  _.relationship(cloneObj, function (currentValue, index, array) {
+        var obj = {};
+        obj[currentValue.n.name] = _.decorate(currentValue.n, currentValue.rn);
         return obj;
     }, function (currentValue, index, array) {
         var obj = {};
@@ -70,6 +66,7 @@ _.linkage = function (relationshipTable) {
     }, function (currentValue, index, array) {
 
     });
+    console.log(relationship.callback)
     var arr = _.removeValue(relationship.callback, [undefined]);
     return arr.reduce(function (accumulator, currentValue, index, array) {
         var obj = {};
