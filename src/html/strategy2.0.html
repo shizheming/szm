@@ -31,8 +31,9 @@ function s1 (v) {
     alert('a > b, a + b === 3' + v);
     return 's1';
 }
-function s2 () {
+function s2 (a, b, c) {
     alert('a + b === 3');
+    console.log(a, b, c);
 }
 function s3 () {
     alert('a === b');
@@ -57,14 +58,15 @@ var relationshipTable = [{
     rn: [s3, s4, s5]
 }];
 
+
 var u1 = _.strategy(relationshipTable, function (a, b, c) {
     console.log(a, b, c);
     return ['我是间断性', 'hi'];
 });
-relationshipTable[0].n.push(c3);
-relationshipTable[0].n.pop();
+// relationshipTable[0].n.push(c3);
+// relationshipTable[0].n.pop();
 var u2 = u1(2, 10);
-relationshipTable[1].rn.push(s5);
+// relationshipTable[1].rn.push(s5);
 var u3 = u2(11212444, 99999);
 var u4 = u3('heheda');
 
