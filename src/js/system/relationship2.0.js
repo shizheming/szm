@@ -43,6 +43,7 @@ _.relationship = function (relationshipTable, a, b, c, d) {
         // 一对一
         if (!_.isArray(currentValue.n) && !_.isArray(currentValue.rn)) {
             oneOnOneRelationshipTable.push(currentValue);
+
             // 外界不同形式的回调入口
             a && result.push(a(currentValue, index, array));
             // 处理这条的rn对象的连续延伸最终到哪里，把他们连起来，形成一条线
@@ -50,11 +51,12 @@ _.relationship = function (relationshipTable, a, b, c, d) {
             obj.n = currentValue.n;
             obj.continuity = [];
             // 先排除自己
-            var filterMe = array.filter(function (item, idx, arr) {
+            let filterMe = array.filter(function (item, idx, arr) {
                 return item.n !== currentValue.n;
             });
-            obj.continuity = createLine(filterMe, currentValue.rn, obj.continuity);
+            obj.continuity = createOneOnOneLine(filterMe, currentValue, obj.continuity);
             obj.continuity.length && (continuity = continuity.concat(obj));
+            // console.log(obj, 'yiduiyi')
         }
         // 一对多
         if (!_.isArray(currentValue.n) && _.isArray(currentValue.rn)) {
@@ -65,8 +67,20 @@ _.relationship = function (relationshipTable, a, b, c, d) {
                 newObj.rn = item;
                 oneOnOneRelationshipTable.push(newObj);
             });
+
             // 外界不同形式的回调入口
             b && result.push(b(currentValue, index, array));
+            // 处理这条的rn对象的连续延伸最终到哪里，把他们连起来，形成一条线
+            let obj = {};
+            obj.n = currentValue.n;
+            obj.continuity = [];
+            // 先排除自己
+            let filterMe = array.filter(function (item, idx, arr) {
+                return item.n !== currentValue.n;
+            });
+            // obj.continuity = createOneToManyLine(filterMe, currentValue.rn, obj.continuity);
+            // obj.continuity.length && (continuity = continuity.concat(obj));
+            // console.log(obj, 'yiduiduo')
         }
         // 多对一
         if (_.isArray(currentValue.n) && !_.isArray(currentValue.rn)) {
@@ -77,6 +91,7 @@ _.relationship = function (relationshipTable, a, b, c, d) {
                 newObj.rn = currentValue.rn;
                 oneOnOneRelationshipTable.push(newObj);
             });
+
             // 外界不同形式的回调入口
             c && result.push(c(currentValue, index, array));
         }
@@ -91,6 +106,7 @@ _.relationship = function (relationshipTable, a, b, c, d) {
                     oneOnOneRelationshipTable.push(newObj);
                 });
             });
+
             // 外界不同形式的回调入口
             d && result.push(d(currentValue, index, array));
         }
@@ -103,7 +119,54 @@ _.relationship = function (relationshipTable, a, b, c, d) {
 };
 
 // 一对一的连续性
-var createLine = function (filterMe, rn, obj) {
+var createOneOnOneLine = function (filterMe, currentValue, obj) {
+    filterMe.forEach(function (item, idx, arr) {
+        // 一对一的name不是数组
+        if (!_.isArray(item.n)) {
+            // 找到了连续的下一个
+            if (item.n === currentValue.rn) {
+                if (!_.isArray(item.rn)) {
+                    // 避免2个关系之间互相引用造成的无限递归的判断
+                    if (item.rn !== currentValue.n) {
+                        obj.push([currentValue.rn, item.rn]);
+                        createOneOnOneLine(filterMe, item, obj);
+                    }
+                } else {
+                    // 避免2个关系之间互相引用造成的无限递归的判断
+                    if (q !== currentValue.n) {
+                        item.rn.forEach(function (q, w, e) {
+                                obj.push([currentValue.rn, q]);
+                                createOneOnOneLine(filterMe, e, obj);
+                        });
+                    }
+                }
+            }
+        } else {
+        // 一对一的name是数组
+            if (item.n.indexOf(currentValue.rn) > -1) {
+                if (!_.isArray(item.rn)) {
+                    // 避免2个关系之间互相引用造成的无限递归的判断
+                    if (item.rn !== currentValue.n) {
+                        obj.push([currentValue.rn, item.rn]);
+                        createOneOnOneLine(filterMe, item, obj);
+                    }
+                } else {
+                    // 避免2个关系之间互相引用造成的无限递归的判断
+                    if (item.rn !== currentValue.n) {
+                        item.rn.forEach(function (q, w, e) {
+                            obj.push([currentValue.rn, q]);
+                            createOneOnOneLine(filterMe, e, obj);
+                        });
+                    }
+                }
+            }   
+        }
+    });
+    return obj;
+}
+
+// 一对多的连续性
+var createOneToManyLine = function (filterMe, rn, obj) {
     filterMe.forEach(function (item, idx, arr) {
         // 一对一的找不是数组的
         if (!_.isArray(item.n)) {
@@ -111,12 +174,12 @@ var createLine = function (filterMe, rn, obj) {
             if (item.n === rn) {
                 if (!_.isArray(item.rn)) {
                     obj.push([rn, item.rn]);
-                     return createLine(filterMe, item.rn, obj);
+                     return createOneToManyLine(filterMe, item.rn, obj);
                 } else {
                     let result = [];
                     item.rn.forEach(function (q, w, e) {
                         obj.push([rn, q]);
-                        result = result.concat(createLine(filterMe, q, obj));
+                        result = result.concat(createOneToManyLine(filterMe, q, obj));
                     });
                     return result;
                 }
@@ -126,12 +189,12 @@ var createLine = function (filterMe, rn, obj) {
             if (item.n.indexOf(rn) > -1) {
                 if (!_.isArray(item.rn)) {
                     obj.push([rn, item.rn]);
-                    return createLine(filterMe, item.rn, obj);
+                    return createOneToManyLine(filterMe, item.rn, obj);
                 } else {
                     let result = [];
                     item.rn.forEach(function (q, w, e) {
                         obj.push([rn, q]);
-                        result = result.concat(createLine(filterMe, q, obj));
+                        result = result.concat(createOneToManyLine(filterMe, q, obj));
                     });
                     return result;
                 }
