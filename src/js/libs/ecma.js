@@ -193,7 +193,7 @@ var random = function () {
 };
 
 var _ = {};
-
+_.recursive = recursive;
 /*
 ★★★★动词★★★★
 */
