@@ -36,6 +36,9 @@ function g () {
 function h () {
     alert(arguments.callee.name);
 }
+function i () {
+    alert(arguments.callee.name);
+}
 
 
 // 改进成这样的，不要用户记key的名字
@@ -57,7 +60,7 @@ var relationshipTable = [{
     rn : c
 }, {
     n : c,
-    rn : d
+    rn : [d, a, g]
 }, {
     n : h,
     rn : g
@@ -67,6 +70,9 @@ var relationshipTable = [{
 }, {
     n : [c, g],
     rn : f
+}, {
+    n : f,
+    rn : i
 }];
 
 // 我先想到的是把它们全部通过一对一的方式罗列出所有的可能，有个坑就是当2个关系相互引用的时候，我在动态的输出每一条到底的关系线是就会就如死循环，a引用b，b引用a，a在引用b，b在引用a。。。。。。这样无线循环，这个要解决下，什么时候停下来，我想了下，当他的关系接受来源和他的关系目的点是一样的时候就停止

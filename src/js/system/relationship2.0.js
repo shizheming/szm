@@ -130,13 +130,16 @@ var createOneOnOneLine = function (filterMe, currentValue, obj) {
             if (_.isFunction(v)) return v.toString();
             return v;
         })) return;
-        // 一对一的name不是数组
+        // 寻找的name对象不是数组
         if (!_.isArray(item.n)) {
-            // 找到了连续的下一个
-            if (item.n === currentValue.rn) {
+            // 当寻找到的name对象和传递进来的relationName对象是相同时
+            // 这里的relationName对象没有分是不是数组
+            if (item.n === currentValue.rn /*|| currentValue.rn.indexOf && currentValue.rn.indexOf(item.n)*/) {
                 if (!_.isArray(item.rn)) {
                     // 避免2个关系之间互相引用造成的无限递归的判断
-                    if (item.rn !== currentValue.n) {
+                    if (item.rn !== currentValue.n && !obj.some(function (a, b, c) {
+                            return a.name === item.rn.name;
+                        })) {
                         obj.push(currentValue.rn, item.rn);
                         // 添加上层关系名称
                         currentValue.rn.n = currentValue.n.name;
@@ -146,22 +149,26 @@ var createOneOnOneLine = function (filterMe, currentValue, obj) {
                 } else {
                     item.rn.forEach(function (q, w, e) {
                         // 避免2个关系之间互相引用造成的无限递归的判断
-                        if (q !== currentValue.n) {
+                        if (q !== currentValue.n && !obj.some(function (a, b, c) {
+                                return a.name === q.name;
+                            })) {
                             obj.push(currentValue.rn, q);
                             // 添加上层关系名称
                             currentValue.rn.n = currentValue.n.name;
                             q.n = currentValue.rn.name;
-                            createOneOnOneLine(filterMe, e, obj);
+                            // createOneOnOneLine(filterMe, item, obj);
                         }
                     });
                 }
             }
         } else {
-        // 一对一的name是数组
+        // 寻找的name对象是数组
             if (item.n.indexOf(currentValue.rn) > -1) {
                 if (!_.isArray(item.rn)) {
                     // 避免2个关系之间互相引用造成的无限递归的判断
-                    if (item.rn !== currentValue.n) {
+                    if (item.rn !== currentValue.n && !obj.some(function (a, b, c) {
+                            return a.name === item.rn.name;
+                        })) {
                         obj.push(currentValue.rn, item.rn);
                         // 添加上层关系名称
                         currentValue.rn.n = currentValue.n.name;
@@ -171,12 +178,14 @@ var createOneOnOneLine = function (filterMe, currentValue, obj) {
                 } else {
                     item.rn.forEach(function (q, w, e) {
                         // 避免2个关系之间互相引用造成的无限递归的判断
-                        if (q !== currentValue.n) {
+                        if (q !== currentValue.n && !obj.some(function (a, b, c) {
+                                    return a.name === q.name;
+                                })) {
                             obj.push(currentValue.rn, q);
                             // 添加上层关系名称
                             currentValue.rn.n = currentValue.n.name;
                             q.n = currentValue.rn.name;
-                            createOneOnOneLine(filterMe, e, obj);
+                            createOneOnOneLine(filterMe, item, obj);
                         }
                     });
                 }
@@ -205,15 +214,25 @@ var createOneToManyLine = function (filterMe, currentValue, obj) {;
                     let idx = currentValue.rn.indexOf(item.n);
                     if (!_.isArray(item.rn)) {
                         // 避免2个关系之间互相引用造成的无限递归的判断
-                        if (item.rn !== currentValue.n) {
-                            obj.push([currentValue.rn[idx], item.rn]);
+                        if (item.rn !== currentValue.n && !obj.some(function (a, b, c) {
+                            return a.name === item.rn.name;
+                        })) {
+                            obj.push(currentValue.rn[idx], item.rn);
+                            // 添加上层关系名称
+                            currentValue.rn.n = currentValue.n.name;
+                            item.rn.n = currentValue.rn[idx].name;
                             createOneToManyLine(filterMe, item, obj);
                         }
                     } else {
                         item.rn.forEach(function (q, w, e) {
                             // 避免2个关系之间互相引用造成的无限递归的判断
-                            if (q !== currentValue.n) {
-                                obj.push([currentValue.rn[idx], q]);
+                            if (q !== currentValue.n && !obj.some(function (a, b, c) {
+                                return a.name === q.name;
+                            })) {
+                                obj.push(currentValue.rn[idx], q);
+                                // 添加上层关系名称
+                                currentValue.rn.n = currentValue.n.name;
+                                q.n = currentValue.rn[idx].name;
                                 createOneToManyLine(filterMe, e, obj);
                             }
                         });
@@ -230,15 +249,25 @@ var createOneToManyLine = function (filterMe, currentValue, obj) {;
                         let idx = currentValue.rn.indexOf(h);
                         if (!_.isArray(item.rn)) {
                             // 避免2个关系之间互相引用造成的无限递归的判断
-                            if (item.rn !== currentValue.n) {
-                                obj.push([currentValue.rn[idx], item.rn]);
+                            if (item.rn !== currentValue.n && !obj.some(function (a, b, c) {
+                                return a.name === item.rn.name;
+                            })) {
+                                obj.push(currentValue.rn[idx], item.rn);
+                                // 添加上层关系名称
+                                currentValue.rn.n = currentValue.n.name;
+                                item.rn.n = currentValue.rn.name;
                                 createOneToManyLine(filterMe, item, obj);
                             }
                         } else {
                             // 避免2个关系之间互相引用造成的无限递归的判断
                             item.rn.forEach(function (q, w, e) {
-                                if (q !== currentValue.n) {
-                                    obj.push([currentValue.rn[idx], q]);
+                                if (q !== currentValue.n && !obj.some(function (a, b, c) {
+                                    return a.name === q.name;
+                                })) {
+                                    obj.push(currentValue.rn[idx], q);
+                                    // 添加上层关系名称
+                                    currentValue.rn.n = currentValue.n.name;
+                                    q.n = currentValue.rn.name;
                                     createOneToManyLine(filterMe, e, obj);
                                 }
                             });
