@@ -1,18 +1,10 @@
 /*
-名称：mScore.js
-版本：2.1
-时间：2017.2
-更新：分类
-1.一阶函数
-	增加range，extend，getObj
-	解决浮点数计算
-2.高阶函数
-3.设计模式
-	添加策略模式，单体模式，装饰者模式
-	修改观察者模式，使其能添加数组的形式的数据，同时改变数据的时候能够传参给监听者用
-4.DOM
-	添加业务函数，loginUrl
-	
+版本：0.4
+时间：2017.3
+更新：1.添加mvp框架
+	  2.添加initDefault初始化json对象，添加默认值
+	  3.添加env测试或是正式环境host
+	  4.升级getObj寻找对象，添加多种情况，能通过单建单值或键值来寻找对象
 */
 // ------------------------------------------------------------
 
@@ -190,13 +182,28 @@ window._ = {
 		return '#' + Math.floor(Math.random() * parseInt('0xffffff',16).toString(10)).toString(16);
 	},
 	// 通过平级key寻找当前对象
-	getObj : function(obj, newKey, val, result) {
-		for (var oldKey in obj) {
-			if (typeof obj[oldKey] === 'object') {
-				result = _.getObj(obj[oldKey], newKey, val, result);
-				if (result) return result;
-			} else if (obj[oldKey] == val) return obj;
-		}
+	getObj : function() {
+		// 现在有2种情况
+		var arr = [function(obj, one, result) {
+			// 2.只知道key或只知道val
+			for (var oldKey in obj) {
+				if (typeof obj[oldKey] === 'object') {
+					if (oldKey == one) return obj;
+					result = arguments.callee(obj[oldKey], one, result);
+					if (result) return result;
+				} else if (one in obj) return obj; else if(one == obj[oldKey]) return obj;
+			}
+		}, function(obj, newKey, val, result) {
+			// 1.知道key和val
+			for (var oldKey in obj) {
+				if (typeof obj[oldKey] === 'object') {
+					// console.log(arguments.callee);
+					result = arguments.callee(obj[oldKey], newKey, val, result);
+					if (result) return result;
+				} else if (obj[newKey] == val) return obj;
+			}
+		}];
+		return arr[arguments.length % 2].apply(null, arguments);
 	},
 	// 判断2个集合是否相等
 	equal : function(a, b, aStack, bStack) {
@@ -367,9 +374,39 @@ window._ = {
 	        return (r1 / r2) * pow(10, t2 - t1);
 	    }
 	},
-	
+	// 浅复制对象
+	clone : function(json) {
+		var result = {};
+		for (var key in json) result[key] = json[key];
+		return result;
+	},
+	// 验证
+	reg : function(type, str) {
+		var exp = {
+			tel : /^\d{11}$/,
+			IDcard : /(?:^\w{18}$)|(?:^\w{15}$)/,
+			mail : /^.+?@.+?$/,
+			init : /^(?:(?:\S.+|.+\S.+|.+\S)|\S)$/
+		};
+		return exp[type].test(str);
+	},
+	trim : function(str) {
+		return str.replace(/(^\s*)|(\s*$)/g,'');
+	},
+
+
 
 	/******************常用高阶函数******************/
+	// 初始默认值
+	initDefault : function(json) {
+		return function(key) {
+			var result = '';
+			if (json[key] == void 0) {
+				console.error(key + ' 值没有！');
+			} else result = json[key];
+			return result;
+		};
+	},
 
 	// 函数节流
 	// 下个版本更新下节流吧
@@ -565,7 +602,7 @@ window._ = {
 					clearTimeout(timer);
 				}, interval || 1000);
 			}
-			fn.apply(this, arguments);
+			fn.apply(null, arguments);
 		};
 	},
 
@@ -709,7 +746,9 @@ window._ = {
 						d[key] = od[key];
 					} else {
 					// 不是数组
-						if (d[key] === od[key]) continue; else od[key] = d[key];
+						// if (d[key] === od[key]) continue; else od[key] = d[key];
+						// 占时都动吧，不管有没有改变值
+						od[key] = d[key];
 					}
 					newarr.push(key);
 					num++;
@@ -834,14 +873,49 @@ window._ = {
 	    var reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
 	    if (arr = document.cookie.match(reg)) return unescape(arr[2]); else return null;
 	},
-
+	addLoad : function() {
+		var doc = document;
+		var div = doc.createElement('div');
+		div.id = 'huahua';
+		div.innerHTML = '<img src="//rwhstorage-pub.oss-cn-shanghai.aliyuncs.com/dist/images/huahua.gif">';
+		doc.body.appendChild(div);
+	},
+	removeLoad : function() {
+		var doc = document;
+		doc.body.removeChild(doc.getElementById('huahua'));
+	},
+	ajax : function(json) {
+		_.addLoad();
+		$.ajax({
+			type: json.type,
+			url: json.url,
+			data: json.data,
+			dataType: 'json',
+			complete: function () {
+				_.removeLoad();
+				json.complete ? json.complete() : '';
+			},
+			error: function (msg) {
+				json.error ? json.error(msg) : '';
+			},
+			success: function (msg) {
+				json.success ? json.success(msg) : '';
+			}
+		});
+	},
+	// 判断微信打开网页
+	// isWeixnOpen()
+	isWeChat : function() {
+	    var ua = navigator.userAgent.toLowerCase();
+	    if(ua.match(/MicroMessenger/i) == "micromessenger") return true; else return false;
+	},
 
 
 
 	/******************业务函数******************/
 
 
-	// 去测试还是去正式
+	// 去测试登录还是去正式登录
 	loginUrl : function(debug) {
 		debug = debug && true;
 		var test = '//103.37.149.172:8895';
@@ -856,6 +930,19 @@ window._ = {
 			}
 			return url + route + 'channel_id=' + channel_id; + '&channel_code=' + channel_code;
 		};
+	},
+	// 测试环境还是正式环境
+	env : function(str) {
+		var rwhApiDomain = {
+			'172' : 'http://103.37.149.172',
+			'201' : 'http://api.test.renwohua.com',
+			formal : 'https://api.renwohua.com'
+		};
+		str ? str = rwhApiDomain[str] : str = rwhApiDomain.formal;
+		return function(route) {
+			return str + route + '?channel_code=RENWOHUA_WECHAT_LOAN';
+			// return str + route + '?channel_code=RENWOHUA_CASH_LOAN';
+		};
 	}
 };
 
@@ -866,10 +953,13 @@ window._ = {
 	};
 });
 
+// 现在有个问踢就是怎么融合策略模式和装饰者模式
+// 具体点就是jsbridge是我们app里面自己用的，可是在wechat里面不需要，怎么处理特别是后台返回跳转页面后，我要去跳，怎么跳，判断wechat还是app然后怎么融合设计模式
+
+// 弹窗以后需要添加取消按钮（做商场后滩编辑的时候）
+
 
 // 算法-先排序整理
-
-// 如何判断一个对象是不是另一个对象的子集
 
 // 表单策略模式
 
@@ -903,6 +993,369 @@ Model（模型）是应用程序中用于处理应用程序数据逻辑的部分
 MVC 分层有助于管理复杂的应用程序，因为您可以在一个时间内专门关注一个方面。例如，您可以在不依赖业务逻辑的情况下专注于视图设计。同时也让应用程序的测试更加容易。
 
 
+Model（模型）是应用程序中用于处理应用程序数据逻辑的部分。
+　　通常模型对象负责在数据库中存取数据。
+View（视图）是应用程序中处理数据显示的部分。
+　　通常视图是依据模型数据创建的。
+Controller（控制器）是应用程序中处理用户交互的部分。
+　　通常控制器负责从视图读取数据，控制用户输入，并向模型发送数据。
 
+控制器
+控制器接受用户的输入并调用模型和视图去完成用户的需求，所以当单击Web页面中的超链接和发送HTML表单时，控制器本身不输出任何东西和做任何处理。它只是接收请求并决定调用哪个模型构件去处理请求，然后再确定用哪个视图来显示返回的数据。
 
 */
+
+
+/*
+我要写个公共调试的方法，不然分的很开后，上线忘了去掉很麻烦
+需要个有些时候需要手机加密，然后我用游览器调试的时候就过不去，我得写个兼容的测试方法
+我要写个各种测试的调试代码
+*/
+
+
+
+
+
+/************************mvp*************************/
+// 怎么用
+// 协议
+// controller通过data-bind来从dom获取，model通过ajax后的josn映射来获取
+// ajax通过jsonkey在model里面找obj，view通过tagname来找赋值对应的方法
+
+
+// model只提供给view和controller增删改查的功能
+// 数据模型
+window.model = (function() {
+	// 内部方法
+	var privateMethod = {
+		// 1.观察者
+		observer : (function() {
+			var myData;
+			return function(json) {
+				for (var key in json) {
+					var arrKey = [];
+					var arrVal = [];
+					for (var key2 in json[key]) {
+						arrKey.push(key2);
+						arrVal.push(json[key][key2]);
+					}
+					// 创建观察者
+					myData = _.myData(arrKey);
+					(function(name) {
+						var getObj = _.getObj(model.records, key);
+						arrKey.forEach(function(a, b, c) {
+							// 现在这里是一对一观察，如何变成一对多观察，减少观察者的同时提高性能，一个数据模型对象只有一个观察者，这个观察者观察这个数据模型对象里面所有的值的变化
+							myData.listen(a, function(data) {
+								// 通过a来判断监听的内容
+								var obj = {
+									reg : function() {
+										// 这个值来判定他是空还是验证错了
+										var num;
+										if (!getObj[key].value) num = 0; else num = 1;
+										var pass = privateMethod.verification(getObj[key].value, getObj[key].reg);
+										if (pass) num = 2;
+										// 设置验证状态
+										var obj = {};
+										obj[key] = {
+											// regActive : pass
+											regActive : num
+										};
+										model.set(obj);
+										return num;
+									}
+								};
+								// 给个默认运行函数
+								obj[a] = isFunction(obj[a]) ? obj[a] : function() {}; 
+								obj[a]();
+								// 告知controller，model有变动
+								controller.modelHooks({
+									data : data,
+									tagName : getObj[key].tagName,
+									key : key,
+									isWant : a,
+									pass : a == 'reg' ? obj.reg() : undefined,
+									placeholder : getObj[key].placeholder
+								});
+							});
+							var obj = {};
+							obj[a] = arrVal[b];
+							myData.set(obj);
+						});
+					})(key);
+				}
+			};
+		})(),
+		// 2.单验证
+		verification : function(str, reg) {
+			return new RegExp(reg).test(str);
+		},
+		// 3.全验证
+		allVerification : function() {
+			for (var key in model.records) {
+				for (var key2 in model.records[key]) {
+					if (key2 == 'regActive') {
+						// 通过0和1来告诉controller我是空还是验证失败
+						// 0和1是给input框用的，因为input有2种状态，空的和错的，还同意只有一种，空的
+						if (model.records[key][key2] === 0 || model.records[key][key2] === 1) {
+							return key + model.records[key][key2];
+						// 这里是给同意的
+						} else if (model.records[key][key2] === false) return key;
+					}
+				}
+			}
+			return true;
+		}
+	};
+	
+	
+
+	var newObj = {
+		// 所有的数据
+		records : '',
+		// 删除某条数据
+		del : function(key) {
+			delete model.records[key];
+		},
+		// 删除所有的数据
+		delAll : function() {
+			model.records = {};
+		},
+		// 找到某条数据
+		get : function(key) {
+			// 这里要更新下如果是去找某个下面的下面的对象,现在先不管
+			var arr = [];
+			arr.push(model.records);
+			arr.push(key);
+			return _.getObj.apply(null, arr)[key];
+		},
+		// 设置数据
+		set : function(json) {
+			/*
+				{
+					phone : {
+						ggg : 555
+					},
+					password : {
+						jjj : 999
+					}
+				}
+			*/
+			for (var key in json) {
+				var result = _.getObj(model.records, key);
+				if (result) {
+					// 初始化有的值对象里面添加或是修改值
+					result = result[key];
+					for (var key2 in json[key]) result[key2] = json[key][key2];
+				} else {
+					// 添加初始化没有的值对象
+					model.records[key] = json[key];
+				}
+			}
+			// 绑定观察者
+			privateMethod.observer(json);
+		},
+		// 初始化数据层
+		init : function(json) {
+			model.records = json;
+		},
+		// 全验证
+		allVerification : function() {
+			// 添加选择
+			return privateMethod.allVerification();
+		}
+	};
+	return newObj;
+})();
+
+// 视图
+window.view = (function(doc) {
+	// 所有的方法
+	var fnAll = {};
+
+	// 1.赋值方法
+	var fnName = ['innerHTML', 'value', 'src'];
+	var fnBody = function(key) {
+		return function(name, val) {
+			var dom = doc.querySelector('[data-bind=' + name + ']');
+			dom[key] = val;
+		};
+	};
+	fnName.forEach(function(a, b, c) {
+		fnAll['set' + a] = fnBody(a);
+	});
+
+	// 2.提示信息的方法
+	fnAll.title = _.proxy(_.title, 2000);
+
+	// 3.用户选择选项
+	fnAll.choose = (function() {
+		var choice = doc.querySelector('[data-choose]');
+		if (!choice) return;
+		var classN = choice.className;
+		return function(active) {
+			if (active) {
+			    choice.classList.remove(classN);
+			    active = false;
+			} else {
+			    choice.classList.add(classN);
+			    active = true;
+			}
+		};
+	})();
+
+	// 倒计时
+	fnAll.countDown = (function() {
+		var down = doc.querySelector('[data-code]');
+		if (!down) return;
+		return function(text, time) {
+			down.style.cssText = 'border:1px;background-color:#ccc;color:#333;';
+			_.second(time, function(time) {
+			    down.innerHTML = time;
+			}, function() {
+			    down.innerHTML = text;
+			    down.style.cssText = '';
+			});
+		};
+	})();
+
+
+	return fnAll;
+})(document);
+
+// 控制器
+window.controller = (function(doc) {
+	// controller要初始化生成id
+	var obj = {};
+	var dom = doc.querySelectorAll('[data-bind]');
+	var sub = doc.querySelector('[data-submit]');
+	var choice = doc.querySelector('[data-choose]');
+	var vertifyCode = doc.querySelector('[data-code]');
+	if (!dom) return;
+	[].forEach.call(dom, function(a, b, c) {
+		
+
+		// 添加对象属性
+		obj[a.dataset.bind] = {};
+		// 添加标签属性
+		obj[a.dataset.bind].tagName = a.tagName.toLowerCase();
+		obj[a.dataset.bind].reg = a.dataset.reg;
+		obj[a.dataset.bind].placeholder = a.placeholder;
+		obj[a.dataset.bind].regActive = a.regActive ? a.regActive : 0;
+		// 初始化绑定事件
+		if (obj[a.dataset.bind].tagName == 'input') {
+			// 实时监控
+			a.addEventListener('input', function() {
+				var obj2 = {};
+				obj2[a.dataset.bind] = {
+					value : a.value
+				};
+				model.set(obj2);
+			});
+			// 失去焦点
+			a.addEventListener('blur', function() {
+				var obj2 = {};
+				obj2[a.dataset.bind] = {
+					reg : a.dataset.reg
+				};
+				model.set(obj2);
+			});
+		}
+	});
+	// 验证提交
+	sub ? sub.addEventListener('click', function() {
+		var result = model.allVerification();
+		if (result !== true) {
+			var key = /[^\d]+/.exec(result);
+			var num = /\d/.exec(result);
+			var arr = [function() {
+				view.title('请填写' + _.getObj(model.records, key)[key].placeholder);
+			}, function() {
+				view.title(_.getObj(model.records, key)[key].placeholder);
+			}];
+			// 因为这里有可能是同意
+			num === null ? num = 1 : num;
+			arr[num]();
+			return;
+		}
+		controller.ajax();
+	}) : '';
+	// 用户选择项
+	if (choice) {
+		obj[choice.dataset.choose] = {};
+		obj[choice.dataset.choose].placeholder = choice.dataset.placeholder;
+		obj[choice.dataset.choose].regActive = choice.dataset.active;
+		choice.addEventListener('touchstart', function() {
+			var choiceActive = model.get(choice.dataset.choose).regActive;
+			var newO = {};
+			newO[choice.dataset.choose] = {};
+			newO[choice.dataset.choose].regActive = choiceActive ? false : true;
+			model.set(newO);
+			view.choose(choiceActive);
+		});
+	}
+	// 验证码
+	if (vertifyCode) {
+		vertifyCode.addEventListener('touchstart', function() {
+			if (!isNaN(vertifyCode.innerHTML)) return;
+			controller.vertifyCode();
+		});
+	}
+
+	// 初始model
+	model.init(obj);
+	
+	return {
+		modelHooks : function(json) {
+			// 不同的key触发不同的view或是用户自己绑定的时间
+			// value内定
+			var obj = {
+				value : function() {
+					var tag = {
+						value : ['input'],
+						src : ['img'],
+						innerHTML : ['div']
+					};
+					// view显示值
+					for (var key in tag) {
+						if (json.tagName == tag[key]) view['set' + key](json.key, json.data);
+					}
+				},
+				reg : function() {
+					var arr = [function() {
+						// 空的不提示
+						// view.title('请填写' + json.placeholder);
+					}, function() {
+						view.title(json.placeholder);
+					}, function() {}];
+					arr[json.pass]();
+				}
+			};
+			var want = isFunction(obj[json.isWant]) ? obj[json.isWant] : function() {};
+			want();
+		},
+		viewHooks : function() {},
+		ajax : function() {
+			console.log('success!!!');
+		},
+		vertifyCode : function() {
+			view.countDown('验证码', 60);
+		},
+		init : function() {
+			// 初始页面也要初始数据，万一人家输入数据跳出页面然后又回退回来，游览器会记录数据，我不会
+			if (!dom) return;
+			// 看看是不是第一次，看看有没有一个值
+			if ([].every.call(dom, function(that) {
+				return that.value == '';
+			})) return;
+			[].forEach.call(dom, function(a, b, c) {
+				// 获取并触发验证
+				var cObj2 = {};
+				cObj2[a.dataset.bind] = {
+					value : a.value,
+					reg : a.dataset.reg
+				};
+				model.set(cObj2);
+			});
+		}
+	};
+})(document);
