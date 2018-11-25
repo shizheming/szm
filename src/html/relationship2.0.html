@@ -12,6 +12,109 @@
 <script src="../js/system/relationship2.0.js"></script>
 <script>
 
+
+var ccc = [{
+    name : 'a1',
+    child : [{
+        name : 'b1'
+    }, {
+        name : 'b2'
+    }, {
+        name : 'b3',
+    }, {
+        name : 'b4',
+        child : [{
+            name : 'c1'
+        }, {
+            name : 'c2'
+        }, {
+            name : 'c3',
+        }, {
+            name : 'c4',
+            child : [{
+                name : 'd1'
+            }, {
+                name : 'd2'
+            }, {
+                name : 'd3'
+            }, {
+                name : 'd4'
+            }]
+        }]
+    }]
+}, {
+    name : 'e1',
+    child : [{
+        name : 'f1'
+    }, {
+        name : 'f2'
+    }, {
+        name : 'f3',
+    }, {
+        name : 'f4',
+        child : [{
+            name : 'g1'
+        }, {
+            name : 'g2'
+        }, {
+            name : 'g3',
+        }, {
+            name : 'g4',
+            child : [{
+                name : 'h1'
+            }, {
+                name : 'h2'
+            }, {
+                name : 'h3'
+            }, {
+                name : 'h4'
+            }]
+        }]
+    }]
+}, {
+    name : 'i1'
+}];
+
+
+var findPapa = [];
+var low = [];
+var x;
+var f;
+_.recursive(ccc, function (currentValue, key, collection, level) {
+    // 见底没
+    if (collection.child) low.push(collection.name);
+}, function (currentValue, key, collection, level) {
+    if (_.isArray(currentValue)) {
+        currentValue.forEach(function (a, b, c) {
+            if (a.name === 'd3') {
+                x = f;
+            }
+        });
+    } else {
+        findPapa.push(currentValue.name);
+        f = currentValue.name;
+    }
+
+});
+
+var idx = findPapa.indexOf('d3');
+var newFindPapa = findPapa.slice(0, idx + 1);
+var n = low.indexOf(x);
+var nexLow = low.slice(0, n + 1);
+console.log(newFindPapa);
+console.log(nexLow);
+nexLow.push('d3');
+console.log(nexLow.join(' > '));
+
+
+
+
+
+
+
+
+
+
 function a () {
     alert(arguments.callee.name);
 }
