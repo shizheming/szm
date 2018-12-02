@@ -6,6 +6,7 @@
         <div>
             <router-link to="/consumptionRecord">consumptionRecord</router-link>
         </div>
+        <button @click="aaa">aaa</button>
         <div>
             <router-view></router-view>
         </div>
@@ -18,6 +19,16 @@ export default {
     name: 'app',
     components: {
 
+    },
+    methods: {
+        aaa () {
+            this.$router.push({
+                path: '/tool',
+                query: {
+                    sss : 12
+                }
+            })
+        }
     }
 }
 

@@ -11,78 +11,33 @@ import echarts from 'echarts';
 
 
 export default {
+    data () {
+        return {
+            option: {
+                title: {
+                    text: '2018年消费记录',
+                    subtext: '2017年人民币兑美元平均汇率 1:6.7518'
+                },
+                calculable: true,
+                xAxis: [{
+                    type: 'category',
+                    data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+                }],
+                yAxis: [{
+                    type: 'value'
+                }],
+                series: [{
+                    type: 'bar',
+                    data: [1304, 3118, 7890, 7816, 4239, 4540, 8853, 15993, 7935, 20568, 27906, 0],
+                }]
+            }
+        };
+    },
     mounted () {
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('consumptionRecord'));
         // 绘制图表
-        myChart.setOption({
-            title : {
-                text: '某地区蒸发量和降水量',
-                subtext: '纯属虚构'
-            },
-            tooltip : {
-                trigger: 'axis'
-            },
-            legend: {
-                data:['蒸发量','降水量']
-            },
-            toolbox: {
-                show : true,
-                feature : {
-                    mark : {show: true},
-                    dataView : {show: true, readOnly: false},
-                    magicType : {show: true, type: ['line', 'bar']},
-                    restore : {show: true},
-                    saveAsImage : {show: true}
-                }
-            },
-            calculable : true,
-            xAxis : [
-                {
-                    type : 'category',
-                    data : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
-                }
-            ],
-            yAxis : [
-                {
-                    type : 'value'
-                }
-            ],
-            series : [
-                {
-                    name:'蒸发量',
-                    type:'bar',
-                    data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3],
-                    markPoint : {
-                        data : [
-                            {type : 'max', name: '最大值'},
-                            {type : 'min', name: '最小值'}
-                        ]
-                    },
-                    markLine : {
-                        data : [
-                            {type : 'average', name: '平均值'}
-                        ]
-                    }
-                },
-                {
-                    name:'降水量',
-                    type:'bar',
-                    data:[2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3],
-                    markPoint : {
-                        data : [
-                            {name : '年最高', value : 182.2, xAxis: 7, yAxis: 183, symbolSize:18},
-                            {name : '年最低', value : 2.3, xAxis: 11, yAxis: 3}
-                        ]
-                    },
-                    markLine : {
-                        data : [
-                            {type : 'average', name : '平均值'}
-                        ]
-                    }
-                }
-            ]
-        });
+        myChart.setOption(this.option);
     },
     components: {
 
@@ -93,6 +48,6 @@ export default {
 <style>
     #consumptionRecord {
         width: 100%;
-        height: 400px;
+        height: 600px;
     }
 </style>

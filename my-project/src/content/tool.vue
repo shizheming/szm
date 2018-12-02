@@ -8,6 +8,12 @@
 <script>
 	export default {
 		name: 'tool',
+		data () {
+			return {};
+		},
+		mounted () {
+			console.log(this.$route);
+		}
 	}
 </script>
 <style>
