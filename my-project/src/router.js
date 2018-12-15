@@ -15,7 +15,7 @@ const routes = [{
     component: consumptionRecord
 }]
 
-var router =  new VueRouter({
+var router = new VueRouter({
     routes
 })
 export default router;
