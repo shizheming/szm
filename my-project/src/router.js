@@ -8,10 +8,18 @@ import consumptionRecord from "./life/consumptionRecord.vue";
 Vue.use(VueRouter);
 
 const routes = [{
-    path: "/tool",
+    path: '/tool',
+    title: '工具库',
+    icon: 'ios-build',
     component: tool
 }, {
-    path: "/consumptionRecord",
+    path: '/consumptionRecord',
+    title: '消费记录',
+    icon: 'ios-book',
+    component: consumptionRecord
+}, {
+    path: '/xxx',
+    title: '哲学',
     component: consumptionRecord
 }]
 

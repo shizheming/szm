@@ -12,7 +12,6 @@ export default {
         return {};
     },
     mounted() {
-        console.log(this.$route, 89);
     }
 }
 </script>
