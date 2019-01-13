@@ -6,7 +6,6 @@
 <script>
 import echarts from 'echarts';
 import 'echarts/theme/macarons';
-// import axios from 'axios';
 import data from '../../data/consumptionChart';
 export default {
     data() {
