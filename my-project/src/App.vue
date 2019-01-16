@@ -1,16 +1,16 @@
 <template>
-<div id="app">
-    <header>
-        <Menu mode="horizontal">
-            <MenuItem v-for="(currentValue, index) in menu" :name="index" :to="currentValue.path" :key="index">
-                <Icon :type="currentValue.icon" />
-                {{currentValue.title}}
-            </MenuItem>
-        </Menu>
-    </header>
-    <keep-alive>
-        <router-view></router-view>
-    </keep-alive>
+<div id="app" class="app">
+    <Menu>
+        <MenuItem v-for="(currentValue, index) in menu" :name="index" :to="currentValue.path" :key="index">
+            <Icon :type="currentValue.icon" />
+            {{currentValue.title}}
+        </MenuItem>
+    </Menu>
+    <div class="content">
+        <keep-alive>
+            <router-view></router-view>
+        </keep-alive>
+    </div>
 </div>
 </template>
 
@@ -32,6 +32,6 @@ export default {
 
 </script>
 
-<style>
+<style lang="scss">
 
 </style>

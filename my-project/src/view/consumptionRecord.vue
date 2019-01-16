@@ -6,7 +6,7 @@
 <script>
 import echarts from 'echarts';
 import 'echarts/theme/macarons';
-import data from '../../data/consumptionChart';
+import data from '../data/consumptionChart';
 export default {
     data() {
         return {

@@ -1,7 +1,10 @@
 export default {
     title: {
-        text: '2018年消费记录',
-        subtext: '2017年人民币兑美元平均汇率 1:6.7518'
+        text: '2018年消费记录（2017年人民币兑美元平均汇率 1:6.7518）',
+        subtext: '2018年消费总额：11W',
+        textStyle: {
+            fontSize: 12
+        }
     },
     legend: {
         data: ['吃饭', '用品']
@@ -13,10 +16,14 @@ export default {
         },
         formatter: function(params, ticket, callback) {
             var result = '';
+            var monthlyConsumption = 0;
             params.forEach((a) => {
-                if (a.value) result += a.seriesName + ':' + a.value + '<br>';
+                if (a.value) {
+                    result += a.seriesName + ':' + a.value + '<br>';
+                    monthlyConsumption += a.value;
+                }
             });
-            return result;
+            return result + '总额：' + monthlyConsumption;
         }
     },
     calculable: true,
@@ -42,6 +49,11 @@ export default {
         type: 'bar',
         stack: '总量',
         data: [, , 1353],
+    }, {
+        name: '红包',
+        type: 'bar',
+        stack: '总量',
+        data: [, 8500],
     }, {
         name: '医院',
         type: 'bar',
