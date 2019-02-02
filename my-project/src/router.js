@@ -16,12 +16,19 @@ const routes = [{
     title: '消费记录',
     icon: 'ios-book',
     component: () => import('./view/consumptionRecord.vue'),
-}/*, {
-    path: '/xxx',
-    title: '哲学',
-    icon: 'ios-bulb',
-    component: consumptionRecord
-}*/]
+}, {
+    path: '/reason',
+    name: 'reason',
+    title: '点',
+    icon: 'md-basket',
+    component: () => import('./view/reason.vue'),
+}, {
+    path: '/perceptual',
+    name: 'perceptual',
+    title: '点',
+    icon: 'md-basket',
+    component: () => import('./view/perceptual.vue'),
+}]
 
 var router = new VueRouter({
     routes

@@ -7,7 +7,8 @@ export default {
         }
     },
     legend: {
-        data: ['吃饭', '用品']
+        data: ['吃饭', '用品'],
+        icon: "circle",
     },
     tooltip: {
         trigger: 'axis',
@@ -25,6 +26,12 @@ export default {
             });
             return result + '总额：' + monthlyConsumption;
         }
+    },
+    grid: {
+        x: 50,
+        y: 60,
+        x2: 0, 
+        y2: 20,
     },
     calculable: true,
     xAxis: [{
