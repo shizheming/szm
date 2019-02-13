@@ -3,6 +3,10 @@ export default [{
     title: '工具库',
     icon: 'ios-build',
 }, {
+    name: 'designPattern',
+    title: '设计模式',
+    icon: 'md-bonfire',
+}, {
     name: 'consumptionRecord',
     title: '消费记录',
     icon: 'ios-book',

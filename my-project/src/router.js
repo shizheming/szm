@@ -8,25 +8,26 @@ const routes = [{
     path: '/tool',
     name: 'tool',
     title: '工具库',
-    icon: 'ios-build',
     component: () => import('./view/tool.vue'), 
+}, {
+    path: '/designPattern',
+    name: 'designPattern',
+    title: '设计模式',
+    component: () => import('./view/designPattern.vue'),
 }, {
     path: '/consumptionRecord',
     name: 'consumptionRecord',
     title: '消费记录',
-    icon: 'ios-book',
     component: () => import('./view/consumptionRecord.vue'),
 }, {
     path: '/reason',
     name: 'reason',
     title: '点',
-    icon: 'md-basket',
     component: () => import('./view/reason.vue'),
 }, {
     path: '/perceptual',
     name: 'perceptual',
     title: '点',
-    icon: 'md-basket',
     component: () => import('./view/perceptual.vue'),
 }]
 

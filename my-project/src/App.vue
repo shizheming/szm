@@ -1,13 +1,13 @@
 <template>
 <div id="app" class="app">
-    <Menu style="position: fixed;">
+    <Menu style="position: fixed;" ref="menu" :active-name="active" :open-names="[2]">
         <template v-for="(currentValue, index) in menu">
             <Submenu :name="index" :key="index" v-if="currentValue.children">
                 <template slot="title">
                     <Icon :type="currentValue.icon" />
                     {{currentValue.title}}
                 </template>
-                <MenuItem v-for="(item, idx) in currentValue.children" :to="{name: item.name}" :name="idx + item.name">
+                <MenuItem v-for="(item, idx) in currentValue.children" :to="{name: item.name}" :name="Number([index, idx].join(''))">
                     {{item.title}}
                 </MenuItem>
             </Submenu>
@@ -34,7 +34,17 @@ export default {
         return {
             // menu: this.$router.options.routes
             menu,
+            active: 1,
         };
+    },
+    watch: {
+        '$route': function() {
+            this.$nextTick().then(() => {
+                console.log(123)
+                this.$refs.menu.updateOpened();
+                this.$refs.menu.updateActiveName();
+            });
+        }
     },
     components: {
     },
@@ -46,8 +56,8 @@ export default {
 </script>
 
 <style lang="scss">
-    .content{
-        margin-left: 240px;
-        padding: 20px;
-    }
+.content{
+    margin-left: 240px;
+    padding: 20px;
+}
 </style>
