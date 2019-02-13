@@ -8,27 +8,34 @@ const routes = [{
     path: '/tool',
     name: 'tool',
     title: '工具库',
-    component: () => import('./view/tool.vue'), 
+    component: () => import('../view/tool/tool.vue'), 
+    children: [
+        {
+            path: 'forEach',
+            name: 'forEach',
+            component: () => import('../view/tool/forEach.vue')
+        }
+    ]
 }, {
     path: '/designPattern',
     name: 'designPattern',
     title: '设计模式',
-    component: () => import('./view/designPattern.vue'),
+    component: () => import('../view/designPattern.vue'),
 }, {
     path: '/consumptionRecord',
     name: 'consumptionRecord',
     title: '消费记录',
-    component: () => import('./view/consumptionRecord.vue'),
+    component: () => import('../view/consumptionRecord.vue'),
 }, {
     path: '/reason',
     name: 'reason',
     title: '点',
-    component: () => import('./view/reason.vue'),
+    component: () => import('../view/reason.vue'),
 }, {
     path: '/perceptual',
     name: 'perceptual',
     title: '点',
-    component: () => import('./view/perceptual.vue'),
+    component: () => import('../view/perceptual.vue'),
 }]
 
 var router = new VueRouter({

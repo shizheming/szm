@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import menu from './menu';
+import menu from './menu/index';
 // 起名字：并不是这个叫什么名字，而是这个是什么，这个量汽车，这两汽车的名字叫特斯拉ok
 export default {
     name: 'app',
@@ -34,13 +34,12 @@ export default {
         return {
             // menu: this.$router.options.routes
             menu,
-            active: 1,
+            active: '0',
         };
     },
     watch: {
         '$route': function() {
             this.$nextTick().then(() => {
-                console.log(123)
                 this.$refs.menu.updateOpened();
                 this.$refs.menu.updateActiveName();
             });
@@ -56,8 +55,10 @@ export default {
 </script>
 
 <style lang="scss">
-.content{
-    margin-left: 240px;
-    padding: 20px;
+.app{
+    .content{
+        margin-left: 240px;
+        padding: 20px;
+    }
 }
 </style>
