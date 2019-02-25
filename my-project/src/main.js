@@ -4,6 +4,7 @@ import router from './router/router'
 import store from './store'
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
+import './style/index.css';
 
 Vue.use(iView, {
     transfer: true,

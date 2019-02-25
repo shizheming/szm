@@ -7,7 +7,7 @@
                     <Icon :type="currentValue.icon" />
                     {{currentValue.title}}
                 </template>
-                <MenuItem v-for="(item, idx) in currentValue.children" :to="{name: item.name}" :name="Number([index, idx].join(''))">
+                <MenuItem v-for="(item, idx) in currentValue.children" :to="{name: item.name}" :name="Number([index, idx].join(''))" :key="idx">
                     {{item.title}}
                 </MenuItem>
             </Submenu>
@@ -58,7 +58,6 @@ export default {
 .app{
     .content{
         margin-left: 240px;
-        padding: 20px;
     }
 }
 </style>

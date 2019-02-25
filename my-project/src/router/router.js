@@ -1,5 +1,6 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import tool from './tool';
 
 // 要告诉 vue 使用 vueRouter
 Vue.use(VueRouter);
@@ -9,13 +10,7 @@ const routes = [{
     name: 'tool',
     title: '工具库',
     component: () => import('../view/tool/tool.vue'), 
-    children: [
-        {
-            path: 'forEach',
-            name: 'forEach',
-            component: () => import('../view/tool/forEach.vue')
-        }
-    ]
+    children: tool,
 }, {
     path: '/designPattern',
     name: 'designPattern',
