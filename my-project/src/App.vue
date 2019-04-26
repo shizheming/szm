@@ -1,5 +1,23 @@
 <template>
 <div id="app" class="app">
+    <a-layout>
+        <a-layout-sider style="background-color: #fff;">
+            <a-menu mode="inline">
+                <template v-for="(current, index) in menu">
+                    <a-sub-menu :key="index" v-if="current.children">
+                        <span slot="title"><a-icon :type="current.icon" />{{current.title}}</span>
+                        <a-menu-item :key="`${index}_${idx}`" v-for="(item, idx) in current.children">{{item.title}}</a-menu-item>
+                    </a-sub-menu>
+                    <a-menu-item :key="index" v-else><a-icon :type="current.icon" />{{current.title}}</a-menu-item>
+                </template>
+            </a-menu>
+        </a-layout-sider>
+        <a-layout-content style="background-color: #fff;">
+            <keep-alive>
+                <router-view></router-view>
+            </keep-alive>
+        </a-layout-content>
+    </a-layout>
 </div>
 </template>
 

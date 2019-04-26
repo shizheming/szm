@@ -1,17 +1,5 @@
 <template>
     <div class="tool">
-		<Menu style="position: fixed;" ref="toolMenu" :active-name="active">
-	        <Submenu :name="index" :key="index" v-for="(currentValue, index) in toolMenu">
-	            <template slot="title">{{currentValue.name}}</template>
-	            <MenuItem v-for="(item, idx) in currentValue.children" :to="{name: item}" :name="Number([index, idx].join(''))" :key="idx">
-                </MenuItem>
-            </Submenu>
-        </Menu>
-        <div class="content">
-            <keep-alive>
-                <router-view></router-view>
-            </keep-alive>
-        </div>
     </div>
 </template>
 <script>
