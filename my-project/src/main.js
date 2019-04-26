@@ -2,14 +2,11 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router/router'
 import store from './store'
-import iView from 'iview';
-import 'iview/dist/styles/iview.css';
+import antd from 'ant-design-vue';
+import 'ant-design-vue/dist/antd.css';
 import './style/index.css';
 
-Vue.use(iView, {
-    transfer: true,
-    size: 'large',
-});
+Vue.use(antd);
 
 Vue.config.productionTip = false;
 

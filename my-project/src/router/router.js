@@ -17,11 +17,6 @@ const routes = [{
     title: '设计模式',
     component: () => import('../view/designPattern.vue'),
 }, {
-    path: '/consumptionRecord',
-    name: 'consumptionRecord',
-    title: '消费记录',
-    component: () => import('../view/consumptionRecord.vue'),
-}, {
     path: '/reason',
     name: 'reason',
     title: '点',

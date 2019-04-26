@@ -1,27 +1,23 @@
 <template>
 <div id="app" class="app">
-    <Menu style="position: fixed;" ref="menu" :active-name="active" :open-names="[2]">
-        <template v-for="(currentValue, index) in menu">
-            <Submenu :name="index" :key="index" v-if="currentValue.children">
-                <template slot="title">
-                    <Icon :type="currentValue.icon" />
-                    {{currentValue.title}}
+    <a-layout>
+        <a-layout-sider style="background-color: #fff;">
+            <a-menu mode="inline">
+                <template v-for="(current, index) in menu">
+                    <a-sub-menu :key="index" v-if="current.children">
+                        <span slot="title"><a-icon :type="current.icon" />{{current.title}}</span>
+                        <a-menu-item :key="`${index}_${idx}`" v-for="(item, idx) in current.children">{{item.title}}</a-menu-item>
+                    </a-sub-menu>
+                    <a-menu-item :key="index" v-else><a-icon :type="current.icon" />{{current.title}}</a-menu-item>
                 </template>
-                <MenuItem v-for="(item, idx) in currentValue.children" :to="{name: item.name}" :name="Number([index, idx].join(''))" :key="idx">
-                    {{item.title}}
-                </MenuItem>
-            </Submenu>
-            <MenuItem :to="{name: currentValue.name}" :name="index" v-else>
-                <Icon :type="currentValue.icon" />
-                {{currentValue.title}}
-            </MenuItem>
-        </template>
-    </Menu>
-    <div class="content">
-        <keep-alive>
-            <router-view></router-view>
-        </keep-alive>
-    </div>
+            </a-menu>
+        </a-layout-sider>
+        <a-layout-content style="background-color: #fff;">
+            <keep-alive>
+                <router-view></router-view>
+            </keep-alive>
+        </a-layout-content>
+    </a-layout>
 </div>
 </template>
 
@@ -34,15 +30,11 @@ export default {
         return {
             // menu: this.$router.options.routes
             menu,
-            active: '0',
         };
     },
     watch: {
         '$route': function() {
-            this.$nextTick().then(() => {
-                this.$refs.menu.updateOpened();
-                this.$refs.menu.updateActiveName();
-            });
+
         }
     },
     components: {

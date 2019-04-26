@@ -1,25 +1,20 @@
+import tool from './tool';
 export default [{
         name: 'tool',
         title: '工具库',
-        icon: 'ios-build',
+        icon: 'github',
+        children: tool,
     }, {
         name: 'designPattern',
         title: '设计模式',
-        icon: 'md-bonfire',
+        icon: 'twitter',
     }, {
-        name: 'consumptionRecord',
-        title: '消费记录',
-        icon: 'ios-book',
+        title: '理性',
+        name: 'reason',
+        icon: 'qq',
     }, {
-        title: '点',
-        icon: 'md-basket',
-        children: [{
-                name: 'reason',
-                title: '理性',
-            }, {
-                name: 'perceptual',
-                title: '感性',
-            }
-        ],
+        title: '感性',
+        name: 'perceptual',
+        icon: 'dingding'
     }
 ];
