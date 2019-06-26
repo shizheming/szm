@@ -1,26 +1,25 @@
 <template>
-    <div class="tool">
+    <div class="verb">
+        rt34t4t
     </div>
 </template>
 <script>
-import toolMenu from '../../menu/tool';
 import prismjs from 'prismjs';
 import line from 'prismjs/plugins/line-numbers/prism-line-numbers.min';
 import 'prismjs/themes/prism.css';
 import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
 
 export default {
-    name: 'tool',
+    name: 'verb',
     data() {
         return {
-            toolMenu,
-            active: '0'
+
         };
     },
     mounted() {}
 }
 </script>
-<style lang="scss">
+<style lang="less">
 pre[class*="language-"] {
     margin: 0;
 }
@@ -30,7 +29,7 @@ pre[class*="language-"].line-numbers {
 
 }
 
-.tool {
+.verb {
     .describe {
         margin: 1em;
         font-size: 14px;

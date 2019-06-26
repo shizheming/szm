@@ -1,7 +1,15 @@
-import './index.less';
+import './src/index.js';
+import Vue from 'vue';
+import Pc from './src/pc.vue';
+import iview from 'iview';
+import 'iview/dist/styles/iview.css';
+import router from './src/router';
+
 if (module.hot) module.hot.accept();
 
+Vue.use(iview);
 
-console.log(1234234);
-console.log(8888);
-
+new Vue({
+    render: h => h(Pc),
+    router
+}).$mount('#my_system');
