@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="forEach">
     <h4>_.forEach(collection, iterator)</h4>
     <div class="describe">
         <p>迭代一个集合</p>
@@ -17,7 +17,11 @@
 </div>
 </template>
 <script>
-
+import prismjs from 'prismjs';
+import line from 'prismjs/plugins/line-numbers/prism-line-numbers.min';
+import 'prismjs/themes/prism.css';
+import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
+import text from './example/forEach';
 export default {
 	data() {
 		return {
@@ -25,34 +29,45 @@ export default {
 		};
 	},
 	mounted() {
-		this.code = Prism.highlight(`
-			/*
-				function (currentValue, key, collection) {
-				    currentValue => 当前值
-				    key => 当前键
-				    collection => 正在迭代的集合
-				}
-			*/
-
-			_.forEach([1, 2], function (currentValue, index, array) {
-			    array[index] = currentValue + 1;
-			});
-			// => [2, 3]
-
-			_.forEach({
-			    c : 1,
-			    d : 2
-			}, function (currentValue, key, object) {
-			    object[key] = currentValue + 1;
-			});
-			/*
-				=> {
-				    c : 2,
-				    d : 3
-				}
-			*/
-		`, Prism.languages.javascript, 'javascript');
-		console.log(this.code)
-	}
+		this.code = Prism.highlight(`${text.toString()}`, Prism.languages.javascript, 'javascript');
+	},
+    methods: {
+        flatten () {
+            
+        }
+    }
 };
 </script>
+<style lang="less">
+.forEach {
+    pre[class*="language-"] {
+        margin: 0;
+    }
+
+    pre[class*="language-"].line-numbers {
+        padding: 0;
+
+    }
+
+    .verb {
+        .describe {
+            margin: 1em;
+            font-size: 14px;
+        }
+
+        .describe>div {
+            text-indent: 1em;
+            font-family: 'Consolas', 'Courier New', 'monospace'
+        }
+
+        h4 {
+            background-color: #6d426d;
+            color: #fff;
+            margin: 0;
+            padding: .75em;
+            font-weight: 400;
+            font-family: 'Consolas', 'Courier New', 'monospace'
+        }
+    }
+}
+</style>

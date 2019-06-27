@@ -5,7 +5,7 @@ import iview from 'iview';
 import 'iview/dist/styles/iview.css';
 import router from './src/router';
 
-if (module.hot) module.hot.accept();
+// if (module.hot) module.hot.accept();
 
 Vue.use(iview);
 

@@ -14,8 +14,8 @@ module.exports = {
         host: 'localhost',
         port: 4444,
         open: true,
-        hot: true,
-        hotOnly: true
+        hot: true
+        // hotOnly: true
     },
     devtool: 'source-map',
     resolve: {

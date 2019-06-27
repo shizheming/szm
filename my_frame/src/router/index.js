@@ -1,10 +1,11 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import verb from './verb';
+import _ from 'lodash';
 
 Vue.use(VueRouter);
 
-var routes = [
+var r = [
     {
         path: '/verb',
         name: 'verb',
@@ -15,21 +16,23 @@ var routes = [
 ];
 
 var flattenRouter = (r) => {
-    return r.map(current => {
+    return _.flatten(r.map(current => {
+        var r = [];
         if (current.child) {
-            return current.child.map((item => {
+            var c = current.child.map((item => {
                 item.path = current.path + item.path;
                 if (item.child) {
                     return flattenRouter(item.child);
                 }
                 return item;
             }));
+            r = r.concat(c);
         }
-        return current;
-    });
+        return r.concat(current);
+    }));
 }
-var g = flattenRouter(routes);
-console.log(g,4454);
+var routes = flattenRouter(r);
+console.log(routes,19)
 export default new VueRouter({
-    routes 
+    routes
 });
