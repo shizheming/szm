@@ -18,6 +18,7 @@ export default () => {
     }, function (currentValue, key, object) {
         object[key] = currentValue + 1;
     });
+    
     /*
         => {
             c : 2,

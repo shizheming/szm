@@ -9,7 +9,7 @@
 </body>
 </html>
 <script src="../ecma.js"></script>
-<script src="../js/system/relationship1.0.js"></script>
+<script src="../js/system/relationship3.0.js"></script>
 <script>
 
 function a () {
@@ -36,45 +36,32 @@ function g () {
 function h () {
     alert(arguments.callee.name);
 }
+function i () {
+    alert(arguments.callee.name);
+}
 
-
-// 改进成这样的，不要用户记key的名字
-// 不过我觉得记维度还是回比记个可以难，因为维度要数，key这要看，当然key容易
-/*var relationshipTable = [
-    [a, [b, c, d]], 
-    [b, c], 
-    [[e, f, g], d], 
-    [[a, c, e], [b, d]]
-];
-*/
 
 
 
 
 
 var relationshipTable = [{
-    // 一对多
-    n : a,
-    rn : [b, c, d]
-}, {
-    // 一对一
     n : b,
-    rn: c
+    rn : c
 }, {
-    // 多对一
-    n : [e, f, g],
-    rn: d
+    n : c,
+    rn : [d, a, g]
 }, {
-    // 多对多
-    n : [a, c, e],
-    rn: [b, d]
+    n : h,
+    rn : g
+}, {
+    n : [f, a],
+    rn : [i, c]
 }];
 
 
 
-
-console.log(_.relationship(relationshipTable, function () {
-    return 12312312;
-}));
+var gggggg = _.relationship(relationshipTable);
+console.log(gggggg,89);
 
 </script>

@@ -9,7 +9,8 @@ var r = [
     {
         path: '/verb',
         name: 'verb',
-        title: '动词',
+        title: '词1',
+        icon: 'md-at',
         component: () => import('../view/verb/index.vue'),
         child: verb
     }
@@ -32,7 +33,9 @@ var flattenRouter = (r) => {
     }));
 }
 var routes = flattenRouter(r);
-console.log(routes,19)
+console.log(routes,19);
+
+export const menu = r;
 export default new VueRouter({
     routes
 });
