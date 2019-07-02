@@ -18,6 +18,7 @@
 
 这里多运用=些函数式的概念技巧去处理
 组合，柯里化，部分应用，单一功能原则，纯函数
+提取形式
 
 我觉得虽然多有很多，无限的，像维度，嵌套，但想要把这些功能都实现，太复杂，不利于理解，有些东西概念上需要比如间断性，联动性，但我不能为了在功能里面实现联动性和间断性的概念儿去赢靠，这个主次颠倒了，就像柏拉图把理念放第一位了，
 所以我觉得现在对我来说太复杂，太难的，占时不做，主要是保证核心简单干练
@@ -26,5 +27,36 @@
 */
 
 _.relationship = function (relationship) {
-    
+    var a = relationship.map(currentValue => {
+        if (isOneOnOne(currentValue.m, currentValue.y)) return [
+            {
+                m: currentValue.m,
+                y: currentValue.y
+            }
+        ];
+        if (isOneToMany(currentValue.m, currentValue.y)) return currentValue.y.map(item => {
+            return {
+                m: currentValue.m,
+                y: item
+            };
+        });
+    });
+    return compose(_.value, _.filterFalse)(a);
 }
+
+// 一对一
+const isOneOnOne = function (a, b) {
+    return !_.isArray(a) && !_.isArray(b);
+}
+
+// 一对多
+const isOneToMany = function (a, b) {
+    return !_.isArray(a) && _.isArray(b);
+}
+
+// 组合
+const compose = function (a, b) {
+    return function () {
+        return a(b.apply(null, arguments));
+    };
+};
