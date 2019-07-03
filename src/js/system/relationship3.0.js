@@ -16,7 +16,7 @@
     4，多对多
 目的：关系表的目的就是建立说明关系，把不相干的东西联系在一起，并不做实际操作（比如联动），
 
-这里多运用=些函数式的概念技巧去处理
+这里多运用些函数式的概念技巧去处理
 组合，柯里化，部分应用，单一功能原则，纯函数
 提取形式
 
@@ -28,15 +28,16 @@
 
 _.relationship = function (relationship) {
     var a = relationship.map(currentValue => {
-        if (isOneOnOne(currentValue.m, currentValue.y)) return [
+        var {m, y} = currentValue;
+        if (isOneOnOne(m, y)) return [
             {
-                m: currentValue.m,
-                y: currentValue.y
+                m: m,
+                y: y
             }
         ];
-        if (isOneToMany(currentValue.m, currentValue.y)) return currentValue.y.map(item => {
+        if (isOneToMany(m, y)) return y.map(item => {
             return {
-                m: currentValue.m,
+                m: m,
                 y: item
             };
         });
