@@ -64,4 +64,23 @@ var relationshipTable = [{
 var gggggg = _.relationship(relationshipTable);
 console.log(gggggg,89);
 
+
+
+
+var tap = function (value) {
+    return function (fn) {
+        _.isFunction(fn) && fn(value);
+    };
+};
+
+function n (current) {
+    return current + 10;
+}
+function init (value) {
+    console.log(value);
+    return value;
+}
+
+var jjj = [11,21,31].map(compose(n, init));
+console.log(jjj,181818);
 </script>

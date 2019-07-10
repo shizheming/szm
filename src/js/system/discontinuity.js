@@ -32,8 +32,3 @@ _.discontinuity = function (obj) {
 
 
 
-const partial = function (fn, ...rest) {
-    return function () {
-        return fn.apply(null, [].slice.apply(arguments).concat(rest));
-    };
-};
