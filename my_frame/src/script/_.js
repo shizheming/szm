@@ -1192,4 +1192,4 @@ _.change = function() {
     };
 };
 
-// export default _;
+export default _;

@@ -1,18 +1,18 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import verb from './verb';
+import word from './word';
 import _ from 'lodash';
 
 Vue.use(VueRouter);
 
 var r = [
     {
-        path: '/verb',
-        name: 'verb',
-        title: '词1',
+        path: '/word',
+        name: 'word',
+        title: '词',
         icon: 'md-at',
-        component: () => import('../view/verb/index.vue'),
-        child: verb
+        component: () => import('../view/word/index.vue'),
+        child: word
     }
 ];
 
