@@ -21,6 +21,8 @@ module.exports = {
     resolve: {
         alias: {
             vue: 'vue/dist/vue.js',
+            '@script': path.resolve('./src/script'),
+            '@view': path.resolve('./src/view')
         }
     },
     module: {

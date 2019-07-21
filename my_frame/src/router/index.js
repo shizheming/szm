@@ -1,20 +1,20 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import word from './word';
 import _ from 'lodash';
+import r from './menu';
 
 Vue.use(VueRouter);
 
-var r = [
+/*var r = [
     {
         path: '/word',
         name: 'word',
         title: '词',
         icon: 'md-at',
-        component: () => import('../view/word/index.vue'),
+        component: () => import('../view/word/relationship/relationship1.0.vue'),
         child: word
     }
-];
+];*/
 
 var flattenRouter = (r) => {
     return _.flatten(r.map(current => {
@@ -33,7 +33,6 @@ var flattenRouter = (r) => {
     }));
 }
 var routes = flattenRouter(r);
-console.log(routes,19);
 
 export const menu = r;
 export default new VueRouter({

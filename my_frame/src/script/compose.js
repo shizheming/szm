@@ -8,10 +8,18 @@ var c = function (a, b) {
     };
 };
 // 多个函数组合
-export default const compose = function (...args) {
+export default function (...args) {
     return function (...a) {
+        var once = true;
         return args.reduceRight(function (res, cb) {
-            return cb(res);
+            var result;
+            if (once) {
+                once = false;
+                result = cb.apply(null, res);
+            } else {
+                result = cb(res);
+            }
+            return result;
         }, a);
     }
 };
@@ -56,8 +64,8 @@ var filter = function (fn, arr) {
 var map = function (fn, arr) {
     return arr.map(fn);
 };
-var ab = curry(filter)(filterAAA);
+/*var ab = curry(filter)(filterAAA);
 var bv = curry(map)(projectAuthor);
 var cc = compose(bv, ab);
-var ff = cc(data);
+var ff = cc(data);*/
 // console.log(ff,1717);

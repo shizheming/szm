@@ -13,6 +13,8 @@ maybe.prototype.isNothing = function () {
 maybe.prototype.map = function (fn) {
     return this.isNothing() ? maybe.of(null) : maybe.of(fn(this.value));
 };
-
+maybe.prototype.join = function () {
+    return this.isNothing() ? maybe.of(null) : this.value;
+}
 export default maybe;
 

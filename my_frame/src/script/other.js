@@ -1,3 +1,47 @@
+//
+
+/* 
+代理
+单例模式
+迭代器
+发布—订阅
+命令
+组合
+模板方法
+享元
+职责链
+中介者
+装饰者
+适配器
+
+*/
+
+// 代理模式
+    // 图片预加载
+    /*var myImage = (function() {
+        var imgNode = document.createElement('img');
+        document.body.appendChild(imgNode);
+        return {
+            setSrc : function(src) {
+                imgNode.src = src;
+            };
+        };
+    });
+    var proxyImage = (function() {
+        var img = new Image;
+        img.onload = function() {
+            myImage.setSrc(this.src);
+        };
+        return {
+            setSrc : function(src) {
+                myImage.setSrc('.....png');
+                img.src; = src;
+            }
+        };
+    });*/
+
+
+
 
 /*
 文件夹和文件分类

@@ -1,65 +1,6 @@
 module.exports = {
-	// 代理模式
-	// 图片预加载
-	/*var myImage = (function() {
-		var imgNode = document.createElement('img');
-		document.body.appendChild(imgNode);
-		return {
-			setSrc : function(src) {
-				imgNode.src = src;
-			};
-		};
-	});
-	var proxyImage = (function() {
-		var img = new Image;
-		img.onload = function() {
-			myImage.setSrc(this.src);
-		};
-		return {
-			setSrc : function(src) {
-				myImage.setSrc('.....png');
-				img.src; = src;
-			}
-		};
-	});*/
 	
 	
-
-	// 职责连设计模式
-	/*
-		function a(a1) {
-			if (a1 == 'a') alert('我是一等公民'); else return true;
-		}
-		function b(b1) {
-			if (b1 == 'b') alert('二等公民是我'); else return true;
-		}
-		function c() {
-			alert('我是农民');
-		}
-		var s1 = chain(a);
-		var s2 = chain(b);
-		var s3 = chain(c);
-		s1.setNext(s2);
-		s2.setNext(s3);
-		s1.request('d');
-	*/
-	chain : (function () {
-		function setNext(successor) {
-			this.successor = successor;
-		}
-		function request() {
-			var ret = this.fn.apply(null, arguments);
-			if (ret) this.successor && this.successor.request.apply(this.successor, arguments);
-		}
-		return function(fn) {
-			return {
-				fn : fn,
-				setNext : setNext,
-				request : request
-			};
-		};
-	})(),
-
 	// 观察者模式
 	/*
 		这里是观察数据的变化而动作，还要写个观察更抽象的动作而动作，数据动作也是动作的一种，从数据变化抽象出他的种的，那就是一切动作
@@ -184,15 +125,3 @@ module.exports = {
 	},
 };
 
-/*********************************设计原则********************************************/
-/*
-1.单一原则：
-	一个对象（方法）只做一件事，一个对象（方法）应该仅有一个引起他变化的原因
-
-2.最少知道原则：
-	一个对象（方法）应当尽可能少的去其他对象（方法）发生相互作用
-	“城门失火殃及池鱼，一人犯法株连九族”
-
-3.开放-封闭原则
-
-*/
