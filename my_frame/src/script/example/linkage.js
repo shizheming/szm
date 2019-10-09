@@ -41,7 +41,6 @@ export default function () {
 
     */
 
-
     function a1 (q, d) {
         alert('a1');
         return [q, d];
@@ -67,16 +66,15 @@ export default function () {
         return [q];
     }
 
-
     var relationshipTable = [{
         // 一对一联动
-        n : a1,
-        rn : a2
+        n: a1,
+        rn: a2
     }, {
         // 一对多联动
-        n : a2,
+        n: a2,
         rn: [a4, a5]
-    }, /*{
+    } /*{
         // 多对一联动
         n : [a5, a2, a3],
         rn: a6

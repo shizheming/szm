@@ -1,23 +1,25 @@
 export default function (arr) {
     var d = {
         // 监听事件库
-        client : []
+        client: []
     };
     // 老数据
     var od = {};
     // 数据层初始化
+
     for (var i = 0, len = arr.length; i < len; i++) {
         d[arr[i]] = '';
         od[arr[i]] = '';
     }
     var method = {
-        set : function(json) {
+        set: function (json) {
             var num = 0;
             var newarr = [];
+
             for (var key in json) {
                 // 1. 过滤有没有
                 // if (d[key] === void 0) continue;
-                if (!d.hasOwnProperty(key)) continue;
+                if (!(key in d)) continue;
                 // 2. 还得过滤和之前的发生了变化没有
                 d[key] = json[key];
                 // 是数组
@@ -54,16 +56,17 @@ export default function (arr) {
                     }
                 }
             }
-            
         },
-        get : function(key) {
+        get: function (key) {
             return d[key];
         },
-        listen : function(key, fn) {
+        listen: function (key, fn) {
             var j = {};
+
             j[key] = fn;
             d.client.push(j);
         }
     };
+
     return method;
 };

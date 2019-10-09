@@ -26,7 +26,6 @@ export default function () {
     回答：
         1. 梳理了一下，有2点，第一，关系没有动态的，那种连带触发的是对象行为本身，不是关系，关系只是静态说明，第二，上面说的怎么触发关系函数本身理解上就存在不同点，关系只是说明，a和b有关系，并不是a运行了，b一定要运行一样，只起到说明作用，然后就是关系表只表明他们之间有关系，至于是什么关系并不赋予，只有当调用某个特定的方法后，才会确立实在关系，比如我调用了连带方法，那么关系表的关系表明的就是连带关系，而我调用了策略方法的时候，关系表就代表的是条件头和条件体的关系了，至于在多对一的多条件的情况下怎么触发条件体那是这个方法所做的事情了（我是满足一个条件就触发，还是全部条件都要满足，还是满足第几个，还是。。。。。。），并不是关系表所考虑的范围内
 
-
     3. 我发现关系的根本并不局限于之前写的连带函数关系，更多的本质上是建立联系和说明，至于的函数是最终落实在这个上面而已
     4. 又冒出了其他一些想法，比如，既然是多，那每一项的关系表会不止一对一，一对一对一。。。等等，还有就是每一项的关系表不止扁平的，如果有空间的概念的话，每个就有维度，上下级关系，有点越来越多了，有点乱，但是不管是多少多，起点和终点最终应该是统一的，但那张表的初衷是关系表，并不是什么联动表，策略表什么的，一切从有关系开始，至于什么关系，那就是我现在要写的每一个方法
 
@@ -35,37 +34,35 @@ export default function () {
     我觉得虽然多有很多，无限的，像维度，嵌套，但想要把这些功能都实现，太复杂，不利于理解，有些东西概念上需要比如间断性，连续性，但我不能为了在功能里面实现连续性和间断性的概念儿去靠，这个主次颠倒了，就像柏拉图把理念放第一位了，
     所以我觉得现在对我来说太复杂，太难的，占时不做，主要是保证核心简单干练
 
-
     */
 
     function a () {
-        alert(arguments.callee.name);
+        alert('a');
     }
     function b () {
-        alert(arguments.callee.name);
+        alert('b');
     }
     function c () {
-        alert(arguments.callee.name);
+        alert('c');
     }
     function d () {
-        alert(arguments.callee.name);
+        alert('d');
     }
     function e () {
-        alert(arguments.callee.name);
+        alert('e');
     }
     function f () {
-        alert(arguments.callee.name);
+        alert('f');
     }
     function g () {
-        alert(arguments.callee.name);
+        alert('g');
     }
     function h () {
-        alert(arguments.callee.name);
+        alert('h');
     }
     function i () {
-        alert(arguments.callee.name);
+        alert('i');
     }
-
 
     // 改进成这样的，不要用户记key的名字
     // 不过我觉得记维度还是回比记个可以难，因为维度要数，key这要看，当然key容易
@@ -77,35 +74,31 @@ export default function () {
     ];
     */
 
-
-
-
-
     var relationshipTable = [{
-        n : b,
-        rn : c
+        n: b,
+        rn: c
     }, {
-        n : c,
-        rn : [d, a, g]
+        n: c,
+        rn: [d, a, g]
     }, {
-        n : h,
-        rn : g
+        n: h,
+        rn: g
     }, {
-        n : a,
-        rn : b,
+        n: a,
+        rn: b
     }, {
-        n : [c, g],
-        rn : f
+        n: [c, g],
+        rn: f
     }, {
-        n : f,
-        rn : i
+        n: f,
+        rn: i
     }];
 
     // 我先想到的是把它们全部通过一对一的方式罗列出所有的可能，有个坑就是当2个关系相互引用的时候，我在动态的输出每一条到底的关系线是就会就如死循环，a引用b，b引用a，a在引用b，b在引用a。。。。。。这样无线循环，这个要解决下，什么时候停下来，我想了下，当他的关系接受来源和他的关系目的点是一样的时候就停止
 
-
     var gggggg = relationship(relationshipTable);
-    console.log(gggggg,89);
+
+    console.log(gggggg, 89);
     /*
         形式
         可以有很多形式，各种样子的，但最终只有一种样子形成，我是想把所有的形式揉捏在一起吗，弄个最完美的吗，既然有形，肯定是不完美的，只有无形才是最完美的，因为可以变成任何形状，

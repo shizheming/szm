@@ -10,6 +10,7 @@ import i from './index';
 import './index.less';
 
 var m;
+
 Promise.all([
     import('@script/example/relationship1'),
     import('@script/example/relationship2'),
@@ -25,22 +26,22 @@ Promise.all([
     m = a;
 });
 
-
 export default {
-    data() {
+    data () {
         return {
             code: ''
         };
     },
     watch: {
-        '$route': function (to, from) {
+        $route: function (to, from) {
             this.$nextTick(() => {
                 var k = m.filter(current => current.key === to.name);
+
                 this.renderFun(k[0].default, k[0].map);
             });
         }
     },
-    mounted() {
+    mounted () {
         
     },
     methods: {
@@ -48,6 +49,7 @@ export default {
             example();
             var h = i.renderFun(example, map);
             // console.log(h,2342342);
+
             this.code = h;
         }
     }

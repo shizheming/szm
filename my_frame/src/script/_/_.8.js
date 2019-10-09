@@ -27,7 +27,6 @@
 20. 想想一个写好的函数如何做好很好的扩展，首先它的核心功能是什么，然后能在不改动内部代码的情况下添加功能和状态？？
 21. 有些可以写一个单列模式，干过一次的事情不要再干了
 
-
 抽象是哲学的根本特点，代码亦如此。
 （理念和实体）（共相和殊相）（抽象和具象）（现象和本质）（形式和内容）
 
@@ -46,7 +45,6 @@
 */
 
 // 我现在用高阶函数只是存一些数据,状态,配置一些属性,还没有提升到进去一个函数出来另一个函数的能力
-
 
 /*
 ----关于页面----
@@ -89,8 +87,6 @@
 这就是纯函数
 */
 
-
-
 /****************
     私有
 ****************/
@@ -108,6 +104,7 @@ var factory = function (callback) {
         iterator = processFunction(iterator);
         // 不但要处理新的对象还是处理在什么对象上迭代
         var output = callback(original, array || {});
+
         Object.keys(original).forEach(function (currentValue, index, array) {
             iterator(original[currentValue], currentValue, output);
         });
@@ -136,9 +133,9 @@ var factoryNew = factory();
     对象统一转换
 */
 
-var objectTransformation =  function (original, output, isArrayShift) {
+var objectTransformation = function (original, output, isArrayShift) {
     return Array.isArray(original) ? transformation(output, [], isArrayShift) : transformation(output, {});
-}
+};
 
 /*
     对象数组转换
@@ -161,15 +158,18 @@ var recursive = function (collection, baseCallback, ObjectCallback, level) {
     baseCallback = processFunction(baseCallback);
     ObjectCallback = processFunction(ObjectCallback);
     var result = {
-        collection : [],
-        value : [],
+        collection: [],
+        value: []
     };
+
     _.forEach(collection, function (currentValue, key, collection) {
         if (Array.isArray(currentValue) || _.isObject(currentValue)) {
             // 对象值的时候一个断点回调
             var output = ObjectCallback(currentValue, key, collection, level);
+
             output && result.collection.push(output);
             var recursiveValue = recursive(currentValue, baseCallback, ObjectCallback, level);
+
             result.value = result.value.concat(recursiveValue.value);
             result.collection = result.collection.concat(recursiveValue.collection);
         } else {
@@ -227,6 +227,7 @@ var restArgs = function (func) {
         // 设置rest参数
         var rest = [].slice.call(arguments, startIndex);
         // 设置最终调用时需要的参数
+
         for (var i = 0; i < startIndex; i++) args[i] = arguments[i];
         args[startIndex] = rest;
         return func.apply(null, args);
@@ -255,15 +256,16 @@ var linkOperation = (function () {
         return element.head.next === element.head.previous;
     };
     var isLast = function (element) {
-        return element === this.tail.previous
+        return element === this.tail.previous;
     }.bind(this);
     // 添加
+
     link.add = function (newElement, oldElement) {
         // 缺点在于一次只能插一个值
         var newNode = {
-            element : newElement,
-            next : null,
-            previous : null
+            element: newElement,
+            next: null,
+            previous: null
         };
         // 插入尾部
         var addLast = function () {
@@ -287,11 +289,13 @@ var linkOperation = (function () {
             }
         }.bind(this);
         // 1个参数直接添加到尾部
+
         if (!oldElement) {
             addLast();
         // 2个参数是找到第2个参数后面插入
         } else {
             var currentValue = this.find(oldElement);
+
             if (!currentValue) return;
             // 判断是不是最后一个
             if (currentValue === this.tail.previous) addLast(); else {
@@ -307,6 +311,7 @@ var linkOperation = (function () {
     link.delete = function (element) {
         var currentValue = this.find(element);
         // 没找到
+
         if (!currentValue) return;
         // 有2种可能需要判断，一种是删头，一种是删尾，就需要调整虚体头尾的next和previous的指向了
         if (this.head.next === currentValue) this.head.next = currentValue.next;
@@ -331,6 +336,7 @@ var linkOperation = (function () {
         // 这里用this，因为head是创建链表时候独立存在的，link是没有head的，find调的时候也要用this，应为如果用link，里面this又指向link了，而link是没有head的
         var currentValue = this.head;
         // 要避免无限循环
+
         while (currentValue.element != element && currentValue !== this.tail.previous) {
             currentValue = currentValue.next;
         }
@@ -341,6 +347,7 @@ var linkOperation = (function () {
         var currentValue = this.head;
         var array = [];
         var lock = true;
+
         while (lock || currentValue.next !== this.head.next) {
             if (!currentValue.next) return array;
             array.push(currentValue.next.element);
@@ -360,14 +367,17 @@ var aggregate = function (index, bl) {
     return function (obj) {
         var that = this;
         var thatArg = arguments;
+
         return _.whichData(obj, function () {
             // 并集
             var union = [].concat.apply(obj, [].slice.call(thatArg, 1));
             // 并集 交集
             var result = [union, this.uniq(union)];
             // 并集删除交集就是补集
+
             result[2] = (function () {
                 var complement = union.slice(0);
+
                 result[1].forEach(function (item, index, arr) {
                     that.without(complement, item);
                 });
@@ -380,10 +390,11 @@ var aggregate = function (index, bl) {
             var result = [function () {
                 // 手动clone，自调用会栈溢出，呵呵
                 var newObj = {};
-                for (let key in obj) newObj[key] = obj[key];
+
+                for (const key in obj) newObj[key] = obj[key];
                 // var newObj = that.clone(obj);
                 for (let i = 1, len = thatArg.length; i < len; i++) {
-                    for (let key in thatArg[i]) {
+                    for (const key in thatArg[i]) {
                         if (that.isBoolean(bl) && bl) {
                             if (!newObj.hasOwnProperty(key)) newObj[key] = thatArg[i][key];
                         } else newObj[key] = thatArg[i][key];
@@ -393,8 +404,9 @@ var aggregate = function (index, bl) {
             // 交集
             }, function () {
                 var newObj = {};
+
                 for (let i = 1, len = thatArg.length; i < len; i++) {
-                    for (let key in thatArg[i]) {
+                    for (const key in thatArg[i]) {
                         if (that.isExistence(obj, thatArg[i][key])) {
                             newObj[key] = thatArg[i][key];
                         }
@@ -403,13 +415,15 @@ var aggregate = function (index, bl) {
                 return newObj;
             }];
             // 补集
+
             result[2] = function () {
                 // 并集
                 var union = result[0]();
                 // 交集
                 var intersection = result[1]();
                 // 并集删除交集就是补集
-                for (let key in intersection) {
+
+                for (const key in intersection) {
                     that.without(union, intersection[key]);
                 }
                 return union;
@@ -418,8 +432,6 @@ var aggregate = function (index, bl) {
         });
     };
 };
-
-
 
 var _ = {};
 
@@ -435,10 +447,11 @@ var _ = {};
     左柯理
 */
 
-_.partial = restArgs(function(func, boundArgs) {
-    return function() {
-        var position = 0, length = boundArgs.length;
+_.partial = restArgs(function (func, boundArgs) {
+    return function () {
+        var position = 0; var length = boundArgs.length;
         var args = Array(length);
+
         for (var i = 0; i < length; i++) {
             args[i] = boundArgs[i];
         }
@@ -451,11 +464,11 @@ _.partial = restArgs(function(func, boundArgs) {
     复制
 ****************/
 
-_.clone = function (original,  isDeep) {
+_.clone = function (original, isDeep) {
     original = processCollection(original);
     return isDeep !== true ? objectTransformation(original, factoryNew(original, function (value, key, output) {
-            output[key] = value;
-        })) : JSON.parse(JSON.stringify(original));
+        output[key] = value;
+    })) : JSON.parse(JSON.stringify(original));
 };
 
 /****************
@@ -506,10 +519,11 @@ var value = function (original) {
         output.push(value);
     }, []);
 };
+
 _.value = function (collection, isDeep) {
     return isDeep !== true ? value(collection) : recursive(collection, function (value, key, collection) {
-            return value;
-        }).value;
+        return value;
+    }).value;
 };
 
 /*
@@ -518,6 +532,7 @@ _.value = function (collection, isDeep) {
 
 _.findKey = function (original, value) {
     var invert = _.invert(original);
+
     return value in invert && invert[value];
 };
 
@@ -529,23 +544,29 @@ _.findKey = function (original, value) {
 var findCollection = function (collection, value) {
     var keyResult = Object.keys(collection).indexOf(String(value.key)) > -1 && collection;
     var valueResult = _.value(collection).indexOf(value.value || value) > -1 && collection;
+
     if (_.isObject(value)) {
         return Object.keys(value).length === 2 ? keyResult && valueResult && collection[value.key] === value.value && collection : keyResult || valueResult;
     } else return valueResult;
 };
+
 _.findCollection = function (collection, value, callback, isDeep) {
     isDeep = _.isBoolean(callback) ? callback : isDeep;
     callback = processFunction(callback);
     if (isDeep !== true) {
         var result = [];
+
         _.forEach(collection, function (currentValue, key, collection) {
             var output = findCollection(currentValue, value) && callback(currentValue, key, collection) && currentValue;
+
             output && result.push(output);
         });
         return result;
-    } else return recursive(collection, null, function (currentValue, key, collection, level) {
-        return findCollection(currentValue, value) && callback(currentValue, key, collection, level) && currentValue;
-    }).collection;
+    } else {
+        return recursive(collection, null, function (currentValue, key, collection, level) {
+            return findCollection(currentValue, value) && callback(currentValue, key, collection, level) && currentValue;
+        }).collection; 
+    }
 };
 
 /****************
@@ -555,6 +576,7 @@ _.findCollection = function (collection, value, callback, isDeep) {
 _.debounce = function (func, wait) {
     func = processFunction(func);
     var lock = true;
+
     return function () {
         if (!lock) return; else {
             lock = false;
@@ -582,17 +604,18 @@ _.debounce = function (func, wait) {
 var mapping = function (original, form, tag, type, isDestroy) {
     tag = isDestroy ? '' : tag || '_';
     var typeList = {
-        key : function (value, key, output, form) {
+        key: function (value, key, output, form) {
             output[tag + form[key]] = value;
             isDestroy && delete output[key];
         },
-        value : function (value, key, output, form) {
+        value: function (value, key, output, form) {
             // 映射值的时候有个小问题，当当前的值是个集合，不是单值的时候，是找不到映射表里面的值的，例如映射表是['a']，迭代的当前值是[1, 2]，那么去找映射的值的时候会是这样['a'][1, 2]，这显然是个undefined，所以要处理下值是集合的情况
-            if (typeof(value) === 'object' || _.isFunction(value)) return;
+            if (typeof (value) === 'object' || _.isFunction(value)) return;
             output[tag + key] = form[key][value];
         }
     };
     // 通过表的key找到obj的key后的值对应表的key的值
+
     return objectTransformation(original, factoryClone(original, function (value, key, output) {
         // 我觉得还是要保留原来的值，不然其他地方用到就蛋疼了
         if (key in form) typeList[type](value, key, output, form);
@@ -607,6 +630,7 @@ _.mappingValue = function (collection, form, tag, isDeep, isDestroy) {
     var param = [tag, isDeep, isDestroy].filter(function (currentValue, index, array) {
         return currentValue === true || currentValue === false;
     });
+
     if (param.length == 2) {
         isDeep = param[0];
         isDestroy = param[1];
@@ -617,6 +641,7 @@ _.mappingValue = function (collection, form, tag, isDeep, isDestroy) {
     }
     tag = _.isBoolean(tag) ? undefined : tag;
     var OneMappingValue = mapping(collection, form, tag, 'value', isDestroy);
+
     if (isDeep !== true) return OneMappingValue; else {
         recursive(OneMappingValue, null, function (value, key, collection) {
             collection[key] = mapping(value, form, tag, 'value', isDestroy);
@@ -633,6 +658,7 @@ _.mappingKey = function (collection, form, tag, isDeep, isDestroy) {
     var param = [tag, isDeep, isDestroy].filter(function (currentValue, index, array) {
         return currentValue === true || currentValue === false;
     });
+
     if (param.length == 2) {
         isDeep = param[0];
         isDestroy = param[1];
@@ -643,13 +669,14 @@ _.mappingKey = function (collection, form, tag, isDeep, isDestroy) {
     }
     tag = _.isBoolean(tag) ? undefined : tag;
     var OneMappingKey = mapping(collection, form, tag, 'key', isDestroy);
+
     if (isDeep !== true) return OneMappingKey; else {
         recursive(OneMappingKey, null, function (value, key, collection) {
             collection[key] = mapping(value, form, tag, 'key', isDestroy);
         });
     }
     return OneMappingKey;
-}
+};
 
 /*
     辩证法-你是我，我是你
@@ -684,10 +711,11 @@ _.uniq = function (array) {
     打乱顺序
 ****************/
 
-_.shuffle = function(original) {
+_.shuffle = function (original) {
     original = processArray(original);
     return factoryNew(original, function (currentValue, index, output) {
         var random = _.randomNumber(0, index);
+
         if (random !== index) output[index] = output[random];
         output[random] = currentValue;
     }, []);
@@ -711,12 +739,13 @@ _.pairs = function (original) {
     删除
 ****************/
 
-var removeSomething = function(collection, deleteCollection, type) {
-    var isArrayShift = type === 'key' ? false : true;
+var removeSomething = function (collection, deleteCollection, type) {
+    var isArrayShift = type !== 'key';
     var result = objectTransformation(collection, factoryNew(collection, function (currentValue, key, output) {
         if (type === 'value' && !_.isExistence(deleteCollection, [currentValue])) output[key] = currentValue;
-        if (type === 'key' && !_.isExistence(deleteCollection.join().split(','), [key])) output[key] = currentValue
+        if (type === 'key' && !_.isExistence(deleteCollection.join().split(','), [key])) output[key] = currentValue;
     }), isArrayShift);
+
     return result;
 };
 
@@ -726,6 +755,7 @@ var removeSomething = function(collection, deleteCollection, type) {
 
 _.removeValue = function (collection, deleteCollection, isDeep) {
     var oneRemoveValue = removeSomething(collection, deleteCollection, 'value');
+
     if (isDeep !== true) return oneRemoveValue; else {
         recursive(oneRemoveValue, null, function (currentValue, key, collection, level) {
             collection[key] = removeSomething(currentValue, deleteCollection, 'value');
@@ -740,6 +770,7 @@ _.removeValue = function (collection, deleteCollection, isDeep) {
 
 _.removeKey = function (collection, deleteCollection, isDeep) {
     var oneRemoveKey = removeSomething(collection, deleteCollection, 'key');
+
     if (isDeep !== true) return oneRemoveKey; else {
         recursive(oneRemoveKey, null, function (currentValue, key, collection, level) {
             collection[key] = removeSomething(currentValue, deleteCollection, 'key');
@@ -755,13 +786,15 @@ _.removeKey = function (collection, deleteCollection, isDeep) {
 var toNumber = function (original) {
     return objectTransformation(original, factoryClone(original, function (currentValue, key, output) {
         var value = _.isString(currentValue) && Number(currentValue);
-        if(_.isNumber(value)) output[key] = value;
+
+        if (_.isNumber(value)) output[key] = value;
     }));
 };
 
 _.toNumber = function (original, isDeep) {
     var oneToNumber = toNumber(original);
-    if(isDeep !== true) return oneToNumber; else {
+
+    if (isDeep !== true) return oneToNumber; else {
         recursive(oneToNumber, null, function (currentValue, key, collection, level) {
             collection[key] = toNumber(currentValue);
         });
@@ -778,6 +811,7 @@ _.getValue = function (collection, node) {
     node = String(node).split('.');
     var result = '';
     var levelCollection = collection;
+
     _.forEach(node, function (currentValue, index, array) {
         if (typeof levelCollection === 'object' && currentValue in levelCollection) result = levelCollection[currentValue]; else result = '';
         levelCollection = typeof levelCollection !== 'object' ? '' : levelCollection[currentValue];
@@ -807,6 +841,7 @@ _.after = function (times, func) {
 _.before = function (times, func) {
     func = processFunction(func);
     var result;
+
     return function () {
         if (--times >= 0) return result = func.apply(this, arguments);
         return result;
@@ -846,8 +881,10 @@ _.state = function () {
     var stateAll = [].filter.call(arguments, function (currentValue, index, array) {
         return _.isFunction(currentValue);
     });
+
     if (!stateAll.length) return;
     var link = _.link();
+
     stateAll.forEach(function (currentValue, index, array) {
         link.add(currentValue);
     });
@@ -864,6 +901,7 @@ _.state = function () {
     var oneByOne = function (isLeft, context) {
         context = _.isBoolean(isLeft) ? context : isLeft;
         var back = state.element.call(context);
+
         isLeft ? direction() : state = state.next;
         return back;
     };
@@ -872,6 +910,7 @@ _.state = function () {
     // 添加状态
     var addState = function (newState, oldState) {
         var back = link.add(newState, oldState);
+
         if (!back) return;
         // 正序替换
         if (oldState && (state.previous.previous.element === oldState)) state = link.find(newState);
@@ -887,6 +926,7 @@ _.state = function () {
     // 替换状态
     var replaceState = function (newState, oldState) {
         var back = link.replace(newState, oldState);
+
         if (!back) return;
         // 更新要替换的前一个或后一个的指针
         if (state.element === oldState) state = link.find(newState);
@@ -902,16 +942,18 @@ _.state = function () {
     // 设置当前状态
     var setState = function (newState) {
         var element = link.find(newState);
+
         if (!state) return;
         state = element;
         return oneByOne();
     };
+
     return {
-        currState : oneByOne,
-        addState : addState,
-        replaceState : replaceState,
-        deleteState : deleteState,
-        setState : setState,
+        currState: oneByOne,
+        addState: addState,
+        replaceState: replaceState,
+        deleteState: deleteState,
+        setState: setState
     };
 };
 
@@ -939,6 +981,7 @@ _.randomNumber = function (digit, digit2) {
 
 _.randomAlphabet = function (digit) {
     var array = [];
+
     for (var i = 0; i < digit; i++) array.push(_.randomNumber(0, 25));
     //大写字母'A'的ASCII是65,A~Z的ASCII码就是65 + 0~25;然后调用String.fromCharCode()
     var upperCase = String.fromCharCode.apply(null, array.map(function (currentValue, index, array) {
@@ -946,8 +989,10 @@ _.randomAlphabet = function (digit) {
     }));
     var result = upperCase;
     var number = _.randomNumber(0, upperCase.length);
+
     while (number--) {
         var alphabet = upperCase[_.randomNumber(1, upperCase.length)];
+
         result = upperCase.replace(alphabet, alphabet.toLocaleLowerCase());
     }
     return result;
@@ -960,6 +1005,7 @@ _.randomAlphabet = function (digit) {
 _.randomNumberAlphabet = function (digit) {
     var number = _.randomNumber(0, digit);
     var string = _.randomNumber(number) + _.randomAlphabet(digit - number);
+
     return _.isNaN(number) ? NaN : _.shuffle(string.split('')).join('');
 };
 
@@ -972,6 +1018,7 @@ _.randomColor = function (saturation, light) {
     light = _.isString(light) ? light : '50%';
     if (arguments.length == 1) light = saturation;
     var hsl = ['hsl(', ')'];
+
     hsl.splice(1, 0, [_.randomNumber(0, 360), saturation, light].join(','));
     /*var r = (0, 60)
     var r = (300, 360)
@@ -979,8 +1026,6 @@ _.randomColor = function (saturation, light) {
     var b = (180, 300);*/
     return hsl.join('');
 };
-
-
 
 /*
 ★★★★谓词★★★★
@@ -1015,7 +1060,7 @@ _.isInteger = function (n) {
 */
 
 ['Arguments', 'Function', 'String', 'Date', 'RegExp', 'Object', 'Boolean'].forEach(function (currentValue, index, array) {
-    _['is' + currentValue] = function(obj) {
+    _['is' + currentValue] = function (obj) {
         return Object.prototype.toString.call(obj) === '[object ' + currentValue + ']';
     };
 });
@@ -1024,10 +1069,11 @@ _.isInteger = function (n) {
     判断2个对象是否相等
 */
 
-_.isEqual = function(a, b, aStack, bStack) {
+_.isEqual = function (a, b, aStack, bStack) {
     if (!aStack || !bStack) if (!_.isObject(a) && !Array.isArray(a) || !_.isObject(b) && !Array.isArray(b)) return false;
     var c1 = Object.prototype.toString.call(a);
     // 类型不同直接out
+
     if (c1 !== Object.prototype.toString.call(b)) return false;
     // 判断不同类型
     // 最终还是直达基本类型来比较
@@ -1051,6 +1097,7 @@ _.isEqual = function(a, b, aStack, bStack) {
     var key;
     var length = akeys.length;
     // 首先判断2个集合的长度是否一样，不一样就立马停掉，后面都不需要做了
+
     if (length !== Object.keys(b).length) return false;
     while (length--) {
         // 每个key
@@ -1075,24 +1122,27 @@ var existence = function (collection) {
     // 现在只是单个存在，要添加多个存在，不但存在一，还要存在多
     // 存在多
     var args = [].slice.call(arguments, 1);
+
     if (!args.length) return false;
     // 纯值
     var value = [];
     // 谓词判断
     var predicate = [];
+
     args.forEach(function (currentValue, index, array) {
         _.isFunction(currentValue) ? predicate.push(currentValue) : value.push(currentValue);
     });
     value = value.length == 0 ? true : value.every(function (currentValue, index, array) {
-        for (let key in collection) if (collection[key] === currentValue) return true;
+        for (const key in collection) if (collection[key] === currentValue) return true;
         return false;
     });
     predicate = predicate.length == 0 ? true : predicate.every(function (currentValue, index, array) {
-        for (let key in collection) if (currentValue(collection[key])) return true;
+        for (const key in collection) if (currentValue(collection[key])) return true;
         return false;
     });
     return value && predicate;
 };
+
 _.isExistence = function (collection, value, isDeep) {
     collection = processCollection(collection);
     value = processCollection(value);
@@ -1116,8 +1166,6 @@ _.negate = function (predicate) {
     };
 };
 
-
-
 /*
 ★★★★名词★★★★
 */
@@ -1137,16 +1185,17 @@ _.identity = function (value) {
 _.link = function () {
     var newLink = {};
     // 头节点
+
     newLink.head = {
-        element : 'head',
-        next : null,
-        previous : null
+        element: 'head',
+        next: null,
+        previous: null
     };
     // 尾节点
     newLink.tail = {
-        element : 'tail',
-        next : newLink.head,
-        previous : newLink.head
+        element: 'tail',
+        next: newLink.head,
+        previous: newLink.head
     };
     // 头尾相连
     newLink.head.next = newLink.tail;
@@ -1157,42 +1206,12 @@ _.link = function () {
     var allLink = [].filter.call(arguments, function (currentValue, index, array) {
         return _.isFunction(currentValue);
     });
+
     allLink.forEach(function (currentValue, index, array) {
         newLink.add(currentValue);
     });
     return newLink;
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /****************
     数据包裹
@@ -1200,10 +1219,10 @@ _.link = function () {
 _.wrap = function (oldObj, addObj) {
     return factoryClone(oldObj, function (val, key, newObj) {
         newObj[key] = _.extend({
-            value : val,
+            value: val
         }, addObj[key]);
     });
-}
+};
 
 /****************
     解除包裹
@@ -1214,25 +1233,23 @@ _.wrapBack = function (oldObj) {
     });
 };
 
-
-
 /*
     删除空格
 */
-_.trim = function(oldObj) {
+_.trim = function (oldObj) {
     var newObj = _.clone(oldObj);
+
     for (var key in newObj) {
         if (newObj[key] == null || newObj[key] == undefined) {
             newObj[key] = '';
         } else if (typeof newObj[key] == 'object') {
             _.trim(newObj[key]);
         } else {
-            newObj[key] = newObj[key].toString().replace(/(^\s*)|(\s*$)/g,'');
+            newObj[key] = newObj[key].toString().replace(/(^\s*)|(\s*$)/g, '');
         }
     }
     return newObj;
 };
-
 
 /****************
     集合--并集，交集，补集
@@ -1254,22 +1271,21 @@ _.complement = aggregate(2);
 */
 _.extend = aggregate(0, true);
 
-
-
 /****************
     时间
 ****************/
 /*
     获取某个月份的天数
 */
-_.getDays = function(year, month) {
+_.getDays = function (year, month) {
     return new Date(year, month, 0).getDate();
 };
 /*
     返回某一时间段日期信息
 */
-_.date = function(time) {
+_.date = function (time) {
     var n = time ? new Date(time) : new Date();
+
     return [n.getFullYear(), _.fillZero(n.getMonth() + 1), _.fillZero(n.getDate()), _.fillZero(n.getHours()), _.fillZero(n.getMinutes()), _.fillZero(n.getSeconds())];
 };
 /*
@@ -1277,21 +1293,23 @@ _.date = function(time) {
 */
 _.getTime = function (stamp) {
     var time = this.date(stamp);
-    return time[0] + '-' + time[1] + '-' + time[2] + ' ' + time[3] + ':' + time[4] + ':' +  time[5];
+
+    return time[0] + '-' + time[1] + '-' + time[2] + ' ' + time[3] + ':' + time[4] + ':' + time[5];
 };
 /*
     倒计时
 */
-_.countDown = function(c, fn) {
+_.countDown = function (c, fn) {
     // 有这么计划总情况需要处理
     // 1.传的是日期 2107-12-24 14:11:00
     // 2.传的是时间戳 1510012800000
     if (/-/g.test(c)) c = (new Date(c)).getTime();
     upDate(c, fn);
-    var timer = setInterval(function() {
+    var timer = setInterval(function () {
         if (!upDate(c, fn)) clearInterval(timer);
-    },1000);
-    function upDate(c, fn){
+    }, 1000);
+
+    function upDate (c, fn) {
         var d = new Date();
         //获取当前时间戳
         var nowTime = d.getTime();
@@ -1300,24 +1318,23 @@ _.countDown = function(c, fn) {
         var mist = parseInt((overTime - nowTime) / 1000);
         var date = parseInt(mist / 86400);
         //去天后的秒数
-        mist = mist % 86400    
+
+        mist = mist % 86400;    
         var hours = parseInt(mist / 3600);
         //去小时后的秒数
+
         mist = mist % 3600;
         var minutes = parseInt(mist / 60);
+
         mist = mist % 60;
         fn && fn(date, hours, minutes, mist);
         return date + hours + minutes + mist;
     }
 };
 
-
-
 /****************
     空间
 ****************/
-
-
 
 /****************
     数字
@@ -1327,38 +1344,14 @@ _.fillZero = function (nub) {
     return nub < 10 ? '0' + nub : nub;
 };
 
-
-
 /****************
     金钱
 ****************/
 // 数字3位加逗号，金钱显示
-_.money = function(num) {
+_.money = function (num) {
     num += '';
-    return num.split('').reverse().join('').replace(/(\d{3})/g, '$1,').split('').reverse().join('').replace(/^\,/,'');
+    return num.split('').reverse().join('').replace(/(\d{3})/g, '$1,').split('').reverse().join('').replace(/^\,/, '');
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*未完成*/
 /*
@@ -1373,6 +1366,7 @@ _.repeat = function (iterator, predicate, array) {
     // 判断这个新值在某个条件中符合不符合
     // 如果符合就添加到数据中
     // 如果不符合接着递归直到符合
+
     if (predicate(array, res)) {
         // 达到目的停止
         array.push(res);
@@ -1414,6 +1408,5 @@ _.change = function () {
         // ...
     };
 };
-
 
 // export default _;

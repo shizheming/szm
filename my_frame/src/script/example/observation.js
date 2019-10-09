@@ -15,14 +15,11 @@ export default function () {
 
         这里是观察数据的变化而动作，还要写个观察更抽象的动作而动作，数据动作也是动作的一种，从数据变化抽象出他的种的，那就是一切动作
     
-    /*{
-        accont : '',
-        password : '',
-        smscode : ''
-    }*/
+    */
     // 初始化key
     var a = observation(['accont', 'password', 'smscode']);
     // 监听
+
     a.listen('accont', function () {
         console.log('我动了accont');
     });
@@ -35,7 +32,7 @@ export default function () {
     // 发布新数据
     setTimeout(function () {
         a.set({
-            accont : 11111
+            accont: 11111
         });
     }, 1000);
     // 下个版本需要升级的内容

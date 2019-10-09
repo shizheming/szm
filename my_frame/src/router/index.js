@@ -19,19 +19,21 @@ Vue.use(VueRouter);
 var flattenRouter = (r) => {
     return _.flatten(r.map(current => {
         var r = [];
+
         if (current.child) {
-            var c = current.child.map((item => {
+            var c = current.child.map(item => {
                 item.path = current.path + item.path;
                 if (item.child) {
                     return flattenRouter(item.child);
                 }
                 return item;
-            }));
+            });
+
             r = r.concat(c);
         }
         return r.concat(current);
     }));
-}
+};
 var routes = flattenRouter(r);
 
 export const menu = r;

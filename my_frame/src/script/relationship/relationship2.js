@@ -17,13 +17,15 @@ const relationship = function (relationshipTable, a, b, c, d) {
             // 外界不同形式的回调入口
             a && result.push(a(currentValue, index, array));
             // 处理这条的rn对象的连续延伸最终到哪里，把他们连起来，形成一条线
-            let obj = {};
+            const obj = {};
+
             obj.n = currentValue.n;
             obj.continuity = [];
             // 先排除自己
-            let filterMe = array.filter(function (item, idx, arr) {
+            const filterMe = array.filter(function (item, idx, arr) {
                 return item.n !== currentValue.n;
             });
+
             obj.continuity = createOneOnOneLine(filterMe, currentValue, obj.continuity);
             obj.continuity.length && (continuity = continuity.concat(obj));
         }
@@ -32,6 +34,7 @@ const relationship = function (relationshipTable, a, b, c, d) {
             // 把多变成一
             currentValue.rn.forEach(function (item, idx, arr) {
                 var newObj = {};
+
                 newObj.n = currentValue.n;
                 newObj.rn = item;
                 oneOnOneRelationshipTable.push(newObj);
@@ -40,13 +43,15 @@ const relationship = function (relationshipTable, a, b, c, d) {
             // 外界不同形式的回调入口
             b && result.push(b(currentValue, index, array));
             // 处理这条的rn对象的连续延伸最终到哪里，把他们连起来，形成一条线
-            let obj = {};
+            const obj = {};
+
             obj.n = currentValue.n;
             obj.continuity = [];
             // 先排除自己
-            let filterMe = array.filter(function (item, idx, arr) {
+            const filterMe = array.filter(function (item, idx, arr) {
                 return item.n !== currentValue.n;
             });
+
             obj.continuity = createOneToManyLine(filterMe, currentValue, obj.continuity);
             obj.continuity.length && (continuity = continuity.concat(obj));
         }
@@ -55,6 +60,7 @@ const relationship = function (relationshipTable, a, b, c, d) {
             // 把多变成一
             currentValue.n.forEach(function (item, idx, arr) {
                 var newObj = {};
+
                 newObj.n = item;
                 newObj.rn = currentValue.rn;
                 oneOnOneRelationshipTable.push(newObj);
@@ -69,6 +75,7 @@ const relationship = function (relationshipTable, a, b, c, d) {
             currentValue.rn.forEach(function (item, idx, arr) {
                 currentValue.n.forEach(function (a, b, c) {
                     var newObj = {};
+
                     newObj.n = a;
                     newObj.rn = item;
                     oneOnOneRelationshipTable.push(newObj);
@@ -80,9 +87,9 @@ const relationship = function (relationshipTable, a, b, c, d) {
         }
     });
     return {
-        one : oneOnOneRelationshipTable,
-        callback : result,
-        continuity : continuity
+        one: oneOnOneRelationshipTable,
+        callback: result,
+        continuity: continuity
     };
 };
 
@@ -105,8 +112,8 @@ var createOneOnOneLine = function (filterMe, currentValue, obj) {
                 if (!_.isArray(item.rn)) {
                     // 避免2个关系之间互相引用造成的无限递归的判断
                     if (item.rn !== currentValue.n && !obj.some(function (a, b, c) {
-                            return a.name === item.rn.name;
-                        })) {
+                        return a.name === item.rn.name;
+                    })) {
                         obj.push(currentValue.rn, item.rn);
                         // 添加上层关系名称
                         currentValue.rn.n = currentValue.n.name;
@@ -117,8 +124,8 @@ var createOneOnOneLine = function (filterMe, currentValue, obj) {
                     item.rn.forEach(function (q, w, e) {
                         // 避免2个关系之间互相引用造成的无限递归的判断
                         if (q !== currentValue.n && !obj.some(function (a, b, c) {
-                                return a.name === q.name;
-                            })) {
+                            return a.name === q.name;
+                        })) {
                             obj.push(currentValue.rn, q);
                             // 添加上层关系名称
                             currentValue.rn.n = currentValue.n.name;
@@ -134,8 +141,8 @@ var createOneOnOneLine = function (filterMe, currentValue, obj) {
                 if (!_.isArray(item.rn)) {
                     // 避免2个关系之间互相引用造成的无限递归的判断
                     if (item.rn !== currentValue.n && !obj.some(function (a, b, c) {
-                            return a.name === item.rn.name;
-                        })) {
+                        return a.name === item.rn.name;
+                    })) {
                         obj.push(currentValue.rn, item.rn);
                         // 添加上层关系名称
                         currentValue.rn.n = currentValue.n.name;
@@ -146,8 +153,8 @@ var createOneOnOneLine = function (filterMe, currentValue, obj) {
                     item.rn.forEach(function (q, w, e) {
                         // 避免2个关系之间互相引用造成的无限递归的判断
                         if (q !== currentValue.n && !obj.some(function (a, b, c) {
-                                    return a.name === q.name;
-                                })) {
+                            return a.name === q.name;
+                        })) {
                             obj.push(currentValue.rn, q);
                             // 添加上层关系名称
                             currentValue.rn.n = currentValue.n.name;
@@ -160,10 +167,11 @@ var createOneOnOneLine = function (filterMe, currentValue, obj) {
         }
     });
     return _.uniq(obj);
-}
+};
 
 // 一对多的连续性
-var createOneToManyLine = function (filterMe, currentValue, obj) {;
+var createOneToManyLine = function (filterMe, currentValue, obj) {
+    ;
     filterMe.forEach(function (item, idx, arr) {
         // 排除关系延生段循环到自身
         if (JSON.stringify(item, function (k, v) {
@@ -178,7 +186,8 @@ var createOneToManyLine = function (filterMe, currentValue, obj) {;
             // 找到了连续的下一个
             if (_.isArray(currentValue.rn)) {
                 if (currentValue.rn.indexOf(item.n) > -1) {
-                    let idx = currentValue.rn.indexOf(item.n);
+                    const idx = currentValue.rn.indexOf(item.n);
+
                     if (!_.isArray(item.rn)) {
                         // 避免2个关系之间互相引用造成的无限递归的判断
                         if (item.rn !== currentValue.n && !obj.some(function (a, b, c) {
@@ -213,7 +222,8 @@ var createOneToManyLine = function (filterMe, currentValue, obj) {;
             item.n.forEach(function (h, j, k) {
                 if (_.isArray(currentValue.rn)) {
                     if (currentValue.rn.indexOf(h) > -1) {
-                        let idx = currentValue.rn.indexOf(h);
+                        const idx = currentValue.rn.indexOf(h);
+
                         if (!_.isArray(item.rn)) {
                             // 避免2个关系之间互相引用造成的无限递归的判断
                             if (item.rn !== currentValue.n && !obj.some(function (a, b, c) {
@@ -247,6 +257,6 @@ var createOneToManyLine = function (filterMe, currentValue, obj) {;
         }
     });
     return _.uniq(obj);
-}
+};
 
 export default relationship;

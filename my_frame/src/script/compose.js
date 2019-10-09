@@ -8,11 +8,14 @@ var c = function (a, b) {
     };
 };
 // 多个函数组合
+
 export default function (...args) {
     return function (...a) {
         var once = true;
+
         return args.reduceRight(function (res, cb) {
             var result;
+
             if (once) {
                 once = false;
                 result = cb.apply(null, res);
@@ -21,11 +24,8 @@ export default function (...args) {
             }
             return result;
         }, a);
-    }
+    };
 };
-
-
-
 
 // 例子
 // 2个参数的组合函数，最终的思想是柯里化成1个参数的函数，当然如果组合的函数接收相同的多个参数的话就没必要柯里化了

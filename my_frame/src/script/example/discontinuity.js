@@ -21,10 +21,10 @@ export default function () {
     */
 
     var d = discontinuity(
-        function () {console.log(arguments);return 1;}, 
-        function () {console.log(arguments);return 2;}, 
-        function () {console.log(arguments);return 3;}, 
-        function () {console.log(arguments)}
+        function () { console.log(arguments); return 1; }, 
+        function () { console.log(arguments); return 2; }, 
+        function () { console.log(arguments); return 3; }, 
+        function () { console.log(arguments); }
     );
     var a1 = d(11);
     var a2 = a1(22);

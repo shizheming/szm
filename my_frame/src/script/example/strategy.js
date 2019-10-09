@@ -56,18 +56,16 @@ export default function () {
         alert('s5' + v);
     }
 
-
     var relationshipTable = [{
-        n : [c1, c2],
-        rn : [s1, s4]
+        n: [c1, c2],
+        rn: [s1, s4]
     }, {
-        n : c4,
+        n: c4,
         rn: s2
     }, {
-        n : c3,
+        n: c3,
         rn: [s3, s4, s5]
     }];
-
 
     var u1 = strategy(relationshipTable, function (a, b, c) {
         console.log(a, b, c);
@@ -79,5 +77,4 @@ export default function () {
     // relationshipTable[1].rn.push(s5);
     var u3 = u2(11212444, 99999);
     var u4 = u3('heheda');
-
 }

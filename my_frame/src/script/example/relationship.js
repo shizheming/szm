@@ -26,59 +26,55 @@ export default function () {
     我觉得虽然多有很多，无限的，像维度，嵌套，但想要把这些功能都实现，太复杂，不利于理解，有些东西概念上需要比如间断性，联动性，但我不能为了在功能里面实现联动性和间断性的概念儿去赢靠，这个主次颠倒了，就像柏拉图把理念放第一位了，
     所以我觉得现在对我来说太复杂，太难的，占时不做，主要是保证核心简单干练
 
-
     */
 
     function a () {
-        alert(arguments.callee.name);
+        alert('a');
     }
     function b () {
-        alert(arguments.callee.name);
+        alert('b');
     }
     function c () {
-        alert(arguments.callee.name);
+        alert('c');
     }
     function d () {
-        alert(arguments.callee.name);
+        alert('d');
     }
     function e () {
-        alert(arguments.callee.name);
+        alert('e');
     }
     function f () {
-        alert(arguments.callee.name);
+        alert('f');
     }
     function g () {
-        alert(arguments.callee.name);
+        alert('g');
     }
     function h () {
-        alert(arguments.callee.name);
+        alert('h');
     }
     function i () {
-        alert(arguments.callee.name);
+        alert('i');
     }
 
+    var relationshipTable = [
+        {
+            m: b,
+            y: c
+        },
+        {
+            m: c,
+            y: [d, a, g]
+        },
+        {
+            m: h,
 
+            y: g
+        }
+    ];
 
-
-
-
-    var relationshipTable = [{
-        m : b,
-        y : c
-    }, {
-        m : c,
-        y : [d, a, g]
-    }/*, {
-        m : h,
-        y : g
-    }, {
-        m : [f, a],
-        y : [i, c]
-    }*/];
-
-
+    //1
 
     var gggggg = relationship(relationshipTable);
-    console.log(gggggg,89);
 
+    console.log(gggggg, 89);
 }

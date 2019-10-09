@@ -4,6 +4,7 @@
 const maybe = function (value) {
     this.value = value;
 };
+
 maybe.of = function (value) {
     return new maybe(value);
 };
@@ -15,6 +16,5 @@ maybe.prototype.map = function (fn) {
 };
 maybe.prototype.join = function () {
     return this.isNothing() ? maybe.of(null) : this.value;
-}
+};
 export default maybe;
-

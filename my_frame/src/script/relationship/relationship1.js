@@ -4,6 +4,7 @@ export default function (relationshipTable, a, b, c, d) {
     var oneOnOneRelationshipTable = [];
     // 回调函数返回的结果集
     var result = [];
+
     relationshipTable.forEach(function (currentValue, index, array) {
         // 一对一
         if (!_.isArray(currentValue.n) && !_.isArray(currentValue.rn)) {
@@ -14,6 +15,7 @@ export default function (relationshipTable, a, b, c, d) {
         if (!_.isArray(currentValue.n) && _.isArray(currentValue.rn)) {
             currentValue.rn.forEach(function (item, idx, arr) {
                 var newObj = {};
+
                 newObj.n = currentValue.n;
                 newObj.rn = item;
                 oneOnOneRelationshipTable.push(newObj);
@@ -24,6 +26,7 @@ export default function (relationshipTable, a, b, c, d) {
         if (_.isArray(currentValue.n) && !_.isArray(currentValue.rn)) {
             currentValue.n.forEach(function (item, idx, arr) {
                 var newObj = {};
+
                 newObj.n = item;
                 newObj.rn = currentValue.rn;
                 oneOnOneRelationshipTable.push(newObj);
@@ -35,6 +38,7 @@ export default function (relationshipTable, a, b, c, d) {
             currentValue.rn.forEach(function (item, idx, arr) {
                 currentValue.n.forEach(function (a, b, c) {
                     var newObj = {};
+
                     newObj.n = a;
                     newObj.rn = item;
                     oneOnOneRelationshipTable.push(newObj);
@@ -44,7 +48,7 @@ export default function (relationshipTable, a, b, c, d) {
         }
     });
     return {
-        one : oneOnOneRelationshipTable,
-        callback : result
+        one: oneOnOneRelationshipTable,
+        callback: result
     };
 };

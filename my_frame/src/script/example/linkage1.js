@@ -31,80 +31,74 @@ export default function () {
             虽然一既是多，我只写了一对一的关系，我把多也写进一里面了。。。。。。。。。。。。。。。。。。
     */
 
-
-
     var bigObj = [{
-            relationName : 'selector2GetData',
-            content : function list1GetData (a, b, c) {
-                var h = _.randomNumber();
-                var li = '';
-                console.log('list1GetData');
-                return [a + 1, b + 1, c + 1];
-            }
-        }, {
-            relationName : 'changeSelector2BackgroundColor',
-            content : function selector1ChangeColor () {
-                
-            }, 
-        }, {
-            content : function selector1ChangeSelector1FontSize (a, b, c) {
-                
-                return [a + 1, b + 1, c +1];
-            }
-        }, {
-            relationName : 'changeUl1BackgroundColor',
-            content : function selector2GetData (a, b, c) {
-                var that = this;
-                var h = _.randomNumber();
-                var option = '';
-                for (var i = 0; i < h; i++) option += '<option value="' + i + '">' + _.randomNumberAlphabet(10) + '</option>'
-                
-                console.log('selector2GetData', a, b, c);
-                return [a + 1, b + 1, c + 1];
-            },
-        }, {
-            relationName : 'changeUl1BackgroundColor',
-            content : function changeSelector2BackgroundColor () {
-                
-            },
-        }, {
-            content : function changeBodyBackgroundColor () {
-                
-            },
-        }, {
-            content : function changeUl1BackgroundColor (a, b, c) {
-                
-                console.log('changeUl1BackgroundColor', a, b, c);
-            },
-        }, {
-            content : function changeUl2BackgroundColor2 () {
-                
-            },
-        }, {
-            relationName : 'select3GetData',
-            content : function list2GetData (a, b, c) {
-                var h = _.randomNumber();
-                var li = '';
-                return [a + 1, b + 1, c + 1];
-            }
-        }, {
-            content : function select3GetData (a, b, c) {
-                var that = this;
-                var h = _.randomNumber();
-                var option = '';
-                return [a + 1, b + 1, c + 1];
-            },
-        }, {
-            content : function select4ChangeBorderColor (a, b, c) {
-                console.log('select4ChangeBorderColor');
-            }
+        relationName: 'selector2GetData',
+        content: function list1GetData (a, b, c) {
+            var h = _.randomNumber();
+            var li = '';
+
+            console.log('list1GetData');
+            return [a + 1, b + 1, c + 1];
+        }
+    }, {
+        relationName: 'changeSelector2BackgroundColor',
+        content: function selector1ChangeColor () {
+
+        }
+    }, {
+        content: function selector1ChangeSelector1FontSize (a, b, c) {
+            return [a + 1, b + 1, c + 1];
+        }
+    }, {
+        relationName: 'changeUl1BackgroundColor',
+        content: function selector2GetData (a, b, c) {
+            var that = this;
+            var h = _.randomNumber();
+            var option = '';
+
+            for (var i = 0; i < h; i++) option += '<option value="' + i + '">' + _.randomNumberAlphabet(10) + '</option>';
+
+            console.log('selector2GetData', a, b, c);
+            return [a + 1, b + 1, c + 1];
+        }
+    }, {
+        relationName: 'changeUl1BackgroundColor',
+        content: function changeSelector2BackgroundColor () {
+
+        }
+    }, {
+        content: function changeBodyBackgroundColor () {
+
+        }
+    }, {
+        content: function changeUl1BackgroundColor (a, b, c) {
+            console.log('changeUl1BackgroundColor', a, b, c);
+        }
+    }, {
+        content: function changeUl2BackgroundColor2 () {
+
+        }
+    }, {
+        relationName: 'select3GetData',
+        content: function list2GetData (a, b, c) {
+            var h = _.randomNumber();
+            var li = '';
+
+            return [a + 1, b + 1, c + 1];
+        }
+    }, {
+        content: function select3GetData (a, b, c) {
+            var that = this;
+            var h = _.randomNumber();
+            var option = '';
+
+            return [a + 1, b + 1, c + 1];
+        }
+    }, {
+        content: function select4ChangeBorderColor (a, b, c) {
+            console.log('select4ChangeBorderColor');
+        }
     }];
 
-
     var haha = linkage(bigObj);
-
-
-
-
-
 }

@@ -17,24 +17,24 @@ export default function () {
     */
 
     var aaa = [{
-        condition : function (a, b) {
+        condition: function (a, b) {
             return a > b;
         },
-        strategy : function () {
+        strategy: function () {
             alert('a > b');
         }
     }, {
-        condition : function (a, b) {
+        condition: function (a, b) {
             return b > a;
         },
-        strategy : function () {
+        strategy: function () {
             alert('b > a');
         }
     }, {
-        condition : function (a, b) {
+        condition: function (a, b) {
             return a === b;
         },
-        strategy : function (a) {
+        strategy: function (a) {
             alert(a);
         }
     }];
