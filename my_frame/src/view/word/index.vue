@@ -51,6 +51,9 @@ export default {
             // console.log(h,2342342);
 
             this.code = h;
+            var a = {
+                a:1,
+            }
         }
     }
 };
