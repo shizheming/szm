@@ -14,13 +14,14 @@ const relationship = function (relationship) {
         if (isOneToMany(m, y)) {
             return y.map(item => {
                 return {
-                    m: m,
+                    m,
                     y: item
                 };
             }); 
         }
     });
 
+    console.log(a, 123);
     return compose(_.flatten, filterFalse)(a);
 };
 

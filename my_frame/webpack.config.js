@@ -1,7 +1,7 @@
 const path = require('path');
 const htmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
     entry: './index.js',
@@ -72,13 +72,17 @@ module.exports = {
                 test: /\.vue$/,
                 use: 'vue-loader'
             },
-            {
-                test: /\.(js|vue)$/,
+            /* {
+                test: /\.js$/,
                 loader: 'eslint-loader',
-			exclude: /node_modules/,
-			enforce: 'pre'//'post'
+                exclude: /node_modules/,
+                options: {
+                    // eslint-disable-next-line no-undef
+                    formatter: require('eslint-friendly-formatter')
+                },
+                enforce: 'pre'//'post'
                 
-            }
+            } */
         ]
     },
     plugins: [
@@ -90,4 +94,4 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(),
         new VueLoaderPlugin()
     ]
-}
+};

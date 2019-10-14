@@ -16,9 +16,6 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
-        "vue/valid-v-model": "off",
-        "vue/no-unused-vars": "off",
-        "vue/no-unused-components": "off",
         "no-unused-vars": "off",
         "prefer-promise-reject-errors": "off",
         "no-redeclare": "off",

@@ -1,8 +1,10 @@
-import discontinuity from '../discontinuity';
-export const map = ['discontinuity'];
-export const key = 'discontinuity';
-export default function () {
-    /*
+<template>
+    <div></div>
+</template>
+<script>
+/* eslint-disable no-console */
+import discontinuity from '../script/discontinuity'
+/*
         2019/07/03
         间断性
         概念：
@@ -20,14 +22,18 @@ export default function () {
         所以上面的比方打错了，呵呵哒，还是对柯里化理解不深刻，但是也是有收货的，就是形式的提炼
     */
 
-    var d = discontinuity(
-        function a () { console.log(arguments); return 1; }, 
-        function b () { console.log(arguments); return 2; }, 
-        function c () { console.log(arguments); return 3; }, 
-        function d () { console.log(arguments); }
-    );
-    var a1 = d(11);
-    var a2 = a1(22);
-    var a3 = a2(33);
-    var a4 = a3(44);
+var d = discontinuity(
+    function a (...aa) { console.log(aa); return 1; }, 
+    function b (...aa) { console.log(aa); return 2; }, 
+    function c (...aa) { console.log(aa); return 3; }, 
+    function d (...aa) { console.log(aa); }
+);
+var a1 = d(11);
+var a2 = a1(22);
+var a3 = a2(33);
+var a4 = a3(44);
+export default {
+
+    
 }
+</script>
