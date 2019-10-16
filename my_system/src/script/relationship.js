@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /*
     关系
     动态静态：（运动）
@@ -20,6 +21,7 @@
 
 */
 import _ from 'lodash';
+import __ from './_';
 const relationship = function (relationship) {
     var a = relationship.map(currentValue => {
         var {m, y} = currentValue;
@@ -40,8 +42,90 @@ const relationship = function (relationship) {
         }
     });
 
-    return compose(_.flatten, filterFalse)(a);
+    var b = compose(_.flatten, filterFalse)(a);
+    // 最终哟啊变成1对多的结构，拿到外面的数据先打散成一对一，在重组成一对多
+    // 先把一对一变成一对多
+    // 拿key
+    var keys = b.map(current => {
+        return current.m.name;
+    });
+    // 去重
+    var onlyKey = _.uniq(keys);
+    // 合并m
+    var r = {};
+    onlyKey.forEach(current => {
+        var f = b.filter(item => {
+            return item.m.name === current;
+        });
+        r[current] = {
+            
+            m: f[0].m,
+            y: f.map(i => {
+                return i.y;
+            })
+        };
+    });
+    var ar = Object.values(r);
+    console.log(r, 12);
+    /* function findRelationship (m) {
+        const arr = Object.keys(r);
+        return m.reduce((i, c,) => {
+            i.push(c);
+
+            if (arr.includes(c.name)) {
+                i.push(findRelationship(r[c.name].y));
+            }
+            return i;
+        }, []);
+    } */
+    function createRelationshipTable (o, result = []) {
+        o.forEach(value => {
+            var no = {};
+            no.m = value;
+            if (r[value.name]) {
+                no.y = createRelationshipTable(r[value.name].y);
+            }
+            result.push(no);
+        });
+        return result;
+    }
+    // var cc = createRelationshipTable(ar);
+    __.forEach(r, (value, key) => {
+        var g = createRelationshipTable(value.y);
+        console.log(g, key);
+    });
+
+
+
+
+    // 无限切割技术
+    /* function infiniteSplice (arr, newArr = []) {
+        var index = arr.indexOf(true);
+        if (index > -1) {
+            let s = arr.splice(index + 1);
+            newArr.push(arr);
+            infiniteSplice(s, newArr);
+        } else {
+            newArr.push(arr);
+        }
+        return newArr;
+    } */
+    
+    // 添加m里面的函数
+    /* __.forEach(lines, function (value, key) {
+        value.forEach(item => {
+            item.unshift(r[key].m);
+        });
+    }); */
+    
+        
+    
+    
+    
+    return b;
 };
+
+
 
 const filterFalse = function (a) {
     return a.filter(function () {

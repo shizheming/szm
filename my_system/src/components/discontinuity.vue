@@ -28,10 +28,10 @@ var d = discontinuity(
     function c (...aa) { console.log(aa); return 3; }, 
     function d (...aa) { console.log(aa); }
 );
-var a1 = d(11);
+/* var a1 = d(11);
 var a2 = a1(22);
 var a3 = a2(33);
-var a4 = a3(44);
+var a4 = a3(44); */
 export default {
 
     
