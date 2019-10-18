@@ -65,8 +65,6 @@ const relationship = function (relationship) {
             })
         };
     });
-    var ar = Object.values(r);
-    console.log(r, 12);
     /* function findRelationship (m) {
         const arr = Object.keys(r);
         return m.reduce((i, c,) => {
@@ -89,39 +87,30 @@ const relationship = function (relationship) {
         });
         return result;
     }
-    // var cc = createRelationshipTable(ar);
+    var tree = {};
     __.forEach(r, (value, key) => {
-        var g = createRelationshipTable(value.y);
-        console.log(g, key);
+        tree[key] = createRelationshipTable(value.y);
     });
+    console.log(tree, 98);
 
-
-
-
-    // 无限切割技术
-    /* function infiniteSplice (arr, newArr = []) {
-        var index = arr.indexOf(true);
-        if (index > -1) {
-            let s = arr.splice(index + 1);
-            newArr.push(arr);
-            infiniteSplice(s, newArr);
-        } else {
-            newArr.push(arr);
-        }
-        return newArr;
-    } */
-    
-    // 添加m里面的函数
-    /* __.forEach(lines, function (value, key) {
-        value.forEach(item => {
-            item.unshift(r[key].m);
+    var lines = [];
+    function getLine (arr, result = []) {
+        arr.forEach((current, index) => {
+            if (index) result.pop();
+            result.push(current.m);
+            if (current.y) {
+                getLine(current.y, [...result]);
+            } else {
+                lines.push(result);
+            }
         });
-    }); */
-    
-        
-    
-    
-    
+    }
+    __.forEach(tree, (value) => {
+        var l = getLine(value);
+        // console.log(l, 27);
+    });
+    console.log(lines, 28);
+
     return b;
 };
 
