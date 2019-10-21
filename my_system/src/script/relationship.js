@@ -65,6 +65,7 @@ const relationship = function (relationship) {
             })
         };
     });
+    // console.log(r, 'r');
     /* function findRelationship (m) {
         const arr = Object.keys(r);
         return m.reduce((i, c,) => {
@@ -91,7 +92,17 @@ const relationship = function (relationship) {
     __.forEach(r, (value, key) => {
         tree[key] = createRelationshipTable(value.y);
     });
-    console.log(tree, 98);
+    // 把头塞进去
+    __.forEach(tree, (value, key, o) => {
+        var fn = r[key].m;
+        o[key] = [
+            {
+                m: fn,
+                y: value
+            }
+        ];
+    });
+    // console.log(tree, 'tree');
 
     var lines = [];
     function getLine (arr, result = []) {
@@ -101,17 +112,25 @@ const relationship = function (relationship) {
             if (current.y) {
                 getLine(current.y, [...result]);
             } else {
-                lines.push(result);
+                lines.push([...result]);
             }
         });
     }
     __.forEach(tree, (value) => {
-        var l = getLine(value);
-        // console.log(l, 27);
+        getLine(value);
     });
-    console.log(lines, 28);
+    // console.log(lines, 28);
 
-    return b;
+    
+    function findRelationship (arr, key) {
+        return arr.filter(current => {
+            return current[0].name === key;
+        });
+    }
+    // console.log(findRelationship(lines, 'c'), 'findRelationship');
+
+
+    return lines;
 };
 
 
