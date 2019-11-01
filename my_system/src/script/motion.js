@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /*
     运动
     概念：
@@ -11,6 +12,10 @@
 
     间断性和连续性是一体的，就是运动本身
     也就是说这个东西本身技能动又能停
+
+
+    待解决：
+        passValue公用存返回值，不独立，不对象
 */
 import _ from 'lodash';
 // 我觉得应该弄一个独立的把手来控制动动停停，一开始我是想在返回的函数里面传参的，后来觉得和其他的参数混在一起不利于区分，不能很好的区分这是把手参数还是真正的参数
@@ -39,21 +44,30 @@ function motion () {
     fnName = undefined;
     var last = arguments[arguments.length - 1];
     if (!_.isBoolean(last)) {
+        // 这里要多一步来接受连续性运行第一个函数应该接受的值
+        
         let r = f.apply(null, arguments);
-        return running(_.isFunction, r); 
+        return function (...firstValue) {
+            return running(_.isFunction, r, firstValue); 
+        };
     } else {
         let a = [].slice.apply(arguments);
+        // 把最后一个true干掉
         a.pop();
         return f.apply(null, a);
     }
 }
 // 写一个当条件成立前无限运行的方法
-function running (predicate, fn) {
+function running (predicate, fn, firstValue/*连续性运行的时候第一个函数接收的传值进来*/) {
     if (predicate(fn)) {
-        fn = fn();
+        if (_.isArray(firstValue) && firstValue.length) {
+            fn = fn.apply(null, firstValue);
+        } else {
+            fn = fn();
+        }
         return running(predicate, fn);
     } else {
-        console.log(passValue, '解放了');
+        // console.log(passValue, '解放了');
         // 我要返回什么呢
         // 1.全部运行完后返回的最终值----这个体现在连续性的上面
         // 2.运行到一半需要返回函数----这个体现在间断性上，但是运行完最后一个的时候还是要返回最终值

@@ -65,18 +65,7 @@ const relationship = function (relationship) {
             })
         };
     });
-    // console.log(r, 'r');
-    /* function findRelationship (m) {
-        const arr = Object.keys(r);
-        return m.reduce((i, c,) => {
-            i.push(c);
-
-            if (arr.includes(c.name)) {
-                i.push(findRelationship(r[c.name].y));
-            }
-            return i;
-        }, []);
-    } */
+    
     function createRelationshipTable (o, result = []) {
         o.forEach(value => {
             var no = {};
@@ -120,15 +109,6 @@ const relationship = function (relationship) {
         getLine(value);
     });
     // console.log(lines, 28);
-
-    
-    function findRelationship (arr, key) {
-        return arr.filter(current => {
-            return current[0].name === key;
-        });
-    }
-    // console.log(findRelationship(lines, 'c'), 'findRelationship');
-
 
     return lines;
 };

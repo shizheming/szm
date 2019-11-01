@@ -12,10 +12,22 @@ var routes = [
         component: () => import('../components/relationship.vue')
     },
     {
-        path: '/discontinuity',
-        name: 'discontinuity',
-        title: '关系',
-        component: () => import('../components/discontinuity.vue')
+        path: '/motion',
+        name: 'motion',
+        title: '运动',
+        component: () => import('../components/motion.vue')
+    },
+    {
+        path: '/linkage',
+        name: 'linkage',
+        title: '联动',
+        component: () => import('../components/linkage.vue')
+    },
+    {
+        path: '/strategy',
+        name: 'strategy',
+        title: '策略',
+        component: () => import('../components/strategy.vue')
     },
 ];
 

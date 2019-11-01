@@ -1,5 +1,5 @@
 <template>
-<div></div>
+    <div>relationship</div>
 </template>
 
 <script>
@@ -46,11 +46,14 @@ var relationshipTable = [
     }
 ];
 
-var r = relationship(relationshipTable);
-console.log(r, 137);
+
 
 
 export default {
+    created () {
+        var r = relationship(relationshipTable);
+        console.log(r, 137);
+    }
 };
 </script>
 
