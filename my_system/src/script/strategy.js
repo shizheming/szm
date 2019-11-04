@@ -1,4 +1,7 @@
+/* eslint-disable no-console */
 import relationship from './relationship';
+import _ from 'lodash';
+import motion from './motion';
 
 /* 
     策略
@@ -8,10 +11,27 @@ import relationship from './relationship';
     目的就是把几根绳子凝成一根绳子
 
     逻辑没有分叉会很简单，一条路笔直走到底
+
+    加入间断性和连续性来试试，我想把间断性和连续性写成能在任何方法都能随即插入使用的接口
 */
 
-function strategy (r) {
+function strategy (r/* 关系表 */, m/* 间断性连续性参数 */) {
     var g = relationship(r);
-    console.log(g, 1);
+    return function () {
+        let result;
+        g.some(current => {
+            if (current[0].apply(null, [].slice.apply(arguments))) {
+                result = current[1];
+            }
+        });
+        if (_.isFunction(result)) {
+            const args = [result];
+            if (m) {
+                args.push(m);
+            }
+            return motion.apply(null, args);
+        }
+    };
 }
+
 export default strategy;

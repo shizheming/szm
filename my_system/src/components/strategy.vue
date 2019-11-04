@@ -19,8 +19,8 @@ function c (j, k) {
     return j === k;
 }
 
-function a1 () {
-    return '小于';
+function a1 (v) {
+    return v + '小于';
 }
 
 function b1 () {
@@ -47,6 +47,9 @@ var s = strategy([
 ]);
 
 
+var v = s(1, 2);
+var t = v(666);
+console.log(t, 6565);
 
 export default {
     created () {
