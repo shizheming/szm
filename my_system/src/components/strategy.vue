@@ -44,12 +44,14 @@ var s = strategy([
         m: c,
         y: c1
     }
-]);
+]/* , true */);
 
 
 var v = s(1, 2);
-var t = v(666);
-console.log(t, 6565);
+console.log(v, 1838);
+/* var t = v(666);
+
+console.log(t, 6565); */
 
 export default {
     created () {

@@ -38,7 +38,6 @@ function f () {
 // 在包一个
 // 默认是连续的
 function motion () {
-    console.log(arguments.length, 888888);
     // 创建对象存数据
     // passValue是公用的，所以每次调用这个函数都要还原下，免的数据串了
     passValue = undefined;

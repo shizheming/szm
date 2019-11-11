@@ -18,18 +18,20 @@ import motion from './motion';
 function strategy (r/* 关系表 */, m/* 间断性连续性参数 */) {
     var g = relationship(r);
     return function () {
-        let result;
+        let y;
         g.some(current => {
             if (current[0].apply(null, [].slice.apply(arguments))) {
-                result = current[1];
+                y = current[1];
             }
         });
-        if (_.isFunction(result)) {
-            const args = [result];
+        if (_.isFunction(y)) {
             if (m) {
-                args.push(m);
+                const args = [];
+                args.push(y, m);
+                return motion.apply(null, args);
+            } else {
+                return y();
             }
-            return motion.apply(null, args);
         }
     };
 }
