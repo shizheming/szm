@@ -7,51 +7,51 @@
 /* eslint-disable no-console */
 import strategy from '../script/strategy';
 
-function a (j, k) {
-    return j < k;
-}
-
-function b (j, k) {
-    return j > k;
-}
-
-function c (j, k) {
-    return j === k;
-}
-
-function a1 (v) {
-    return v + '小于';
-}
-
-function b1 () {
-    return '大于';
-}
-
-function c1 () {
-    return '等于';
-}
+var o = {
+    a (j, k) {
+        return j < k;
+    },
+    a_1 (j, k) {
+        return true;
+    },
+    b (j, k) {
+        return j > k;
+    },
+    c (j, k) {
+        return j === k;
+    },
+    a1 (v) {
+        return v + '小于';
+    },
+    b1 () {
+        return '大于';
+    },
+    c1 () {
+        return '等于';
+    }
+};
 
 var s = strategy([
     {
-        m: a,
-        y: a1
+        m: [o.a, o.a_1],
+        y: o.a1,
+        rule: 'a()&&a_1()'
     },
     {
-        m: b,
-        y: b1
+        m: o.b,
+        y: o.b1
     },
     {
-        m: c,
-        y: c1
+        m: o.c,
+        y: o.c1
     }
-]/* , true */);
+], o/* , true */);
 
-
-var v = s(1, 2);
+var v = s(3, 2);
 console.log(v, 1838);
-/* var t = v(666);
+// var t = v(666);
 
-console.log(t, 6565); */
+// console.log(t, 6565);
 
 export default {
     created () {

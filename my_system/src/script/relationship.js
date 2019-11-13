@@ -9,6 +9,7 @@
     核心就是：
         1，一对一
         2，一对多
+        3. 多对一（把m和y的值颠倒下就变成一对多了----在策略中有多种条件产生一个结果）
 
     目的：关系表的目的就是建立说明关系，把不相干的东西联系在一起，并不做实际操作（比如联动），
 
@@ -41,7 +42,6 @@ const relationship = function (relationship) {
             }); 
         }
     });
-
     var b = compose(_.flatten, filterFalse)(a);
     // 最终哟啊变成1对多的结构，拿到外面的数据先打散成一对一，在重组成一对多
     // 先把一对一变成一对多
@@ -65,7 +65,6 @@ const relationship = function (relationship) {
             })
         };
     });
-    
     function createRelationshipTable (o, result = []) {
         o.forEach(value => {
             var no = {};
@@ -110,7 +109,10 @@ const relationship = function (relationship) {
     });
     // console.log(lines, 28);
 
-    return lines;
+    return {
+        lines,
+        r
+    };
 };
 
 

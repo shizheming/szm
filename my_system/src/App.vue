@@ -60,9 +60,15 @@
 
 export default {
     name: 'app',
+    data () {
+        return {
+            n: 6767
+        };
+    },
     components: {
     }
 };
+
 </script>
 
 <style>
