@@ -4,9 +4,9 @@
 <script>
 /* eslint-disable no-console */
 import linkage from '../script/linkage';
-function a () {
+function a (v) {
     console.log('我起床了');
-    return 1;
+    return v;
 }
 function b (v) {
     console.log('我穿外套了');
@@ -35,7 +35,7 @@ function g (v) {
 export default {
     created () {
         var s = linkage(a, b, c, d, e, f, g);
-        console.log(s());
+        console.log(s(100));
     }
 };
 </script>

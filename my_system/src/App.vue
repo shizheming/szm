@@ -3,28 +3,24 @@
         <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
         <ul>
             <li>
-                到底是有人呢还是没人
+                <a href="#/relationship">关系</a>
+            </li>
+            <li>
+                <a href="#/motion">间断性连续性（运动）</a>
                 <ul>
                     <li>
-                        <a href="#/relationship">关系</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li>
-                        <a href="#/motion">间断性连续性（运动）</a>
-                        <ul>
-                            <li>
-                                <a href="#/linkage">联动</a>
-                            </li>
-                        </ul>
+                        <a href="#/linkage">联动</a>
                     </li>
                     <li>
-                        <a href="#/strategy">策略（分支，判断）</a>
+                        <a href="#/compose">组合</a>
                     </li>
                 </ul>
             </li>
+            <li>
+                <a href="#/strategy">策略（分支，判断）</a>
+            </li>
         </ul>
-        <dl>
+        <!-- <dl>
             <dt>语言是什么？</dt>
             <dd>xxxx</dd>
             <dt>什么是语言？</dt>
@@ -49,7 +45,7 @@
             <dd>怎么把叉路合成一条路，把判断分装在里面</dd>
             <dt>js变的是什么？</dt>
             <dd>js组成的衍生的第一实体，那个个别的</dd>
-        </dl>
+        </dl> -->
         
        
         <router-view/>

@@ -24,6 +24,12 @@ var routes = [
         component: () => import('../components/linkage.vue')
     },
     {
+        path: '/compose',
+        name: 'compose',
+        title: '组合',
+        component: () => import('../components/compose.vue')
+    },
+    {
         path: '/strategy',
         name: 'strategy',
         title: '策略',
