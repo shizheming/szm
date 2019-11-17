@@ -19,6 +19,9 @@
             <li>
                 <a href="#/strategy">策略（分支，判断）</a>
             </li>
+            <li>
+                <a href="#/memoized">记忆</a>
+            </li>
         </ul>
         <!-- <dl>
             <dt>语言是什么？</dt>

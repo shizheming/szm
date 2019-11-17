@@ -22,10 +22,26 @@
     就像vue先走mounted，然后用户各种上点击事件函数调用，我去记录他，从对象去切入这个记录点
 */
 
-function memoized (obj/* 把整个要记录的对象都传进来 */) {
-    var storage = [{}, {}];
-    return function (json) {
+import __ from './_';
 
-    };
-}
+function memoized (obj/* 把整个要记录的对象都传进来 */) {
+    var newObj = {};
+    __.forEach(obj, (value, key) => {
+        newObj[key] = (function (key) {
+            return function () {
+                newObj[key].info.count++;
+                memoized.storage.push(newObj[key].info);
+                return value.apply(this, arguments);
+            };
+        })(key);
+        newObj[key].info = {
+            // 调用方法明
+            name: key,
+            // 动用的次数
+            count: 0
+        };
+    });
+    return newObj;
+};
+memoized.storage = [];
 export default memoized;

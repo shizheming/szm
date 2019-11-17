@@ -35,6 +35,12 @@ var routes = [
         title: '策略',
         component: () => import('../components/strategy.vue')
     },
+    {
+        path: '/memoized',
+        name: 'memoized',
+        title: '策略',
+        component: () => import('../components/memoized.vue')
+    },
 ];
 
 export default new VueRouter({
