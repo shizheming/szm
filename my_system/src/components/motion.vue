@@ -30,11 +30,11 @@ var d1 = motion(
 export default {
     created () {
         // 中间连续
-        /* var a1 = d1(999999);
+        var a1 = d1(999999);
         var x = motion.handle(a1, 'c1');
         console.log(x, 4545);
-        var xx = x(88, 117);
-        console.log(xx, '到底了没'); */
+        var xx = x(88);
+        console.log(xx, '到底了没');
         // 既然间断了，那怎么把这个原来吐出来的函数给干掉
         // 里面做判断，如果调用了handle方法后再去掉
         // a1(7777, 4444445555555555555555);
@@ -53,7 +53,7 @@ export default {
 
         // 连续
         // 发现连续的时候没地方传第一个值
-        var gg = d(414141);
+        d(414141);
     }
 };
 </script>

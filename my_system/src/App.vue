@@ -1,6 +1,8 @@
 <template>
     <div id="app">
         <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
+        <h2>范畴</h2>
+        <!-- <h3>作用于函数，基于对象，也就是说，我在操作函数，但概念是对象级别的，把函数当作对象，对象是由属性和方法的</h3> -->
         <ul>
             <li>
                 <a href="#/relationship">关系</a>
@@ -22,7 +24,15 @@
             <li>
                 <a href="#/memoized">记忆</a>
             </li>
+            <li>
+                <a href="#/run">运行（达到条件才停止）</a>
+            </li>
+            <li>
+                <a href="#/decorate">装饰</a>
+            </li>
         </ul>
+        <!-- <h3>作用于数组和json，基于对象，也就是说，我在操作数组和json，但概念是对象级别的，把数组和json当作对象，对象是由属性和方法的</h3> -->
+        <h2>具体的行为</h2>
         <!-- <dl>
             <dt>语言是什么？</dt>
             <dd>xxxx</dd>

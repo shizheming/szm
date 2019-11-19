@@ -42,6 +42,6 @@ function memoized (obj/* 把整个要记录的对象都传进来 */) {
         };
     });
     return newObj;
-};
+}
 memoized.storage = [];
 export default memoized;

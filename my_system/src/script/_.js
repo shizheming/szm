@@ -804,21 +804,6 @@ _.before = function (times, func) {
 _.once = _.before.bind('', 1);
 
 /****************
-    装饰
-******************/
-
-_.decorate = function (before, after) {
-    before = processFunction(before);
-    after = processFunction(after);
-    return function () {
-        var beforeResult = before.apply(this, arguments);
-
-        beforeResult = _.isArray(beforeResult) ? beforeResult : [];
-        return after.apply(this, beforeResult);
-    };
-};
-
-/****************
     随机
 ******************/
 
@@ -1135,43 +1120,8 @@ var aaaa = {
 ****************/
 
 /*未完成*/
-/*
-    重复行为
-    重复做直到达到目标，不达目的誓不罢休
-    但这里只是重复特定的值，万一我是要做其他更具体的事情呢？？？？其他情况最终还是转化为一个值
-*/
-_.repeat = function (iterator, predicate, array) {
-    array = array ? [] : array;
-    // 创建一个新值
-    var res = iterator();
-    // 判断这个新值在某个条件中符合不符合
-    // 如果符合就添加到数据中
-    // 如果不符合接着递归直到符合
 
-    if (predicate(array, res)) {
-        // 达到目的停止
-        array.push(res);
-        return res;
-        // 没达到目的继续
-    } else _.repeat(iterator, predicate, array);
-};
 
-/*
-    第三者
-    发现很多模式都是通过第三者甚至第n者来进行对象与对象之间的访问的，比如中介者，代理
-    未完成。。。。。。
-*/
-_.third = function () {
-
-};
-/*
-    策略
-    访问对象的属性
-    未完成。。。。。。
-*/
-_.strategy = function (road) {
-
-};
 /*
     js特性的终极目标--动态变化
     未完成。。。。。。
