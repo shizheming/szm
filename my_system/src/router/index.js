@@ -53,6 +53,12 @@ var routes = [
         title: '装饰',
         component: () => import('../components/decorate.vue')
     },
+    {
+        path: '/state',
+        name: 'state',
+        title: '状态',
+        component: () => import('../components/state.vue')
+    },
 ];
 
 export default new VueRouter({
