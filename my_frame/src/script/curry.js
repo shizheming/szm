@@ -1,7 +1,7 @@
 /*
     柯里化
 */
-export default const curry = function (fn) {
+export default function (fn) {
     return function curriedFn (...args) {
         if (args.length < fn.length) {
             return function () {
