@@ -39,7 +39,51 @@
             </li>
         </ul>
         <!-- <h3>作用于数组和json，基于对象，也就是说，我在操作数组和json，但概念是对象级别的，把数组和json当作对象，对象是由属性和方法的</h3> -->
-        <h2>具体的行为</h2>
+        <h2>具体的行为，落实到质料上，数据上，同时是对象级别</h2>
+        <p>是不是，判断是不是某个对象</p>
+        <ul>
+            <li>是不是类数组</li>
+            <li>是不是数组</li>
+            <li>是不是对象</li>
+            <li>是不是正则</li>
+            <li>是不是函数</li>
+            <li>是不是日期</li>
+            <li>是不是布尔</li>
+            <li>是不是字符串</li>
+        </ul>
+        <p>是否，判断是不是某个对象状态</p>
+        <ul>
+            <li>是否冻结</li>
+            <li>是否相等</li>
+        </ul>
+        <p>获取，要，拿，摘，分，分组，去，合</p>
+        <ul>
+            <li>要key</li>
+            <li>要value</li>
+            <li>摘部分value</li>
+            <li>把数组按条件分组</li>
+            <li>删</li>
+            <li>去重</li>
+            <li>并集</li>
+            <li>交集</li>
+            <li>差集</li>
+        </ul>
+        <p>形态变化，结构变化</p>
+        <ul>
+            <li>对象变数组，数组变对象</li>
+            <li>冻结对象</li>
+        </ul>
+        <p>循环</p>
+        <ul>
+            <li>单循环</li>
+        </ul>
+        <p>尚未定义</p>
+        <ul>
+            <li>反转</li>
+            <li>包含</li>
+            <li>最大</li>
+            <li>最小</li>
+        </ul>
         <!-- <dl>
             <dt>语言是什么？</dt>
             <dd>xxxx</dd>
@@ -66,13 +110,18 @@
             <dt>js变的是什么？</dt>
             <dd>js组成的衍生的第一实体，那个个别的</dd>
         </dl> -->
-        
-       
         <router-view/>
     </div>
 </template>
 
 <script>
+
+import _ from './script/is';
+
+
+
+
+console.log(_.zip(["moe", 30, true], ["larry", 40, false], ["curly", 50, false]));
 
 export default {
     name: 'app',
