@@ -1,12 +1,8 @@
 <template>
     <div id="app">
         <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-        <h2>范畴</h2>
-        <p>量：单一性、多数性、总体性。 </p>
-        <p>质：实在性、否定性和限制性。 </p>
-        <p>关系：实体与偶性、原因性与依存性（原因和结果）、协同性或者交互性。 </p>
-        <p>模态：可能性与不可能性、现实性与非现实性、必然性与偶然性。 </p>
         <!-- <h3>作用于函数，基于对象，也就是说，我在操作函数，但概念是对象级别的，把函数当作对象，对象是由属性和方法的</h3> -->
+        <p>大的概念，有巨大的外延很小的内涵</p>
         <ul>
             <li>
                 <a href="#/relationship">关系</a>
@@ -39,34 +35,48 @@
             </li>
         </ul>
         <!-- <h3>作用于数组和json，基于对象，也就是说，我在操作数组和json，但概念是对象级别的，把数组和json当作对象，对象是由属性和方法的</h3> -->
-        <h2>具体的行为，落实到质料上，数据上，同时是对象级别</h2>
+        <p>判断（也就是形成分叉的原因）</p>
+        <p>有没有，判断，先有没有这个，再说是不是这个</p>
+        <ul>
+            <li>_.includes</li>
+        </ul>
         <p>是不是，判断是不是某个对象</p>
         <ul>
-            <li>是不是类数组</li>
-            <li>是不是数组</li>
-            <li>是不是对象</li>
-            <li>是不是正则</li>
-            <li>是不是函数</li>
-            <li>是不是日期</li>
-            <li>是不是布尔</li>
-            <li>是不是字符串</li>
+            <li>是不是类数组_.isArguments</li>
+            <li>是不是数组_.isArray</li>
+            <li>是不是对象_.isObject</li>
+            <li>是不是正则_.isRegExp</li>
+            <li>是不是函数_.isFunction</li>
+            <li>是不是日期_.isDate</li>
+            <li>是不是布尔_.isBoolean</li>
+            <li>是不是字符串_.isString</li>
         </ul>
         <p>是否，判断是不是某个对象状态</p>
         <ul>
-            <li>是否冻结</li>
-            <li>是否相等</li>
+            <li>是否冻结_.isFrozen</li>
+            <li>是否相等_.is</li>
         </ul>
-        <p>获取，要，拿，摘，分，分组，去，合</p>
+
+        <!-- 姑且这样分吧，小操作大概念，没有绝对的界限 -->
+        <p>小操作</p>
+        <p>获取，要，拿，摘，分，分组，去，删，合，差，最，次数（有些数学的意思）</p>
         <ul>
-            <li>要key</li>
-            <li>要value</li>
-            <li>摘部分value</li>
-            <li>把数组按条件分组</li>
-            <li>删</li>
-            <li>去重</li>
-            <li>并集</li>
-            <li>交集</li>
-            <li>差集</li>
+            <li>要键_.key</li>
+            <li>要值_.value</li>
+            <li>摘部分值P_.pluck</li>
+            <li>把数组按条件分组_.group</li>
+            <li>把数组按长度分组_.chunk（长度也是条件，所以条件这个前提最大，可以也许多外延，长度就是一个）</li>
+            <li>删_.without</li>
+            <li>去重_.uniq</li>
+            <li>去假值_.compact</li>
+            <li>并集_.union</li>
+            <li>交集_.intersection</li>
+            <li>差集_.differenceset</li>
+            <li>最大_.max</li>
+            <li>最小_.min</li>
+            <li>一次_.min</li>
+            <li>之后几次_.min</li>
+            <li>之前几次_.min</li>
         </ul>
         <p>形态变化，结构变化</p>
         <ul>
@@ -80,9 +90,6 @@
         <p>尚未定义</p>
         <ul>
             <li>反转</li>
-            <li>包含</li>
-            <li>最大</li>
-            <li>最小</li>
         </ul>
         <!-- <dl>
             <dt>语言是什么？</dt>
@@ -121,7 +128,6 @@ import _ from './script/is';
 
 
 
-console.log(_.zip(["moe", 30, true], ["larry", 40, false], ["curly", 50, false]));
 
 export default {
     name: 'app',
