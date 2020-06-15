@@ -21,6 +21,7 @@ var stateCollection = {
 };
 
 var s = state(stateCollection);
+
 s.go();
 s.go();
 s.go();

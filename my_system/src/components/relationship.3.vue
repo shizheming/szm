@@ -6,7 +6,7 @@ import relationship from '../relationship/relationship.3';
 
 /*
         时间：2019.07
-        
+
     关系表数据操作
     属性和方法：（运动）
         1，添加关系
@@ -72,8 +72,6 @@ var relationshipTable = [
     }
 ];
 
-
-    
 export default {
     created () {
         var gggggg = relationship(relationshipTable);

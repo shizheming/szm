@@ -15,8 +15,8 @@ function b (v) {
     return ++v;
 }
 
-
 var n = decorate(a, b);
+
 console.log(n(6), 887);
 
 export default {

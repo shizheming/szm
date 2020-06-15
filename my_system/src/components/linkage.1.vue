@@ -103,9 +103,10 @@ var bigObj = [{
 }];
 
 var haha = linkage(bigObj);
+
 export default {
     created () {
-        
+
     }
 };
 </script>

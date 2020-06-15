@@ -411,6 +411,7 @@ _.toNumber = function (original, isDeep) {
 */
 
 _.money = function (value) {
+    // eslint-disable-next-line no-useless-escape
     return String(value).split('').reverse().join('').replace(/(\d{3})/g, '$1,').split('').reverse().join('').replace(/^\,/, '');
 };
 
@@ -456,7 +457,7 @@ _.before = function (times, func) {
     var result;
 
     return function () {
-        if (--times >= 0) return result = func.apply(this, arguments);
+        if (--times >= 0) return func.apply(this, arguments);
         return result;
     };
 };

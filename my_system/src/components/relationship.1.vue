@@ -6,9 +6,9 @@ import relationship from '../relationship/relationship.1';
 
 /*
         relationship函数方法
-        
+
         时间：2018.09
-        
+
         关系表
         一和多：（数的关系）
             1，一对一
@@ -28,7 +28,7 @@ import relationship from '../relationship/relationship.1';
         // 其实我觉得本质上就都是一对一，只是一对一多了后，自然而然就产生了一对多，多对一，多对多，虽然本质的理论上是就是一对一，但这是要对用户用的，人们总是希望这东西越简单越强大越方便的使用，所以多肯定是要的，多是一提升的一种形式，就像洗衣机的各种模式一样，本质上没有什么模式，有的只是时间转速温度的不一样，而那么多组合人们是记不住的，所以把一套的参数提升到模式的形式后，便于人类的理解而已，方便
 
         目的：关系表的目的就是建立说明关系，把不相干的东西联系在一起，并不做实际操作，上面已经说的很清楚了
-        
+
     */
 
 function a () {
@@ -61,10 +61,10 @@ function i () {
 
 // 改进成这样的，不要用户记key的名字
 // 不过我觉得记维度还是回比记个可以难，因为维度要数，key这要看，当然key容易
-/*var relationshipTable = [
-        [a, [b, c, d]], 
-        [b, c], 
-        [[e, f, g], d], 
+/* var relationshipTable = [
+        [a, [b, c, d]],
+        [b, c],
+        [[e, f, g], d],
         [[a, c, e], [b, d]]
     ];
     */
@@ -94,7 +94,7 @@ var res = relationship(relationshipTable, function () {
 console.log(res, 'relationship');
 export default {
     created () {
-            
+
     }
 };
 </script>

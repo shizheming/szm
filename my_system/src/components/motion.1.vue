@@ -24,9 +24,9 @@ import motion from '../script/motion.1';
     */
 
 var d = motion(
-    function a () { console.log(arguments); return 1; }, 
-    function b () { console.log(arguments); return 2; }, 
-    function c () { console.log(arguments); return 3; }, 
+    function a () { console.log(arguments); return 1; },
+    function b () { console.log(arguments); return 2; },
+    function c () { console.log(arguments); return 3; },
     function d () { console.log(arguments); }
 );
 var a1 = d(11);

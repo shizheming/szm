@@ -10,7 +10,7 @@ import compose from '../script/compose.1';
 function toUp (str) {
     return str.toUpperCase();
 }
- 
+
 function add (str) {
     return str + '!';
 }
@@ -18,7 +18,7 @@ var p = compose(add, toUp);
 
 export default {
     created () {
-        
+
     }
 };
 </script>
