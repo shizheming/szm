@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-
 Vue.use(VueRouter);
 
 var routes = [
@@ -58,7 +57,7 @@ var routes = [
         name: 'state',
         title: '状态',
         component: () => import('../components/state.vue')
-    },
+    }
 ];
 
 export default new VueRouter({

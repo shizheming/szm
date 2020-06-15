@@ -46,6 +46,7 @@ function strategy (r/* 关系表 */, o/* with的this对象 */, m/* 间断性连�
         __.forEach(g, (value) => {
             if (value._rule) {
                 o.as = as;
+                // eslint-disable-next-line no-new-func
                 const fn = new Function('o', `with(o){return ${value._rule.replace(/\(\)/g, '.apply(null,as)')}}`);
 
                 if (fn(o)) {

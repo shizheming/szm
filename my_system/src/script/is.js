@@ -15,6 +15,32 @@ const _ = {};
     };
 });
 
+// 判断值是不是NaN
+_.isNaN = function (n) {
+    // eslint-disable-next-line no-self-compare
+    return n !== n;
+};
+
+// 判断一个值是不是数字类型
+_.isNumber = function (n) {
+    return typeof n === 'number' && !_.isNaN(n);
+};
+
+// 判断一个值是不是整数
+_.isInteger = function (n) {
+    return _.isNumber(n) && n % 1 === 0;
+};
+
+// 判断一个值是不是奇数
+_.isOdd = function (n) {
+    return Math.abs(n % 2) === 1;
+};
+
+// 判断一个值是不是偶数
+_.isEven = function (n) {
+    return n % 2 === 0;
+};
+
 /*
     是否
 */
