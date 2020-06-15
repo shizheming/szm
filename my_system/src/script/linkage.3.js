@@ -27,7 +27,7 @@ export default function (arr) {
                     // 要验证与原来的包含不包含
                     // 要设置的不是数组
                     if (!Array.isArray(d[key])) {
-                        if (od[key].indexOf(d[key]) > 0) continue; else od[key].push(d[key]);   
+                        if (od[key].indexOf(d[key]) > 0) continue; else od[key].push(d[key]);
                     } else {
                     // 要设置的是数组,连接加去重
                         // od[key] = _.only(od[key].concat(d[key]));

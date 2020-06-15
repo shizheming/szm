@@ -9,7 +9,7 @@ const relationship = function (relationship) {
                     m,
                     y
                 }
-            ]; 
+            ];
         }
         if (isOneToMany(m, y)) {
             return y.map(item => {
@@ -17,7 +17,7 @@ const relationship = function (relationship) {
                     m,
                     y: item
                 };
-            }); 
+            });
         }
     });
 

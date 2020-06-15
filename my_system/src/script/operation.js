@@ -1,9 +1,9 @@
 
-/* 
+/*
     获取，要，拿，摘，分，分组，删，合
 */
 
-let _ = {};
+const _ = {};
 
 // 取键
 _.key = function (obj) {
@@ -22,7 +22,8 @@ _.pluck = function (arr, key) {
 
 // 条件分组
 _.group = function (arr, predicate) {
-    let result = [[], []];
+    const result = [[], []];
+
     arr.forEach((current, index, a) => {
         if (predicate(current, index, a)) result[0].push(current); else result[1].push(current);
     });
@@ -31,8 +32,10 @@ _.group = function (arr, predicate) {
 
 // 长度分组
 _.chunk = function (arr, count) {
-    let result = [];
+    const result = [];
+
     let i = 0;
+
     while (i < arr.length) {
         result.push(arr.slice(i, i += count));
     }
@@ -63,9 +66,12 @@ _.union = function (...arr) {
 
 // 交集
 _.intersection = function (...arr) {
-    let result = [];
-    let f = arr.flat();
+    const result = [];
+
+    const f = arr.flat();
+
     let u = _.union(f);
+
     f.forEach(current => {
         if (u.includes(current)) {
             u = _.without(u, current);
@@ -80,8 +86,10 @@ _.intersection = function (...arr) {
 
 // 差集
 _.differenceset = function () {
-    let w = _.union(...arguments);
-    let i = _.intersection(...arguments);
+    const w = _.union(...arguments);
+
+    const i = _.intersection(...arguments);
+
     return _.without(...[...[w], ...i]);
 };
 
@@ -89,6 +97,7 @@ _.differenceset = function () {
 // 去假值
 _.compact = function (collection) {
     let result;
+
     if (_.isObject(collection)) result = {};
     if (_.isArray(collection)) result = [];
     _.forEach(collection, (value, key, a) => {
@@ -101,8 +110,11 @@ _.compact = function (collection) {
 _.max = function (arr, iteratee) {
     if (_.isFunction(iteratee)) {
         let result = -Infinity;
+
         let lastComputed = -Infinity;
+
         let computed;
+
         arr.forEach((current, index, a) => {
             computed = iteratee(current, index, a);
             if (computed > lastComputed) {
@@ -124,8 +136,11 @@ function max () {
 _.min = function (arr, iteratee) {
     if (_.isFunction(iteratee)) {
         let result = Infinity;
+
         let lastComputed = Infinity;
+
         let computed;
+
         arr.forEach((current, index, a) => {
             computed = iteratee(current, index, a);
             if (computed < lastComputed) {
@@ -155,6 +170,7 @@ _.after = function (times, func) {
 
 _.before = function (times, func) {
     var memo;
+
     return function () {
         if (--times > 0) {
             memo = func.apply(this, arguments);
@@ -168,8 +184,7 @@ _.once = function (func) {
     return _.before(2, func);
 };
 
-
-/* 
+/*
     形态变化，结构变化
 */
 
@@ -184,7 +199,7 @@ _.freeze = function (obj) {
     return Object.freeze(obj);
 };
 
-/* 
+/*
     循环
 */
 
@@ -194,7 +209,7 @@ _.forEach = function (collection, iteratee) {
     });
 };
 
-/* 
+/*
 尚未定义
 */
 
@@ -205,12 +220,10 @@ _.negate = function (predicate) {
     };
 };
 
-
-
-
 // 压缩
 _.zip = function (...arr) {
-    let result = Array(arr.length);
+    const result = Array(arr.length);
+
     for (let index = 0; index < arr.length; index++) {
         result[index] = _.pluck(arr, index);
     }
@@ -236,10 +249,6 @@ _.constant = function (value) {
 
 // 默认回调
 _.noop = function () {};
-
-
-
-
 
 /*
     随机
@@ -268,7 +277,7 @@ _.randomAlphabet = function (digit) {
     var array = [];
 
     for (var i = 0; i < digit; i++) array.push(_.randomNumber(0, 25));
-    //大写字母'A'的ASCII是65,A~Z的ASCII码就是65 + 0~25;然后调用String.fromCharCode()
+    // 大写字母'A'的ASCII是65,A~Z的ASCII码就是65 + 0~25;然后调用String.fromCharCode()
     var upperCase = String.fromCharCode.apply(null, array.map(function (currentValue, index, array) {
         return currentValue + 65;
     }));
@@ -292,9 +301,7 @@ _.randomNumberAlphabet = function (digit) {
     return _.isNaN(number) ? NaN : _.shuffle(string.split('')).join('');
 };
 
-
 // 随机颜色
-
 
 _.randomColor = function (saturation, light) {
     saturation = _.isString(saturation) ? saturation : '50%';
@@ -303,10 +310,10 @@ _.randomColor = function (saturation, light) {
     var hsl = ['hsl(', ')'];
 
     hsl.splice(1, 0, [_.randomNumber(0, 360), saturation, light].join(','));
-    /*var r = (0, 60)
+    /* var r = (0, 60)
     var r = (300, 360)
     var g = (60, 180)
-    var b = (180, 300);*/
+    var b = (180, 300); */
     return hsl.join('');
 };
 
@@ -322,7 +329,8 @@ _.randomBetween = function (min, max) {
 // 打乱顺序
 
 _.shuffle = function (original) {
-    let result = [];
+    const result = [];
+
     return original.map(function (currentValue, index) {
         var random = _.randomNumber(0, index);
 

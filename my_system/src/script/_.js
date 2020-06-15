@@ -9,9 +9,9 @@
 // 对柯理化的进一步理解
 var factory = function (callback, original, iterator, array) {
     // 以前这是第一步
-    /*callback = callback || function (original, output) {
+    /* callback = callback || function (original, output) {
         return output;
-    };*/
+    }; */
 
     // 现在没有手动分布返回新函数，而现在一开始把定义的函数全部写完整，直接一步返回结果，然后通过动态柯理化去控制参数，也就是说以前是手动柯理化，现在是自动柯理化
 
@@ -111,8 +111,6 @@ var processArray = function (value) {
 var processFunction = function (value) {
     return _.isFunction(value) ? value : _.identity;
 };
-
-
 
 var _ = {};
 
@@ -319,8 +317,6 @@ _.invert = function (original, array) {
     });
 };
 
-
-
 /****************
     分组
 ****************/
@@ -394,7 +390,6 @@ _.removeKey = function (collection, deleteCollection, isDeep) {
         return oneRemoveKey;
     }
 };
-
 
 /****************
     数字
@@ -497,7 +492,6 @@ _.before = function (times, func) {
 */
 
 _.once = _.before.bind('', 1);
-
 
 /*
 ★★★★谓词★★★★
@@ -669,6 +663,5 @@ var aaaa = {
     accDiv: function (arg1, arg2) {
     }
 };
-
 
 export default _;

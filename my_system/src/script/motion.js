@@ -14,7 +14,6 @@
     间断性和连续性是一体的，就是运动本身
     也就是说这个东西本身技能动又能停
 
-
     待解决：
         passValue公用存返回值，不独立，不对象
 */
@@ -22,11 +21,14 @@ import _ from 'lodash';
 // 我觉得应该弄一个独立的把手来控制动动停停，一开始我是想在返回的函数里面传参的，后来觉得和其他的参数混在一起不利于区分，不能很好的区分这是把手参数还是真正的参数
 var passValue;
 var fnName;
+
 function f () {
     var args = [].slice.apply(arguments);
     var o = args.shift();
+
     return function () {
         var a = [].slice.apply(arguments);
+
         a = passValue === undefined ? a : a.concat(passValue);
         // 1.先弄里面的传递值
         // 2.在考虑外面当间断性用的时候传进来的值，连续性的时候是没有外面值传进来的，因为插不进来
@@ -44,22 +46,25 @@ function motion () {
     passValue = undefined;
     fnName = undefined;
     var last = arguments[arguments.length - 1];
+
     if (!_.isBoolean(last)) {
         // 这里要多一步来接受连续性运行第一个函数应该接受的值
-        
-        let r = f.apply(null, arguments);
+
+        const r = f.apply(null, arguments);
+
         return function (...firstValue) {
-            return running(_.isFunction, r, firstValue); 
+            return running(_.isFunction, r, firstValue);
         };
     } else {
-        let a = [].slice.apply(arguments);
+        const a = [].slice.apply(arguments);
         // 把最后一个true干掉
+
         a.pop();
         return f.apply(null, a);
     }
 }
 // 写一个当条件成立前无限运行的方法
-function running (predicate, fn, firstValue/*连续性运行的时候第一个函数接收的传值进来*/) {
+function running (predicate, fn, firstValue/* 连续性运行的时候第一个函数接收的传值进来 */) {
     if (predicate(fn)) {
         if (_.isArray(firstValue) && firstValue.length) {
             fn = fn.apply(null, firstValue);

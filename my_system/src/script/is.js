@@ -1,12 +1,11 @@
-/* 
+/*
     这里具体的动作操作都是基于对象级别的
     比如undersore的max方法就是基于对象级别的，我的方法也要多往这方面靠，操作数据也要面向对象，而不是单单一个值
 */
 
+const _ = {};
 
-let _ = {};
-
-/* 
+/*
     是不是
 */
 
@@ -16,7 +15,7 @@ let _ = {};
     };
 });
 
-/* 
+/*
     是否
 */
 
@@ -29,6 +28,5 @@ _.isFrozen = function (obj) {
 _.is = function (a, b) {
     return Object.is(a, b);
 };
-
 
 export default _;

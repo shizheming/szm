@@ -40,7 +40,7 @@ const relationship = function (relationship) {
                     m,
                     y: item
                 };
-            }); 
+            });
         }
     });
     var b = compose(_.flatten, filterFalse)(a);
@@ -54,12 +54,14 @@ const relationship = function (relationship) {
     var onlyKey = _.uniq(keys);
     // 合并m
     var r = {};
+
     onlyKey.forEach(current => {
         var f = b.filter(item => {
             return item.m.name === current;
         });
+
         r[current] = {
-            
+
             m: f[0].m,
             y: f.map(i => {
                 return i.y;
@@ -69,6 +71,7 @@ const relationship = function (relationship) {
     function createRelationshipTable (o, result = []) {
         o.forEach(value => {
             var no = {};
+
             no.m = value;
             if (r[value.name]) {
                 no.y = createRelationshipTable(r[value.name].y);
@@ -78,12 +81,14 @@ const relationship = function (relationship) {
         return result;
     }
     var tree = {};
+
     __.forEach(r, (value, key) => {
         tree[key] = createRelationshipTable(value.y);
     });
     // 把头塞进去
     __.forEach(tree, (value, key, o) => {
         var fn = r[key].m;
+
         o[key] = [
             {
                 m: fn,
@@ -94,6 +99,7 @@ const relationship = function (relationship) {
     // console.log(tree, 'tree');
 
     var lines = [];
+
     function getLine (arr, result = []) {
         arr.forEach((current, index) => {
             if (index) result.pop();
@@ -115,8 +121,6 @@ const relationship = function (relationship) {
         r
     };
 };
-
-
 
 const filterFalse = function (a) {
     return a.filter(function () {

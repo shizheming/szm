@@ -61,8 +61,8 @@ var filter = function (fn, arr) {
 var map = function (fn, arr) {
     return arr.map(fn);
 }; */
-/*var ab = curry(filter)(filterAAA);
+/* var ab = curry(filter)(filterAAA);
 var bv = curry(map)(projectAuthor);
 var cc = compose(bv, ab);
-var ff = cc(data);*/
+var ff = cc(data); */
 // console.log(ff,1717);

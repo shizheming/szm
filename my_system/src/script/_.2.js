@@ -5,7 +5,7 @@
 
 window._ = {
 
-    /******************常用一阶函数******************/
+    /** ****************常用一阶函数******************/
 
     // 随机n-m之间的数
     random: function (n, m) {
@@ -70,13 +70,13 @@ window._ = {
     // 动态加载js
     loadJs: function (url, fn) {
         var doc = document;
-	    var oHead = doc.querySelector('head'); 
-	    var oScript = doc.createElement('script'); 
+	    var oHead = doc.querySelector('head');
+	    var oScript = doc.createElement('script');
 
 	    oScript.src = url;
 	    oScript.onload = function () {
 	    	fn && fn();
-	    }; 
+	    };
 	    oHead.appendChild(oScript);
     },
     // 数组扁平化
@@ -127,22 +127,22 @@ window._ = {
 
         function upDate (c, fn) {
             var d = new Date();
-            //获取当前时间戳
+            // 获取当前时间戳
             var nowTime = d.getTime();
             // 后台直接给了时间戳，我这里不用写
             // d.setFullYear(y1, y2, y3);
             // d.setHours(0, 0, 0, 0);
-            //结束时间戳
+            // 结束时间戳
             // var overTime = d.getTime();
             var overTime = c * 1000;
-            //结束事件戳-当前时间戳 
+            // 结束事件戳-当前时间戳
             var mist = parseInt((overTime - nowTime) / 1000);
             var date = parseInt(mist / 86400);
-            //去天后的秒数
+            // 去天后的秒数
 
-            mist = mist % 86400;	
+            mist = mist % 86400;
             var hours = parseInt(mist / 3600);
-            //去小时后的秒数
+            // 去小时后的秒数
 
             mist = mist % 3600;
             var minutes = parseInt(mist / 60);
@@ -280,7 +280,7 @@ window._ = {
         return che(m, data);
     },
 
-    /******************常用高阶函数******************/
+    /** ****************常用高阶函数******************/
 
     /*
 		var a = once(function() {
@@ -387,10 +387,10 @@ window._ = {
         };
     },
 
-    /********************设计模式******************/
+    /** ******************设计模式******************/
 
     // 状态对象
-    /*var myState = {
+    /* var myState = {
 		openState : function() {
 			console.log('开');
 			// 切换状态
@@ -423,9 +423,9 @@ window._ = {
 		<div id="ss"></div>
 	</body>
 	ss.onclick = function() {
-		
+
 		objState.currState();
-	};*/
+	}; */
     // 职责连设计模式
     /*
 		function a(a1) {
@@ -504,7 +504,7 @@ window._ = {
 			password : a.get('password'),
 			smscode : a.get('smscode')
 		})
-	}, false);*/
+	}, false); */
     myData: function (arr) {
         var d = {
             client: []
@@ -559,7 +559,7 @@ window._ = {
         return method;
     },
 
-    /******************DOM******************/
+    /** ****************DOM******************/
 
     // 弹窗
     popUp: function (str, uf, btn) {
@@ -610,7 +610,7 @@ window._ = {
 
 // 算法-先排序整理
 
-/*{
+/* {
     id : id
     title : 借款-借款用途//标题
     request_time : //请求时间
@@ -637,7 +637,7 @@ window._ = {
 			<span  class="tz">运营状态</span>
 		</div>
 	</div>
-</script>*/
+</script> */
 
 // 如何判断一个对象是不是另一个对象的子集
 
