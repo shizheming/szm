@@ -48,3 +48,5 @@ _.accMul = function (arg1 = 0, arg2) {
     } catch (e) {}
     return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m);
 };
+
+export default _;

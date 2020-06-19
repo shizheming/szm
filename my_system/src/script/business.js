@@ -1,7 +1,7 @@
 /*
     业务层面的js
 */
-import _ from './_';
+import _ from 'lodash';
 import moment from 'moment';
 // 处理时间戳和分，回显的时候，当后端接口返回后在promise外面包了一层来处理之间事情
 // 都是被逼的，要是后端都愿意转，我何必再要干这件事情呢

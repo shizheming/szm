@@ -22,8 +22,7 @@
     所以我觉得现在对我来说太复杂，太难的，占时不做，主要是保证核心简单干练
 
 */
-import _ from 'lodash';
-import __ from './_';
+import {forEach, flatten, uniq, isArray} from 'lodash';
 const relationship = function (relationship) {
     var a = relationship.map(currentValue => {
         var {m, y} = currentValue;
@@ -43,15 +42,15 @@ const relationship = function (relationship) {
             });
         }
     });
-    var b = compose(_.flatten, filterFalse)(a);
-    // 最终哟啊变成1对多的结构，拿到外面的数据先打散成一对一，在重组成一对多
+    var b = compose(flatten, filterFalse)(a);
+    // 最终变成1对多的结构，拿到外面的数据先打散成一对一，在重组成一对多
     // 先把一对一变成一对多
     // 拿key
     var keys = b.map(current => {
         return current.m.name;
     });
     // 去重
-    var onlyKey = _.uniq(keys);
+    var onlyKey = uniq(keys);
     // 合并m
     var r = {};
 
@@ -82,11 +81,11 @@ const relationship = function (relationship) {
     }
     var tree = {};
 
-    __.forEach(r, (value, key) => {
+    forEach(r, (value, key) => {
         tree[key] = createRelationshipTable(value.y);
     });
     // 把头塞进去
-    __.forEach(tree, (value, key, o) => {
+    forEach(tree, (value, key, o) => {
         var fn = r[key].m;
 
         o[key] = [
@@ -111,7 +110,7 @@ const relationship = function (relationship) {
             }
         });
     }
-    __.forEach(tree, (value) => {
+    forEach(tree, (value) => {
         getLine(value);
     });
     // console.log(lines, 28);
@@ -130,12 +129,12 @@ const filterFalse = function (a) {
 
 // 一对一
 const isOneOnOne = function (a, b) {
-    return !_.isArray(a) && !_.isArray(b);
+    return !isArray(a) && !isArray(b);
 };
 
 // 一对多
 const isOneToMany = function (a, b) {
-    return !_.isArray(a) && _.isArray(b);
+    return !isArray(a) && isArray(b);
 };
 
 // 组合
