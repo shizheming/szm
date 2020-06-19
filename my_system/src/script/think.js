@@ -310,4 +310,18 @@ loading统一的处理
 主要是异步的加loading
 
 管道就是通过函数参数输入，输出又作为下一个函数参数的输入，这就是管道，而链式是在对象上的方法的调用，区别就在数据的输入的地方不一样
+
+写逻辑的时候的状态的入口和出口要统一，比如创建任务单那块，很多场景都用到，要记录不同进入的场景和出去
+// 因为审核在详情和创建售后里面用的是用同一个，那么订单详情接口数据和售后单详情接口的数据字段需要统一下，方便审核代码保持统一
+            data.order_server_list = data.server_list;
+            data.order_consignee = data.oc_info;
+            data.company_code = data.order_info.company_code;
+            data.city_id = data.order_info.city_id;
+            data.partner_id = data.order_info.partner_id;
+            data.server_num = data.order_info.server_num;
+            data.real_server_num = data.order_info.real_server_num;
+            data.sub_total_pay = data.order_info.sub_total_pay;
+            data.freight = data.order_info.freight;
+这里的意思是我有一个公用的组件，然后数据是不能接口给的，那我不能再组件里面去判断拿不同的值，会死人的，所以我在组件外面处理组件需要拿的值，把不同的变成一样的，然后组件里面该怎么拿就怎么拿，保持了组件的统一性，
+这不单单体现在这里，这是一种思想，可以运用到很多地方
 */
