@@ -3,9 +3,9 @@
 </template>
 <script>
 import chain from '../script/strategy.3';
-function () {
+function xxxx () {
     // 职责连设计模式
-    
+
     function a (a1) {
         if (a1 == 'a') alert('我是一等公民'); else return true;
     }
@@ -25,5 +25,5 @@ function () {
 }
 export default {
     created () {}
-}
+};
 </script>

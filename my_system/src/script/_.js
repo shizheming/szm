@@ -9,9 +9,9 @@
 // 对柯理化的进一步理解
 var factory = function (callback, original, iterator, array) {
     // 以前这是第一步
-    /*callback = callback || function (original, output) {
+    /* callback = callback || function (original, output) {
         return output;
-    };*/
+    }; */
 
     // 现在没有手动分布返回新函数，而现在一开始把定义的函数全部写完整，直接一步返回结果，然后通过动态柯理化去控制参数，也就是说以前是手动柯理化，现在是自动柯理化
 
@@ -112,27 +112,12 @@ var processFunction = function (value) {
     return _.isFunction(value) ? value : _.identity;
 };
 
-
-
 var _ = {};
 
 _.recursive = recursive;
 /*
 ★★★★动词★★★★
 */
-
-/****************
-    复制
-****************/
-
-var clone = function (original) {
-    return objectTransformation(original, factoryClone(original));
-};
-
-_.clone = function (original, isDeep) {
-    original = processCollection(original);
-    return isDeep !== true ? clone(original) : JSON.parse(JSON.stringify(original));
-};
 
 /*
     过滤出所有集合的基础类型值
@@ -313,26 +298,11 @@ _.invert = function (original, array) {
             return currentValue == key;
         });
     }
+    // eslint-disable-next-line no-func-assign
     surplus = array ? surplus : function () {};
     return factoryNew(original, function (currentValue, key, output) {
         surplus(key) ? output[key] = currentValue : output[currentValue] = key;
     });
-};
-
-
-
-/****************
-    分组
-****************/
-
-_.chunk = function (collection, size) {
-    collection = processCollection(collection);
-    var length = Math.ceil(collection.length / size);
-    var result = [];
-    var index = 0;
-
-    while (index++ < length) result.push(collection.splice(0, size));
-    return result;
 };
 
 /****************
@@ -395,7 +365,6 @@ _.removeKey = function (collection, deleteCollection, isDeep) {
     }
 };
 
-
 /****************
     数字
     我从倒计时，日期，数字的分隔中抽象出数字，也就是抽象出了质料，我又从倒计时，数字的分隔中中抽象出了时间，金钱，也就抽象出了形式，这是数字赋予形式后的2的意思
@@ -442,6 +411,7 @@ _.toNumber = function (original, isDeep) {
 */
 
 _.money = function (value) {
+    // eslint-disable-next-line no-useless-escape
     return String(value).split('').reverse().join('').replace(/(\d{3})/g, '$1,').split('').reverse().join('').replace(/^\,/, '');
 };
 
@@ -487,7 +457,7 @@ _.before = function (times, func) {
     var result;
 
     return function () {
-        if (--times >= 0) return result = func.apply(this, arguments);
+        if (--times >= 0) return func.apply(this, arguments);
         return result;
     };
 };
@@ -497,92 +467,6 @@ _.before = function (times, func) {
 */
 
 _.once = _.before.bind('', 1);
-
-
-/*
-★★★★谓词★★★★
-*/
-
-/*
-    判断值是不是NaN
-*/
-
-_.isNaN = function (n) {
-    return n !== n;
-};
-
-/*
-    判断一个值是不是数字类型
-*/
-
-_.isNumber = function (n) {
-    return typeof n === 'number' && !_.isNaN(n);
-};
-
-/*
-    判断一个值是不是整数
-*/
-
-_.isInteger = function (n) {
-    return _.isNumber(n) && n % 1 === 0;
-};
-
-/*
-    判断一个值是不是奇数
-*/
-
-_.isOdd = function (n) {
-    return Math.abs(n % 2) === 1;
-};
-
-/*
-    判断一个值是不是偶数
-*/
-
-_.isEven = function (n) {
-    return n % 2 === 0;
-};
-
-/*
-    判断一堆数据中是否存在一个，一种，多个，多种数据
-*/
-
-var existence = function (collection) {
-    // 现在只是单个存在，要添加多个存在，不但存在一，还要存在多
-    // 存在多
-    var args = [].slice.call(arguments, 1);
-
-    if (!args.length) return false;
-    // 纯值
-    var value = [];
-    // 谓词判断
-    var predicate = [];
-
-    args.forEach(function (currentValue, index, array) {
-        _.isFunction(currentValue) ? predicate.push(currentValue) : value.push(currentValue);
-    });
-    value = value.length == 0 ? true : value.every(function (currentValue, index, array) {
-        for (var key in collection) { if (collection[key] === currentValue) return true; }
-        return false;
-    });
-    predicate = predicate.length == 0 ? true : predicate.every(function (currentValue, index, array) {
-        for (var key in collection) { if (currentValue(collection[key])) return true; }
-        return false;
-    });
-    return value && predicate;
-};
-
-_.isExistence = function (collection, value, isDeep) {
-    collection = processCollection(collection);
-    value = processCollection(value);
-    if (isDeep !== true) {
-        value.unshift(collection);
-        return existence.apply(null, value);
-    } else {
-        value.unshift(_.value(collection, true));
-        return existence.apply(null, value);
-    }
-};
 
 /****************
     时间
@@ -627,48 +511,5 @@ _.wrapBack = function (oldObj) {
         newObj[key] = val.value;
     });
 };
-
-// 解决浮点数
-// 加法
-var aaaa = {
-    accAdd: function (arg1, arg2) {
-        var r1, r2, m;
-
-        try {
-            r1 = arg1.toString().split('.')[1].length;
-        } catch (e) {
-            r1 = 0;
-        }
-        try {
-            r2 = arg2.toString().split('.')[1].length;
-        } catch (e) {
-            r2 = 0;
-        }
-        m = Math.pow(10, Math.max(r1, r2));
-        return (_.accMul(arg1, m) + _.accMul(arg2, m)) / m;
-    },
-    // 减法
-    accSub: function (arg1, arg2) {
-        return _.accAdd(arg1, -arg2);
-    },
-    // 乘法
-    accMul: function (arg1, arg2) {
-        var m = 0;
-        var s1 = arg1.toString();
-        var s2 = arg2.toString();
-
-        try {
-            m += s1.split('.')[1].length;
-        } catch (e) {}
-        try {
-            m += s2.split('.')[1].length;
-        } catch (e) {}
-        return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m);
-    },
-    // 除法
-    accDiv: function (arg1, arg2) {
-    }
-};
-
 
 export default _;

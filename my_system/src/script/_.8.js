@@ -69,7 +69,7 @@
 // 运动，静止
 // 我是这样理解偏函数的，当我抽象出某个事物的种的时候我会去用偏函数，当我要记录某些状态变化的时候我会去用偏函数，也就是要分1步以上的我回去用偏函数，如果不是种，而只是某个函数的中一小部分功能的时候，即使这个功能很复用，我也会去写个小函数，在某个函数里面调用，而不会把他作为种在直接在外面调用
 
-/* 
+/*
 ★★★★★★★★★★★★★★★★★★★★
 1. 我先不要太烦恼和纠结于寻找那个最大种同时让这个最大的种与我现在写的东西的种之间建立关系等级，因为这是终极目标，不可能一下子找到和建立联系的，那么我现在要掉转枪头，把切入点放在我已有的方法上，从我具体的方法出发，往上找他的形式，往下找他的质料，达到统一，辩证。也就是要训练思维，不能不找边际的乱想
 2. 知识的立足点，是那个一般的东西
@@ -77,7 +77,7 @@
 */
 
 /*
-   这里随便写些，脑袋里浮现的概念 
+   这里随便写些，脑袋里浮现的概念
    时间，空间，位置，大小，重量，寻找
 */
 
@@ -565,7 +565,7 @@ _.findCollection = function (collection, value, callback, isDeep) {
     } else {
         return recursive(collection, null, function (currentValue, key, collection, level) {
             return findCollection(currentValue, value) && callback(currentValue, key, collection, level) && currentValue;
-        }).collection; 
+        }).collection;
     }
 };
 
@@ -920,7 +920,7 @@ _.state = function () {
         // 正序
         if (!oldState && state.previous.element === newState) state = link.find(newState);
         // 倒序
-        if (!oldState && state.next.next.element === newState) state = link.find(newState); 
+        if (!oldState && state.next.next.element === newState) state = link.find(newState);
         return back;
     };
     // 替换状态
@@ -968,9 +968,9 @@ _.state = function () {
 _.randomNumber = function (digit, digit2) {
     switch (arguments.length) {
         case 0 : return random();
-        case 1 : 
+        case 1 :
             return Math.floor((Math.random() + '').replace(/\.0+/, '.') * Math.pow(10, digit));
-        default : 
+        default :
             return parseInt(digit + Math.random() * (digit2 - digit));
     }
 };
@@ -983,7 +983,7 @@ _.randomAlphabet = function (digit) {
     var array = [];
 
     for (var i = 0; i < digit; i++) array.push(_.randomNumber(0, 25));
-    //大写字母'A'的ASCII是65,A~Z的ASCII码就是65 + 0~25;然后调用String.fromCharCode()
+    // 大写字母'A'的ASCII是65,A~Z的ASCII码就是65 + 0~25;然后调用String.fromCharCode()
     var upperCase = String.fromCharCode.apply(null, array.map(function (currentValue, index, array) {
         return currentValue + 65;
     }));
@@ -1020,10 +1020,10 @@ _.randomColor = function (saturation, light) {
     var hsl = ['hsl(', ')'];
 
     hsl.splice(1, 0, [_.randomNumber(0, 360), saturation, light].join(','));
-    /*var r = (0, 60)
+    /* var r = (0, 60)
     var r = (300, 360)
     var g = (60, 180)
-    var b = (180, 300);*/
+    var b = (180, 300); */
     return hsl.join('');
 };
 
@@ -1311,17 +1311,17 @@ _.countDown = function (c, fn) {
 
     function upDate (c, fn) {
         var d = new Date();
-        //获取当前时间戳
+        // 获取当前时间戳
         var nowTime = d.getTime();
         var overTime = c;
-        //结束事件戳-当前时间戳 
+        // 结束事件戳-当前时间戳
         var mist = parseInt((overTime - nowTime) / 1000);
         var date = parseInt(mist / 86400);
-        //去天后的秒数
+        // 去天后的秒数
 
-        mist = mist % 86400;    
+        mist = mist % 86400;
         var hours = parseInt(mist / 3600);
-        //去小时后的秒数
+        // 去小时后的秒数
 
         mist = mist % 3600;
         var minutes = parseInt(mist / 60);
@@ -1353,7 +1353,7 @@ _.money = function (num) {
     return num.split('').reverse().join('').replace(/(\d{3})/g, '$1,').split('').reverse().join('').replace(/^\,/, '');
 };
 
-/*未完成*/
+/* 未完成 */
 /*
     重复行为
     重复做直到达到目标，不达目的誓不罢休

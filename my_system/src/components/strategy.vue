@@ -48,6 +48,7 @@ var s = strategy([
 ], o/* , true */);
 
 var v = s(3, 2);
+
 console.log(v, 1838);
 // var t = v(666);
 
@@ -55,7 +56,7 @@ console.log(v, 1838);
 
 export default {
     created () {
-        
+
     }
 };
 </script>

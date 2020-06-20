@@ -4,7 +4,7 @@
 
 <script>
 import linkage from '../script/linkage.2';
-import { Script } from 'vm';
+import {Script} from 'vm';
 
 /*
         时间：2018.10
@@ -78,7 +78,7 @@ var relationshipTable = [{
     // 一对多联动
     n: a2,
     rn: [a4, a5]
-} /*{
+} /* {
         // 多对一联动
         n : [a5, a2, a3],
         rn: a6
@@ -86,12 +86,13 @@ var relationshipTable = [{
         // 多对多联动
         n : [a5, a4, a3],
         rn: [a6, a1, a4]
-    }*/];
+    } */];
 
 var aaaa = linkage(relationshipTable);
+
 export default {
     created () {
-        
+
     }
 };
 </script>

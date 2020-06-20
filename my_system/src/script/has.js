@@ -1,8 +1,8 @@
-let _ = {};
+const _ = {};
 
 // 包含
 _.includes = function (collection, value) {
-    if (_.isObject(collection)) collection = _.values(collection);value;
+    if (_.isObject(collection)) collection = _.values(collection);
     return collection.includes(value);
 };
 

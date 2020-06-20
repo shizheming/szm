@@ -35,6 +35,7 @@ function g (v) {
 export default {
     created () {
         var s = linkage(a, b, c, d, e, f, g);
+
         console.log(s(100));
     }
 };

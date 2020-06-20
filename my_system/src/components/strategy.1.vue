@@ -7,7 +7,7 @@ import strategy from '../script/strategy.1';
 
 /*
         时间：2018.09
-        
+
         策略：（属性，一和多，静和动，时间和空间，间断和连续）
             1必须要有判断条件
             2引入空间，把条件头和条件体分开来
@@ -44,8 +44,7 @@ var aaa = [{
 
 var sss = strategy(aaa)(1, 1)(1000);
 
-
 export default {
-    
+
 };
 </script>

@@ -12,8 +12,8 @@ var a = run(function () {
     return v++;
 });
 var b = a(7777777);
-console.log(b(11111), 37);
 
+console.log(b(11111), 37);
 
 export default {
     created () {

@@ -7,7 +7,6 @@
 /* eslint-disable no-console */
 import relationship from '../script/relationship';
 
-
 function a () {
     alert('a');
 }
@@ -26,7 +25,7 @@ function e () {
 function f () {
     alert('f');
 }
-  
+
 var relationshipTable = [
     {
         m: b,
@@ -46,12 +45,10 @@ var relationshipTable = [
     }
 ];
 
-
-
-
 export default {
     created () {
         var r = relationship(relationshipTable);
+
         console.log(r, 137);
     }
 };

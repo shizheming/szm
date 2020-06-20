@@ -28,7 +28,6 @@ m.eat(4);
 
 console.log(memoized.storage, '步骤');
 
-
 export default {
     created () {
 

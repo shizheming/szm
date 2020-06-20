@@ -7,7 +7,6 @@
 /* eslint-disable no-console */
 import compose from '../script/compose.2';
 
-
 const fn1 = s => s.toLowerCase();
 const fn2 = s => s.split('').reverse().join('');
 const fn3 = s => s + '!';
@@ -17,7 +16,7 @@ const result = newFunc('Time'); // emit!
 
 export default {
     created () {
-        
+
     }
 };
 </script>

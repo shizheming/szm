@@ -6,7 +6,7 @@ const relationship = function (relationshipTable, a, b, c, d) {
     var oneOnOneRelationshipTable = [];
     // 回调函数返回的结果集
     var result = [];
-    // 连续性集合 
+    // 连续性集合
     var continuity = [];
 
     relationshipTable.forEach(function (currentValue, index, array) {
@@ -108,7 +108,7 @@ var createOneOnOneLine = function (filterMe, currentValue, obj) {
         if (!_.isArray(item.n)) {
             // 当寻找到的name对象和传递进来的relationName对象是相同时
             // 这里的relationName对象没有分是不是数组
-            if (item.n === currentValue.rn /*|| currentValue.rn.indexOf && currentValue.rn.indexOf(item.n)*/) {
+            if (item.n === currentValue.rn /* || currentValue.rn.indexOf && currentValue.rn.indexOf(item.n) */) {
                 if (!_.isArray(item.rn)) {
                     // 避免2个关系之间互相引用造成的无限递归的判断
                     if (item.rn !== currentValue.n && !obj.some(function (a, b, c) {
@@ -163,7 +163,7 @@ var createOneOnOneLine = function (filterMe, currentValue, obj) {
                         }
                     });
                 }
-            }   
+            }
         }
     });
     return _.uniq(obj);
@@ -251,7 +251,7 @@ var createOneToManyLine = function (filterMe, currentValue, obj) {
                         }
                     }
                 } else {
-                    
+
                 }
             });
         }

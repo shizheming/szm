@@ -55,7 +55,7 @@
 主体业务逻辑不包含处理数据的部分，我的意思是那些是给人看的代码，和给计算机的代码分开，这样我就能专注业务逻辑了，不会一会写着业务逻辑，一遍处理数据
 */
 
-/* 
+/*
 ★★★★★★★★★★★★★★★★★★★★
 我先不要太烦恼和纠结于寻找那个最大种同时让这个最大的种与我现在写的东西的种之间建立关系等级，因为这是终极目标，不可能一下子找到和建立联系的，那么我现在要掉转枪头，把切入点放在我已有的方法上，从我具体的方法出发，往上找他的形式，往下找他的质料，
 ★★★★★★★★★★★★★★★★★★★★
@@ -78,9 +78,9 @@
 // 对柯理化的进一步理解
 var factory = function (callback, original, iterator, array) {
     // 以前这是第一步
-    /*callback = callback || function (original, output) {
+    /* callback = callback || function (original, output) {
         return output;
-    };*/
+    }; */
 
     // 现在没有手动分布返回新函数，而现在一开始把定义的函数全部写完整，直接一步返回结果，然后通过动态柯理化去控制参数，也就是说以前是手动柯理化，现在是自动柯理化
 
@@ -835,7 +835,7 @@ _.randomAlphabet = function (digit) {
     var array = [];
 
     for (var i = 0; i < digit; i++) array.push(_.randomNumber(0, 25));
-    //大写字母'A'的ASCII是65,A~Z的ASCII码就是65 + 0~25;然后调用String.fromCharCode()
+    // 大写字母'A'的ASCII是65,A~Z的ASCII码就是65 + 0~25;然后调用String.fromCharCode()
     var upperCase = String.fromCharCode.apply(null, array.map(function (currentValue, index, array) {
         return currentValue + 65;
     }));
@@ -872,10 +872,10 @@ _.randomColor = function (saturation, light) {
     var hsl = ['hsl(', ')'];
 
     hsl.splice(1, 0, [_.randomNumber(0, 360), saturation, light].join(','));
-    /*var r = (0, 60)
+    /* var r = (0, 60)
     var r = (300, 360)
     var g = (60, 180)
-    var b = (180, 300);*/
+    var b = (180, 300); */
     return hsl.join('');
 };
 
@@ -1124,7 +1124,7 @@ var aaaa = {
     空间
 ****************/
 
-/*未完成*/
+/* 未完成 */
 /*
     重复行为
     重复做直到达到目标，不达目的誓不罢休

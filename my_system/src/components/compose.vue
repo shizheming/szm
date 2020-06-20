@@ -24,6 +24,7 @@ function d (v) {
 export default {
     created () {
         var s = compose(a, b, c, d);
+
         console.log(s(100));
     }
 };
