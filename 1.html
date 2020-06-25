@@ -945,8 +945,54 @@ let [a,b,c] = g();
 // 标签函数有什么用？alert`dsd${45645}bnfghgf`
 // 正则新增y（粘连）
 // /./s匹配所有包括换行符，
+// 函数指定了参数默认值或剩余参数函数的length属性会不正确
 // 箭头函数没有this，是拿外部的this，不能new，不能当generator函数，没有arguments
+// set数据类型默认是可以去重的
+// ...运算符我现在可以这样理解，当变量是有引用值的时候用...那是展开的意思，当变量还没有值是在赋值的时候用...那就是给这个变量加容器[]或{}
 
+
+let a = {
+	b: 2,
+	c: 4,
+	[Symbol.iterator] () {
+		let i = 99;
+		return {
+			next () {
+				if (i === 101) {
+					return {
+						value: i++,
+						done: true
+					}
+				} else {
+					return {
+						value: i++,
+						done: false
+					}
+				}
+			}
+		}
+	}
+};
+let b = [11,22,33,44];
+for (let q of a) {
+	console.log(q,12)
+}
+// for of 循环对象需要自己加Symbol.iterator迭代器
+
+setTimeout(data => console.log(data), 1000, 83483484);
+// 给我的启发是回调函数虽然是settimeout函数内部调用的，但是是可以通过后面传参的形式给回调函数传参的，自己写方法的时候也可以这样做
+
+Object.entries({a:3,b:7}).forEach(([key, value]) => console.log(key, value))
+// 循环对象
+
+const kk = 349589345983593495
+const a = abc`dlhdf;gf;hdpfh0dfe4905457${kk}`;
+function abc (a, ...b) {
+	console.log(a, b,999)
+}
+// 模板字符串标签
+
+// 函数的参数有自己的作用域和临时死区，和函数体的作用域是独立的
 // 扩展运算符
 // ...需要容器才能去[]
 // 替换apply
@@ -958,6 +1004,8 @@ let [a, c, ...b] = [1,2,3,4,5,6,7,8,9]
 [...[1,2,3]]
 {...[1,2,3]}
 </script>
+
+
 
 
 
