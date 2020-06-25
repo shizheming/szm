@@ -22,12 +22,12 @@
     就像vue先走mounted，然后用户各种上点击事件函数调用，我去记录他，从对象去切入这个记录点
 */
 
-import __ from './_';
+import {forEach} from 'lodash';
 
 function memoized (obj/* 把整个要记录的对象都传进来 */) {
     var newObj = {};
 
-    __.forEach(obj, (value, key) => {
+    forEach(obj, (value, key) => {
         newObj[key] = (function (key) {
             return function () {
                 newObj[key].info.count++;

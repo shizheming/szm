@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import relationship from './relationship';
-import _ from 'lodash';
-import __ from './_';
+import {isFunction, forEach} from 'lodash';
 import motion from './motion';
 
 /*
@@ -36,14 +35,14 @@ function strategy (r/* 关系表 */, o/* with的this对象 */, m/* 间断性连�
         const as = [].slice.apply(arguments);
         // 把rule加上去
 
-        __.forEach(g, (value, key) => {
+        forEach(g, (value, key) => {
             r.forEach(current => {
                 if (key === current.y.name && current.rule) {
                     value._rule = current.rule;
                 }
             });
         });
-        __.forEach(g, (value) => {
+        forEach(g, (value) => {
             if (value._rule) {
                 o.as = as;
                 // eslint-disable-next-line no-new-func
@@ -57,7 +56,7 @@ function strategy (r/* 关系表 */, o/* with的this对象 */, m/* 间断性连�
             }
         });
 
-        if (_.isFunction(y)) {
+        if (isFunction(y)) {
             if (m) {
                 const args = [];
 

@@ -34,9 +34,41 @@ function g (v) {
 }
 export default {
     created () {
-        var s = linkage(a, b, c, d, e, f, g);
+        var s = linkage([
+            {
+                name: 'a',
+                relationship: {
+                    name: 'b',
+                    relationship: 'f'
+                }
+            },
+            {
+                name: 'b',
+                relationship: 'f'
+            },
+            {
+                name: 'c',
+                relationship: [
+                    {
+                        name: 'f'
+                    },
+                    {
+                        name: 'a',
+                        relationship: {
+                            name: 'b',
+                            relationship: 'f'
+                        }
+                    }
+                ]
+            }
+        ]);
+        /*
+        [c, f]
+        [c,a,b,f]
+         */
 
-        console.log(s(100));
+        // console.log(JSON.stringify(s, null, 4), 89);
+        console.log(s, 89);
     }
 };
 </script>

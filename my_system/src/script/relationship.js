@@ -10,138 +10,66 @@
     核心就是：
         1，一对一
         2，一对多
-        3. 多对一（把m和y的值颠倒下就变成一对多了----在策略中有多种条件产生一个结果）
 
-    目的：关系表的目的就是建立说明关系，把不相干的东西联系在一起，并不做实际操作（比如联动），
-
-    这里多运用些函数式的概念技巧去处理
-    组合，柯里化，部分应用，单一功能原则，纯函数
-    提取形式
-
-    我觉得虽然多有很多，无限的，像维度，嵌套，但想要把这些功能都实现，太复杂，不利于理解，有些东西概念上需要比如间断性，联动性，但我不能为了在功能里面实现联动性和间断性的概念儿去赢靠，这个主次颠倒了，就像柏拉图把理念放第一位了，
-    所以我觉得现在对我来说太复杂，太难的，占时不做，主要是保证核心简单干练
+    目的：
+    目的就是我在写逻辑代码的时候，
+    第一想把纯粹做事情的代码比如处理数据的代码和逻辑代码，比如判断逻辑的代码分开来，这样子的目的就是更好的可读性站在人理解的角度，同时也能换一种写法写代码，爽
+    比如我打个比方，页面里面我写了一个关系表，通过这个关系表我就能知道页面的主要逻辑，这样能短时间聚焦再必要的东西上面
+    第二就是依附的关系写法，目的是一个函数专注于干一件事情，其他的都是依附，比如打点
 
 */
 import {forEach, flatten, uniq, isArray} from 'lodash';
-const relationship = function (relationship) {
-    var a = relationship.map(currentValue => {
-        var {m, y} = currentValue;
+const relationship = function (table) {
+};
+// 我想了下，还是直接配个关系表把，不要转换数据格式了，好麻烦
 
-        if (isOneOnOne(m, y)) {
-            return {
-                m,
-                y
-            };
+function a () {
+    alert('a');
+}
+function b () {
+    alert('b');
+}
+function c () {
+    alert('c');
+}
+function d () {
+    alert('d');
+}
+function e () {
+    alert('e');
+}
+function f () {
+    alert('f');
+}
+
+const table = [
+    {
+        name: a,
+        relationship: {
+            name: b,
+            relationship: f
         }
-        if (isOneToMany(m, y)) {
-            return y.map(item => {
-                return {
-                    m,
-                    y: item
-                };
-            });
-        }
-    });
-    var b = compose(flatten, filterFalse)(a);
-    // 最终变成1对多的结构，拿到外面的数据先打散成一对一，在重组成一对多
-    // 先把一对一变成一对多
-    // 拿key
-    var keys = b.map(current => {
-        return current.m.name;
-    });
-    // 去重
-    var onlyKey = uniq(keys);
-    // 合并m
-    var r = {};
-
-    onlyKey.forEach(current => {
-        var f = b.filter(item => {
-            return item.m.name === current;
-        });
-
-        r[current] = {
-
-            m: f[0].m,
-            y: f.map(i => {
-                return i.y;
-            })
-        };
-    });
-    function createRelationshipTable (o, result = []) {
-        o.forEach(value => {
-            var no = {};
-
-            no.m = value;
-            if (r[value.name]) {
-                no.y = createRelationshipTable(r[value.name].y);
-            }
-            result.push(no);
-        });
-        return result;
-    }
-    var tree = {};
-
-    forEach(r, (value, key) => {
-        tree[key] = createRelationshipTable(value.y);
-    });
-    // 把头塞进去
-    forEach(tree, (value, key, o) => {
-        var fn = r[key].m;
-
-        o[key] = [
+    },
+    {
+        name: b,
+        relationship: f
+    },
+    {
+        name: c,
+        relationship: [
             {
-                m: fn,
-                y: value
+                name: f
+            },
+            {
+                name: a,
+                relationship: {
+                    name: b,
+                    relationship: f
+                }
             }
-        ];
-    });
-    // console.log(tree, 'tree');
-
-    var lines = [];
-
-    function getLine (arr, result = []) {
-        arr.forEach((current, index) => {
-            if (index) result.pop();
-            result.push(current.m);
-            if (current.y) {
-                getLine(current.y, [...result]);
-            } else {
-                lines.push([...result]);
-            }
-        });
+        ]
     }
-    forEach(tree, (value) => {
-        getLine(value);
-    });
-    // console.log(lines, 28);
+];
 
-    return {
-        lines,
-        r
-    };
-};
-
-const filterFalse = function (a) {
-    return a.filter(function () {
-        return a !== '' && a !== false && a !== undefined;
-    });
-};
-
-// 一对一
-const isOneOnOne = function (a, b) {
-    return !isArray(a) && !isArray(b);
-};
-
-// 一对多
-const isOneToMany = function (a, b) {
-    return !isArray(a) && isArray(b);
-};
-
-// 组合
-const compose = function (a, b) {
-    return function () {
-        return a(b.apply(null, arguments));
-    };
-};
-
+console.log(table, '关系表');
 export default relationship;

@@ -26,38 +26,30 @@ function f () {
     alert('f');
 }
 
-const table = [
+var relationshipTable = [
     {
-        name: a,
-        relationship: {
-            name: b,
-            relationship: f
-        }
+        m: b,
+        y: c
     },
     {
-        name: b,
-        relationship: f
+        m: c,
+        y: [d, a, e]
     },
     {
-        name: c,
-        relationship: [
-            {
-                name: f
-            },
-            {
-                name: a,
-                relationship: {
-                    name: b,
-                    relationship: f
-                }
-            }
-        ]
+        m: b,
+        y: a
+    },
+    {
+        m: a,
+        y: f
     }
 ];
 
 export default {
-    mounted () {
+    created () {
+        var r = relationship(relationshipTable);
 
+        console.log(r, 137);
     }
 };
 </script>

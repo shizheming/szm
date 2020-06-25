@@ -1,44 +1,23 @@
 <template>
     <div id="app">
-        <h1>js的质料是什么，是数据结构，是函数</h1>
-        <h1>大的概念，有巨大的外延很小的内涵，大的形式，小的质料</h1>
-        <ul>
-            <li>
-                <a href="#/relationship">关系</a>
-            </li>
-            <li>
-                <a href="#/motion">间断性连续性（运动）</a>
-                <ul>
-                    <li>
-                        <a href="#/linkage">联动</a>
-                    </li>
-                    <li>
-                        <a href="#/compose">组合</a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="#/strategy">策略（分支，判断）</a>
-            </li>
-            <li>
-                <a href="#/memoized">记忆</a>
-            </li>
-            <li>
-                <a href="#/run">运行（达到条件才停止）</a>
-            </li>
-            <li>
-                <a href="#/decorate">装饰</a>
-            </li>
-            <li>
-                <a href="#/state">状态</a>
-            </li>
-        </ul>
-        <h1>判断（也就是形成分叉的原因）从统一出发</h1>
-        <h1>有没有，判断，先有没有这个，再说是不是这个</h1>
+        <p>js的质料是什么，是数据结构，是函数</p>
+        <p>大的概念，有巨大的外延很小的内涵，大的形式，小的质料</p>
+        <a href="#/relationship">关系</a>
+        <p>弄个最最简单的关系，一对一，多到最后还是一</p>
+        <a href="#/motion">间断性连续性（运动）</a>
+        <a href="#/linkage">联动</a>
+        <a href="#/attachment">依附</a>
+        <a href="#/strategy">策略（分支，判断）</a>
+        <a href="#/memoized">记忆</a>
+        <a href="#/run">运行（达到条件才停止）</a>
+        <a href="#/decorate">装饰</a>
+        <a href="#/state">状态</a>
+        <p>判断（也就是形成分叉的原因）从统一出发</p>
+        <p>有没有，判断，先有没有这个，再说是不是这个</p>
         <ul>
             <li>_.includes</li>
         </ul>
-        <h1>是不是，判断是不是某个对象</h1>
+        <p>是不是，判断是不是某个对象</p>
         <ul>
             <li>是不是类数组_.isArguments</li>
             <li>是不是数组_.isArray</li>
@@ -49,15 +28,15 @@
             <li>是不是布尔_.isBoolean</li>
             <li>是不是字符串_.isString</li>
         </ul>
-        <h1>是否，判断是不是某个对象状态</h1>
+        <p>是否，判断是不是某个对象状态</p>
         <ul>
             <li>是否冻结_.isFrozen</li>
             <li>是否相等_.is</li>
         </ul>
 
         <!-- 姑且这样分吧，小操作大概念，没有绝对的界限 -->
-        <h1>操作，动作</h1>
-        <h1>获取，要，拿，摘，分，分组，去，删，合，差，最，次数（有些数学的意思）</h1>
+        <p>操作，动作</p>
+        <p>获取，要，拿，摘，分，分组，去，删，合，差，最，次数（有些数学的意思）</p>
         <ul>
             <li>要键_.key</li>
             <li>要值_.value</li>
@@ -76,7 +55,7 @@
             <li>之后几次_.min</li>
             <li>之前几次_.min</li>
         </ul>
-        <h1>形态变化，结构变化</h1>
+        <p>形态变化，结构变化</p>
         <ul>
             <li>对象变数组，数组变对象</li>
             <li>冻结对象</li>
@@ -137,4 +116,5 @@ export default {
 </script>
 
 <style>
+a{display:block;}
 </style>

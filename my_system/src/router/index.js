@@ -23,12 +23,6 @@ var routes = [
         component: () => import('../components/linkage.vue')
     },
     {
-        path: '/compose',
-        name: 'compose',
-        title: '组合',
-        component: () => import('../components/compose.vue')
-    },
-    {
         path: '/strategy',
         name: 'strategy',
         title: '策略',
@@ -37,7 +31,7 @@ var routes = [
     {
         path: '/memoized',
         name: 'memoized',
-        title: '策略',
+        title: '记忆',
         component: () => import('../components/memoized.vue')
     },
     {
@@ -57,6 +51,12 @@ var routes = [
         name: 'state',
         title: '状态',
         component: () => import('../components/state.vue')
+    },
+    {
+        path: '/attachment',
+        name: 'attachment',
+        title: '依附',
+        component: () => import('../components/attachment.vue')
     }
 ];
 
