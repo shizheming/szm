@@ -57,7 +57,41 @@ const table = [
 
 export default {
     mounted () {
+        var s = relationship([
+            {
+                name: 'a',
+                relationship: {
+                    name: 'b',
+                    relationship: 'f'
+                }
+            },
+            {
+                name: 'b',
+                relationship: 'f'
+            },
+            {
+                name: 'c',
+                relationship: [
+                    {
+                        name: 'f'
+                    },
+                    {
+                        name: 'a',
+                        relationship: {
+                            name: 'b',
+                            relationship: 'f'
+                        }
+                    }
+                ]
+            }
+        ]);
+        /*
+        [c, f]
+        [c,a,b,f]
+         */
 
+        // console.log(JSON.stringify(s, null, 4), 89);
+        console.log(s, 81119);
     }
 };
 </script>

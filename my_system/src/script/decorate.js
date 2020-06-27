@@ -5,8 +5,10 @@
     不是，装饰是外在的，状态是内在的
 */
 import motion from './motion';
-function decorate () {
-    return motion(arguments[0], arguments[1]);
+function decorate (...fn) {
+    // 这里是装饰不是代理，所以arg参数不会被装饰函数拦截后再传给本体，
+    return function (...args) {
+        return motion(...fn.flat()).apply(this, args);
+    };
 }
-
 export default decorate;
