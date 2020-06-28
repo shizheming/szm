@@ -35,12 +35,6 @@ var routes = [
         component: () => import('../components/memoized.vue')
     },
     {
-        path: '/run',
-        name: 'run',
-        title: '运行',
-        component: () => import('../components/run.vue')
-    },
-    {
         path: '/decorate',
         name: 'decorate',
         title: '装饰',

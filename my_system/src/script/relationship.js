@@ -26,6 +26,7 @@ function relationship (table, obj) {
         // 1打点扁平
         const flat = flatRelationship(current);
 
+        console.log(flat, 1);
         // 2按层级分组
         let flatArr = [];
 
@@ -44,10 +45,9 @@ function relationship (table, obj) {
                 flatArr.push([current]);
             }
         });
-
         // 3倒叙数组，这是关键，应为只有倒过来了，才能保证循环得时候是唯一得道路
         flatArr = flatArr.reverse();
-
+        console.log(flatArr, 3);
         // 4循环出结果一股脑全部撸出来
         const result = [];
 
@@ -82,7 +82,7 @@ function relationship (table, obj) {
                 }
             });
         });
-
+        console.log(result, 4);
         return result;
     });
     // 5最后过把中间的点过滤掉，就是不是开端的点，成为中间的点
@@ -105,6 +105,7 @@ function relationship (table, obj) {
         });
     });
 
+    console.log(lastResult, 5);
     return lastResult;
 }
 function flatRelationship (current) {

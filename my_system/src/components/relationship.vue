@@ -26,35 +26,6 @@ function f () {
     alert('f');
 }
 
-const table = [
-    {
-        name: a,
-        relationship: {
-            name: b,
-            relationship: f
-        }
-    },
-    {
-        name: b,
-        relationship: f
-    },
-    {
-        name: c,
-        relationship: [
-            {
-                name: f
-            },
-            {
-                name: a,
-                relationship: {
-                    name: b,
-                    relationship: f
-                }
-            }
-        ]
-    }
-];
-
 export default {
     mounted () {
         var s = relationship([
