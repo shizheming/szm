@@ -3,9 +3,9 @@
 </template>
 <script>
 /* eslint-disable no-console */
-import state from '../script/state';
+import {warpState, onceState} from '../script/state';
 
-var stateCollection = {
+var stateCollection1 = {
     run () {
         console.log('我在跑');
     },
@@ -20,20 +20,35 @@ var stateCollection = {
     }
 };
 
-var s = state(stateCollection);
+var s = warpState(stateCollection1);
 
-s.go();
-s.go();
-s.go();
-s.change('squat');
-s.go();
-s.go();
-s.go(111);
-s.go(222);
+const stateCollection2 = {
+    ajax () {
+        console.log('第一次请求数据，拿');
+    },
+    doing () {
+        console.log('不用请求了，我有数据了，接着干活');
+    }
+};
+
+const z = onceState(stateCollection2);
 
 export default {
-    created () {
+    mounted () {
+        s.go();
+        s.go();
+        s.go();
+        s.change('squat');
+        s.go();
+        s.go();
+        s.go(111);
+        s.go(222);
 
+        z();
+        z();
+        z();
+        z();
+        z();
     }
 };
 </script>

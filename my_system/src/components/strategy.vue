@@ -20,6 +20,7 @@ var o = {
     c (j, k) {
         return j === k;
     },
+
     a1 (v) {
         return v + '小于';
     },
@@ -55,7 +56,7 @@ console.log(v, 1838);
 // console.log(t, 6565);
 
 export default {
-    created () {
+    mounted () {
 
     }
 };
