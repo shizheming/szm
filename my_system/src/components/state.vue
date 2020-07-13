@@ -35,14 +35,14 @@ const z = onceState(stateCollection2);
 
 export default {
     mounted () {
-        s.go();
-        s.go();
-        s.go();
+        s();
+        s();
+        s();
         s.change('squat');
-        s.go();
-        s.go();
-        s.go(111);
-        s.go(222);
+        s();
+        s();
+        s(111);
+        s(222);
 
         z();
         z();

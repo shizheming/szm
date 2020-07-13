@@ -1,10 +1,9 @@
 /*
     数学计算
  */
-const _ = {};
 
 // 加法
-_.accAdd = function (arg1, arg2) {
+export const accAdd = function (arg1, arg2) {
     var r1, r2, m;
 
     try {
@@ -22,7 +21,7 @@ _.accAdd = function (arg1, arg2) {
 };
 
 // 减法
-_.accSubtr = function (arg1, arg2) {
+export const accSubtr = function (arg1, arg2) {
     var r1, r2, m, n;
 
     try { r1 = arg1.toString().split('.')[1].length; } catch (e) { r1 = 0; }
@@ -35,7 +34,7 @@ _.accSubtr = function (arg1, arg2) {
 };
 
 // 乘法
-_.accMul = function (arg1 = 0, arg2) {
+export const accMul = function (arg1 = 0, arg2) {
     var m = 0;
     var s1 = arg1.toString();
     var s2 = arg2.toString();
@@ -48,5 +47,3 @@ _.accMul = function (arg1 = 0, arg2) {
     } catch (e) {}
     return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m);
 };
-
-export default _;

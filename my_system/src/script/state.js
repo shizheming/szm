@@ -17,16 +17,13 @@ export const warpState = function (stateCollection) {
     var keys = Object.keys(stateCollection);
     var currentSate = stateCollection[keys[0]];
 
-    function change (key) {
-        currentSate = stateCollection[key];
-    }
-    function go () {
+    function state () {
         return currentSate.apply(null, arguments);
     }
-    return {
-        change,
-        go
+    state.change = function (key) {
+        currentSate = stateCollection[key];
     };
+    return state;
 };
 
 // 2.第一次运行完后就出发的内部状态改变

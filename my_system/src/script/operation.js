@@ -1,7 +1,33 @@
 
+import {forEach, isPlainObject, isArray, identity} from 'lodash';
 /*
-    获取，要，拿，摘，分，分组，删，合
+    获取，要，拿，摘，分，分组，删，合，递归
 */
+
+export const recursive = function (collection, baseCallback = identity, ObjectCallback = identity, level) {
+    level = _.isNumber(level) ? ++level : 1;
+    var result = {
+        collection: [],
+        value: []
+    };
+
+    forEach(collection, function (currentValue, key, collection) {
+        if (isArray(currentValue) || isPlainObject(currentValue)) {
+            // 对象值的时候一个断点回调
+            var output = ObjectCallback(currentValue, key, collection, level);
+
+            output && result.collection.push(output);
+            var recursiveValue = recursive(currentValue, baseCallback, ObjectCallback, level);
+
+            result.value = result.value.concat(recursiveValue.value);
+            result.collection = result.collection.concat(recursiveValue.collection);
+        } else {
+            // 基础值的时候一个断点回调
+            result.value.push(baseCallback(currentValue, key, collection, level));
+        }
+    });
+    return result;
+};
 
 const _ = {};
 
@@ -212,13 +238,6 @@ _.forEach = function (collection, iteratee) {
 /*
 尚未定义
 */
-
-// 反谓词
-_.negate = function (predicate) {
-    return function () {
-        return predicate.apply(this, arguments);
-    };
-};
 
 // 压缩
 _.zip = function (...arr) {
