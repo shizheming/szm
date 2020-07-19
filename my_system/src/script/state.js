@@ -18,7 +18,7 @@ export const warpState = function (stateCollection) {
     var currentSate = stateCollection[keys[0]];
 
     function state () {
-        return currentSate.apply(null, arguments);
+        return currentSate.apply(this, arguments);
     }
     state.change = function (key) {
         currentSate = stateCollection[key];
@@ -37,5 +37,15 @@ export const onceState = function (stateCollection) {
         currentSate.apply(this, args);
         currentSate = stateCollection[keys[1]];
         return currentSate;
+    };
+};
+
+// 3.内部运行change，当策略来用
+export const strategy = function (strategy) {
+    const state = warpState(strategy);
+
+    return function (str) {
+        state.change(str);
+        return state.call(this);
     };
 };

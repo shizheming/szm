@@ -3,7 +3,7 @@
 </template>
 <script>
 /* eslint-disable no-console */
-import memoized from '../script/memoized';
+import memoized from '../script/memory.1';
 
 var me = {
     eat (a) {

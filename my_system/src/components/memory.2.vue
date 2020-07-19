@@ -3,7 +3,7 @@
 </template>
 <script>
 /* eslint-disable no-console */
-import memoized from '../script/memoized.1';
+import memoized from '../script/memory.2';
 
 var fibonacci = memoized([0, 1], function (shell, n) {
     return shell(n - 1) + shell(n - 2);

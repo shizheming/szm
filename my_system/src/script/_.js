@@ -120,34 +120,6 @@ _.recursive = recursive;
 */
 
 /*
-    过滤出所有集合的基础类型值
-*/
-
-var value = function (original) {
-    return factoryNew(original, function (value, key, output) {
-        _.isArray(value) || _.isObject(value) ? _.forEach(value, function (currentValue, key, collection) {
-            output.push(currentValue);
-        }) : output.push(value);
-    }, []);
-};
-
-_.value = function (collection, isDeep) {
-    return isDeep !== true ? value(collection) : recursive(collection, function (value, key, collection, level) {
-        return value;
-    }).value;
-};
-
-/*
-    通过value找key
-*/
-
-_.findKey = function (original, value) {
-    var invert = _.invert(original);
-
-    return value in invert && invert[value];
-};
-
-/*
     通过值寻找所在的集合
     这里本来想深度复制集合后操作的但是我想只是寻找像做原始的迭代一样，我并没有去改变原集合，所以想想占时想作罢吧
 */
@@ -172,27 +144,6 @@ _.findCollection = function (collection, value, callback, isDeep) {
     return isDeep !== true ? result : result.concat(recursive(collection, null, function (currentValue, key, collection, level) {
         return findCollection(currentValue, value) && callback(currentValue, key, collection, level) && currentValue;
     }).collection);
-};
-
-/****************
-    消抖
-****************/
-
-_.debounce = function (func, wait) {
-    func = processFunction(func);
-    var lock = true;
-
-    return function () {
-        if (!lock) return;
-        else {
-            lock = false;
-            var timer = setTimeout(function () {
-                lock = true;
-                clearTimeout(timer);
-            }, wait);
-        }
-        return func.apply(this, arguments);
-    };
 };
 
 /****************
@@ -286,85 +237,6 @@ _.mappingKey = function (collection, form, tag, isDeep, isDestroy) {
     return OneMappingKey;
 };
 
-/*
-    辩证法-你是我，我是你
-    键值互换
-*/
-
-_.invert = function (original, array) {
-    // array是指那些不需要互换的，并不是所有情况都要互换
-    function surplus (key) {
-        return array.every(function (currentValue, index, array) {
-            return currentValue == key;
-        });
-    }
-    // eslint-disable-next-line no-func-assign
-    surplus = array ? surplus : function () {};
-    return factoryNew(original, function (currentValue, key, output) {
-        surplus(key) ? output[key] = currentValue : output[currentValue] = key;
-    });
-};
-
-/****************
-    形式转换
-****************/
-
-/*
-    把一个集合转换为一个[key, value]形式的数组
-*/
-
-_.pairs = function (original) {
-    return factoryNew(original, function (currentValue, key, output) {
-        output.push([key, currentValue]);
-    }, []);
-};
-
-/****************
-    删除
-****************/
-
-var removeSomething = function (collection, deleteCollection, type) {
-    var isArrayShift = type !== 'key';
-    var result = objectTransformation(collection, factoryNew(collection, function (currentValue, key, output) {
-        if (type === 'value' && !_.isExistence(deleteCollection, [currentValue])) output[key] = currentValue;
-        if (type === 'key' && !_.isExistence(deleteCollection.join().split(','), [key])) output[key] = currentValue;
-    }), isArrayShift);
-
-    return result;
-};
-
-/*
-    删除vlaue
-*/
-
-_.removeValue = function (collection, deleteCollection, isDeep) {
-    var oneRemoveValue = removeSomething(collection, deleteCollection, 'value');
-
-    if (isDeep !== true) return oneRemoveValue;
-    else {
-        recursive(oneRemoveValue, null, function (currentValue, key, collection, level) {
-            collection[key] = removeSomething(currentValue, deleteCollection, 'value');
-        });
-        return oneRemoveValue;
-    }
-};
-
-/*
-    删除key
-*/
-
-_.removeKey = function (collection, deleteCollection, isDeep) {
-    var oneRemoveKey = removeSomething(collection, deleteCollection, 'key');
-
-    if (isDeep !== true) return oneRemoveKey;
-    else {
-        recursive(oneRemoveKey, null, function (currentValue, key, collection, level) {
-            collection[key] = removeSomething(currentValue, deleteCollection, 'key');
-        });
-        return oneRemoveKey;
-    }
-};
-
 /****************
     数字
     我从倒计时，日期，数字的分隔中抽象出数字，也就是抽象出了质料，我又从倒计时，数字的分隔中中抽象出了时间，金钱，也就抽象出了形式，这是数字赋予形式后的2的意思
@@ -378,29 +250,6 @@ _.fillZero = function (value) {
     return value < 10 ? '0' + value : String(value);
 };
 
-/*
-    把字符串数字变成数字
-*/
-
-var toNumber = function (original) {
-    return objectTransformation(original, factoryClone(original, function (currentValue, key, output) {
-        var value = _.isString(currentValue) && Number(currentValue);
-
-        if (_.isNumber(value)) output[key] = value;
-    }));
-};
-
-_.toNumber = function (original, isDeep) {
-    var oneToNumber = toNumber(original);
-
-    if (isDeep !== true) return oneToNumber;
-    else {
-        recursive(oneToNumber, null, function (currentValue, key, collection, level) {
-            collection[key] = toNumber(currentValue);
-        });
-        return oneToNumber;
-    }
-};
 
 /****************
     金钱
@@ -413,83 +262,6 @@ _.toNumber = function (original, isDeep) {
 _.money = function (value) {
     // eslint-disable-next-line no-useless-escape
     return String(value).split('').reverse().join('').replace(/(\d{3})/g, '$1,').split('').reverse().join('').replace(/^\,/, '');
-};
-
-/****************
-    获取集合的某个值
-    目的是为了，不管访问层级都做到兼容不报错
-****************/
-
-_.getValue = function (collection, node) {
-    node = String(node).split('.');
-    var result = '';
-    var levelCollection = collection;
-
-    _.forEach(node, function (currentValue, index, array) {
-        if (typeof levelCollection === 'object' && currentValue in levelCollection) result = levelCollection[currentValue];
-        else result = '';
-        levelCollection = _.isObject(levelCollection) ? '' : levelCollection[currentValue];
-    });
-    return result;
-};
-
-/****************
-    次数
-****************/
-
-/*
-    达到次数后才执行
-*/
-
-_.after = function (times, func) {
-    func = processFunction(func);
-    return function () {
-        if (--times < 1) return func.apply(this, arguments);
-    };
-};
-
-/*
-    多少次前可以执行函数
-*/
-
-_.before = function (times, func) {
-    func = processFunction(func);
-    var result;
-
-    return function () {
-        if (--times >= 0) return func.apply(this, arguments);
-        return result;
-    };
-};
-
-/*
-    单次
-*/
-
-_.once = _.before.bind('', 1);
-
-/****************
-    时间
-****************/
-
-/*
-    获取某个月份的天数
-*/
-
-_.getDays = function (year, month) {
-    return new Date(year, month, 0).getDate();
-};
-
-/*
-★★★★名词★★★★
-*/
-
-/*
-    原始迭代器
-*/
-
-_.identity = function (value) {
-    return value;
 };
 
 /****************
