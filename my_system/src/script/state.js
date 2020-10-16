@@ -41,11 +41,12 @@ export const onceState = function (stateCollection) {
 };
 
 // 3.内部运行change，当策略来用
+// 这是最简单的策略，
 export const strategy = function (strategy) {
     const state = warpState(strategy);
 
-    return function (str) {
+    return function (str, ...args) {
         state.change(str);
-        return state.call(this);
+        return state.apply(this, args);
     };
 };

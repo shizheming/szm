@@ -114,10 +114,62 @@ export default {
             n: 6767
         };
     },
+    created () {
+        /* class Promise2 {
+            // 传一个异步函数进来
+            constructor (excutorCallBack) {
+                this.status = 'pending';
+                this.value = undefined;
+                this.fulfillAry = () => {};
+                //= >执行Excutor
+                const resolveFn = (result) => {
+                    if (this.status !== 'pending') return;
+                    const timer = setTimeout(() => {
+                        this.status = 'fulfilled';
+                        this.value = result;
+                        this.fulfillAry(result);
+                    }, 0);
+                };
+
+                // 执行这个异步函数
+                excutorCallBack(resolveFn);
+            }
+
+            // then传进两个函数
+            then (fulfilledCallBack, rejectedCallBack) {
+                return new Promise2((resolve, reject) => {
+                    this.fulfillAry = result => {
+                        const x = fulfilledCallBack(result);
+
+                        x instanceof Promise2 ? x.then(resolve, reject) : resolve(x);
+                    };
+                });
+            }
+
+            // 为类的静态方法，而不是在原型上
+            static all (promiseAry = []) {
+                let index = 0;
+
+                const result = [];
+
+                return new Promise2((resolve, reject) => {
+                    for (let i = 0; i < promiseAry.length; i++) {
+                        promiseAry[i].then((val) => {
+                            index++;
+                            result[i] = val;
+                            if (index === promiseAry.length) {
+                                resolve(result);
+                            }
+                        }, reject);
+                    }
+                });
+            }
+        } */
+
+    },
     components: {
     }
 };
-
 </script>
 
 <style>

@@ -28,12 +28,12 @@ var routes = [
         title: '策略',
         component: () => import('../components/strategy.vue')
     },
-    {
+    /* {
         path: '/memoized',
         name: 'memoized',
         title: '记忆',
         component: () => import('../components/memoized.vue')
-    },
+    }, */
     {
         path: '/decorate',
         name: 'decorate',
