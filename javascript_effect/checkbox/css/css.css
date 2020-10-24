@@ -1,7 +1,0 @@
-#form .myCheckBox{width:10px;height:10px;border:1px solid #ccc;display:inline-block;}
-#form .myCheckBox.active{background-color:pink;}
-#form input[type="checkbox"]{display:none;}
-
-#form2 .myCheckBox{width:10px;height:10px;border:1px solid #ccc;display:inline-block;}
-#form2 .myCheckBox.active{background-color:pink;}
-#form2 input[type="checkbox"]{display:none;}

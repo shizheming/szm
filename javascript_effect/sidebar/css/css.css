@@ -1,4 +1,0 @@
-#sidebar{width:1000px;margin:auto;}
-#sidebar>.pos{background-color:#ccc;height:50px;width:300px;position:absolute;top:0;}
-#sidebar>.nav{position:relative;}
-#sidebar a{display:block;line-height:50px;text-align:center;outline:1px solid #ccc;width:300px;}
