@@ -1,9 +1,0 @@
-#accordion{position:relative;width:1000px;margin:auto;font-size:20px;height:700px;overflow:hidden;}
-#accordion>div{width:840px;position:absolute;top:0;left:0;}
-#accordion>div>div{width:40px;background-color:#ccc;padding:0 10px;box-sizing:border-box;position:absolute;top:0;bottom:0;}
-#accordion img{width:100%;}
-
-#accordion2{position:relative;width:1000px;margin:auto;font-size:20px;height:700px;overflow:hidden;}
-#accordion2>div{width:840px;position:absolute;top:0;left:0;}
-#accordion2>div>div{width:40px;background-color:#ccc;padding:0 10px;box-sizing:border-box;position:absolute;top:0;bottom:0;}
-#accordion2 img{width:100%;}

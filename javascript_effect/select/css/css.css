@@ -1,5 +1,0 @@
-.mySelect{border:1px solid #ccc;width:100px;line-height:30px;text-align:center;cursor:default;}
-.mySelect>span{display:block;width:100px;border-bottom:1px solid #ccc;}
-.mySelect>ul{display:none;}
-.mySelect li:hover{background-color:#ccc;}
-#sel1{display:none;}

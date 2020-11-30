@@ -1,7 +1,0 @@
-#form .myRadio{width:10px;height:10px;border:1px solid #ccc;cursor:pointer;display:inline-block;}
-#form .myRadio.active{background-color:green;}
-#form input[name="sex"]{display:none;}
-
-#form2 .myRadio{width:10px;height:10px;border:1px solid #ccc;cursor:pointer;display:inline-block;}
-#form2 .myRadio.active{background-color:green;}
-#form2 input[type="radio"]{display:none;}
