@@ -94,6 +94,7 @@ function f () {
         }
     });
 }
+
 export default {
     data () {
         return {
@@ -124,6 +125,7 @@ export default {
 
             while (true) {
                 if (a > 0) {
+                    // yield可以理解为return，可以这是吐到外面的，不是吐给里面a的，有点难理解
                     a = yield 'green';
                 }
 
