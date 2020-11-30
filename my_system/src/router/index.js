@@ -51,6 +51,18 @@ var routes = [
         name: 'attachment',
         title: '依附',
         component: () => import('../components/attachment.vue')
+    },
+    {
+        path: '/promise',
+        name: 'promise',
+        title: '异步时间',
+        component: () => import('../components/promise.vue')
+    },
+    {
+        path: '/test',
+        name: 'test',
+        title: '异步时间',
+        component: () => import('../test.vue')
     }
 ];
 

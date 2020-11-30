@@ -47,7 +47,7 @@ class Promise2 {
     console.log(3);
 }); */
 
-const promise4 = function (callback) {
+export const myPromise = function (callback) {
     let full = function () {};
     const resolve = function (value) {
         full(value);
@@ -56,18 +56,15 @@ const promise4 = function (callback) {
     callback(resolve);
     return {
         then (success) {
-            console.log(99);
-            return promise4(function (resolve) {
+            return myPromise(function (resolve) {
                 full = function (value) {
                     const r = success(value);
 
-                    console.log(4);
                     // eslint-disable-next-line no-prototype-builtins
                     if (typeof r === 'object' && r.hasOwnProperty('then')) {
-                        console.log(51);
+                        console.log(typeof r, 999);
                         r.then(resolve);
                     } else {
-                        console.log(52);
                         resolve(r);
                     }
                 };
@@ -75,22 +72,3 @@ const promise4 = function (callback) {
         }
     };
 };
-
-promise4((resolve, reject) => {
-    console.log(0);
-    setTimeout(() => {
-        console.log(1);
-        resolve(100);
-    }, 1000);
-}).then(result => {
-    console.log(2);
-    return promise4((resolve, reject) => {
-        console.log(21);
-        setTimeout(() => {
-            console.log(22);
-            resolve(result + 100);
-        }, 3000);
-    });
-}).then(result => {
-    console.log(3);
-});
