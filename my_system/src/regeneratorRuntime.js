@@ -48,9 +48,6 @@ var runtime = (function (exports) {
 
         return generator;
     }
-    console.log(exports, 209);
-    console.log(typeof module, 2938);
-    console.log(module, 2917);
     exports.wrap = wrap;
 
     // Try/catch helper to minimize deoptimizations. Returns a completion

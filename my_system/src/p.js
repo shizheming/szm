@@ -93,7 +93,7 @@ var runtime = (function (exports) {
             } else if (context.method === 'return') {
                 context.abrupt('return', context.arg);
             }
-
+            console.log(context.method, context, 9000);
             var record = tryCatch(innerFn, self, context);
 
             state = context.done

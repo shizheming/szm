@@ -94,23 +94,47 @@ function f () {
         }
     });
 }
+function *h () {
+    const a = yield 1;
 
+    console.log(a, 1);
+    const b = yield 2;
+
+    console.log(b, 2);
+    const c = yield 3;
+
+    console.log(c, 3);
+}
+const ao = h();
+
+ao.next(100);
+ao.next(200);
+ao.next(300);
+ao.next(400);
 export default {
     data () {
         return {
             color: '#ccc'
         };
     },
-    created () {
+    mounted () {
         this.k1 = colorState(1);
 
         /* this.k1 = this.colorState(1);
         console.log(this.k1, 90909090, this.k1.next); */
-        const g = this.k1.next().value;
+        this.k1.next(1999);
 
         this.pq = f();
     },
     methods: {
+        *ksksksks () {
+            let d;
+
+            for (let i = 0; i < 10; i++) {
+                d += yield i;
+            }
+            return d;
+        },
         hhh () {
             const ko = this.pq.next();
 
