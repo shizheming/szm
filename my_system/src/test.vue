@@ -1,5 +1,22 @@
 <script>
 import regeneratorRuntime from './p';
+function b () {
+    return function (n) {
+        switch (n) {
+            case 0:return 0;
+            case 1:return 2;
+            case 2:return 2;
+            case 3:return 3;
+        }
+    };
+}
+const g = b();
+
+g(1);
+g(2);
+g(3);
+g(4);
+g(5);
 
 function colorState (v) {
     var a;
