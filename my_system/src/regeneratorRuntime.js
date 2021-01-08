@@ -278,6 +278,7 @@ var runtime = (function (exports) {
                 if (delegate) {
                     var delegateResult = maybeInvokeDelegate(delegate, context);
 
+                    console.log(delegateResult, 'delegate');
                     if (delegateResult) {
                         if (delegateResult === ContinueSentinel) continue;
                         return delegateResult;
@@ -336,6 +337,7 @@ var runtime = (function (exports) {
     function maybeInvokeDelegate (delegate, context) {
         var method = delegate.iterator[context.method];
 
+        console.log(method, 93);
         if (method === undefined) {
         // A .throw or .return when the delegate iterator has no .throw
         // method always terminates the yield* loop.
@@ -367,6 +369,7 @@ var runtime = (function (exports) {
 
         var record = tryCatch(method, delegate.iterator, context.arg);
 
+        console.log(record, 89);
         if (record.type === 'throw') {
             context.method = 'throw';
             context.arg = record.arg;
@@ -496,6 +499,7 @@ var runtime = (function (exports) {
         if (iterable) {
             var iteratorMethod = iterable[iteratorSymbol];
 
+            console.log(iteratorMethod, 289);
             if (iteratorMethod) {
                 return iteratorMethod.call(iterable);
             }
@@ -724,6 +728,7 @@ var runtime = (function (exports) {
         },
 
         delegateYield: function (iterable, resultName, nextLoc) {
+            console.log(iterable, 'b');
             this.delegate = {
                 iterator: values(iterable),
                 resultName: resultName,
@@ -731,11 +736,12 @@ var runtime = (function (exports) {
             };
 
             if (this.method === 'next') {
+                console.log('next', 1);
                 // Deliberately forget the last sent value so that we don't
                 // accidentally pass it on to the delegate.
                 this.arg = undefined;
             }
-
+            console.log(ContinueSentinel, 89, this.delegate);
             return ContinueSentinel;
         }
     };

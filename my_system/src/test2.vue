@@ -5,6 +5,32 @@ export default {
 
         };
     },
+    created () {
+        function ha () {
+            setTimeout(() => {
+                console.log(100);
+            }, 1000);
+            return 2999;
+        }
+        function * as () {
+            yield new Promise(resolve => {
+                setTimeout(function () {
+                    resolve(2991);
+                    console.log(gq.next());
+                }, 1000);
+            });
+            yield 222;
+        }
+        const gq = as();
+
+        console.log(gq.next());
+
+        Promise.resolve(new Promise(resolve => {
+            setTimeout(resolve, 6000);
+        })).then(() => {
+            console.log('resolve lala 2000');
+        });
+    },
     mounted () {
         let n = 0;
 
@@ -41,7 +67,7 @@ export default {
             }
             o();
         }
-        h(aaa);
+        // h(aaa);
     },
     methods: {
 
