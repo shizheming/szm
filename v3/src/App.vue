@@ -1,6 +1,3 @@
-<!--<template>
-  <div>q213123123123123</div>
-</template>-->
 <script>
 import HelloWorld from './components/HelloWorld.vue'
 // import { Button } from 'ant-design-vue';
@@ -8,12 +5,8 @@ import HelloWorld from './components/HelloWorld.vue'
 export default {
   name: 'App',
   setup(){
-
-
-
-
-
-    console.log(1233333)
+    const ggg = 8989
+    console.log(ggg,191919)
     return () => {
       return (
         <ul>
