@@ -93,7 +93,6 @@ var runtime = (function (exports) {
             } else if (context.method === 'return') {
                 context.abrupt('return', context.arg);
             }
-
             var record = tryCatch(innerFn, self, context);
 
             state = context.done
@@ -213,6 +212,21 @@ var runtime = (function (exports) {
             this.method = 'return';
             this.next = 'end';
             console.log(record, 50);
+        },
+        delegateYield: function (iterable, resultName, nextLoc) {
+            this.delegate = {
+                iterator: values(iterable),
+                resultName: resultName,
+                nextLoc: nextLoc
+            };
+
+            if (this.method === 'next') {
+                // Deliberately forget the last sent value so that we don't
+                // accidentally pass it on to the delegate.
+                this.arg = undefined;
+            }
+
+            return ContinueSentinel;
         }
 
     };

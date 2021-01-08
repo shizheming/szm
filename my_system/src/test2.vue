@@ -1,57 +1,80 @@
 <script>
-function s (context) {
-    switch (context.next) {
-        case 0:
-            context.next = 1;
-            return 'red';
-        case 1:
-            context.next = 2;
-            return 'yellow';
-        case 2:
-            context.next = 0;
-            return 'green';
-    }
-};
-const context = {
-    next: 0,
-    sent: null
-};
-const colorChange = {
-    next (num) {
-        context.sent = num;
-        return {
-            value: s(context),
-            done: false
-        };
-    }
-};
-
 export default {
     data () {
         return {
-            color: '#ccc'
+
         };
     },
     created () {
+        function ha () {
+            setTimeout(() => {
+                console.log(100);
+            }, 1000);
+            return 2999;
+        }
+        function * as () {
+            yield new Promise(resolve => {
+                setTimeout(function () {
+                    resolve(2991);
+                    console.log(gq.next());
+                }, 1000);
+            });
+            yield 222;
+        }
+        const gq = as();
+
+        console.log(gq.next());
+
+        Promise.resolve(new Promise(resolve => {
+            setTimeout(resolve, 6000);
+        })).then(() => {
+            console.log('resolve lala 2000');
+        });
+    },
+    mounted () {
+        let n = 0;
+
+        function * aaa () {
+            yield b();
+            yield b();
+            yield b();
+        }
+        function b () {
+            return function (callback) {
+                setTimeout(() => {
+                    n++;
+                    console.log(n, 83838);
+                    callback();
+                }, 1000);
+            };
+        }
+
+        function h (jj) {
+            const result = jj();
+
+            let next = result.next();
+
+            function o () {
+                console.log(next, 29);
+                if (next.done) {
+
+                } else {
+                    next.value(function () {
+                        next = result.next();
+                        o();
+                    });
+                }
+            }
+            o();
+        }
+        // h(aaa);
     },
     methods: {
-        changeColor () {
-            this.color = colorChange.next().value;
-        },
-        change (v) {
 
-        }
     },
     render () {
         return (
             <div>
-                <div style={{
-                    width: '100px',
-                    height: '100px',
-                    marginBottom: '10px',
-                    backgroundColor: this.color
-                }} onClick={this.changeColor}></div>
-                <a-input-number onChange={this.change}/>
             </div>
         );
     }
