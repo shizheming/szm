@@ -63,6 +63,12 @@ var routes = [
         name: 'test',
         title: '异步时间',
         component: () => import('../test.vue')
+    },
+    {
+        path: '/test2',
+        name: 'test2',
+        title: '异步时间2',
+        component: () => import('../test2.vue')
     }
 ];
 
