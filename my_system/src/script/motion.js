@@ -5,14 +5,20 @@
     概念：
     连着动
     占时不考虑间断性
+    参数是一个接着一个传递下去的，联动嘛
 */
-function motion (...fn) {
+function motion (first, ...fn) {
     return function (...args) {
-        return fn.map(current => {
+        return fn.reduce((a, b, index) => {
             return {
-                name: current.name,
-                back: current.apply(this, args)
+                name: a.f.name,
+                back: index ? a.f.call(this, a.back) : a.f.apply(this, a.back),
+                f: b
             };
+        }, {
+            name: undefined,
+            back: args,
+            f: first
         });
     };
 }
