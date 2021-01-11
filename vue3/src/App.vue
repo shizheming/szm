@@ -1,11 +1,20 @@
-<template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
-  <router-view/>
-</template>
-
+<script>
+export default {
+  setup() {
+    return () => {
+      return (
+        <div>
+          <div id='nav'>
+            <router-link to='/relationship'>relationship</router-link> |
+            <router-link to='/about'>About</router-link>
+          </div>
+          <router-view />
+        </div>
+      );
+    };
+  },
+};
+</script>
 <style lang="less">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
