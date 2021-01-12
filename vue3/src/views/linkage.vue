@@ -56,12 +56,14 @@ export default {
             name: "e",
             relationship:'c'
           },
+          {
+            name: "d",
+            relationship:'c'
+          },
         ],
       },
-    ],{
-      a,b,c,d,e,f,
-      oo
-    });
+    ]);
+    console.log(s,998800)
     /* let s = linkageRelationship([
       {
         name: "a",
