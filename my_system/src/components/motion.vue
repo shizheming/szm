@@ -44,7 +44,6 @@ obj.f = function f (fff) {
     return fff;
 };
 
-console.log(obj.f, 991);
 s.forEach(current => {
     current.forEach(item => {
         console.log(item, 6);

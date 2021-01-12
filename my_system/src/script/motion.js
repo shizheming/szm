@@ -8,11 +8,16 @@
     参数是一个接着一个传递下去的，联动嘛
 */
 function motion (first, ...fn) {
+    const arrFn = oneState(c => c, c => [c]);
+
     return function (...args) {
-        return fn.reduce((a, b, index) => {
+        return fn.reduce((a, b) => {
+            const r = arrFn.Irreversibility(a.back);
+
+            console.log(r, 'back');
             return {
                 name: a.f.name,
-                back: index ? a.f.call(this, a.back) : a.f.apply(this, a.back),
+                back: a.f.apply(this, r),
                 f: b
             };
         }, {
@@ -22,4 +27,17 @@ function motion (first, ...fn) {
         });
     };
 }
+const oneState = function (a, b) {
+    const obj = {};
+
+    obj.Irreversibility = function (c) {
+        obj.Irreversibility = function (nc) {
+            return b(nc);
+        };
+        return a(c);
+    };
+
+    return obj;
+};
+
 export default motion;

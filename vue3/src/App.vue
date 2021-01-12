@@ -6,7 +6,7 @@ export default {
         <div>
           <div id='nav'>
             <router-link to='/relationship'>relationship</router-link> |
-            <router-link to='/about'>About</router-link>
+            <router-link to='/linkage'>linkage</router-link>
           </div>
           <router-view />
         </div>
