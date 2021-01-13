@@ -42,8 +42,11 @@ export const linkage = function(first, ...fn) {
 export const linkageRelationship = function(relationshipTable, obj) {
   let table = relationship(relationshipTable);
   console.log(table, 29);
+  //我现在就是要把传进来的方法包一下重新出去用
   let allFn = [];
-  /* table.forEach((current) => {
+
+  
+  table.forEach((current) => {
     current.forEach((item) => {
       let arrStr = [];
       item.forEach((v) => {
@@ -55,10 +58,16 @@ export const linkageRelationship = function(relationshipTable, obj) {
           arrStr.push(fn);
         }
       });
-      console.log(arrStr,100)
-      allFn.push(linkage(...arrStr));
+      console.log(item,39)
+      allFn.push({
+        name:item[0],
+        fn:linkage(...arrStr)
+      });
     });
-  }); */
+  });
+
+  console.log(allFn,999222)
+
   return allFn;
 };
 

@@ -3,7 +3,7 @@
 </template>
 <script>
 /* eslint-disable no-console */
-import linkage from '../script/linkage';
+import linkage from '../script/linkage5';
 function a (v) {
     console.log('我起床了');
     return [v];

@@ -1,41 +1,39 @@
+/* eslint-disable no-console */
 /*
-    联动
-    由运动提炼出来
-    ❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤函数与函数两者之间的联动，单一的没有联动的概念❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤
-        const table = [
-            {
-                name: a,
-                relationship: {
-                    name: b,
-                    relationship: f
-                }
-            },
-            {
-                name: b,
-                relationship: f
-            },
-            {
-                name: c,
-                relationship: [
-                    {
-                        name: f
-                    },
-                    {
-                        name: a,
-                        relationship: {
-                            name: b,
-                            relationship: f
-                        }
-                    }
-                ]
-            }
-        ];
+    运动
+    ❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤函数与函数两者之间的间断性和连续性（运动）函数本身调用的运动没有意义❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤
+    概念：
+    连着动
+    占时不考虑间断性
+    参数是一个接着一个传递下去的，联动嘛
 */
-function linkage (...fn) {
+import {onceState} from '../../../../hypnos-szm/state';
+export const linkage = function (first, ...fn) {
+    const arrFn = onceState({
+        a (c) {
+            return c;
+        },
+        b (c) {
+            return [c];
+        }
+    });
+
     return function (...args) {
-        return fn.reduce((a, b) => {
-            return b.apply(this, a);
-        }, args);
+        return fn.reduce(
+            (a, b) => {
+                const r = arrFn(a.back);
+
+                return {
+                    name: a.f.name,
+                    back: a.f.apply(this, r),
+                    f: b
+                };
+            },
+            {
+                name: undefined,
+                back: args,
+                f: first
+            }
+        );
     };
-}
-export default linkage;
+};
