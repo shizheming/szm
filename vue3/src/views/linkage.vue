@@ -5,11 +5,11 @@ import { relationship } from "hypnos-szm";
 import { linkageRelationship } from "./linkage";
 export default {
   setup() {
-    function a(v) {
+    let a = function a(v) {
       console.log(v++, "aaaaaaaaaaaaaavvvvvvvvvvvvvvvvvvvvvvv");
       return v;
     }
-    function b(v) {
+    let b = function b(v) {
       console.log(v++, "b");
       return v;
     }
@@ -73,7 +73,11 @@ export default {
         oo,
       }
     );
-
+    a = s.a;
+    b = s.b
+    a()
+    console.log('--------------------------------')
+    b()
     return () => {
       return "relationship";
     };
