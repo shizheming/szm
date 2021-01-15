@@ -1,73 +1,82 @@
-<template>
-    <div>relationship</div>
-</template>
-
 <script>
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
-import relationship from '../script/relationship';
-
-function a () {
-    alert('a');
-}
-function b () {
-    alert('b');
-}
-function c () {
-    alert('c');
-}
-function d () {
-    alert('d');
-}
-function e () {
-    alert('e');
-}
-function f () {
-    alert('f');
-}
-
+// @ is an alias to /src
+// import HelloWorld from "@/components/HelloWorld.vue";
+import { relationship } from "hypnos-szm";
 export default {
-    mounted () {
-        var s = relationship([
-            {
-                name: 'a',
-                relationship: {
-                    name: 'b',
-                    relationship: 'f'
-                }
-            },
-            {
-                name: 'b',
-                relationship: 'f'
-            },
-            {
-                name: 'c',
-                relationship: [
+  setup() {
+    function a() {
+      alert("a");
+    }
+    function b() {
+      alert("b");
+    }
+    function c() {
+      alert("c");
+    }
+    function d() {
+      alert("d");
+    }
+    function e() {
+      alert("e");
+    }
+    function f() {
+      alert("f");
+    }
+
+    let s = relationship([
+      {
+        name: "a",
+        relationship: {
+          name: "b",
+          relationship: "f",
+        },
+      },
+      {
+        name: "b",
+        relationship: [
+          {
+            name: "f",
+          },
+          {
+            name: "e",
+          },
+        ],
+      },
+      {
+        name: "c",
+        relationship: [
+          {
+            name: "f",
+          },
+          {
+            name: "a",
+            relationship: {
+              name: "b",
+              relationship: [
+                {
+                  name: "f",
+                },
+                {
+                  name: "d",
+                  relationship: [
                     {
-                        name: 'f'
+                      name: "e",
                     },
                     {
-                        name: 'a',
-                        relationship: {
-                            name: 'b',
-                            relationship: 'f'
-                        }
-                    }
-                ]
-            }
-        ]);
-        /*
-        [c, f]
-        [c,a,b,f]
-         */
-
-        // console.log(JSON.stringify(s, null, 4), 89);
-        console.log(s, 81119);
-    }
+                      name: "f",
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        ],
+      },
+    ]);
+    console.log(s, 10);
+    return () => {
+      return "relationship";
+    };
+  },
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-</style>
