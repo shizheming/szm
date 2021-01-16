@@ -7,7 +7,7 @@
     占时不考虑间断性
     参数是一个接着一个传递下去的，联动嘛
 */
-import {onceState} from '../../../../hypnos-szm/state';
+import {onceState} from 'hypnos-szm';
 export const linkage = function (first, ...fn) {
     const arrFn = onceState({
         a (c) {
