@@ -2,58 +2,20 @@
 import { bing } from "./relationship";
 export default {
   setup() {
-    let hhhhhh = [
-      {
-        be: "linkage",
-        name: "a",
-        relationship: [
-          {
-            be: "judge",
-            name: "b",
-            relationship: [
-              {
-                name: "c",
-              },
-              {
-                name: "d",
-              },
-            ],
-          },
-          {
-            be: "linkage",
-            name: "e",
-            relationship: {
-              be: "judge",
-              name: "ff",
-              relationship: [
-                {
-                  name: "g",
-                },
-                {
-                  name: "h",
-                },
-              ],
-            },
-          },
-          {
-            be: "linkage",
-            name: "i",
-            relationship: "j",
-          },
-        ],
-      },
-    ];
-
+    let input = function(a, b) {
+      return a && <input disabled={b} />;
+    };
     let fnObj = {
       a() {
         console.log("a");
       },
       b() {
         console.log("b");
-        return "d";
+        return "input";
       },
       c() {
         console.log("c");
+        return 'e'
       },
       d(v) {
         console.log("d");
@@ -61,10 +23,10 @@ export default {
       },
       e(v) {
         console.log("e");
-        return ["ff", v];
+        return ["f", v];
       },
-      ff(v) {
-        console.log("ff", v);
+      f(v) {
+        console.log("f");
         return "g";
       },
       g() {
