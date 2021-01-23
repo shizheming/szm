@@ -26,7 +26,9 @@ export default {
                           name: "d",
                         },
                         {
+                          be: "linkage",
                           name: "e",
+                          relationship: "c",
                         },
                       ],
                     },
@@ -62,10 +64,11 @@ export default {
     let fnObj = {
       a() {
         console.log("a");
+        return "a";
       },
       b() {
         console.log("b");
-        return "inputState";
+        return ["inputState", 20, 39];
       },
       c() {
         console.log("c");
@@ -76,7 +79,7 @@ export default {
         return v;
       },
       e(v) {
-        console.log("e",v);
+        console.log("e", v);
         return v;
       },
       f(v) {
@@ -90,31 +93,34 @@ export default {
         console.log("h");
       },
       i(v) {
-        console.log("i",v);
-        return v
+        console.log("i", v);
+        return v;
       },
       j(v) {
-        console.log("j",v);
+        console.log("j", v);
         return ["e", v];
       },
       input(data) {
         console.log(data, 20);
-        return select({
+        let dom = select({
           type: data,
         });
+        console.log(dom, 12);
+        return dom;
       },
       inputState() {
-        console.log(1999);
+        console.log("inputState");
         return ["hide", "show", "disabled", "able"][displayName];
       },
     };
-    let displayName = 2;
-    
+    let displayName = 1;
+
     function select(data = {}) {
       // console.log(hh,222111111111111111111111111)
       let disabled = true;
       const { type } = data;
       let xxxxxxxxx = function() {
+        console.log(123);
         return (
           <a-select
             style={{ width: "40%" }}
@@ -135,20 +141,27 @@ export default {
         );
       };
       if (type === "show") {
-        console.log("show");
+        console.log("show", "render");
         return xxxxxxxxx();
       } else if (type === "disabled") {
-        console.log("disabled");
+        console.log("disabled", "render");
         disabled = true;
         return xxxxxxxxx();
       } else if (type === "able") {
-        console.log("able");
+        console.log("able", "render");
         disabled = false;
         return xxxxxxxxx();
       }
     }
+    bing(ssss, fnObj, 2, 3);
+    console.log(bing.data, "data2");
     return () => {
-      return <div>{bing(ssss, fnObj,2,3)}</div>;
+      return (
+        <div>
+          {bing.data.input}
+          <div>123123</div>
+        </div>
+      );
     };
   },
 };
