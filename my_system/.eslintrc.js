@@ -41,7 +41,7 @@ module.exports = {
         "space-infix-ops": "error",
         "key-spacing": ["error", { "beforeColon": false }],
         "object-curly-spacing": ["error", "never"],
-        "indent": ["error", 4, {"SwitchCase": 1}],
+        "indent": ["error", 2, {"SwitchCase": 1}],
         "no-spaced-func": "error",
         "generator-star-spacing": "off",
         'eqeqeq': 'off',
