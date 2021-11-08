@@ -1,169 +1,123 @@
+<template>
+  <div>
+    <a-layout v-if="cook">
+      <a-layout-header class="header">
+        <img src="./assets/logo.png" style="width:40px;margin-right:10px;margin-left:-30px;"/>
+        <span style="color:rgba(255, 255, 255, 0.65);">{{localStorage.userInfo.platform === 'kfsc' ? '' : '名气'}}商城后台运营管理系统</span>
+        <a-menu
+          theme="dark"
+          mode="horizontal"
+          v-model:selectedKeys="selectedKeys1"
+          :style="{ lineHeight: '64px',display:'inline-block' }"
+        >
+          <a-menu-item key="1">nav 1</a-menu-item>
+          <a-menu-item key="2">nav 2</a-menu-item>
+          <a-menu-item key="3">nav 3</a-menu-item>
+        </a-menu>
+      </a-layout-header>
+      <a-layout>
+        <a-layout-sider width="200" style="background: #fff">
+          <a-menu
+            mode="inline"
+            v-model:selectedKeys="selectedKeys2"
+            v-model:openKeys="openKeys"
+            :style="{ height: '100%', borderRight: 0 }"
+          >
+            <a-sub-menu key="sub1">
+              <template #title>
+                <span>
+                  <user-outlined />
+                  subnav 1
+                </span>
+              </template>
+              <a-menu-item key="1">option1</a-menu-item>
+              <a-menu-item key="2">option2</a-menu-item>
+              <a-menu-item key="3">option3</a-menu-item>
+              <a-menu-item key="4">option4</a-menu-item>
+            </a-sub-menu>
+            <a-sub-menu key="sub2">
+              <template #title>
+                <span>
+                  <laptop-outlined />
+                  subnav 2
+                </span>
+              </template>
+              <a-menu-item key="5">option5</a-menu-item>
+              <a-menu-item key="6">option6</a-menu-item>
+              <a-menu-item key="7">option7</a-menu-item>
+              <a-menu-item key="8">option8</a-menu-item>
+            </a-sub-menu>
+            <a-sub-menu key="sub3">
+              <template #title>
+                <span>
+                  <notification-outlined />
+                  subnav 3
+                </span>
+              </template>
+              <a-menu-item key="9">option9</a-menu-item>
+              <a-menu-item key="10">option10</a-menu-item>
+              <a-menu-item key="11">option11</a-menu-item>
+              <a-menu-item key="12">option12</a-menu-item>
+            </a-sub-menu>
+          </a-menu>
+        </a-layout-sider>
+        <a-layout style="padding: 0 24px 24px">
+          <a-breadcrumb style="margin: 16px 0">
+            <a-breadcrumb-item>Home</a-breadcrumb-item>
+            <a-breadcrumb-item>List</a-breadcrumb-item>
+            <a-breadcrumb-item>App</a-breadcrumb-item>
+          </a-breadcrumb>
+          <a-layout-content
+            :style="{
+              background: '#fff',
+              padding: '24px',
+              margin: 0,
+              minHeight: '280px',
+            }"
+          >
+            Content
+          </a-layout-content>
+        </a-layout>
+      </a-layout>
+    </a-layout>
+    <login v-model:cook="cook" v-else />
+  </div>
+</template>
+
 <script>
-import { bing } from "./relationship";
+import VueCookies from "vue-cookies";
+import login from "./login.vue";
+import { ref, toRefs, reactive, onMounted } from "vue";
+
 export default {
+  components: { login },
   setup() {
-    let ssss = [
-      {
-        be: "linkage",
-        name: "a",
-        relationship: [
-          {
-            be: "judge",
-            name: "b",
-            relationship: [
-              {
-                be: "state",
-                component: "input",
-                name: "inputState",
-                relationship: [
-                  {
-                    state: "show",
-                    relationship: {
-                      be: "judge",
-                      name: "j",
-                      relationship: [
-                        {
-                          name: "d",
-                        },
-                        {
-                          be: "linkage",
-                          name: "e",
-                          relationship: "c",
-                        },
-                      ],
-                    },
-                  },
-                  {
-                    state: "hide",
-                    relationship: {
-                      be: "linkage",
-                      name: "f",
-                      relationship: "d",
-                    },
-                  },
-                  {
-                    state: "able",
-                  },
-                  {
-                    state: "disabled",
-                  },
-                ],
-              },
-              {
-                name: "h",
-              },
-            ],
-          },
-          {
-            name: "i",
-          },
-        ],
-      },
-    ];
+    let cook = ref(VueCookies.get("token"));
 
-    let fnObj = {
-      a() {
-        console.log("a");
-        return "a";
-      },
-      b() {
-        console.log("b");
-        return ["inputState", 20, 39];
-      },
-      c() {
-        console.log("c");
-        return "e";
-      },
-      d(v) {
-        console.log("d");
-        return v;
-      },
-      e(v) {
-        console.log("e", v);
-        return v;
-      },
-      f(v) {
-        console.log("f");
-        return "g";
-      },
-      g() {
-        console.log("g");
-      },
-      h() {
-        console.log("h");
-      },
-      i(v) {
-        console.log("i", v);
-        return v;
-      },
-      j(v) {
-        console.log("j", v);
-        return ["e", v];
-      },
-      input(data) {
-        console.log(data, 20);
-        let dom = select({
-          type: data,
-        });
-        console.log(dom, 12);
-        return dom;
-      },
-      inputState() {
-        console.log("inputState");
-        return ["hide", "show", "disabled", "able"][displayName];
-      },
-    };
-    let displayName = 1;
-
-    function select(data = {}) {
-      // console.log(hh,222111111111111111111111111)
-      let disabled = true;
-      const { type } = data;
-      let xxxxxxxxx = function() {
-        console.log(123);
-        return (
-          <a-select
-            style={{ width: "40%" }}
-            placeholder="54545"
-            disabled={disabled}
-            options={[
-              {
-                label: 111,
-                value: 1,
-              },
-              {
-                label: 222,
-                value: 99,
-              },
-            ]}
-            {...data}
-          />
-        );
-      };
-      if (type === "show") {
-        console.log("show", "render");
-        return xxxxxxxxx();
-      } else if (type === "disabled") {
-        console.log("disabled", "render");
-        disabled = true;
-        return xxxxxxxxx();
-      } else if (type === "able") {
-        console.log("able", "render");
-        disabled = false;
-        return xxxxxxxxx();
-      }
-    }
-    bing(ssss, fnObj, 2, 3);
-    console.log(bing.data, "data2");
-    return () => {
-      return (
-        <div>
-          {bing.data.input}
-          <div>123123</div>
-        </div>
-      );
+    return {
+      VueCookies,
+      cook,
+      localStorage
     };
   },
 };
 </script>
-<style lang="less"></style>
+
+<style>
+#components-layout-demo-top-side-2 .logo {
+  float: left;
+  width: 120px;
+  height: 31px;
+  margin: 16px 24px 16px 0;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.ant-row-rtl #components-layout-demo-top-side-2 .logo {
+  float: right;
+  margin: 16px 0 16px 24px;
+}
+
+.site-layout-background {
+  background: #fff;
+}
+</style>
