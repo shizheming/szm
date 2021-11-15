@@ -1,5 +1,5 @@
 <template>
-  <s-form :api="api" :model="formState">
+  <s-form :api="api" :model="formState" :isEdit="true">
     <a-form-item label="input">
       <s-input v-model="formState.input" placeholder="input" />
     </a-form-item>
@@ -54,7 +54,7 @@ export default {
         console.log("submit!", toRaw(formState));
       },
       selectPreValue,
-      selectInner(select, allData) {
+      selectInner(select, detailData) {
         // 默认值
         formState.select = [1];
         select.options = async () => {
@@ -64,7 +64,7 @@ export default {
           ];
         };
         select.placeholder = 888888;
-        select.detail = 111
+        select.detail = detailData.select
       },
       selectOuter() {
         console.log(34343);

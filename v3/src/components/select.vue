@@ -9,12 +9,16 @@
   </div>
 </template>
 <script>
-import { onMounted, reactive, watch } from "vue";
+import { onMounted, reactive, watch, inject } from "vue";
 import { forEach, isFunction, cloneDeep } from "lodash";
 export default {
   props: ["modelValue", "inner", "outer", "preValue", "trigger", "triggerFn"],
   emits: ["update:modelValue", "update:preValue"],
   setup(props, w) {
+    /* 接受form给的数据 */
+    let isEdit = inject("isEdit");
+    let formData = inject("formData");
+
     /* 获取事件 */
     let events = cloneDeep(w.attrs);
     delete events.onChange;
@@ -23,26 +27,58 @@ export default {
     let attrs = reactive({ ...events });
 
     /* 进口处理 */
-    if (props.inner) {
-      onMounted(() => {
-        let obj = {};
-        props.inner(obj);
-        forEach(obj, (v, k) => {
-          let r;
-          if (isFunction(v)) {
-            r = v();
-          } else {
-            r = v;
-          }
-          if (r instanceof Promise) {
-            r.then((d) => {
-              attrs[k] = d;
+    // 判断是不是回显
+    if (isEdit) {
+      if (props.inner) {
+        watch(
+          () => formData._isFinish,
+          (newValue, oldValue) => {
+            let obj = {};
+            props.inner(obj, formData._detailData);
+            forEach(obj, (v, k) => {
+              if (k === "detail") {
+                w.emit("update:modelValue", v);
+              } else {
+                let r;
+                if (isFunction(v)) {
+                  r = v();
+                } else {
+                  r = v;
+                }
+                if (r instanceof Promise) {
+                  r.then((d) => {
+                    attrs[k] = d;
+                  });
+                } else {
+                  attrs[k] = r;
+                }
+              }
             });
-          } else {
-            attrs[k] = r;
           }
+        );
+      }
+    } else {
+      if (props.inner) {
+        onMounted(() => {
+          let obj = {};
+          props.inner(obj);
+          forEach(obj, (v, k) => {
+            let r;
+            if (isFunction(v)) {
+              r = v();
+            } else {
+              r = v;
+            }
+            if (r instanceof Promise) {
+              r.then((d) => {
+                attrs[k] = d;
+              });
+            } else {
+              attrs[k] = r;
+            }
+          });
         });
-      });
+      }
     }
 
     /* 记录上一次的值 */
