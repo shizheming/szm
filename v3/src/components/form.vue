@@ -1,16 +1,17 @@
 <template>
   <div>
-    <a-form v-bind="attrs" v-on="events">
+    <a-form v-bind="attrs" v-on="events" ref="formRender" :model="model">
       <slot></slot>
     </a-form>
   </div>
 </template>
 
 <script>
-import { reactive, provide } from "vue";
+import { reactive, provide, ref, onMounted } from "vue";
 import { cloneDeep } from "lodash";
 export default {
   props: ["api", "model", "isEdit"],
+  emits: ["setForm"],
   setup(props, w) {
     provide("isEdit", props.isEdit);
     provide("formData", props.model);
@@ -20,6 +21,12 @@ export default {
 
     /* 获取属性 */
     let attrs = reactive({ ...events });
+
+    /* 设置外面的fromRender */
+    const formRender = ref();
+    onMounted(() => {
+      w.emit("setForm", formRender);
+    });
 
     /* 回显数据 */
     if (props.isEdit && "api" in props) {
@@ -31,6 +38,7 @@ export default {
       });
     }
     return {
+      formRender,
       attrs,
       events,
     };

@@ -4,8 +4,11 @@
       v-bind="attrs"
       v-on="events"
       :value="modelValue"
-      @change="$emit('update:modelValue', $event)"
-    />
+      @update:value="modelValue = $event"
+    >
+      <!-- @change="$emit('update:modelValue', $event)" -->
+      <slot />
+    </a-select>
   </div>
 </template>
 <script>

@@ -1,20 +1,30 @@
 <template>
-  <s-form :api="api" :model="formState" :isEdit="true">
+  <s-form :api="api" :model="formState" :isEdit="true" @setForm="setForm">
     <a-form-item label="input">
       <s-input v-model="formState.input" placeholder="input" />
     </a-form-item>
-    <a-form-item label="select">
-      <s-select
+    <a-form-item
+      label="select"
+      name="select"
+      :rules="{
+        required: true,
+        message: '请选择某一项',
+      }"
+    >
+    <a-select v-model:value="formState.select">
+    <a-select-option value="shanghai">Zone one</a-select-option>
+        <a-select-option value="beijing">Zone two</a-select-option>
+        </a-select>
+      <!-- <s-select
         v-model="formState.select"
         v-model:preValue="selectPreValue"
         :trigger="formState.input"
         :triggerFn="triggerSelect"
-        placeholder="select222"
+        placeholder="select"
         :inner="selectInner"
         :outer="selectOuter"
-        mode="tags"
         @change="selectChange"
-      />
+      /> -->
     </a-form-item>
   </s-form>
   <a-button type="primary" @click="onSubmit">Create</a-button>
@@ -23,8 +33,12 @@
 import { reactive, toRaw, ref, watch } from "vue";
 export default {
   setup() {
+    // 数据
     const formState = reactive({});
+
+    // 上一次的值
     const selectPreValue = ref();
+
     watch(
       () => selectPreValue.value,
       () => {
@@ -32,46 +46,75 @@ export default {
       }
     );
 
+    // api
+    async function api() {
+      return await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve({ input: 111111 /*  select: [1, 2] */ });
+        }, 3000);
+      });
+    }
+
+    // 进入函数
+    function selectInner(select, detailData = {}) {
+      // formState.select = [1];
+      select.options = async () => {
+        return [
+          { label: "aaaaaa", value: 1 },
+          { label: "ddddddddd", value: 2 },
+        ];
+      };
+      select.placeholder = 888888;
+      select.detail = detailData.select;
+    }
+
+    // 出口函数
+    function selectOuter() {
+      console.log("inner");
+    }
+
+    // 触发调用函数
+    function triggerSelect(select) {
+      select.options = async () => {
+        return [
+          { label: "cccc", value: 112 },
+          { label: "fffff", value: 234 },
+        ];
+      };
+    }
+
+    // change事件
+    function selectChange() {
+      console.log("outer");
+    }
+
+    // 组件内部调用函数来设置真正的formRender
+    let formRender;
+    function setForm(fr) {
+      formRender = fr;
+    }
+
+    // 提交
+    function onSubmit() {
+      formRender.value
+        .validate()
+        .then(() => {
+          console.log("values", formState);
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+    }
     return {
       formState,
-      async api() {
-        return await new Promise((resolve, reject) => {
-          setTimeout(() => {
-            resolve({ input: 111111, select: [1, 2] });
-          }, 3000);
-        });
-      },
-      triggerSelect(select) {
-        // formState.select = [1,2]
-        /* select.options = async () => {
-          return [
-            { label: "cccc", value: 112 },
-            { label: "fffff", value: 234 },
-          ];
-        }; */
-      },
-      onSubmit() {
-        console.log("submit!", toRaw(formState));
-      },
       selectPreValue,
-      selectInner(select, detailData) {
-        // 默认值
-        formState.select = [1];
-        select.options = async () => {
-          return [
-            { label: "aaaaaa", value: 1 },
-            { label: "ddddddddd", value: 2 },
-          ];
-        };
-        select.placeholder = 888888;
-        select.detail = detailData.select
-      },
-      selectOuter() {
-        console.log(34343);
-      },
-      selectChange() {
-        console.log(99990);
-      },
+      api,
+      triggerSelect,
+      onSubmit,
+      selectInner,
+      selectOuter,
+      selectChange,
+      setForm,
     };
   },
 };
