@@ -1,21 +1,13 @@
 <template>
-  <div>
-    <a-select
-      v-bind="attrs"
-      v-on="events"
-      :value="modelValue"
-      @update:value="modelValue = $event"
-    >
-      <!-- @change="$emit('update:modelValue', $event)" -->
-      <slot />
-    </a-select>
-  </div>
+  <a-select v-bind="newAttrs">
+    <slot />
+  </a-select>
 </template>
 <script>
 import { onMounted, reactive, watch, inject } from "vue";
 import { forEach, isFunction, cloneDeep } from "lodash";
 export default {
-  props: ["modelValue", "inner", "outer", "preValue", "trigger", "triggerFn"],
+  props: ["modelValue", "inner", "outer", "preValue", "trigger", "triggerAction"],
   emits: ["update:modelValue", "update:preValue"],
   setup(props, w) {
     /* 接受form给的数据 */
@@ -26,11 +18,9 @@ export default {
     let events = cloneDeep(w.attrs);
     delete events.onChange;
 
-    /* 获取属性 */
-    let attrs = reactive({ ...events });
-
     /* 进口处理 */
     // 判断是不是回显
+    let newAttrs = reactive({})
     if (isEdit) {
       if (props.inner) {
         watch(
@@ -50,10 +40,10 @@ export default {
                 }
                 if (r instanceof Promise) {
                   r.then((d) => {
-                    attrs[k] = d;
+                    newAttrs[k] = d;
                   });
                 } else {
-                  attrs[k] = r;
+                  newAttrs[k] = r;
                 }
               }
             });
@@ -74,10 +64,10 @@ export default {
             }
             if (r instanceof Promise) {
               r.then((d) => {
-                attrs[k] = d;
+                newAttrs[k] = d;
               });
             } else {
-              attrs[k] = r;
+              newAttrs[k] = r;
             }
           });
         });
@@ -95,12 +85,12 @@ export default {
     }
 
     /* 触发联动机制 */
-    if ("trigger" in props && "triggerFn" in props) {
+    if ("trigger" in props && "triggerAction" in props) {
       watch(
         () => props.trigger,
         (newValue, oldValue) => {
           let obj = {};
-          props.triggerFn(obj);
+          props.triggerAction(obj);
           forEach(obj, (v, k) => {
             let r;
             if (isFunction(v)) {
@@ -110,17 +100,22 @@ export default {
             }
             if (r instanceof Promise) {
               r.then((d) => {
-                attrs[k] = d;
+                newAttrs[k] = d;
               });
             } else {
-              attrs[k] = r;
+              newAttrs[k] = r;
             }
           });
         }
       );
+
+      // outer函数
+      if ("outer" in props) {
+
+      }
     }
     return {
-      attrs,
+      newAttrs,
       events,
     };
   },
