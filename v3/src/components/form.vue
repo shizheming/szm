@@ -14,6 +14,8 @@ export default {
   setup(props, w) {
     provide("isEdit", props.isEdit);
     provide("formData", props.model);
+    let detailData = ref();
+    provide("detailData", detailData);
     /* 获取事件 */
     let events = cloneDeep(w.attrs);
     delete events.onChange;
@@ -37,9 +39,7 @@ export default {
     /* 回显数据 */
     if (props.isEdit && "api" in props) {
       props.api().then((data) => {
-        props.model._detailData = data;
-        // provide不能写在异步函数里面吗
-        // provide("detailData", data);
+        detailData.value = data;
         props.model._isFinish = true;
       });
     }

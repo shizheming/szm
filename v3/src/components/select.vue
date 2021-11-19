@@ -13,6 +13,7 @@ export default {
     /* 接受form给的数据 */
     let isEdit = inject("isEdit");
     let formData = inject("formData");
+    let detailData = inject("detailData");
 
     /* 获取事件 */
     let events = cloneDeep(w.attrs);
@@ -27,7 +28,7 @@ export default {
           () => formData._isFinish,
           (newValue, oldValue) => {
             let obj = {};
-            props.inner(obj, formData._detailData);
+            props.inner(obj, detailData.value);
             forEach(obj, (v, k) => {
               if (k === "detail") {
                 w.emit("update:modelValue", v);

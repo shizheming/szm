@@ -1,5 +1,5 @@
 <template>
-  <s-form :api="api" :model="formState" :isEdit="false" @setForm="setForm">
+  <s-form :api="api" :model="formState" :isEdit="true" @setForm="setForm">
     <a-form-item label="input">
       <s-input v-model:value="formState.input" placeholder="input" />
     </a-form-item>
@@ -49,7 +49,7 @@ export default {
     async function api() {
       return await new Promise((resolve, reject) => {
         setTimeout(() => {
-          resolve({ input: 111111 /*  select: [1, 2] */ });
+          resolve({ input: 111111 , /* select: 1 */ });
         }, 3000);
       });
     }
