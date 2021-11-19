@@ -49,8 +49,8 @@ export default {
     async function api() {
       return await new Promise((resolve, reject) => {
         setTimeout(() => {
-          resolve({ input: 111111 , /* select: 1 */ });
-        }, 3000);
+          resolve({ input: 111111, select: 1 });
+        }, 1000);
       });
     }
 
@@ -65,6 +65,7 @@ export default {
       };
       select.placeholder = 888888;
       select.detail = detailData.select;
+      console.log(detailData, 12);
     }
 
     // 出口函数
@@ -74,7 +75,7 @@ export default {
 
     // 触发调用函数
     function triggerSelect(select) {
-      console.log(123)
+      console.log(123);
       select.options = async () => {
         return [
           { label: "cccc", value: 112 },
@@ -85,7 +86,7 @@ export default {
 
     // change事件
     function selectChange() {
-      console.log("outer");
+      console.log("selectChange");
     }
 
     // 组件内部调用函数来设置真正的formRender
@@ -96,7 +97,7 @@ export default {
 
     // 提交
     function onSubmit() {
-      console.log(formRender.value,2999)
+      console.log(formRender.value, 2999);
       formRender.value
         .validate()
         .then(() => {

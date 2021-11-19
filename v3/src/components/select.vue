@@ -1,27 +1,57 @@
 <template>
-  <a-select v-bind="newAttrs">
+  <Select v-bind="newProps" :value="value">
     <slot />
-  </a-select>
+  </Select>
 </template>
 <script>
 import { onMounted, reactive, watch, inject } from "vue";
 import { forEach, isFunction, cloneDeep } from "lodash";
+import { Select } from "ant-design-vue";
 export default {
-  props: ["modelValue", "inner", "outer", "preValue", "trigger", "triggerAction"],
-  emits: ["update:modelValue", "update:preValue"],
+  props: {
+    value: {
+      type: [Number, String],
+      default: undefined,
+    },
+    inner: {
+      type: Function,
+      default: undefined,
+    },
+    outer: {
+      type: Function,
+      default: undefined,
+    },
+    preValue: {
+      type: [Number, String],
+      default: undefined,
+    },
+    trigger: {
+      type: [Number, String],
+      default: "",
+    },
+    triggerAction: {
+      type: Function,
+      default: "",
+    },
+    ...Select.props,
+  },
+  emits: ["update:value", "update:preValue"],
+  components: { Select },
   setup(props, w) {
     /* 接受form给的数据 */
     let isEdit = inject("isEdit");
     let formData = inject("formData");
     let detailData = inject("detailData");
 
-    /* 获取事件 */
-    let events = cloneDeep(w.attrs);
-    delete events.onChange;
+    // 把change包一下，我要在里面更新数据
+    let newProps = reactive({ ...props });
+    newProps.onChange = (e) => {
+      w.emit("update:value", e);
+      props.onChange(e);
+    };
 
     /* 进口处理 */
     // 判断是不是回显
-    let newAttrs = reactive({})
     if (isEdit) {
       if (props.inner) {
         watch(
@@ -31,7 +61,7 @@ export default {
             props.inner(obj, detailData.value);
             forEach(obj, (v, k) => {
               if (k === "detail") {
-                w.emit("update:modelValue", v);
+                w.emit("update:value", v);
               } else {
                 let r;
                 if (isFunction(v)) {
@@ -41,10 +71,10 @@ export default {
                 }
                 if (r instanceof Promise) {
                   r.then((d) => {
-                    newAttrs[k] = d;
+                    newProps[k] = d;
                   });
                 } else {
-                  newAttrs[k] = r;
+                  newProps[k] = r;
                 }
               }
             });
@@ -65,10 +95,10 @@ export default {
             }
             if (r instanceof Promise) {
               r.then((d) => {
-                newAttrs[k] = d;
+                newProps[k] = d;
               });
             } else {
-              newAttrs[k] = r;
+              newProps[k] = r;
             }
           });
         });
@@ -78,7 +108,7 @@ export default {
     /* 记录上一次的值 */
     if ("preValue" in props) {
       watch(
-        () => props.modelValue,
+        () => props.value,
         (newValue, oldValue) => {
           w.emit("update:preValue", oldValue);
         }
@@ -101,10 +131,10 @@ export default {
             }
             if (r instanceof Promise) {
               r.then((d) => {
-                newAttrs[k] = d;
+                newProps[k] = d;
               });
             } else {
-              newAttrs[k] = r;
+              newProps[k] = r;
             }
           });
         }
@@ -112,12 +142,10 @@ export default {
 
       // outer函数
       if ("outer" in props) {
-
       }
     }
     return {
-      newAttrs,
-      events,
+      newProps,
     };
   },
 };
