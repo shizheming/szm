@@ -16,6 +16,9 @@ export default {
     provide("formData", props.model);
     let detailData = ref();
     provide("detailData", detailData);
+    let isFinish = ref();
+    provide("isFinish", isFinish);
+
     /* 获取事件 */
     let events = cloneDeep(w.attrs);
     delete events.onChange;
@@ -40,7 +43,7 @@ export default {
     if (props.isEdit && "api" in props) {
       props.api().then((data) => {
         detailData.value = data;
-        props.model._isFinish = true;
+        isFinish.value = true;
       });
     }
     return {

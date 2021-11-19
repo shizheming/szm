@@ -42,6 +42,7 @@ export default {
     let isEdit = inject("isEdit");
     let formData = inject("formData");
     let detailData = inject("detailData");
+    let isFinish = inject('isFinish')
 
     // 把change包一下，我要在里面更新数据
     let newProps = reactive({ ...props });
@@ -55,7 +56,7 @@ export default {
     if (isEdit) {
       if (props.inner) {
         watch(
-          () => formData._isFinish,
+          () => isFinish.value,
           (newValue, oldValue) => {
             let obj = {};
             props.inner(obj, detailData.value);

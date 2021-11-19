@@ -65,7 +65,6 @@ export default {
       };
       select.placeholder = 888888;
       select.detail = detailData.select;
-      console.log(detailData, 12);
     }
 
     // 出口函数
@@ -75,7 +74,6 @@ export default {
 
     // 触发调用函数
     function triggerSelect(select) {
-      console.log(123);
       select.options = async () => {
         return [
           { label: "cccc", value: 112 },
@@ -97,7 +95,6 @@ export default {
 
     // 提交
     function onSubmit() {
-      console.log(formRender.value, 2999);
       formRender.value
         .validate()
         .then(() => {
