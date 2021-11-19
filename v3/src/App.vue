@@ -1,5 +1,5 @@
 <template>
-  <s-form :api="api" :model="formState" :isEdit="true" @setForm="setForm">
+  <s-form :api="api" :model="formState" :isEdit="false" :outerModel="outerFormState" @setForm="setForm">
     <a-form-item label="input">
       <s-input v-model:value="formState.input" placeholder="input" />
     </a-form-item>
@@ -12,6 +12,7 @@
       }"
     >
       <s-select
+        name="select"
         v-model:value="formState.select"
         v-model:preValue="selectPreValue"
         :trigger="formState.input"
@@ -29,11 +30,14 @@
   <a-button type="primary" @click="onSubmit">Create</a-button>
 </template>
 <script>
-import { reactive, toRaw, ref, watch } from "vue";
+import { reactive, ref, watch } from "vue";
 export default {
   setup() {
     // 数据
     const formState = reactive({});
+
+    // 最后输出的表单值
+    const outerFormState = reactive({})
 
     // 上一次的值
     const selectPreValue = ref();
@@ -68,8 +72,8 @@ export default {
     }
 
     // 出口函数
-    function selectOuter() {
-      console.log("inner");
+    function selectOuter(v) {
+      return v + 2
     }
 
     // 触发调用函数
@@ -99,6 +103,7 @@ export default {
         .validate()
         .then(() => {
           console.log("values", formState);
+          console.log('最后的值',outerFormState)
         })
         .catch((error) => {
           console.log("error", formState);
@@ -106,6 +111,7 @@ export default {
     }
     return {
       formState,
+      outerFormState,
       selectPreValue,
       api,
       triggerSelect,

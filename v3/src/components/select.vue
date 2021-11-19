@@ -5,7 +5,7 @@
 </template>
 <script>
 import { onMounted, reactive, watch, inject } from "vue";
-import { forEach, isFunction, cloneDeep } from "lodash";
+import { forEach, isFunction } from "lodash";
 import { Select } from "ant-design-vue";
 export default {
   props: {
@@ -27,11 +27,15 @@ export default {
     },
     trigger: {
       type: [Number, String],
-      default: "",
+      default: undefined,
     },
     triggerAction: {
       type: Function,
-      default: "",
+      default: undefined,
+    },
+    name: {
+      type: String,
+      default: undefined,
     },
     ...Select.props,
   },
@@ -40,9 +44,9 @@ export default {
   setup(props, w) {
     /* 接受form给的数据 */
     let isEdit = inject("isEdit");
-    let formData = inject("formData");
     let detailData = inject("detailData");
-    let isFinish = inject('isFinish')
+    let isFinish = inject("isFinish");
+    let outer = inject("outer");
 
     // 把change包一下，我要在里面更新数据
     let newProps = reactive({ ...props });
@@ -143,6 +147,13 @@ export default {
 
       // outer函数
       if ("outer" in props) {
+        outer[props.name] = () => {
+          return props.outer(props.value);
+        };
+      } else {
+        outer[props.name] = () => {
+          return props.value;
+        };
       }
     }
     return {

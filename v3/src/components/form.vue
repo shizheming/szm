@@ -1,30 +1,46 @@
 <template>
-  <a-form v-bind="attrs" v-on="events" ref="formRender" :model="model">
+  <a-form v-bind="props" ref="formRender">
     <slot></slot>
   </a-form>
 </template>
 
 <script>
 import { reactive, provide, ref, onMounted } from "vue";
-import { cloneDeep } from "lodash";
-
+import { Form } from "ant-design-vue";
+import { cloneDeep, forEach } from "lodash";
 export default {
-  props: ["api", "model", "isEdit"],
+  props: {
+    api: {
+      type: Function,
+      default: undefined,
+    },
+    model: {
+      type: Object,
+      default: undefined,
+    },
+    isEdit: {
+      type: Boolean,
+      default: undefined,
+    },
+    outerModel: {
+      type: Object,
+      default: undefined,
+    },
+    ...Form.props,
+  },
   emits: ["setForm"],
   setup(props, w) {
+    // 判断是不是编辑页
     provide("isEdit", props.isEdit);
-    provide("formData", props.model);
+    // 接口回来的数据
     let detailData = ref();
     provide("detailData", detailData);
+    // 在不同的组件里面需要判断接口是否已经请求好了
     let isFinish = ref();
     provide("isFinish", isFinish);
-
-    /* 获取事件 */
-    let events = cloneDeep(w.attrs);
-    delete events.onChange;
-
-    /* 获取属性 */
-    let attrs = reactive({ ...events });
+    // 收集表单里面的组件的outer函数
+    let outer = reactive({});
+    provide("outer", outer);
 
     /* 设置外面的fromRender */
     const formRender = ref();
@@ -34,7 +50,12 @@ export default {
       let ve = formRender.value.validate;
       formRender.value.validate = () => {
         // 处理outer所有的函数
-
+        if ("outerModel" in props) {
+          forEach(outer, (value, key) => {
+            console.log(key)
+            props.outerModel[key] = value();
+          });
+        }
         return ve();
       };
     });
@@ -47,9 +68,8 @@ export default {
       });
     }
     return {
+      props,
       formRender,
-      attrs,
-      events,
     };
   },
 };
