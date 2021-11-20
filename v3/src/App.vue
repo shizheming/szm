@@ -1,7 +1,13 @@
 <template>
-  <s-form :api="api" :model="formState" :isEdit="false" :outerModel="outerFormState" @setForm="setForm">
+  <s-form
+    :api="api"
+    :model="formState"
+    :isEdit="false"
+    :outerModel="outerFormState"
+    @setForm="setForm"
+  >
     <a-form-item label="input">
-      <s-input v-model:value="formState.input" placeholder="input" />
+      <s-input name="input" v-model:value="formState.input" placeholder="input" />
     </a-form-item>
     <a-form-item
       label="select"
@@ -37,7 +43,7 @@ export default {
     const formState = reactive({});
 
     // 最后输出的表单值
-    const outerFormState = reactive({})
+    const outerFormState = reactive({});
 
     // 上一次的值
     const selectPreValue = ref();
@@ -45,7 +51,7 @@ export default {
     watch(
       () => selectPreValue.value,
       () => {
-        console.log(3939);
+        // console.log(3939);
       }
     );
 
@@ -73,7 +79,7 @@ export default {
 
     // 出口函数
     function selectOuter(v) {
-      return v + 2
+      return v + 2;
     }
 
     // 触发调用函数
@@ -103,7 +109,7 @@ export default {
         .validate()
         .then(() => {
           console.log("values", formState);
-          console.log('最后的值',outerFormState)
+          console.log("最后的值", outerFormState);
         })
         .catch((error) => {
           console.log("error", formState);

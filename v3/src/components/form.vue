@@ -10,6 +10,7 @@ import { Form } from "ant-design-vue";
 import { cloneDeep, forEach } from "lodash";
 export default {
   props: {
+    ...Form.props,
     api: {
       type: Function,
       default: undefined,
@@ -26,7 +27,6 @@ export default {
       type: Object,
       default: undefined,
     },
-    ...Form.props,
   },
   emits: ["setForm"],
   setup(props, w) {
@@ -50,9 +50,8 @@ export default {
       let ve = formRender.value.validate;
       formRender.value.validate = () => {
         // 处理outer所有的函数
-        if ("outerModel" in props) {
+        if (props.outerModel) {
           forEach(outer, (value, key) => {
-            console.log(key)
             props.outerModel[key] = value();
           });
         }
@@ -61,7 +60,7 @@ export default {
     });
 
     /* 回显数据 */
-    if (props.isEdit && "api" in props) {
+    if (props.isEdit && props.api) {
       props.api().then((data) => {
         detailData.value = data;
         isFinish.value = true;

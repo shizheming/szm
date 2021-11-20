@@ -1,14 +1,22 @@
 <template>
-  <a-input />
+  <Input v-bind="newProps" :value="value" />
 </template>
 <script>
-import { onMounted, reactive, watch } from "vue";
-import { forEach, isFunction, cloneDeep } from "lodash";
+import core from "./core";
+import { Input } from "ant-design-vue";
+import props from "./props";
 export default {
-  props: ["modelValue", "inner", "outer", "preValue", "trigger"],
-  emits: ["update:modelValue", "update:preValue"],
+  props: {
+    ...Input.props,
+    ...props,
+  },
+  emits: ["update:value", "update:preValue"],
+  components: { Input },
   setup(props, w) {
-    return {};
+    let newProps = core(props, w, "input");
+    return {
+      newProps,
+    };
   },
 };
 </script>
