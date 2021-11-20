@@ -2,13 +2,19 @@
   <s-form
     :api="api"
     :model="formState"
-    :isEdit="false"
-    :outerModel="outerFormState"
-    @setForm="setForm"
+    :is-edit="true"
+    :outer-model="outerFormState"
+    @set-form="setForm"
+    :label-col="{ span: 2 }"
   >
     <a-form-item label="input">
-      <s-input name="input" v-model:value="formState.input" placeholder="input" />
+      <s-input
+        name="input"
+        v-model:value="formState.input"
+        placeholder="input"
+      />
     </a-form-item>
+    <a-select-option />
     <a-form-item
       label="select"
       name="select"
@@ -22,17 +28,38 @@
         v-model:value="formState.select"
         v-model:preValue="selectPreValue"
         :trigger="formState.input"
-        :triggerAction="triggerSelect"
+        :triggeraction="triggerSelect"
         placeholder="select"
         :inner="selectInner"
         :outer="selectOuter"
         @change="selectChange"
-      >
-        <!-- <a-select-option value="shanghai">Zone one</a-select-option>
-        <a-select-option value="beijing">Zone two</a-select-option> -->
-      </s-select>
+      />
+    </a-form-item>
+    <a-form-item label="switch">
+      <s-switch name="switch" v-model:checked="formState.switch" />
+    </a-form-item>
+    <a-form-item label="cascader">
+      <s-cascader
+        name="cascader"
+        v-model:value="formState.cascader"
+        :inner="cascaderInner"
+        placeholder="cascader"
+      />
+    </a-form-item>
+    <a-form-item label="checkbox">
+      <s-checkbox name="checkbox" v-model:checked="formState.checkbox" />
+    </a-form-item>
+    <a-form-item label="checkboxGroup">
+      <s-checkbox-group
+        v-model:value="formState.checkboxGroup"
+        name="checkboxgroup"
+        :inner="checkboxGroupInner"
+        :trigger-disabled="formState.checkbox"
+        :triggeraction-disabled="triggerCheckboxGroupDisabled"
+      />
     </a-form-item>
   </s-form>
+
   <a-button type="primary" @click="onSubmit">Create</a-button>
 </template>
 <script>
@@ -40,7 +67,7 @@ import { reactive, ref, watch } from "vue";
 export default {
   setup() {
     // 数据
-    const formState = reactive({});
+    const formState = reactive({checkbox:true});
 
     // 最后输出的表单值
     const outerFormState = reactive({});
@@ -97,6 +124,64 @@ export default {
       console.log("selectChange");
     }
 
+    function cascaderInner(cascader, detailData = {}) {
+      cascader.options = [
+        {
+          value: "zhejiang",
+          label: "Zhejiang",
+          children: [
+            {
+              value: "hangzhou",
+              label: "Hangzhou",
+              children: [
+                {
+                  value: "xihu",
+                  label: "West Lake",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          value: "jiangsu",
+          label: "Jiangsu",
+          children: [
+            {
+              value: "nanjing",
+              label: "Nanjing",
+              children: [
+                {
+                  value: "zhonghuamen",
+                  label: "Zhong Hua Men",
+                },
+              ],
+            },
+          ],
+        },
+      ];
+    }
+
+    function checkboxGroupInner(checkboxGroup, detailData = {}) {
+      checkboxGroup.options = [
+        {
+          label: "Apple",
+          value: "Apple",
+        },
+        {
+          label: "Pear",
+          value: "Pear",
+        },
+        {
+          label: "Orange",
+          value: "Orange",
+        },
+      ];
+    }
+
+    function triggerCheckboxGroupDisabled(checkboxGroup) {
+      return !checkboxGroup;
+    }
+
     // 组件内部调用函数来设置真正的formRender
     let formRender;
     function setForm(fr) {
@@ -116,15 +201,19 @@ export default {
         });
     }
     return {
-      formState,
-      outerFormState,
       selectPreValue,
-      api,
       triggerSelect,
-      onSubmit,
       selectInner,
       selectOuter,
       selectChange,
+      cascaderInner,
+      checkboxGroupInner,
+      triggerCheckboxGroupDisabled,
+
+      api,
+      outerFormState,
+      formState,
+      onSubmit,
       setForm,
     };
   },

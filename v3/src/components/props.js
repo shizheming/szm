@@ -19,13 +19,17 @@ export default {
     type: [Number, String, Array, Object],
     default: undefined,
   },
-  triggerAction: {
+  triggeraction: {
     type: Function,
     default: undefined,
   },
   name: {
     type: String,
     required: true,
+    default: undefined,
+  },
+  checked: {
+    type: Boolean,
     default: undefined,
   },
 };

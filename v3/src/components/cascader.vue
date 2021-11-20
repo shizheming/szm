@@ -1,19 +1,19 @@
 <template>
-  <Select v-bind="newProps" :value="value">
+  <Cascader v-bind="newProps" :value="value">
     <slot />
-  </Select>
+  </Cascader>
 </template>
 <script>
 import core from "./core";
-import { Select } from "ant-design-vue";
+import { Cascader } from "ant-design-vue";
 import props from "./props";
 export default {
   props: {
-    ...Select.props,
+    ...Cascader.props,
     ...props,
   },
   emits: ["update:value", "update:preValue"],
-  components: { Select },
+  components: { Cascader },
   setup(props, w) {
     let newProps = core(props, w);
     return {
