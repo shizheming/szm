@@ -4,25 +4,27 @@ import Antd from "ant-design-vue";
 import input from "./components/input.vue";
 import select from "./components/select.vue";
 import form from "./components/form.vue";
-import aswitch from './components/switch.vue';
-import cascader from './components/cascader.vue';
-import checkbox from './components/checkbox.vue';
-import checkboxGroup from './components/checkboxGroup.vue';
-import datePicker from './components/datePicker.vue';
-import rangePicker from './components/rangePicker.vue';
-import inputSearch from './components/inputSearch.vue';
-import textarea from './components/textarea.vue';
-import inputNumber from './components/inputNumber.vue';
-import radio from './components/radio.vue';
-import radioGroup from './components/radioGroup.vue';
-import rate from './components/rate.vue';
-import timePicker from './components/timePicker.vue';
-import timeRangePicker from './components/timeRangePicker.vue';
-import treeSelect from './components/treeSelect.vue';
+import aswitch from "./components/switch.vue";
+import cascader from "./components/cascader.vue";
+import checkbox from "./components/checkbox.vue";
+import checkboxGroup from "./components/checkboxGroup.vue";
+import datePicker from "./components/datePicker.vue";
+import rangePicker from "./components/rangePicker.vue";
+import inputSearch from "./components/inputSearch.vue";
+import textarea from "./components/textarea.vue";
+import inputNumber from "./components/inputNumber.vue";
+import radio from "./components/radio.vue";
+import radioGroup from "./components/radioGroup.vue";
+import rate from "./components/rate.vue";
+import timePicker from "./components/timePicker.vue";
+import timeRangePicker from "./components/timeRangePicker.vue";
+import treeSelect from "./components/treeSelect.vue";
+import router from "./router";
 import "ant-design-vue/dist/antd.css";
 
 createApp(App)
   .use(Antd)
+  .use(router)
   .component("s-input", input)
   .component("s-select", select)
   .component("s-form", form)
