@@ -5,7 +5,8 @@
     :is-edit="true"
     :outer-model="outerFormState"
     @set-form="setForm"
-    :label-col="{ span: 2 }"
+    :label-col="{ span: 7 }"
+    :wrapper-col="{ span: 10 }"
   >
     <a-form-item label="input">
       <s-input
@@ -58,16 +59,70 @@
         :triggeraction-disabled="triggerCheckboxGroupDisabled"
       />
     </a-form-item>
+    <a-form-item label="datePicker">
+      <s-date-picker v-model:value="formState.datePicker" name="datePicker" />
+    </a-form-item>
+    <a-form-item label="rangePicker">
+      <s-range-picker
+        v-model:value="formState.rangePicker"
+        name="rangePicker"
+      />
+    </a-form-item>
+    <a-form-item label="inputSearch">
+      <s-input-search
+        v-model:value="formState.inputSearch"
+        name="inputSearch"
+      />
+    </a-form-item>
+    <a-form-item label="textarea">
+      <s-textarea v-model:value="formState.textarea" name="textarea" />
+    </a-form-item>
+    <a-form-item label="inputNumber">
+      <s-input-number
+        v-model:value="formState.inputNumber"
+        name="inputNumber"
+      />
+    </a-form-item>
+    <a-form-item label="radio">
+      <s-radio v-model:checked="formState.radio" name="radio" />
+    </a-form-item>
+    <a-form-item label="radioGroup">
+      <s-radio-group v-model:value="formState.radioGroup" name="radioGroup">
+        <a-radio :value="1">Option A</a-radio>
+        <a-radio :value="2">Option B</a-radio>
+        <a-radio :value="3">Option C</a-radio>
+      </s-radio-group>
+    </a-form-item>
+    <a-form-item label="rate">
+      <s-rate v-model:value="formState.rate" name="rate" />
+    </a-form-item>
+    <a-form-item label="timePicker">
+      <s-time-picker v-model:value="formState.timePicker" name="timePicker" />
+    </a-form-item>
+    <a-form-item label="timeRangePicker">
+      <s-time-range-picker
+        v-model:value="formState.timeRangePicker"
+        name="timeRangePicker"
+      />
+    </a-form-item>
+    <a-form-item label="treeSelect">
+      <s-tree-select
+        v-model:value="formState.treeSelect"
+        name="treeSelect"
+        :tree-data="treeData"
+      />
+    </a-form-item>
+    <a-form-item :wrapper-col="{ offset: 7 }">
+      <a-button type="primary" @click="onSubmit">Create</a-button>
+    </a-form-item>
   </s-form>
-
-  <a-button type="primary" @click="onSubmit">Create</a-button>
 </template>
 <script>
 import { reactive, ref, watch } from "vue";
 export default {
   setup() {
     // 数据
-    const formState = reactive({checkbox:true});
+    const formState = reactive({ checkbox: true });
 
     // 最后输出的表单值
     const outerFormState = reactive({});
@@ -182,6 +237,33 @@ export default {
       return !checkboxGroup;
     }
 
+    const treeData = reactive([
+      {
+        title: "parent 1",
+        value: "parent 1",
+        children: [
+          {
+            title: "parent 1-0",
+            value: "parent 1-0",
+            children: [
+              {
+                title: "my leaf",
+                value: "leaf1",
+              },
+              {
+                title: "your leaf",
+                value: "leaf2",
+              },
+            ],
+          },
+          {
+            title: "parent 1-1",
+            value: "parent 1-1",
+          },
+        ],
+      },
+    ]);
+
     // 组件内部调用函数来设置真正的formRender
     let formRender;
     function setForm(fr) {
@@ -197,7 +279,7 @@ export default {
           console.log("最后的值", outerFormState);
         })
         .catch((error) => {
-          console.log("error", formState);
+          console.log("error", error);
         });
     }
     return {
@@ -209,6 +291,7 @@ export default {
       cascaderInner,
       checkboxGroupInner,
       triggerCheckboxGroupDisabled,
+      treeData,
 
       api,
       outerFormState,

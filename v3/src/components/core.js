@@ -1,5 +1,5 @@
 import { onMounted, reactive, watch, inject } from "vue";
-import { forEach, isFunction, tail } from "lodash";
+import { forEach, tail } from "lodash";
 export default function (props, w, componentType) {
   /* 接受form给的数据 */
   let isEdit = inject("isEdit");
@@ -11,10 +11,17 @@ export default function (props, w, componentType) {
   let newProps = reactive({ ...props });
   newProps.onChange = (e) => {
     let nv = e;
-    if (componentType === "input") {
+    if (componentType === "input" || componentType === "radioGroup") {
       nv = e.target.value;
+      w.emit("update:value", nv);
+    } else if (componentType === "radio" || componentType === "checkbox") {
+      nv = e.target.checked;
+      w.emit("update:checked", nv);
+    } else if (componentType === "switch") {
+      w.emit("update:checked", nv);
+    } else {
+      w.emit("update:value", nv);
     }
-    w.emit("update:value", nv);
     if (props.onChange) {
       props.onChange(e);
     }
@@ -32,7 +39,7 @@ export default function (props, w, componentType) {
             if (k === "detail") {
               w.emit("update:value", v);
             } else {
-              if (v.toString().includes('_next')) {
+              if (v.toString().includes("_next")) {
                 v().then((d) => {
                   newProps[k] = d;
                 });
@@ -50,7 +57,7 @@ export default function (props, w, componentType) {
         let obj = {};
         props.inner(obj);
         forEach(obj, (v, k) => {
-          if (v.toString().includes('_next')) {
+          if (v.toString().includes("_next")) {
             v().then((d) => {
               newProps[k] = d;
             });
@@ -78,7 +85,7 @@ export default function (props, w, componentType) {
         let obj = {};
         props.triggeraction(obj);
         forEach(obj, (v, k) => {
-          if (v.toString().includes('_next')) {
+          if (v.toString().includes("_next")) {
             v().then((d) => {
               newProps[k] = d;
             });
@@ -95,11 +102,13 @@ export default function (props, w, componentType) {
     if (/^triggeraction-/.test(key)) {
       let [name] = tail(key.split("-"));
       let n = name[0].toUpperCase() + name.slice(1);
+      console.log(name, 77);
       watch(
         () => props[`trigger${n}`],
         (newValue, oldValue) => {
+          console.log(123);
           let result = w.attrs[`triggeraction-${name}`](newValue);
-          if (result.toString().includes('_next')) {
+          if (result.toString().includes("_next")) {
             result().then((d) => {
               newProps[name] = d;
             });

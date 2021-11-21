@@ -1,23 +1,23 @@
 <template>
-  <Input v-bind="newProps" :value="value" allowClear>
+  <RadioGroup v-bind="newProps" :value="value">
     <slot />
-  </Input>
+  </RadioGroup>
 </template>
 <script>
 import core from "./core";
-import { Input } from "ant-design-vue";
+import { RadioGroup } from "ant-design-vue";
 import props from "./props";
 import { addTrigger } from "./tool";
 export default {
   props: {
-    ...Input.props,
-    ...addTrigger(Input),
+    ...RadioGroup.props,
+    ...addTrigger(RadioGroup),
     ...props,
   },
   emits: ["update:value", "update:preValue"],
-  components: { Input },
+  components: { RadioGroup },
   setup(props, w) {
-    let newProps = core(props, w, "input");
+    let newProps = core(props, w, "radioGroup");
     return {
       newProps,
     };

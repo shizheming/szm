@@ -1,21 +1,21 @@
 <template>
-  <CheckboxGroup v-bind="newProps" :value="value">
+  <InputNumber v-bind="newProps" :value="value">
     <slot />
-  </CheckboxGroup>
+  </InputNumber>
 </template>
 <script>
 import core from "./core";
-import { CheckboxGroup } from "ant-design-vue";
+import { InputNumber } from "ant-design-vue";
 import props from "./props";
-import {addTrigger} from './tool';
+import { addTrigger } from "./tool";
 export default {
   props: {
-    ...CheckboxGroup.props,
-    ...addTrigger(CheckboxGroup),
+    ...InputNumber.props,
+    ...addTrigger(InputNumber),
     ...props,
   },
   emits: ["update:value", "update:preValue"],
-  components: { CheckboxGroup },
+  components: { InputNumber },
   setup(props, w) {
     let newProps = core(props, w);
     return {

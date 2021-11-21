@@ -1,35 +1,31 @@
 <template>
-  <Select
+  <TreeSelect
     v-bind="newProps"
     :value="value"
-    allowClear
-    :filter-option="filterOption"
     show-search
+    allowClear
+    tree-default-expand-all
   >
     <slot />
-  </Select>
+  </TreeSelect>
 </template>
 <script>
 import core from "./core";
-import { Select } from "ant-design-vue";
+import { TreeSelect } from "ant-design-vue";
 import props from "./props";
 import { addTrigger } from "./tool";
 export default {
   props: {
-    ...Select.props,
-    ...addTrigger(Select),
+    ...TreeSelect.props,
+    ...addTrigger(TreeSelect),
     ...props,
   },
   emits: ["update:value", "update:preValue"],
-  components: { Select },
+  components: { TreeSelect },
   setup(props, w) {
     let newProps = core(props, w);
-    function filterOption(input, option) {
-      return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-    }
     return {
       newProps,
-      filterOption,
     };
   },
 };

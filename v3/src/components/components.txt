@@ -1,6 +1,0 @@
-已有的组件
-
-a-form
-a-input
-a-select
-a-switch

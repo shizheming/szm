@@ -1,21 +1,21 @@
 <template>
-  <Input v-bind="newProps" :value="value" allowClear>
+  <InputSearch v-bind="newProps" :value="value">
     <slot />
-  </Input>
+  </InputSearch>
 </template>
 <script>
 import core from "./core";
-import { Input } from "ant-design-vue";
+import { InputSearch } from "ant-design-vue";
 import props from "./props";
 import { addTrigger } from "./tool";
 export default {
   props: {
-    ...Input.props,
-    ...addTrigger(Input),
+    ...InputSearch.props,
+    ...addTrigger(InputSearch),
     ...props,
   },
   emits: ["update:value", "update:preValue"],
-  components: { Input },
+  components: { InputSearch },
   setup(props, w) {
     let newProps = core(props, w, "input");
     return {
