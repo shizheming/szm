@@ -11,6 +11,11 @@ const routes = [
     name: "film",
     component: defineAsyncComponent(() => import('./film.vue')),
   },
+  {
+    path: "/demo",
+    name: "demo",
+    component: defineAsyncComponent(() => import('./demo.vue')),
+  },
 ];
 
 export default createRouter({

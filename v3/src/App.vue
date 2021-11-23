@@ -1,10 +1,10 @@
 <template>
   <a-menu v-model:selectedKeys="current" mode="horizontal" style="margin-bottom:10px;">
+    <a-menu-item key="demo">
+      <router-link to="/demo">demo</router-link>
+    </a-menu-item>
     <a-menu-item key="film">
       <router-link to="/film">电影</router-link>
-    </a-menu-item>
-    <a-menu-item key="mail">
-      Navigation One
     </a-menu-item>
     <a-menu-item key="mail">
       Navigation One
