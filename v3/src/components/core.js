@@ -1,11 +1,12 @@
 import { onMounted, reactive, watch, inject } from "vue";
-import { forEach, tail } from "lodash";
-export default function (props, emit, attrs,componentType) {
+import { forEach, tail, isArray, isFunction } from "lodash";
+export default function (props, emit, attrs, componentType) {
   /* 接受form给的数据 */
   let isEdit = inject("isEdit");
   let detailData = inject("detailData");
   let isFinish = inject("isFinish");
   let outer = inject("outer");
+  let formData = inject("formData");
 
   /* 把change包一下，我要在里面更新数据 */
   let newProps = reactive({ ...props });
@@ -34,20 +35,38 @@ export default function (props, emit, attrs,componentType) {
         () => isFinish.value,
         (newValue, oldValue) => {
           let obj = {};
-          props.inner(obj, detailData.value);
-          forEach(obj, (v, k) => {
-            if (k === "detail") {
-              emit("update:value", v);
-            } else {
-              if (v.toString().includes("_next")) {
-                v().then((d) => {
-                  newProps[k] = d;
-                });
+          if (props.inner.toString().includes("_next")) {
+            props.inner(obj, detailData.value).then(() => {
+              forEach(obj, (v, k) => {
+                if (k === "detail") {
+                  emit("update:value", v);
+                } else {
+                  if (isFunction(v) && v.toString().includes("_next")) {
+                    v().then((d) => {
+                      newProps[k] = d;
+                    });
+                  } else {
+                    newProps[k] = v;
+                  }
+                }
+              });
+            });
+          } else {
+            props.inner(obj, detailData.value);
+            forEach(obj, (v, k) => {
+              if (k === "detail") {
+                emit("update:value", v);
               } else {
-                newProps[k] = v;
+                if (isFunction(v) && v.toString().includes("_next")) {
+                  v().then((d) => {
+                    newProps[k] = d;
+                  });
+                } else {
+                  newProps[k] = v;
+                }
               }
-            }
-          });
+            });
+          }
         }
       );
     }
@@ -55,16 +74,30 @@ export default function (props, emit, attrs,componentType) {
     if (props.inner) {
       onMounted(() => {
         let obj = {};
-        props.inner(obj);
-        forEach(obj, (v, k) => {
-          if (v.toString().includes("_next")) {
-            v().then((d) => {
-              newProps[k] = d;
+        if (props.inner.toString().includes("_next")) {
+          props.inner(obj).then(() => {
+            forEach(obj, (v, k) => {
+              if (isFunction(v) && v.toString().includes("_next")) {
+                v().then((d) => {
+                  newProps[k] = d;
+                });
+              } else {
+                newProps[k] = v;
+              }
             });
-          } else {
-            newProps[k] = v;
-          }
-        });
+          });
+        } else {
+          props.inner(obj);
+          forEach(obj, (v, k) => {
+            if (isFunction(v) && v.toString().includes("_next")) {
+              v().then((d) => {
+                newProps[k] = d;
+              });
+            } else {
+              newProps[k] = v;
+            }
+          });
+        }
       });
     }
   }
@@ -80,12 +113,14 @@ export default function (props, emit, attrs,componentType) {
   /* 触发机制，默认的不具名的触发 */
   if (props.triggeraction) {
     watch(
-      () => props.trigger,
+      () => {
+        return props.trigger;
+      },
       (newValue, oldValue) => {
         let obj = {};
         props.triggeraction(obj);
         forEach(obj, (v, k) => {
-          if (v.toString().includes("_next")) {
+          if (isFunction(v) && v.toString().includes("_next")) {
             v().then((d) => {
               newProps[k] = d;
             });
@@ -102,13 +137,11 @@ export default function (props, emit, attrs,componentType) {
     if (/^triggeraction-/.test(key)) {
       let [name] = tail(key.split("-"));
       let n = name[0].toUpperCase() + name.slice(1);
-      console.log(name, 77);
       watch(
         () => props[`trigger${n}`],
         (newValue, oldValue) => {
-          console.log(123);
-          let result = attrs[`triggeraction-${name}`](newValue);
-          if (result.toString().includes("_next")) {
+          let result = attrs[`triggeraction-${name}`](newValue, oldValue);
+          if (isFunction(result) && result.toString().includes("_next")) {
             result().then((d) => {
               newProps[name] = d;
             });

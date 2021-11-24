@@ -15,10 +15,6 @@ const p = defineProps({
     type: Function,
     default: undefined,
   },
-  model: {
-    type: Object,
-    default: undefined,
-  },
   isEdit: {
     type: Boolean,
     default: undefined,
@@ -41,6 +37,8 @@ provide("isFinish", isFinish);
 // 收集表单里面的组件的outer函数
 let outer = reactive({});
 provide("outer", outer);
+// 传递formData
+provide("formData", p.model);
 
 /* 设置外面的fromRender */
 const formRender = ref();
