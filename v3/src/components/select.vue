@@ -9,28 +9,22 @@
     <slot />
   </Select>
 </template>
-<script>
+<script setup>
+import { useAttrs } from "vue";
 import core from "./core";
 import { Select } from "ant-design-vue";
 import props from "./props";
 import { addTrigger } from "./tool";
-export default {
-  props: {
-    ...Select.props,
-    ...addTrigger(Select),
-    ...props,
-  },
-  emits: ["update:value", "update:preValue"],
-  components: { Select },
-  setup(props, w) {
-    let newProps = core(props, w);
-    function filterOption(input, option) {
-      return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-    }
-    return {
-      newProps,
-      filterOption,
-    };
-  },
-};
+
+const attrs = useAttrs();
+const p = defineProps({
+  ...Select.props,
+  ...addTrigger(Select),
+  ...props,
+});
+const emit = defineEmits(["update:value", "update:preValue"]);
+let newProps = core(p, emit, attrs);
+function filterOption(input, option) {
+  return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+}
 </script>

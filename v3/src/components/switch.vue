@@ -1,24 +1,19 @@
 <template>
-  <Switch v-bind="newProps" :checked="checked"/>
+  <Switch v-bind="newProps" :checked="checked" />
 </template>
-<script>
+<script setup>
+import { useAttrs } from "vue";
 import core from "./core";
 import { Switch } from "ant-design-vue";
 import props from "./props";
-import {addTrigger} from './tool';
-export default {
-  props: {
-    ...Switch.props,
-    ...addTrigger(Switch),
-    ...props,
-  },
-  emits: ["update:value", "update:checked", "update:preValue"],
-  components: { Switch },
-  setup(props, w) {
-    let newProps = core(props, w, 'switch');
-    return {
-      newProps,
-    };
-  },
-};
+import { addTrigger } from "./tool";
+
+const attrs = useAttrs();
+const p = defineProps({
+  ...Switch.props,
+  ...addTrigger(Switch),
+  ...props,
+});
+const emit = defineEmits(["update:value", "update:checked", "update:preValue"]);
+let newProps = core(p, emit, attrs, "switch");
 </script>

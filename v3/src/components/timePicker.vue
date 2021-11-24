@@ -3,39 +3,34 @@
     <slot />
   </TimePicker>
 </template>
-<script>
+<script setup>
+import { useAttrs } from "vue";
 import core from "./core";
 import { TimePicker } from "ant-design-vue";
 import props from "./props";
 import { addTrigger } from "./tool";
 import { inject } from "vue";
-export default {
-  props: {
-    ...TimePicker.props,
-    ...addTrigger(TimePicker),
-    ...props,
-  },
-  emits: ["update:value", "update:preValue"],
-  components: { TimePicker },
-  setup(props, w) {
-    let newProps = core(props, w);
-    let outer = inject("outer");
 
-    /* outer函数 */
-    if (props.outer) {
-      outer[props.name] = () => {
-        return props.outer(props.value);
-      };
-    } else {
-      outer[props.name] = () => {
-        if (props.value) {
-          return Math.floor(props.value.valueOf() / 1000);
-        }
-      };
+let outer = inject("outer");
+const attrs = useAttrs();
+const p = defineProps({
+  ...TimePicker.props,
+  ...addTrigger(TimePicker),
+  ...props,
+});
+const emit = defineEmits(["update:value", "update:preValue"]);
+
+let newProps = core(p, emit, attrs);
+/* outer函数 */
+if (p.outer) {
+  outer[p.name] = () => {
+    return p.outer(p.value);
+  };
+} else {
+  outer[p.name] = () => {
+    if (p.value) {
+      return Math.floor(p.value.valueOf() / 1000);
     }
-    return {
-      newProps,
-    };
-  },
-};
+  };
+}
 </script>

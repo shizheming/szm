@@ -3,24 +3,19 @@
     <slot />
   </Input>
 </template>
-<script>
+<script setup>
+import { useAttrs } from "vue";
 import core from "./core";
 import { Input } from "ant-design-vue";
 import props from "./props";
 import { addTrigger } from "./tool";
-export default {
-  props: {
-    ...Input.props,
-    ...addTrigger(Input),
-    ...props,
-  },
-  emits: ["update:value", "update:preValue"],
-  components: { Input },
-  setup(props, w) {
-    let newProps = core(props, w, "input");
-    return {
-      newProps,
-    };
-  },
-};
+
+const attrs = useAttrs();
+const p = defineProps({
+  ...Input.props,
+  ...addTrigger(Input),
+  ...props,
+});
+const emit = defineEmits(["update:value", "update:preValue"]);
+let newProps = core(p, emit, attrs, "input");
 </script>

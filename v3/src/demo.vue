@@ -15,7 +15,6 @@
         placeholder="input"
       />
     </a-form-item>
-    <a-select-option />
     <a-form-item
       label="select"
       name="select"
@@ -117,188 +116,167 @@
     </a-form-item>
   </s-form>
 </template>
-<script>
+<script setup>
 import { reactive, ref, watch } from "vue";
-export default {
-  setup() {
-    // 数据
-    const formState = reactive({ checkbox: true });
+// 数据
+const formState = reactive({ checkbox: true });
 
-    // 最后输出的表单值
-    const outerFormState = reactive({});
+// 最后输出的表单值
+const outerFormState = reactive({});
 
-    // 上一次的值
-    const selectPreValue = ref();
+// 上一次的值
+const selectPreValue = ref();
 
-    watch(
-      () => selectPreValue.value,
-      () => {
-        // console.log(3939);
-      }
-    );
+watch(
+  () => selectPreValue.value,
+  () => {
+    // console.log(3939);
+  }
+);
 
-    // api
-    async function api() {
-      return await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve({ input: 111111, select: 1 });
-        }, 1000);
-      });
-    }
+// api
+async function api() {
+  return await new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({ input: 111111, select: 1 });
+    }, 1000);
+  });
+}
 
-    // 进入函数
-    function selectInner(select, detailData = {}) {
-      // formState.select = [1];
-      select.options = async () => {
-        return [
-          { label: "aaaaaa", value: 1 },
-          { label: "ddddddddd", value: 2 },
-        ];
-      };
-      select.placeholder = 888888;
-      select.detail = detailData.select;
-    }
+// 进入函数
+function selectInner(select, detailData = {}) {
+  // formState.select = [1];
+  select.options = async () => {
+    return [
+      { label: "aaaaaa", value: 1 },
+      { label: "ddddddddd", value: 2 },
+    ];
+  };
+  select.placeholder = 888888;
+  select.detail = detailData.select;
+}
 
-    // 出口函数
-    function selectOuter(v) {
-      return v + 2;
-    }
+// 出口函数
+function selectOuter(v) {
+  return v + 2;
+}
 
-    // 触发调用函数
-    function triggerSelect(select) {
-      select.options = async () => {
-        return [
-          { label: "cccc", value: 112 },
-          { label: "fffff", value: 234 },
-        ];
-      };
-    }
+// 触发调用函数
+function triggerSelect(select) {
+  select.options = async () => {
+    return [
+      { label: "cccc", value: 112 },
+      { label: "fffff", value: 234 },
+    ];
+  };
+}
 
-    // change事件
-    function selectChange() {
-      console.log("selectChange");
-    }
+// change事件
+function selectChange() {
+  console.log("selectChange");
+}
 
-    function cascaderInner(cascader, detailData = {}) {
-      cascader.options = [
+function cascaderInner(cascader, detailData = {}) {
+  cascader.options = [
+    {
+      value: "zhejiang",
+      label: "Zhejiang",
+      children: [
         {
-          value: "zhejiang",
-          label: "Zhejiang",
+          value: "hangzhou",
+          label: "Hangzhou",
           children: [
             {
-              value: "hangzhou",
-              label: "Hangzhou",
-              children: [
-                {
-                  value: "xihu",
-                  label: "West Lake",
-                },
-              ],
+              value: "xihu",
+              label: "West Lake",
             },
           ],
         },
+      ],
+    },
+    {
+      value: "jiangsu",
+      label: "Jiangsu",
+      children: [
         {
-          value: "jiangsu",
-          label: "Jiangsu",
+          value: "nanjing",
+          label: "Nanjing",
           children: [
             {
-              value: "nanjing",
-              label: "Nanjing",
-              children: [
-                {
-                  value: "zhonghuamen",
-                  label: "Zhong Hua Men",
-                },
-              ],
+              value: "zhonghuamen",
+              label: "Zhong Hua Men",
             },
           ],
         },
-      ];
-    }
+      ],
+    },
+  ];
+}
 
-    function checkboxGroupInner(checkboxGroup, detailData = {}) {
-      checkboxGroup.options = [
-        {
-          label: "Apple",
-          value: "Apple",
-        },
-        {
-          label: "Pear",
-          value: "Pear",
-        },
-        {
-          label: "Orange",
-          value: "Orange",
-        },
-      ];
-    }
+function checkboxGroupInner(checkboxGroup, detailData = {}) {
+  checkboxGroup.options = [
+    {
+      label: "Apple",
+      value: "Apple",
+    },
+    {
+      label: "Pear",
+      value: "Pear",
+    },
+    {
+      label: "Orange",
+      value: "Orange",
+    },
+  ];
+}
 
-    function triggerCheckboxGroupDisabled(checkboxGroup) {
-      return !checkboxGroup;
-    }
+function triggerCheckboxGroupDisabled(checkboxGroup) {
+  return !checkboxGroup;
+}
 
-    const treeData = reactive([
+const treeData = reactive([
+  {
+    title: "parent 1",
+    value: "parent 1",
+    children: [
       {
-        title: "parent 1",
-        value: "parent 1",
+        title: "parent 1-0",
+        value: "parent 1-0",
         children: [
           {
-            title: "parent 1-0",
-            value: "parent 1-0",
-            children: [
-              {
-                title: "my leaf",
-                value: "leaf1",
-              },
-              {
-                title: "your leaf",
-                value: "leaf2",
-              },
-            ],
+            title: "my leaf",
+            value: "leaf1",
           },
           {
-            title: "parent 1-1",
-            value: "parent 1-1",
+            title: "your leaf",
+            value: "leaf2",
           },
         ],
       },
-    ]);
-
-    // 组件内部调用函数来设置真正的formRender
-    let formRender;
-    function setForm(fr) {
-      formRender = fr;
-    }
-
-    // 提交
-    function onSubmit() {
-      formRender.value
-        .validate()
-        .then(() => {
-          console.log("values", formState);
-          console.log("最后的值", outerFormState);
-        })
-        .catch((error) => {
-          console.log("error", error);
-        });
-    }
-    return {
-      selectPreValue,
-      triggerSelect,
-      selectInner,
-      selectOuter,
-      selectChange,
-      cascaderInner,
-      checkboxGroupInner,
-      triggerCheckboxGroupDisabled,
-      treeData,
-
-      api,
-      outerFormState,
-      formState,
-      onSubmit,
-      setForm,
-    };
+      {
+        title: "parent 1-1",
+        value: "parent 1-1",
+      },
+    ],
   },
-};
+]);
+
+// 组件内部调用函数来设置真正的formRender
+let formRender;
+function setForm(fr) {
+  formRender = fr;
+}
+
+// 提交
+function onSubmit() {
+  formRender.value
+    .validate()
+    .then(() => {
+      console.log("values", formState);
+      console.log("最后的值", outerFormState);
+    })
+    .catch((error) => {
+      console.log("error", error);
+    });
+}
 </script>

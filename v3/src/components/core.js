@@ -1,6 +1,6 @@
 import { onMounted, reactive, watch, inject } from "vue";
 import { forEach, tail } from "lodash";
-export default function (props, w, componentType) {
+export default function (props, emit, attrs,componentType) {
   /* 接受form给的数据 */
   let isEdit = inject("isEdit");
   let detailData = inject("detailData");
@@ -13,14 +13,14 @@ export default function (props, w, componentType) {
     let nv = e;
     if (componentType === "input" || componentType === "radioGroup") {
       nv = e.target.value;
-      w.emit("update:value", nv);
+      emit("update:value", nv);
     } else if (componentType === "radio" || componentType === "checkbox") {
       nv = e.target.checked;
-      w.emit("update:checked", nv);
+      emit("update:checked", nv);
     } else if (componentType === "switch") {
-      w.emit("update:checked", nv);
+      emit("update:checked", nv);
     } else {
-      w.emit("update:value", nv);
+      emit("update:value", nv);
     }
     if (props.onChange) {
       props.onChange(e);
@@ -37,7 +37,7 @@ export default function (props, w, componentType) {
           props.inner(obj, detailData.value);
           forEach(obj, (v, k) => {
             if (k === "detail") {
-              w.emit("update:value", v);
+              emit("update:value", v);
             } else {
               if (v.toString().includes("_next")) {
                 v().then((d) => {
@@ -73,7 +73,7 @@ export default function (props, w, componentType) {
   watch(
     () => props.value,
     (newValue, oldValue) => {
-      w.emit("update:preValue", oldValue);
+      emit("update:preValue", oldValue);
     }
   );
 
@@ -98,7 +98,7 @@ export default function (props, w, componentType) {
   }
 
   /* 具名的触发机制 */
-  forEach(w.attrs, (value, key) => {
+  forEach(attrs, (value, key) => {
     if (/^triggeraction-/.test(key)) {
       let [name] = tail(key.split("-"));
       let n = name[0].toUpperCase() + name.slice(1);
@@ -107,7 +107,7 @@ export default function (props, w, componentType) {
         () => props[`trigger${n}`],
         (newValue, oldValue) => {
           console.log(123);
-          let result = w.attrs[`triggeraction-${name}`](newValue);
+          let result = attrs[`triggeraction-${name}`](newValue);
           if (result.toString().includes("_next")) {
             result().then((d) => {
               newProps[name] = d;

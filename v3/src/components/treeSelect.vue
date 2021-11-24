@@ -9,24 +9,20 @@
     <slot />
   </TreeSelect>
 </template>
-<script>
+<script setup>
+import { useAttrs } from "vue";
 import core from "./core";
 import { TreeSelect } from "ant-design-vue";
 import props from "./props";
 import { addTrigger } from "./tool";
-export default {
-  props: {
-    ...TreeSelect.props,
-    ...addTrigger(TreeSelect),
-    ...props,
-  },
-  emits: ["update:value", "update:preValue"],
-  components: { TreeSelect },
-  setup(props, w) {
-    let newProps = core(props, w);
-    return {
-      newProps,
-    };
-  },
-};
+
+const attrs = useAttrs();
+const p = defineProps({
+  ...TreeSelect.props,
+  ...addTrigger(TreeSelect),
+  ...props,
+});
+const emit = defineEmits(["update:value", "update:preValue"]);
+let newProps = core(p, emit, attrs);
+
 </script>

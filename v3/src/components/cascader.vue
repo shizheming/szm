@@ -3,24 +3,19 @@
     <slot />
   </Cascader>
 </template>
-<script>
+<script setup>
+import { useAttrs } from "vue";
 import core from "./core";
 import { Cascader } from "ant-design-vue";
 import props from "./props";
-import {addTrigger} from './tool';
-export default {
-  props: {
-    ...Cascader.props,
-    ...addTrigger(Cascader),
-    ...props,
-  },
-  emits: ["update:value", "update:preValue"],
-  components: { Cascader },
-  setup(props, w) {
-    let newProps = core(props, w);
-    return {
-      newProps,
-    };
-  },
-};
+import { addTrigger } from "./tool";
+
+const attrs = useAttrs();
+const p = defineProps({
+  ...Cascader.props,
+  ...addTrigger(Cascader),
+  ...props,
+});
+const emit = defineEmits(["update:value", "update:preValue"]);
+let newProps = core(p, emit, attrs);
 </script>

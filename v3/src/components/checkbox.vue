@@ -3,24 +3,19 @@
     <slot />
   </Checkbox>
 </template>
-<script>
+<script setup>
+import { useAttrs } from "vue";
 import core from "./core";
 import { Checkbox } from "ant-design-vue";
 import props from "./props";
-import {addTrigger} from './tool';
-export default {
-  props: {
-    ...Checkbox.props,
-    ...addTrigger(Checkbox),
-    ...props,
-  },
-  emits: ["update:value", "update:checked", "update:preValue"],
-  components: { Checkbox },
-  setup(props, w) {
-    let newProps = core(props, w, 'checkbox');
-    return {
-      newProps,
-    };
-  },
-};
+import { addTrigger } from "./tool";
+
+const attrs = useAttrs();
+const p = defineProps({
+  ...Checkbox.props,
+  ...addTrigger(Checkbox),
+  ...props,
+});
+const emit = defineEmits(["update:value", "update:checked", "update:preValue"]);
+let newProps = core(p, emit, attrs, "checkbox");
 </script>

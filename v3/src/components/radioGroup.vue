@@ -3,24 +3,19 @@
     <slot />
   </RadioGroup>
 </template>
-<script>
+<script setup>
+import { useAttrs } from "vue";
 import core from "./core";
 import { RadioGroup } from "ant-design-vue";
 import props from "./props";
 import { addTrigger } from "./tool";
-export default {
-  props: {
-    ...RadioGroup.props,
-    ...addTrigger(RadioGroup),
-    ...props,
-  },
-  emits: ["update:value", "update:preValue"],
-  components: { RadioGroup },
-  setup(props, w) {
-    let newProps = core(props, w, "radioGroup");
-    return {
-      newProps,
-    };
-  },
-};
+
+const attrs = useAttrs();
+const p = defineProps({
+  ...RadioGroup.props,
+  ...addTrigger(RadioGroup),
+  ...props,
+});
+const emit = defineEmits(["update:value", "update:preValue"]);
+let newProps = core(p, emit, attrs, "radioGroup");
 </script>
