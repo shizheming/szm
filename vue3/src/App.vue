@@ -2,13 +2,14 @@
   <div>
     <a-layout v-if="cook">
       <a-layout-header class="header">
-        <img src="./assets/logo.png" style="width:40px;margin-right:10px;margin-left:-30px;"/>
-        <span style="color:rgba(255, 255, 255, 0.65);">{{localStorage.userInfo.platform === 'kfsc' ? '' : '名气'}}商城后台运营管理系统</span>
+        <span style="color: rgba(255, 255, 255, 0.65)"
+          >{{ kfsc === "kfsc" ? "" : "名气" }}商城后台运营管理系统</span
+        >
         <a-menu
           theme="dark"
           mode="horizontal"
           v-model:selectedKeys="selectedKeys1"
-          :style="{ lineHeight: '64px',display:'inline-block' }"
+          :style="{ lineHeight: '64px', display: 'inline-block' }"
         >
           <a-menu-item key="1">nav 1</a-menu-item>
           <a-menu-item key="2">nav 2</a-menu-item>
@@ -75,32 +76,25 @@
               minHeight: '280px',
             }"
           >
-            Content
+            <router-view></router-view>
           </a-layout-content>
         </a-layout>
       </a-layout>
     </a-layout>
-    <login v-model:cook="cook" v-else />
+    <Login v-model:cook="cook" v-else />
   </div>
 </template>
 
-<script>
+<script setup>
 import VueCookies from "vue-cookies";
-import login from "./login.vue";
+import Login from "./login.vue";
 import { ref, toRefs, reactive, onMounted } from "vue";
 
-export default {
-  components: { login },
-  setup() {
-    let cook = ref(VueCookies.get("token"));
-
-    return {
-      VueCookies,
-      cook,
-      localStorage
-    };
-  },
-};
+let cook = ref(VueCookies.get("token"));
+let kfsc = JSON.parse(localStorage.userInfo).platform;
+let selectedKeys1 = ref()
+let selectedKeys2 = ref()
+let openKeys = ref()
 </script>
 
 <style>

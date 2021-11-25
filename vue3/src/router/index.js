@@ -1,11 +1,16 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 const routes = [
-  // {
-  //   path: '/relationship',
-  //   name: 'relationship',
-  //   component: relationship
-  // },
+  {
+    path: '/',
+    name: 'home',
+    component: () => import('../HelloWorld.vue')
+  },
+  {
+    path: '/examine',
+    name: 'examine',
+    component: () => import('../afterSale/examine.vue')
+  },
   // {
   //   path: '/linkage',
   //   name: 'linkage',
