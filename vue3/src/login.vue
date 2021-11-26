@@ -75,7 +75,7 @@ function getPermission(token) {
   const headers = {
     Authorization: token,
   };
-
+axios.defaults.headers.common['Authorization'] = token;
   return new Promise((resolve, reject) => {
     axios
       .get("api/manager/me", { headers })

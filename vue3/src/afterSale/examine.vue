@@ -26,7 +26,7 @@
         required: true,
         message: '请选择是否退回至供应商',
       }"
-      name="goodMoney.isReturnSupplier"
+      :name="['goodMoney', 'isReturnSupplier']"
     >
       <a-radio-group v-model:value="formData.goodMoney.isReturnSupplier">
         <a-radio :value="0">否</a-radio>
@@ -39,10 +39,14 @@
         required: true,
         message: '请选择退回供应商',
       }"
-      name="goodMoney.supplier_id"
+      :name="['goodMoney', 'supplier_id']"
       v-if="formData.goodMoney.isReturnSupplier"
     >
-      <a-select v-model:value="formData.goodMoney.supplier_id" />
+      <s-select
+        v-model:value="formData.goodMoney.supplier_id"
+        name="supplier_id"
+        :inner="supplierIdInner"
+      />
     </a-form-item>
     <a-form-item
       label="退回地址类型"
@@ -50,7 +54,7 @@
         required: true,
         message: '请选择退回地址类型',
       }"
-      :name="['goodMoney','con_type']"
+      :name="['goodMoney', 'con_type']"
     >
       <a-radio-group v-model:value="formData.goodMoney.con_type">
         <a-radio :value="2">手动填写</a-radio>
@@ -66,7 +70,13 @@
       name="allAddr"
       v-if="formData.goodMoney.con_type === 3"
     >
-      <a-select v-model:value="formData.allAddr" />
+      <s-select
+        name="allAddr"
+        v-model:value="formData.allAddr"
+        :inner="allAddrInner"
+        :trigger-options="formData.goodMoney.supplier_id"
+        :triggeraction-options="conTypeOptions"
+      />
     </a-form-item>
     <a-form-item :wrapper-col="{ offset: 10 }">
       <s-button :loading="loading" @click="examine">审核</s-button>
@@ -75,6 +85,8 @@
 </template>
 
 <script setup>
+import VueCookies from "vue-cookies";
+import axios from "axios";
 import { ref, toRefs, reactive, onMounted } from "vue";
 const form = ref();
 const formData = reactive({
@@ -86,6 +98,64 @@ let formRender;
 function setForm(fr) {
   formRender = fr;
 }
+
+function supplierIdInner(select) {
+  select.options = [
+    {
+      label: "名气家（深圳）信息服务有限公司",
+      value: 7,
+    },
+  ];
+}
+
+function allAddrInner(select) {
+  if (formData.goodMoney.supplier_id) {
+    axios
+      .get("/api/order/return/stock/address", {
+        params: {
+          type: formData.goodMoney.con_type,
+          supplier_id: formData.goodMoney.supplier_id,
+        },
+        headers: {
+          Authorization: VueCookies.get("token"),
+        },
+      })
+      .then(({ data }) => {
+        /* this.$refs.formRender.setComponent("allAddr", (current) => {
+        current.value.props.options = data.map(
+          ({ name, mobile, detailAddress }, index) => {
+            return {
+              label: `${name}/${mobile}/${detailAddress}`,
+              value: index,
+            };
+          }
+        );
+      }); */
+      });
+  }
+}
+
+async function conTypeOptions() {
+  let {
+    data: { data },
+  } = await axios.get("/api/order/return/stock/address", {
+    params: {
+      type: formData.goodMoney.con_type,
+      supplier_id: formData.goodMoney.supplier_id,
+    },
+    headers: {
+      Authorization: VueCookies.get("token"),
+    },
+  });
+  return data.map(({ detailAddress }, index) => {
+    return {
+      label: detailAddress,
+      value: index,
+    };
+  });
+}
+
+// 审核
 function examine() {
   formRender.value
     .validate()

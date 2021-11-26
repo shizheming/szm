@@ -154,8 +154,8 @@ export default function (props, emit, attrs, componentType) {
         () => props[`trigger${n}`],
         (newValue, oldValue) => {
           let result = attrs[`triggeraction-${name}`](newValue, oldValue);
-          if (isFunction(result) && result.toString().includes("_next")) {
-            result().then((d) => {
+          if (Object.prototype.toString.call(result) === "[object Promise]") {
+            result.then((d) => {
               newProps[name] = d;
             });
           } else {
