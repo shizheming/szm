@@ -74,8 +74,9 @@
         name="allAddr"
         v-model:value="formData.allAddr"
         :inner="allAddrInner"
+        :triggerclear="[formData.goodMoney.supplier_id, 'value', 'options']"
         :trigger-options="formData.goodMoney.supplier_id"
-        :triggeraction-options="conTypeOptions"
+        triggeraction-options="inner"
       />
     </a-form-item>
     <a-form-item :wrapper-col="{ offset: 10 }">
@@ -109,9 +110,11 @@ function supplierIdInner(select) {
 }
 
 function allAddrInner(select) {
-  if (formData.goodMoney.supplier_id) {
-    axios
-      .get("/api/order/return/stock/address", {
+  select.options = async function () {
+    if (formData.goodMoney.supplier_id) {
+      let {
+        data: { data },
+      } = await axios.get("/api/order/return/stock/address", {
         params: {
           type: formData.goodMoney.con_type,
           supplier_id: formData.goodMoney.supplier_id,
@@ -119,40 +122,15 @@ function allAddrInner(select) {
         headers: {
           Authorization: VueCookies.get("token"),
         },
-      })
-      .then(({ data }) => {
-        /* this.$refs.formRender.setComponent("allAddr", (current) => {
-        current.value.props.options = data.map(
-          ({ name, mobile, detailAddress }, index) => {
-            return {
-              label: `${name}/${mobile}/${detailAddress}`,
-              value: index,
-            };
-          }
-        );
-      }); */
       });
-  }
-}
-
-async function conTypeOptions() {
-  let {
-    data: { data },
-  } = await axios.get("/api/order/return/stock/address", {
-    params: {
-      type: formData.goodMoney.con_type,
-      supplier_id: formData.goodMoney.supplier_id,
-    },
-    headers: {
-      Authorization: VueCookies.get("token"),
-    },
-  });
-  return data.map(({ detailAddress }, index) => {
-    return {
-      label: detailAddress,
-      value: index,
-    };
-  });
+      return data.map(({ detailAddress }, index) => {
+        return {
+          label: detailAddress,
+          value: index,
+        };
+      });
+    }
+  };
 }
 
 // 审核

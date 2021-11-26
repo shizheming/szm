@@ -27,6 +27,10 @@ export default {
     type: [Number, String, Array, Object, Boolean],
     default: undefined,
   },
+  triggerclear: {
+    type: Array,
+    default: undefined,
+  },
   name: {
     type: String,
     required: true,

@@ -91,7 +91,7 @@ import Login from "./login.vue";
 import { ref, toRefs, reactive, onMounted } from "vue";
 
 let cook = ref(VueCookies.get("token"));
-let kfsc = JSON.parse(localStorage.userInfo).platform;
+let kfsc = localStorage.userInfo && JSON.parse(localStorage.userInfo).platform;
 let selectedKeys1 = ref()
 let selectedKeys2 = ref()
 let openKeys = ref()
