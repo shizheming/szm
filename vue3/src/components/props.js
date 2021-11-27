@@ -23,17 +23,20 @@ export default {
     type: Function,
     default: undefined,
   },
-  initialValue: {
-    type: [Number, String, Array, Object, Boolean],
-    default: undefined,
-  },
   triggerclear: {
     type: Array,
     default: undefined,
   },
+  initialValue: {
+    type: [Number, String, Array, Object, Boolean],
+    default: undefined,
+  },
+  clear: {
+    type: Boolean,
+    default: undefined,
+  },
   name: {
     type: String,
-    required: true,
     default: undefined,
   },
   checked: {

@@ -39,6 +39,9 @@ let outer = reactive({});
 provide("outer", outer);
 // 传递formData
 provide("formData", p.model);
+// 把每个组件所有属性值存下来，给不同的组件用，每个组件都能全局看到所有组件的属性值
+let formComponents = reactive({});
+provide("formComponents", formComponents);
 
 /* 设置外面的fromRender */
 const formRender = ref();

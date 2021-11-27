@@ -1,4 +1,4 @@
-import { onMounted, reactive, watch, inject } from "vue";
+import { onMounted, reactive, watch, inject, onUnmounted } from "vue";
 import { forEach, tail, isArray, isFunction, drop } from "lodash";
 export default function (props, emit, attrs, componentType) {
   /* 接受form给的数据 */
@@ -7,6 +7,7 @@ export default function (props, emit, attrs, componentType) {
   let isFinish = inject("isFinish");
   let outer = inject("outer");
   let formData = inject("formData");
+  let formComponents = inject("formComponents");
 
   /* 把change包一下，我要在里面更新数据 */
   let newProps = reactive({ ...props });
@@ -51,10 +52,58 @@ export default function (props, emit, attrs, componentType) {
     emitType(props.initialValue);
   }
 
-  let innerObj;
+  let innerObj = {};
+  if (isArray(props.name)) {
+    formComponents[props.name.join(".")] = innerObj;
+  } else {
+    formComponents[props.name] = innerObj;
+  }
   /* 进口处理，判断是不是回显*/
   if (isEdit) {
     if (props.inner) {
+      if (isFinish.value) {
+        let obj = {};
+        if (props.inner.toString().includes("_next")) {
+          props.inner(obj, detailData.value).then(() => {
+            forEach(obj, (v, k) => {
+              if (k === "detail") {
+                emitType(v);
+              } else {
+                if (isFunction(v) && v.toString().includes("_next")) {
+                  v().then((d) => {
+                    obj[`${k}Detail`] = d;
+                    Object.assign(innerObj, obj);
+                    newProps[k] = d;
+                  });
+                } else {
+                  obj[`${k}Detail`] = v;
+                  Object.assign(innerObj, obj);
+                  newProps[k] = v;
+                }
+              }
+            });
+          });
+        } else {
+          props.inner(obj, detailData.value);
+          forEach(obj, (v, k) => {
+            if (k === "detail") {
+              emitType(v);
+            } else {
+              if (isFunction(v) && v.toString().includes("_next")) {
+                v().then((d) => {
+                  obj[`${k}Detail`] = d;
+                  Object.assign(innerObj, obj);
+                  newProps[k] = d;
+                });
+              } else {
+                obj[`${k}Detail`] = v;
+                Object.assign(innerObj, obj);
+                newProps[k] = v;
+              }
+            }
+          });
+        }
+      }
       watch(
         () => isFinish.value,
         (newValue, oldValue) => {
@@ -67,9 +116,13 @@ export default function (props, emit, attrs, componentType) {
                 } else {
                   if (isFunction(v) && v.toString().includes("_next")) {
                     v().then((d) => {
+                      obj[`${k}Detail`] = d;
+                      Object.assign(innerObj, obj);
                       newProps[k] = d;
                     });
                   } else {
+                    obj[`${k}Detail`] = v;
+                    Object.assign(innerObj, obj);
                     newProps[k] = v;
                   }
                 }
@@ -83,9 +136,13 @@ export default function (props, emit, attrs, componentType) {
               } else {
                 if (isFunction(v) && v.toString().includes("_next")) {
                   v().then((d) => {
+                    obj[`${k}Detail`] = d;
+                    Object.assign(innerObj, obj);
                     newProps[k] = d;
                   });
                 } else {
+                  obj[`${k}Detail`] = v;
+                  Object.assign(innerObj, obj);
                   newProps[k] = v;
                 }
               }
@@ -99,33 +156,41 @@ export default function (props, emit, attrs, componentType) {
       onMounted(() => {
         let obj = {};
         if (props.inner.toString().includes("_next")) {
-          console.log(1);
           props.inner(obj).then(() => {
             forEach(obj, (v, k) => {
               if (isFunction(v) && v.toString().includes("_next")) {
                 v().then((d) => {
+                  obj[`${k}Detail`] = d;
+                  Object.assign(innerObj, obj);
                   newProps[k] = d;
                 });
               } else {
+                obj[`${k}Detail`] = v;
+                Object.assign(innerObj, obj);
                 newProps[k] = v;
               }
             });
           });
         } else {
           props.inner(obj);
-          innerObj = obj;
           forEach(obj, (v, k) => {
             if (isFunction(v) && v.toString().includes("_next")) {
               v().then((d) => {
+                obj[`${k}Detail`] = d;
+                Object.assign(innerObj, obj);
                 newProps[k] = d;
               });
             } else if (
               Object.prototype.toString.call(v) === "[object Promise]"
             ) {
               v.then((d) => {
+                obj[`${k}Detail`] = d;
+                Object.assign(innerObj, obj);
                 newProps[k] = d;
               });
             } else {
+              obj[`${k}Detail`] = v;
+              Object.assign(innerObj, obj);
               newProps[k] = v;
             }
           });
@@ -142,16 +207,29 @@ export default function (props, emit, attrs, componentType) {
     }
   );
 
+  /* 组件没有了删除对应的值 */
+  if (props.clear === true) {
+    onUnmounted(() => {
+      emitType(undefined);
+    });
+  }
+
   /* 触发机制，默认的不具名的触发 */
   if (props.triggeraction) {
     watch(
       () => props.trigger,
       (newValue, oldValue) => {
         let obj = {};
-        props.triggeraction(obj, newValue, oldValue);
+        props.triggeraction(
+          obj,
+          /* 全部是实体 */ formComponents,
+          detailData.value
+        );
         forEach(obj, (v, k) => {
           if (isFunction(v) && v.toString().includes("_next")) {
             v().then((d) => {
+              obj[`${k}Detail`] = d;
+              Object.assign(innerObj, obj);
               newProps[k] = d;
             });
           } else {
@@ -176,22 +254,29 @@ export default function (props, emit, attrs, componentType) {
               innerObj[name].toString().includes("_next")
             ) {
               innerObj[name]().then((d) => {
+                innerObj[`${name}Detail`] = d;
                 newProps[name] = d;
               });
             } else if (
               Object.prototype.toString.call(innerObj[name]) ===
               "[object Promise]"
-              ) {
-                innerObj[name].then((d) => {
-                  newProps[name] = d;
-                });
-              } else {
+            ) {
+              innerObj[name].then((d) => {
+                innerObj[`${name}Detail`] = d;
+                newProps[name] = d;
+              });
+            } else {
               newProps[name] = innerObj[name];
             }
           } else {
-            let result = attrs[`triggeraction-${name}`](newValue, oldValue);
+            let result = attrs[`triggeraction-${name}`](
+              newValue,
+              oldValue,
+              detailData.value
+            );
             if (Object.prototype.toString.call(result) === "[object Promise]") {
               result.then((d) => {
+                innerObj[`${name}Detail`] = d;
                 newProps[name] = d;
               });
             } else {
@@ -209,7 +294,7 @@ export default function (props, emit, attrs, componentType) {
       () => props.triggerclear[0],
       (newValue, oldValue) => {
         drop(props.triggerclear).forEach((value, key) => {
-          if (value === "value") {
+          if (value === "value" && newValue === undefined) {
             emitType(undefined);
           } else {
             newProps[value] = undefined;

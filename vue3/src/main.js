@@ -6,6 +6,7 @@ import "ant-design-vue/dist/antd.css";
 
 import input from "./components/input.vue";
 import select from "./components/select.vue";
+import selectOption from "./components/selectOption.vue";
 import form from "./components/form.vue";
 import aswitch from "./components/switch.vue";
 import cascader from "./components/cascader.vue";
@@ -29,6 +30,7 @@ createApp(App)
   .use(router)
   .component("s-input", input)
   .component("s-select", select)
+  .component("s-select-option", selectOption)
   .component("s-form", form)
   .component("s-switch", aswitch)
   .component("s-cascader", cascader)
