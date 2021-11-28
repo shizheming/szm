@@ -53,6 +53,7 @@
         v-model:value="formData.goodMoney.supplier_id"
         name="supplier_id"
         :inner="supplierIdInner"
+        @change="supplierIdChange"
       />
     </a-form-item>
     <a-form-item
@@ -180,6 +181,7 @@
 
 <script setup>
 import VueCookies from "vue-cookies";
+import { Modal } from "ant-design-vue";
 import axios from "axios";
 import { ref, toRefs, reactive, onMounted } from "vue";
 const form = ref();
@@ -276,8 +278,41 @@ function allAddrInner(select) {
   };
 }
 
+// 后端单独要的值
+let supplier_code;
+async function supplierIdChange(v, components, { suppliers_info }) {
+  if (v !== undefined) {
+    // 检查供应商是否停用
+    let {
+      data: { data },
+    } = await axios.get(`/api/stock/supplier/${v}`, {
+      params: {
+        is_return_order: 1,
+      },
+      headers: {
+        Authorization: VueCookies.get("token"),
+      },
+    });
+    if (data.status === 0) {
+      Modal.info({
+        title: "提示",
+        content: "该供应商已经停用",
+      });
+      let sc = suppliers_info.filter((current) => {
+        return current.id == supplier_id;
+      });
+
+      supplier_code = sc[0] ? sc[0].code : undefined;
+    }
+  } else {
+    supplier_code = undefined;
+  }
+}
+
 function mAreaTrigger(input, d, detail) {
-  let { allAddr: { optionsDetail } } = d
+  let {
+    allAddr: { optionsDetail },
+  } = d;
   if (formData.allAddr !== undefined) {
     if (formData.goodMoney.isReturnSupplier === 0) {
       formData.mArea = optionsDetail[formData.allAddr].address;
@@ -292,7 +327,8 @@ function addressTrigger(input, { allAddr: { optionsDetail } }) {
     if (formData.goodMoney.isReturnSupplier === 0) {
       formData.goodMoney.address = optionsDetail[formData.allAddr].address;
     } else if (formData.goodMoney.isReturnSupplier === 1) {
-      formData.goodMoney.address = optionsDetail[formData.allAddr].detailAddress;
+      formData.goodMoney.address =
+        optionsDetail[formData.allAddr].detailAddress;
     }
   }
 }

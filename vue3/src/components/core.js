@@ -25,7 +25,7 @@ export default function (props, emit, attrs, componentType) {
       emit("update:value", nv);
     }
     if (props.onChange) {
-      props.onChange(e);
+      props.onChange(e, formComponents, detailData);
     }
   };
 
@@ -270,8 +270,7 @@ export default function (props, emit, attrs, componentType) {
             }
           } else {
             let result = attrs[`triggeraction-${name}`](
-              newValue,
-              oldValue,
+              formComponents,
               detailData.value
             );
             if (Object.prototype.toString.call(result) === "[object Promise]") {
