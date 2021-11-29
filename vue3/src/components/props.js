@@ -35,10 +35,6 @@ export default {
     type: Boolean,
     default: undefined,
   },
-  name: {
-    type: String,
-    default: undefined,
-  },
   checked: {
     type: Boolean,
     default: undefined,

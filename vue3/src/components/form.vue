@@ -8,6 +8,7 @@
 import { reactive, provide, ref, onMounted, defineExpose } from "vue";
 import { Form } from "ant-design-vue";
 import { cloneDeep, forEach } from "lodash";
+import { setLevelValue, getLevelValue } from "./tool";
 const p = defineProps({
   ...Form.props,
   api: {
@@ -16,10 +17,6 @@ const p = defineProps({
   },
   isEdit: {
     type: Boolean,
-    default: undefined,
-  },
-  outerModel: {
-    type: Object,
     default: undefined,
   },
 });
@@ -41,17 +38,23 @@ provide("formData", p.model);
 let formComponents = reactive({});
 provide("formComponents", formComponents);
 
+let outerModel = reactive({});
 /* 设置外面的fromRender */
 const formRender = ref();
 defineExpose({
   detail: detailData,
+  outerModel,
   validate() {
     // 处理outer所有的函数
-    if (p.outerModel) {
-      forEach(outer, (value, key) => {
-        p.outerModel[key] = value();
-      });
-    }
+    forEach(p.model, (value, key) => {
+      if (!outer[key]) {
+        outerModel[key] = value;
+      }
+    });
+    // 处理嵌套层级数据
+    forEach(outer, (value, key) => {
+      setLevelValue(key, value(), outerModel);
+    });
     return formRender.value.validate();
   },
 });

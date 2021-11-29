@@ -23,6 +23,7 @@ import rate from "./components/rate.vue";
 import timePicker from "./components/timePicker.vue";
 import timeRangePicker from "./components/timeRangePicker.vue";
 import treeSelect from "./components/treeSelect.vue";
+import formItem from "./components/formItem.vue";
 import button from "./components/button.vue";
 
 createApp(App)
@@ -47,5 +48,6 @@ createApp(App)
   .component("s-time-picker", timePicker)
   .component("s-time-range-picker", timeRangePicker)
   .component("s-tree-select", treeSelect)
+  .component("s-form-item", formItem)
   .component("s-button", button)
   .mount("#app");

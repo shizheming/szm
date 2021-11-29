@@ -2,13 +2,12 @@
   <s-form
     :model="formData"
     :label-col="{ span: 7 }"
-    :isEdit="true"
     :wrapper-col="{ span: 7 }"
-    :outer-model="outerFormState"
+    :isEdit="true"
     :api="api"
     ref="formSection"
   >
-    <a-form-item label="审核结果">
+    <s-form-item label="审核结果">
       <s-radio-group
         v-model:value="formData.examineReault"
         :inner="examineReaultInner"
@@ -31,16 +30,16 @@
           >不退货仅退款</s-radio
         >
       </s-radio-group>
-    </a-form-item>
+    </s-form-item>
     <div v-if="formData.examineReault === 2">
-      <a-form-item label="寄回方式">
+      <s-form-item label="寄回方式">
         <s-input
           name="returnMethod"
           initialValue="快递寄回"
           v-model:value="formData.returnMethod"
         />
-      </a-form-item>
-      <a-form-item
+      </s-form-item>
+      <s-form-item
         label="是否退回至供应商"
         :rules="{
           required: true,
@@ -57,8 +56,8 @@
           <a-radio :value="0">否</a-radio>
           <a-radio :value="1">是</a-radio>
         </s-radio-group>
-      </a-form-item>
-      <a-form-item
+      </s-form-item>
+      <s-form-item
         label="退回供应商"
         :rules="{
           required: true,
@@ -77,8 +76,8 @@
             formSection?.detail?.basic_info?.supplier_name
           }}</s-select-option>
         </s-select>
-      </a-form-item>
-      <a-form-item
+      </s-form-item>
+      <s-form-item
         label="退回地址类型"
         :rules="{
           required: true,
@@ -98,8 +97,8 @@
               : "非供应商地址列表"
           }}</s-radio>
         </s-radio-group>
-      </a-form-item>
-      <a-form-item
+      </s-form-item>
+      <s-form-item
         label="选择收货地址"
         :rules="{
           required: true,
@@ -122,8 +121,8 @@
           
           triggeraction-options="inner"
         />
-      </a-form-item>
-      <a-form-item
+      </s-form-item>
+      <s-form-item
         label="收货地址"
         :rules="{
           required: true,
@@ -138,8 +137,8 @@
           :trigger="formData.allAddr"
           :triggeraction="mAreaTrigger"
         />
-      </a-form-item>
-      <a-form-item
+      </s-form-item>
+      <s-form-item
         label="详细地址"
         :rules="{
           required: true,
@@ -154,8 +153,8 @@
           :trigger="formData.allAddr"
           :triggeraction="addressTrigger"
         />
-      </a-form-item>
-      <a-form-item
+      </s-form-item>
+      <s-form-item
         label="商家收件人"
         :rules="{
           required: true,
@@ -170,8 +169,8 @@
           :trigger="formData.allAddr"
           :triggeraction="nameTrigger"
         />
-      </a-form-item>
-      <a-form-item
+      </s-form-item>
+      <s-form-item
         label="联系手机/座机"
         :rules="{
           required: true,
@@ -185,10 +184,11 @@
           :triggerclear="[formData.allAddr, 'value']"
           :trigger="formData.allAddr"
           :triggeraction="mobileTrigger"
+          :outer="mobileOuter"
         />
-      </a-form-item>
+      </s-form-item>
     </div>
-    <a-form-item
+    <s-form-item
       label="审核备注"
       :rules="{
         required: true,
@@ -197,10 +197,10 @@
       name="verify_remark"
     >
       <s-textarea name="verify_remark" v-model:value="formData.verify_remark" />
-    </a-form-item>
-    <a-form-item :wrapper-col="{ offset: 7 }">
+    </s-form-item>
+    <s-form-item :wrapper-col="{ offset: 7 }">
       <s-button :loading="loading" @click="examine">审核</s-button>
-    </a-form-item>
+    </s-form-item>
   </s-form>
 </template>
 
@@ -212,7 +212,6 @@ const formSection = ref();
 const formData = reactive({
   goodMoney: {},
 });
-const outerFormState = reactive({});
 let loading = ref();
 
 async function api() {
@@ -327,10 +326,11 @@ function allAddrInner(select) {
 }
 
 function mAreaTrigger(input, d, detail) {
+  console.log(d,309)
   let {
     allAddr: { optionsDetail },
   } = d;
-  console.log(d,998)
+  
   if (formData.allAddr !== undefined) {
     if (formData.goodMoney.isReturnSupplier === 0) {
       formData.mArea = optionsDetail[formData.allAddr].address;
@@ -361,13 +361,17 @@ function mobileTrigger(input, { allAddr: { optionsDetail } }) {
     formData.goodMoney.mobile = optionsDetail[formData.allAddr].mobile;
 }
 
+function mobileOuter(v){
+  return v + '你好'
+}
+
 // 审核
 function examine() {
   formSection.value
     .validate()
     .then(() => {
       console.log("values", formData);
-      console.log("最后的值", outerFormState);
+      console.log("最后的值", formSection.value.outerModel);
     })
     .catch((error) => {
       console.log("error", formData);

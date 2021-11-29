@@ -1,5 +1,5 @@
 import { onMounted, reactive, watch, inject, onUnmounted } from "vue";
-import { forEach, tail, isArray, isFunction, drop } from "lodash";
+import { forEach, tail, isArray, isFunction, drop, isString } from "lodash";
 export default function (props, emit, attrs, componentType) {
   /* 接受form给的数据 */
   let isEdit = inject("isEdit");
@@ -8,6 +8,7 @@ export default function (props, emit, attrs, componentType) {
   let outer = inject("outer");
   let formData = inject("formData");
   let formComponents = inject("formComponents");
+  let componentName = inject("componentName");
 
   /* 把change包一下，我要在里面更新数据 */
   let newProps = reactive({ ...props });
@@ -53,10 +54,10 @@ export default function (props, emit, attrs, componentType) {
   }
 
   let innerObj = {};
-  if (isArray(props.name)) {
-    formComponents[props.name.join(".")] = innerObj;
+  if (isArray(componentName.value)) {
+    formComponents[componentName.value.join(".")] = innerObj;
   } else {
-    formComponents[props.name] = innerObj;
+    formComponents[componentName.value] = innerObj;
   }
   /* 进口处理，判断是不是回显*/
   if (isEdit) {
@@ -109,7 +110,7 @@ export default function (props, emit, attrs, componentType) {
         (newValue, oldValue) => {
           let obj = {};
           if (props.inner.toString().includes("_next")) {
-            console.log(detailData.value,111)
+            console.log(detailData.value, 111);
             props.inner(obj, detailData.value).then(() => {
               forEach(obj, (v, k) => {
                 if (k === "detail") {
@@ -306,13 +307,15 @@ export default function (props, emit, attrs, componentType) {
 
   /* outer函数 */
   if (props.outer) {
-    outer[props.name] = () => {
-      return props.outer(props.value);
-    };
-  } else {
-    outer[props.name] = () => {
-      return props.value;
-    };
+    if (isString(componentName.value)) {
+      outer[componentName.value] = () => {
+        return props.outer(props.value);
+      };
+    } else if (isArray(componentName.value)) {
+      outer[componentName.value.join(".")] = () => {
+        return props.outer(props.value);
+      };
+    }
   }
   return newProps;
 }
