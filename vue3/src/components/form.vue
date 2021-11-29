@@ -1,14 +1,13 @@
 <template>
-  <a-form v-bind="p" ref="formRender">
+  <Form v-bind="p" ref="formRender">
     <slot></slot>
-  </a-form>
+  </Form>
 </template>
 
 <script setup>
-import { reactive, provide, ref, onMounted, useAttrs } from "vue";
+import { reactive, provide, ref, onMounted, defineExpose } from "vue";
 import { Form } from "ant-design-vue";
 import { cloneDeep, forEach } from "lodash";
-
 const p = defineProps({
   ...Form.props,
   api: {
@@ -24,7 +23,6 @@ const p = defineProps({
     default: undefined,
   },
 });
-const emit = defineEmits(["setForm"]);
 
 // 判断是不是编辑页
 provide("isEdit", p.isEdit);
@@ -45,21 +43,18 @@ provide("formComponents", formComponents);
 
 /* 设置外面的fromRender */
 const formRender = ref();
-onMounted(() => {
-  emit("setForm", formRender);
-  // 包一下验证方法，为了outer函数
-  let ve = formRender.value.validate;
-  formRender.value.validate = () => {
+defineExpose({
+  detail: detailData,
+  validate() {
     // 处理outer所有的函数
     if (p.outerModel) {
       forEach(outer, (value, key) => {
         p.outerModel[key] = value();
       });
     }
-    return ve();
-  };
+    return formRender.value.validate();
+  },
 });
-
 /* 回显数据 */
 if (p.isEdit && p.api) {
   p.api().then((data) => {
