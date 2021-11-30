@@ -11,6 +11,11 @@ const routes = [
     name: 'examine',
     component: () => import('../page/examine.vue')
   },
+  {
+    path: '/fullgift',
+    name: 'fullgift',
+    component: () => import('../page/fullgift.vue')
+  },
   // {
   //   path: '/linkage',
   //   name: 'linkage',
