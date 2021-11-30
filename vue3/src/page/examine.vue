@@ -72,9 +72,12 @@
           :initialValue="formSection?.detail?.basic_info?.supplier_id"
           @change="supplierIdChange"
         >
-          <s-select-option :value="formSection?.detail?.basic_info?.supplier_id">{{
-            formSection?.detail?.basic_info?.supplier_name
-          }}</s-select-option>
+          <s-select-option
+            :value="formSection?.detail?.basic_info?.supplier_id"
+            >{{
+              formSection?.detail?.basic_info?.supplier_name
+            }}</s-select-option
+          >
         </s-select>
       </s-form-item>
       <s-form-item
@@ -117,8 +120,6 @@
             formData.goodMoney.supplier_id,
             formData.goodMoney.isReturnSupplier,
           ]"
-
-          
           triggeraction-options="inner"
         />
       </s-form-item>
@@ -215,18 +216,16 @@ const formData = reactive({
 let loading = ref();
 
 async function api() {
-  let {
-    data: { data },
-  } = await axios.get("/api/order/return/main/RO21082354785000016068");
+  let { data } = await axios.get(
+    "/api/order/return/main/RO21082354785000016068"
+  );
   return data;
 }
 
 let verifyType = ref();
 async function examineReaultInner(radio, detail) {
   if (detail) {
-    let {
-      data: { data },
-    } = await axios.post(
+    let { data } = await axios.post(
       "/api/proxy/order/returnOrder/query/getReturnOrderVerifyType",
       {
         ro_seq: detail.basic_info.ro_seq,
@@ -257,9 +256,7 @@ let supplier_code;
 async function supplierIdChange(v, components, { suppliers_info }) {
   if (v !== undefined) {
     // 检查供应商是否停用
-    let {
-      data: { data },
-    } = await axios.get(`/api/stock/supplier/${v}`, {
+    let { data } = await axios.get(`/api/stock/supplier/${v}`, {
       params: {
         is_return_order: 1,
       },
@@ -304,9 +301,7 @@ function allAddrInner(select) {
       });
     } else if (formData.goodMoney.isReturnSupplier === 1) {
       if (formData.goodMoney.supplier_id) {
-        let {
-          data: { data },
-        } = await axios.get("/api/order/return/stock/address", {
+        let { data } = await axios.get("/api/order/return/stock/address", {
           params: {
             type: formData.goodMoney.con_type,
             supplier_id: formData.goodMoney.supplier_id,
@@ -326,11 +321,11 @@ function allAddrInner(select) {
 }
 
 function mAreaTrigger(input, d, detail) {
-  console.log(d,309)
+  console.log(d, 309);
   let {
     allAddr: { optionsDetail },
   } = d;
-  
+
   if (formData.allAddr !== undefined) {
     if (formData.goodMoney.isReturnSupplier === 0) {
       formData.mArea = optionsDetail[formData.allAddr].address;
@@ -361,8 +356,8 @@ function mobileTrigger(input, { allAddr: { optionsDetail } }) {
     formData.goodMoney.mobile = optionsDetail[formData.allAddr].mobile;
 }
 
-function mobileOuter(v){
-  return v + '你好'
+function mobileOuter(v) {
+  return v + "你好";
 }
 
 // 审核

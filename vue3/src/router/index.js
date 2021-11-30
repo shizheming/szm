@@ -9,7 +9,7 @@ const routes = [
   {
     path: '/examine',
     name: 'examine',
-    component: () => import('../afterSale/examine.vue')
+    component: () => import('../page/examine.vue')
   },
   // {
   //   path: '/linkage',

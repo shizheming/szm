@@ -71,7 +71,6 @@ let userInfo = ref();
 const emit = defineEmits();
 
 function getPermission(token) {
-  console.log(token,9)
   const headers = {
     Authorization: token,
   };

@@ -50,6 +50,7 @@ export default function (props, emit, attrs, componentType) {
   }
   /* 添加默认值 */
   if (props.initialValue !== undefined) {
+    console.log(111)
     emitType(props.initialValue);
   }
 
