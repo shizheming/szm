@@ -25,6 +25,7 @@ import timeRangePicker from "./components/timeRangePicker.vue";
 import treeSelect from "./components/treeSelect.vue";
 import formItem from "./components/formItem.vue";
 import button from "./components/button.vue";
+import table from "./components/table.vue";
 
 createApp(App)
   .use(Antd)
@@ -50,4 +51,5 @@ createApp(App)
   .component("s-tree-select", treeSelect)
   .component("s-form-item", formItem)
   .component("s-button", button)
+  .component("s-table", table)
   .mount("#app");

@@ -100,7 +100,7 @@
       <s-radio-group
         v-model:value="formData.site_ids"
         :disabled="isEdit"
-        :initialValue="formSection?.detail?.use_scope.site_ids.length ? 1 : 0"
+        :initialValue="formSection?.detail?.use_scope?.site_ids?.length ? 1 : 0"
       >
         <s-radio :value="0">全选</s-radio>
         <s-radio :value="1">指定站点</s-radio>
@@ -113,8 +113,11 @@
         required: true,
         message: '请选择添加站点',
       }"
-    > 
-      <Site/>
+    >
+      <Site
+        v-model:value="formData.site_ids_value"
+        :initialValue="formSection?.detail?.use_scope?.site_list"
+      />
     </s-form-item>
     <s-form-item :wrapper-col="{ offset: 7 }">
       <s-button :loading="loading" @click="next">下一步</s-button>
@@ -125,7 +128,7 @@
 import axios from "../api";
 import { ref, toRefs, reactive, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import Site from './components/site.vue'
+import Site from "./components/site.vue";
 const route = useRoute();
 const formSection = ref();
 const formData = reactive({});

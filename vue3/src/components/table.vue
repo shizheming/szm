@@ -1,24 +1,22 @@
 <template>
-  <Button v-bind="newProps">
+  <Table v-bind="newProps">
     <slot />
-  </Button>
+  </Table>
 </template>
 <script setup>
 import { useAttrs } from "vue";
 import core from "./core2";
-import { Button } from "ant-design-vue";
+import { Table } from "ant-design-vue";
+import { tableProps } from "ant-design-vue/lib/table";
 import props from "./props2";
 import { addTrigger } from "./tool";
-
 const attrs = useAttrs();
 const p = defineProps({
-  ...Button.props,
-  ...addTrigger(Button),
+  ...tableProps(),
+  ...addTrigger({
+    props: tableProps(),
+  }),
   ...props,
-  type: {
-    type: String,
-    default: "primary",
-  },
 });
-let newProps = core(p, attrs, "button");
+let newProps = core(p, attrs, "table");
 </script>

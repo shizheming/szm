@@ -10,7 +10,7 @@ export default function (props, emit, attrs, componentType) {
   let formComponents = inject("formComponents");
   let componentName = inject("componentName");
 
-  /* 把change包一下，我要在里面更新数据 */
+  /* 把change包一下，我要在里面更新数据，同时把formComponents, detailData传出去，打通表单内的所有数据 */
   let newProps = reactive({ ...props });
   newProps.onChange = (e) => {
     let nv = e;
@@ -66,43 +66,11 @@ export default function (props, emit, attrs, componentType) {
         let obj = {};
         if (props.inner.toString().includes("_next")) {
           props.inner(obj, detailData.value).then(() => {
-            forEach(obj, (v, k) => {
-              if (k === "detail") {
-                emitType(v);
-              } else {
-                if (isFunction(v) && v.toString().includes("_next")) {
-                  v().then((d) => {
-                    obj[`${k}Detail`] = d;
-                    Object.assign(innerObj, obj);
-                    newProps[k] = d;
-                  });
-                } else {
-                  obj[`${k}Detail`] = v;
-                  Object.assign(innerObj, obj);
-                  newProps[k] = v;
-                }
-              }
-            });
+            running(obj);
           });
         } else {
           props.inner(obj, detailData.value);
-          forEach(obj, (v, k) => {
-            if (k === "detail") {
-              emitType(v);
-            } else {
-              if (isFunction(v) && v.toString().includes("_next")) {
-                v().then((d) => {
-                  obj[`${k}Detail`] = d;
-                  Object.assign(innerObj, obj);
-                  newProps[k] = d;
-                });
-              } else {
-                obj[`${k}Detail`] = v;
-                Object.assign(innerObj, obj);
-                newProps[k] = v;
-              }
-            }
-          });
+          running(obj);
         }
       }
       watch(
@@ -111,43 +79,11 @@ export default function (props, emit, attrs, componentType) {
           let obj = {};
           if (props.inner.toString().includes("_next")) {
             props.inner(obj, detailData.value).then(() => {
-              forEach(obj, (v, k) => {
-                if (k === "detail") {
-                  emitType(v);
-                } else {
-                  if (isFunction(v) && v.toString().includes("_next")) {
-                    v().then((d) => {
-                      obj[`${k}Detail`] = d;
-                      Object.assign(innerObj, obj);
-                      newProps[k] = d;
-                    });
-                  } else {
-                    obj[`${k}Detail`] = v;
-                    Object.assign(innerObj, obj);
-                    newProps[k] = v;
-                  }
-                }
-              });
+              running(obj);
             });
           } else {
             props.inner(obj, detailData.value);
-            forEach(obj, (v, k) => {
-              if (k === "detail") {
-                emitType(v);
-              } else {
-                if (isFunction(v) && v.toString().includes("_next")) {
-                  v().then((d) => {
-                    obj[`${k}Detail`] = d;
-                    Object.assign(innerObj, obj);
-                    newProps[k] = d;
-                  });
-                } else {
-                  obj[`${k}Detail`] = v;
-                  Object.assign(innerObj, obj);
-                  newProps[k] = v;
-                }
-              }
-            });
+            running(obj);
           }
         }
       );
@@ -315,6 +251,26 @@ export default function (props, emit, attrs, componentType) {
         return props.outer(props.value);
       };
     }
+  }
+
+  function running(obj) {
+    forEach(obj, (v, k) => {
+      if (k === "detail") {
+        emitType(v);
+      } else {
+        if (isFunction(v) && v.toString().includes("_next")) {
+          v().then((d) => {
+            obj[`${k}Detail`] = d;
+            Object.assign(innerObj, obj);
+            newProps[k] = d;
+          });
+        } else {
+          obj[`${k}Detail`] = v;
+          Object.assign(innerObj, obj);
+          newProps[k] = v;
+        }
+      }
+    });
   }
   return newProps;
 }
