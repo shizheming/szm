@@ -106,6 +106,16 @@
         <s-radio :value="1">指定站点</s-radio>
       </s-radio-group>
     </s-form-item>
+    <s-form-item
+      label="添加站点"
+      name="site_ids_value"
+      :rules="{
+        required: true,
+        message: '请选择添加站点',
+      }"
+    > 
+      <Site/>
+    </s-form-item>
     <s-form-item :wrapper-col="{ offset: 7 }">
       <s-button :loading="loading" @click="next">下一步</s-button>
     </s-form-item>
@@ -115,6 +125,7 @@
 import axios from "../api";
 import { ref, toRefs, reactive, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import Site from './components/site.vue'
 const route = useRoute();
 const formSection = ref();
 const formData = reactive({});
@@ -161,8 +172,9 @@ function next() {
 
 /* 
 问题
-showModel
-$global.defaultRangePickerValue
-marketing_id
+isEdit
+2种情况
+1，编辑页，
+2，新建保存后，回到第一步，那这时的第一步页算是编辑了
 */
 </script>

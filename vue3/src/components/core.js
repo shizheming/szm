@@ -50,7 +50,6 @@ export default function (props, emit, attrs, componentType) {
   }
   /* 添加默认值 */
   if (props.initialValue !== undefined) {
-    console.log(111)
     emitType(props.initialValue);
   }
 
@@ -111,7 +110,6 @@ export default function (props, emit, attrs, componentType) {
         (newValue, oldValue) => {
           let obj = {};
           if (props.inner.toString().includes("_next")) {
-            console.log(detailData.value, 111);
             props.inner(obj, detailData.value).then(() => {
               forEach(obj, (v, k) => {
                 if (k === "detail") {
