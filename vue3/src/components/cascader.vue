@@ -16,6 +16,6 @@ const p = defineProps({
   ...addTrigger(Cascader),
   ...props,
 });
-const emit = defineEmits(["update:value", "update:preValue"]);
+const emit = defineEmits(["update:value", "update:preValue", "update:echoValue"]);
 let newProps = core(p, emit, attrs);
 </script>

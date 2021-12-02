@@ -5,6 +5,7 @@
     :wrapper-col="{ span: 8 }"
     :isEdit="isEdit"
     ref="formSection"
+    :api="api"
   >
     <s-form-item
       label="活动名称"
@@ -116,7 +117,6 @@
     >
       <Site
         v-model:value="formData.site_ids_value"
-        :initialValue="formSection?.detail?.use_scope?.site_list"
       />
     </s-form-item>
     <s-form-item :wrapper-col="{ offset: 7 }">
@@ -135,6 +135,12 @@ const formData = reactive({});
 let loading = ref();
 // 是否编辑页
 let isEdit = ref(!!route.query.marketing_id);
+
+async function api () {
+  return {
+    name:11111111111111111
+  }
+}
 
 function nameRule(rule, value) {
   if (!value) {

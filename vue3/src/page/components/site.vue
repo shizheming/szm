@@ -5,33 +5,63 @@
       :inner="selectInner"
       v-model:value="selectValue"
       style="margin-bottom: 10px"
+      @change="emit('update:value', $event)"
     />
-    <s-table
+    <a-table
       rowKey="id"
       :pagination="false"
       :columns="siteIdsValueColumns"
-      :trigger-dataSource="selectValue"
-      :triggeraction-dataSource="dataSourceTrigger"
+      :dataSource="siteIdsValueData"
     >
-      <template slot="name" slot-scope="text, record">
-        <a @click="siteIdsValueGo(record)">{{ record.name }}</a>
+      <template #bodyCell="{ column, record, index }">
+        <template v-if="column.key === 'name'">
+          <a @click="siteIdsValueGo(record)">{{ record.name }}</a>
+        </template>
+        <template v-if="column.key === 'action'">
+          <a class="table-button-red" @click="siteIdsValueDelete(record, index)"
+            >删除</a
+          >
+        </template>
       </template>
-      <template slot="action" slot-scope="text, record, index">
-        <a class="table-button-red" @click="siteIdsValueDelete(record, index)"
-          >删除</a
-        >
-      </template>
-    </s-table>
+    </a-table>
   </div>
 </template>
 
 <script setup>
-import { ref, toRefs, reactive, onMounted } from "vue";
-import { toArray } from "lodash";
+import { ref, toRefs, reactive, onMounted, watch } from "vue";
+import { message, Modal } from "ant-design-vue";
+import { useRoute } from "vue-router";
+import { toArray, once } from "lodash";
 import axios from "../../api";
+const route = useRoute();
+// 是否编辑页
+let isEdit = ref(!!route.query.marketing_id);
+let selectValue = ref();
+let selectOptions;
+let echoSelectValue = [];
+let onceSetSelect = once(function (v) {
+  echoSelectValue = v;
+});
+const props = defineProps(["value"]);
+watch(
+  () => props.value,
+  (newValue, oldValue) => {
+    onceSetSelect(newValue);
+    selectValue.value = newValue;
+  }
+);
+
+watch(
+  () => selectValue.value,
+  (newValue, oldValue) => {
+    let result = selectOptions.filter(({ id }) => {
+      return toArray(selectValue.value).includes(id);
+    });
+    siteIdsValueData.value = result;
+  }
+);
 
 const emit = defineEmits(["update:value"]);
-let selectValue = ref();
 function selectInner(select) {
   select.options = async function () {
     let {
@@ -39,16 +69,19 @@ function selectInner(select) {
     } = await axios.get("/api/sys/site", {
       params: { page: 1, page_size: 1000, status: 1 },
     });
-    return list.map((cur) => {
+    let result = list.map((cur) => {
       return {
         ...cur,
         label: cur.name,
         value: cur.id,
       };
     });
+    selectOptions = result;
+    return result;
   };
 }
 
+let siteIdsValueData = ref();
 const siteIdsValueColumns = [
   {
     title: "站点ID",
@@ -59,23 +92,37 @@ const siteIdsValueColumns = [
     title: "站点名称",
     dataIndex: "name",
     key: "name",
-    scopedSlots: { customRender: "name" },
   },
   {
     title: "操作",
     dataIndex: "action",
     key: "action",
-    scopedSlots: { customRender: "action" },
   },
 ];
-function dataSourceTrigger({ site_ids_value }) {
-  let result = site_ids_value.optionsDetail.filter(({ id }) => {
-    return toArray(selectValue.value).includes(id);
-  });
-  emit("update:value", result);
-  return result;
-}
 
-function siteIdsValueGo() {}
-function siteIdsValueDelete() {}
+function siteIdsValueGo(record) {
+  alert(
+    `我去/center/sys_manage#/site/list/edit?text=edit&id=${record.id}这个页面了`
+  );
+}
+function siteIdsValueDelete(record, index) {
+  if (isEdit && echoSelectValue.includes(record.id)) {
+    message.warning("已创建活动店铺属于该站点，无法删除该站点");
+    return;
+  }
+  let title = "确认要移除该站点吗？";
+
+  if (!isEdit && echoSelectValue.includes(record.id)) {
+    title = `活动适用店铺属于${record.name}站点，如果删除该站点的话，增品相关信息删自动清空，确定删除该站点?`;
+  }
+  Modal.confirm({
+    title,
+    onOk() {
+      siteIdsValueData.value.splice(index, 1);
+      if (!isEdit && echoSelectValue.includes(record.id)) {
+        this.$emit("clear");
+      }
+    },
+  });
+}
 </script>

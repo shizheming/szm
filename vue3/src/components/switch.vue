@@ -14,6 +14,6 @@ const p = defineProps({
   ...addTrigger(Switch),
   ...props,
 });
-const emit = defineEmits(["update:value", "update:checked", "update:preValue"]);
+const emit = defineEmits(["update:value", "update:checked", "update:preValue", "update:echoValue"]);
 let newProps = core(p, emit, attrs, "switch");
 </script>

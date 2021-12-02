@@ -12,7 +12,11 @@ export default {
     default: undefined,
   },
   preValue: {
-    type: [Number, String, Array, Object],
+    type: [Number, String, Array, Object, Boolean],
+    default: undefined,
+  },
+  echoValue: {
+    type: [Number, String, Array, Object, Boolean],
     default: undefined,
   },
   trigger: {

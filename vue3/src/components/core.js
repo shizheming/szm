@@ -1,5 +1,7 @@
 import { onMounted, reactive, watch, inject, onUnmounted } from "vue";
 import { forEach, tail, isArray, isFunction, drop, isString } from "lodash";
+import { setLevelValue, getLevelValue } from "./tool";
+
 export default function (props, emit, attrs, componentType) {
   /* 接受form给的数据 */
   let isEdit = inject("isEdit");
@@ -9,7 +11,6 @@ export default function (props, emit, attrs, componentType) {
   let formData = inject("formData");
   let formComponents = inject("formComponents");
   let componentName = inject("componentName");
-
   /* 把change包一下，我要在里面更新数据，同时把formComponents, detailData传出去，打通表单内的所有数据 */
   let newProps = reactive({ ...props });
   newProps.onChange = (e) => {
@@ -26,7 +27,7 @@ export default function (props, emit, attrs, componentType) {
       emit("update:value", nv);
     }
     if (props.onChange) {
-      props.onChange(e, formComponents, detailData);
+      props.onChange(e, formComponents, detailData.value);
     }
   };
 
@@ -61,8 +62,9 @@ export default function (props, emit, attrs, componentType) {
   }
   /* 进口处理，判断是不是回显*/
   if (isEdit) {
-    if (props.inner) {
-      if (isFinish.value) {
+    // 这里主要是为了，不如有个input一开始是隐藏的，之后被显示，这个时候显示watch早就完成了，所以要自己触发回显
+    if (isFinish.value) {
+      if (props.inner) {
         let obj = {};
         if (props.inner.toString().includes("_next")) {
           props.inner(obj, detailData.value).then(() => {
@@ -73,9 +75,12 @@ export default function (props, emit, attrs, componentType) {
           running(obj);
         }
       }
-      watch(
-        () => isFinish.value,
-        (newValue, oldValue) => {
+      addEcho();
+    }
+    watch(
+      () => isFinish.value,
+      (newValue, oldValue) => {
+        if (props.inner) {
           let obj = {};
           if (props.inner.toString().includes("_next")) {
             props.inner(obj, detailData.value).then(() => {
@@ -86,8 +91,9 @@ export default function (props, emit, attrs, componentType) {
             running(obj);
           }
         }
-      );
-    }
+        addEcho();
+      }
+    );
   } else {
     if (props.inner) {
       onMounted(() => {
@@ -271,6 +277,21 @@ export default function (props, emit, attrs, componentType) {
         }
       }
     });
+  }
+
+  function addEcho() {
+    /* 记录回显的值，这个值记录好就不变的，感觉的就是记录不同时间不同状态的各种值 */
+    if (isArray(componentName.value)) {
+      emit(
+        "update:echoValue",
+        getLevelValue(componentName.value.join("."), detailData.value)
+      );
+    } else {
+      emit(
+        "update:echoValue",
+        getLevelValue(componentName.value, detailData.value)
+      );
+    }
   }
   return newProps;
 }

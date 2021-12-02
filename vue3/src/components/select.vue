@@ -22,7 +22,7 @@ const p = defineProps({
   ...addTrigger(Select),
   ...props,
 });
-const emit = defineEmits(["update:value", "update:preValue"]);
+const emit = defineEmits(["update:value", "update:preValue", "update:echoValue"]);
 let newProps = core(p, emit, attrs);
 function filterOption(input, option) {
   return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;

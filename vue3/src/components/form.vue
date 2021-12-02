@@ -63,6 +63,8 @@ if (p.isEdit && p.api) {
   p.api().then((data) => {
     detailData.value = data;
     isFinish.value = true;
+    // 回显数据
+    Object.assign(p.model,data)
   });
 }
 </script>

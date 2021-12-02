@@ -16,6 +16,6 @@ const p = defineProps({
   ...addTrigger(Checkbox),
   ...props,
 });
-const emit = defineEmits(["update:value", "update:checked", "update:preValue"]);
+const emit = defineEmits(["update:value", "update:checked", "update:preValue", "update:echoValue"]);
 let newProps = core(p, emit, attrs, "checkbox");
 </script>

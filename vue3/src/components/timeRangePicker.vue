@@ -18,7 +18,7 @@ const p = defineProps({
   ...addTrigger(TimeRangePicker),
   ...props,
 });
-const emit = defineEmits(["update:value", "update:preValue"]);
+const emit = defineEmits(["update:value", "update:preValue", "update:echoValue"]);
 
 let newProps = core(p, emit, attrs);
 /* outer函数 */

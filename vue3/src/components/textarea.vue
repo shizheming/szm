@@ -17,7 +17,7 @@ const p = defineProps({
   ...addTrigger(Textarea),
   ...props,
 });
-const emit = defineEmits(["update:value", "update:preValue"]);
+const emit = defineEmits(["update:value", "update:preValue", "update:echoValue"]);
 let newProps = core(p, emit, attrs, "input");
 
 </script>
