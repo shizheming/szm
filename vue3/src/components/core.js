@@ -101,7 +101,7 @@ export default function (props, emit, attrs, componentType) {
         if (props.inner.toString().includes("_next")) {
           props.inner(obj).then(() => {
             forEach(obj, (v, k) => {
-              if (isFunction(v) && v.toString().includes("_next")) {
+              if (isFunction(v)) {
                 v().then((d) => {
                   obj[`${k}Detail`] = d;
                   Object.assign(innerObj, obj);
@@ -117,7 +117,7 @@ export default function (props, emit, attrs, componentType) {
         } else {
           props.inner(obj);
           forEach(obj, (v, k) => {
-            if (isFunction(v) && v.toString().includes("_next")) {
+            if (isFunction(v)) {
               v().then((d) => {
                 obj[`${k}Detail`] = d;
                 Object.assign(innerObj, obj);
@@ -169,7 +169,7 @@ export default function (props, emit, attrs, componentType) {
           detailData.value
         );
         forEach(obj, (v, k) => {
-          if (isFunction(v) && v.toString().includes("_next")) {
+          if (isFunction(v)) {
             v().then((d) => {
               obj[`${k}Detail`] = d;
               Object.assign(innerObj, obj);
@@ -232,18 +232,43 @@ export default function (props, emit, attrs, componentType) {
 
   /* 联动关系清除值或属性 */
   if (props.triggerclear) {
-    watch(
-      () => props.triggerclear[0],
-      (newValue, oldValue) => {
-        drop(props.triggerclear).forEach((value, key) => {
-          if (value === "value" && newValue === undefined) {
-            emitType(undefined);
-          } else {
-            newProps[value] = undefined;
+    if (isArray(props.triggerclear[0])) {
+      props.triggerclear[0].forEach((current, index) => {
+        watch(
+          () => props.triggerclear[0][index],
+          (newValue, oldValue) => {
+            drop(props.triggerclear).forEach((value, key) => {
+              // 等于undefined清，也就是说，上面的值没有了，我也没有了
+              if (value === "value" && newValue === undefined) {
+                emitType(undefined);
+              } else if (value === "values") {
+                // 这里说明上面的值只要变了，我就清自己
+                emitType(undefined);
+              } else {
+                newProps[value] = undefined;
+              }
+            });
           }
-        });
-      }
-    );
+        );
+      });
+    } else {
+      watch(
+        () => props.triggerclear[0],
+        (newValue, oldValue) => {
+          drop(props.triggerclear).forEach((value, key) => {
+            // 等于undefined清，也就是说，上面的值没有了，我也没有了
+            if (value === "value" && newValue === undefined) {
+              emitType(undefined);
+            } else if (value === "values") {
+              // 这里说明上面的值只要变了，我就清自己
+              emitType(undefined);
+            } else {
+              newProps[value] = undefined;
+            }
+          });
+        }
+      );
+    }
   }
 
   /* outer函数 */
@@ -264,7 +289,7 @@ export default function (props, emit, attrs, componentType) {
       if (k === "detail") {
         emitType(v);
       } else {
-        if (isFunction(v) && v.toString().includes("_next")) {
+        if (isFunction(v)) {
           v().then((d) => {
             obj[`${k}Detail`] = d;
             Object.assign(innerObj, obj);

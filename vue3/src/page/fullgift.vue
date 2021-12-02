@@ -108,6 +108,7 @@
       </s-radio-group>
     </s-form-item>
     <s-form-item
+      v-if="formData.site_ids"
       label="添加站点"
       name="site_ids_value"
       :rules="{
@@ -117,6 +118,26 @@
     >
       <Site
         v-model:value="formData.site_ids_value"
+        v-model:selectValue="formData.siteIdsSelectValue"
+        v-model:tableValue="formData.siteIdsTableValue"
+        :initialValue="formSection?.detail?.use_scope?.site_list"
+      />
+    </s-form-item>
+    <s-form-item
+      label="适用店铺"
+      name="shop_id"
+      :rules="{
+        required: true,
+        message: '请选择适用店铺',
+      }"
+    >
+      <s-select
+        v-model:value="formData.shop_id"
+        :inner="shopIdInner"
+        :disabled="isEdit"
+        :triggerclear="[[formData.site_ids_value, formData.site_ids], 'values']"
+        :trigger-options="formData.site_ids"
+        :triggeraction-options="siteIdsTriggeractionOptions"
       />
     </s-form-item>
     <s-form-item :wrapper-col="{ offset: 7 }">
@@ -126,7 +147,7 @@
 </template>
 <script setup>
 import axios from "../api";
-import { ref, toRefs, reactive, onMounted } from "vue";
+import { ref, toRefs, reactive, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import Site from "./components/site.vue";
 const route = useRoute();
@@ -135,11 +156,10 @@ const formData = reactive({});
 let loading = ref();
 // 是否编辑页
 let isEdit = ref(!!route.query.marketing_id);
-
-async function api () {
+async function api() {
   return {
-    name:11111111111111111
-  }
+    name: 11111111111111111,
+  };
 }
 
 function nameRule(rule, value) {
@@ -166,6 +186,33 @@ function priorityRule(rule, value) {
   }
 }
 
+const shopIdOptions = async function (params = {}) {
+  let {
+    data: { list },
+  } = await axios.get("/api/shop?page=1&page_size=999", {
+    params,
+  });
+  return list.map((cur) => {
+    return {
+      ...cur,
+      label: cur.shop_name,
+      value: cur.id,
+    };
+  });
+};
+
+function shopIdInner(select) {
+  select.options = shopIdOptions;
+}
+
+function siteIdsTriggeractionOptions(formComponent, detail) {
+  // 问题来了，我监听多个，触发的时候如何知道哪个触发的
+  if (formData.site_ids === 0) {
+    return shopIdOptions();
+  } else if (formData.site_ids === 1) {
+    return;
+  }
+}
 // 下一步
 function next() {
   formSection.value

@@ -3,15 +3,15 @@
     <s-select
       mode="multiple"
       :inner="selectInner"
-      v-model:value="selectValue"
+      :value="props.selectValue"
       style="margin-bottom: 10px"
-      @change="emit('update:value', $event)"
+      @change="selectChange"
     />
     <a-table
       rowKey="id"
       :pagination="false"
       :columns="siteIdsValueColumns"
-      :dataSource="siteIdsValueData"
+      :dataSource="props.tableValue"
     >
       <template #bodyCell="{ column, record, index }">
         <template v-if="column.key === 'name'">
@@ -36,32 +36,48 @@ import axios from "../../api";
 const route = useRoute();
 // 是否编辑页
 let isEdit = ref(!!route.query.marketing_id);
-let selectValue = ref();
 let selectOptions;
 let echoSelectValue = [];
-let onceSetSelect = once(function (v) {
-  echoSelectValue = v;
-});
-const props = defineProps(["value"]);
+const props = defineProps([
+  "value",
+  "selectValue",
+  "tableValue",
+  "initialValue",
+]);
+const emit = defineEmits([
+  "update:value",
+  "update:selectValue",
+  "update:tableValue",
+]);
 watch(
   () => props.value,
   (newValue, oldValue) => {
-    onceSetSelect(newValue);
-    selectValue.value = newValue;
+    emit("update:selectValue", newValue);
   }
 );
 
 watch(
-  () => selectValue.value,
+  () => props.initialValue,
   (newValue, oldValue) => {
-    let result = selectOptions.filter(({ id }) => {
-      return toArray(selectValue.value).includes(id);
-    });
-    siteIdsValueData.value = result;
+    echoSelectValue = newValue;
   }
 );
 
-const emit = defineEmits(["update:value"]);
+watch(
+  () => props.selectValue,
+  (newValue, oldValue) => {
+    let result = selectOptions.filter(({ id }) => {
+      return toArray(props.selectValue).includes(id);
+    });
+    emit("update:tableValue", result);
+  }
+);
+
+function selectChange(v) {
+  emit("update:value", v);
+  emit("update:selectValue", v);
+}
+
 function selectInner(select) {
   select.options = async function () {
     let {
@@ -81,7 +97,6 @@ function selectInner(select) {
   };
 }
 
-let siteIdsValueData = ref();
 const siteIdsValueColumns = [
   {
     title: "站点ID",
@@ -118,9 +133,9 @@ function siteIdsValueDelete(record, index) {
   Modal.confirm({
     title,
     onOk() {
-      siteIdsValueData.value.splice(index, 1);
+      props.tableValue.splice(index, 1);
       if (!isEdit && echoSelectValue.includes(record.id)) {
-        this.$emit("clear");
+        // emit("clear");
       }
     },
   });
