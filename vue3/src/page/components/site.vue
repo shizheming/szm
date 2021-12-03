@@ -31,8 +31,9 @@
 import { ref, toRefs, reactive, onMounted, watch } from "vue";
 import { message, Modal } from "ant-design-vue";
 import { useRoute } from "vue-router";
-import { toArray, once } from "lodash";
+import { toArray, once, cloneDeep } from "lodash";
 import axios from "../../api";
+import attachment from "../../../../my_system/src/script/attachment";
 const route = useRoute();
 // 是否编辑页
 let isEdit = ref(!!route.query.marketing_id);
@@ -66,9 +67,17 @@ watch(
 watch(
   () => props.selectValue,
   (newValue, oldValue) => {
-    let result = selectOptions.filter(({ id }) => {
+    selectOptions.value
+      .filter((cur) => {
+        return Object.values(newValue).includes(cur.value);
+      })
+      .forEach((cur) => {
+        cur.disabled = true;
+      });
+    let result = selectOptions.value.filter(({ id }) => {
       return toArray(props.selectValue).includes(id);
     });
+
     emit("update:tableValue", result);
   }
 );
@@ -92,8 +101,8 @@ function selectInner(select) {
         value: cur.id,
       };
     });
-    selectOptions = result;
-    return result;
+    selectOptions = ref(result);
+    return selectOptions.value;
   };
 }
 
@@ -133,10 +142,21 @@ function siteIdsValueDelete(record, index) {
   Modal.confirm({
     title,
     onOk() {
-      props.tableValue.splice(index, 1);
-      if (!isEdit && echoSelectValue.includes(record.id)) {
-        // emit("clear");
-      }
+      let [detValue] = props.tableValue.splice(index, 1);
+      let values = props.tableValue.map((cur) => cur.value);
+      let a = selectOptions.value
+        .filter((cur) => {
+          return detValue.value === cur.value;
+        })
+        .forEach((cur) => {
+          cur.disabled = false;
+        });
+      emit("update:selectValue", values);
+      emit("update:value", values);
+      // 这个情况感觉永远都不会成立
+      /* if (!isEdit && echoSelectValue.includes(record.id)) {
+        emit("clear");
+      } */
     },
   });
 }
