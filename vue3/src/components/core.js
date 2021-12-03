@@ -158,86 +158,162 @@ export default function (props, emit, attrs, componentType) {
   }
 
   /* 触发机制，默认的不具名的触发 */
-  if (props.triggeraction) {
-    watch(
-      () => props.trigger,
-      (newValue, oldValue) => {
-        let obj = {};
-        props.triggeraction(
-          obj,
-          /* 全部是实体 */ formComponents,
-          detailData.value
-        );
-        forEach(obj, (v, k) => {
-          if (isFunction(v)) {
-            v().then((d) => {
-              obj[`${k}Detail`] = d;
-              Object.assign(innerObj, obj);
-              newProps[k] = d;
+  if (isArray(props.trigger)) {
+    if (isArray(props.trigger[0])) {
+      // 监听多个
+      props.trigger.forEach((current, index) => {
+        watch(
+          () => props.trigger[index][0],
+          (newValue, oldValue) => {
+            let obj = {};
+            props.trigger[index][1](
+              obj,
+              /* 全部是实体 */ formComponents,
+              detailData.value
+            );
+            forEach(obj, (v, k) => {
+              if (isFunction(v)) {
+                v().then((d) => {
+                  obj[`${k}Detail`] = d;
+                  Object.assign(innerObj, obj);
+                  newProps[k] = d;
+                });
+              } else {
+                newProps[k] = v;
+              }
             });
-          } else {
-            newProps[k] = v;
           }
-        });
-      }
-    );
+        );
+      });
+    } else {
+      // 监听单个
+      watch(
+        () => props.trigger[0],
+        (newValue, oldValue) => {
+          let obj = {};
+          props.trigger[1](
+            obj,
+            /* 全部是实体 */ formComponents,
+            detailData.value
+          );
+          forEach(obj, (v, k) => {
+            if (isFunction(v)) {
+              v().then((d) => {
+                obj[`${k}Detail`] = d;
+                Object.assign(innerObj, obj);
+                newProps[k] = d;
+              });
+            } else {
+              newProps[k] = v;
+            }
+          });
+        }
+      );
+    }
   }
 
   /* 具名的触发机制 */
   forEach(attrs, (value, key) => {
-    if (/^triggeraction-/.test(key)) {
+    if (/^trigger-/.test(key)) {
       let [name] = tail(key.split("-"));
-      let n = name[0].toUpperCase() + name.slice(1);
-      watch(
-        () => props[`trigger${n}`],
-        (newValue, oldValue) => {
-          if (attrs[`triggeraction-${name}`] === "inner") {
-            if (
-              isFunction(innerObj[name]) &&
-              innerObj[name].toString().includes("_next")
-            ) {
-              innerObj[name]().then((d) => {
-                innerObj[`${name}Detail`] = d;
-                newProps[name] = d;
-              });
-            } else if (
-              Object.prototype.toString.call(innerObj[name]) ===
-              "[object Promise]"
-            ) {
-              innerObj[name].then((d) => {
-                innerObj[`${name}Detail`] = d;
-                newProps[name] = d;
-              });
-            } else {
-              newProps[name] = innerObj[name];
+      if (isArray(value[0])) {
+        // 监听多个
+        value.forEach((current, index) => {
+          watch(
+            () => attrs[key][index][0],
+            (newValue, oldValue) => {
+              if (attrs[key][index][1] === "inner") {
+                if (
+                  isFunction(innerObj[name]) &&
+                  innerObj[name].toString().includes("_next")
+                ) {
+                  innerObj[name]().then((d) => {
+                    innerObj[`${name}Detail`] = d;
+                    newProps[name] = d;
+                  });
+                } else if (
+                  Object.prototype.toString.call(innerObj[name]) ===
+                  "[object Promise]"
+                ) {
+                  innerObj[name].then((d) => {
+                    innerObj[`${name}Detail`] = d;
+                    newProps[name] = d;
+                  });
+                } else {
+                  newProps[name] = innerObj[name];
+                }
+              } else {
+                let result = attrs[key][index][1](
+                  formComponents,
+                  detailData.value
+                );
+                if (
+                  Object.prototype.toString.call(result) === "[object Promise]"
+                ) {
+                  result.then((d) => {
+                    innerObj[`${name}Detail`] = d;
+                    newProps[name] = d;
+                  });
+                } else {
+                  newProps[name] = result;
+                }
+              }
             }
-          } else {
-            let result = attrs[`triggeraction-${name}`](
-              formComponents,
-              detailData.value
-            );
-            if (Object.prototype.toString.call(result) === "[object Promise]") {
-              result.then((d) => {
-                innerObj[`${name}Detail`] = d;
-                newProps[name] = d;
-              });
+          );
+        });
+      } else {
+        // 监听单个
+        watch(
+          () => attrs[key][0],
+          (newValue, oldValue) => {
+            if (attrs[key][1] === "inner") {
+              if (
+                isFunction(innerObj[name]) &&
+                innerObj[name].toString().includes("_next")
+              ) {
+                innerObj[name]().then((d) => {
+                  innerObj[`${name}Detail`] = d;
+                  newProps[name] = d;
+                });
+              } else if (
+                Object.prototype.toString.call(innerObj[name]) ===
+                "[object Promise]"
+              ) {
+                innerObj[name].then((d) => {
+                  innerObj[`${name}Detail`] = d;
+                  newProps[name] = d;
+                });
+              } else {
+                newProps[name] = innerObj[name];
+              }
             } else {
-              newProps[name] = result;
+              let result = attrs[key][1](formComponents, detailData.value);
+              if (
+                Object.prototype.toString.call(result) === "[object Promise]"
+              ) {
+                result.then((d) => {
+                  innerObj[`${name}Detail`] = d;
+                  newProps[name] = d;
+                });
+              } else {
+                newProps[name] = result;
+              }
             }
           }
-        }
-      );
+        );
+      }
     }
   });
 
   /* 联动关系清除值或属性 */
   if (props.triggerclear) {
+    // 判断是不是二维数组，知道是不是要监听多个值
     if (isArray(props.triggerclear[0])) {
-      props.triggerclear[0].forEach((current, index) => {
+      props.triggerclear.forEach((current, index) => {
         watch(
-          () => props.triggerclear[0][index],
+          () => props.triggerclear[index][0],
           (newValue, oldValue) => {
-            drop(props.triggerclear).forEach((value, key) => {
+            drop(current).forEach((value, key) => {
               // 等于undefined清，也就是说，上面的值没有了，我也没有了
               if (value === "value" && newValue === undefined) {
                 emitType(undefined);

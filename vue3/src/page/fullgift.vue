@@ -135,9 +135,14 @@
         v-model:value="formData.shop_id"
         :inner="shopIdInner"
         :disabled="isEdit"
-        :triggerclear="[[formData.site_ids_value, formData.site_ids], 'values']"
-        :trigger-options="formData.site_ids"
-        :triggeraction-options="siteIdsTriggeractionOptions"
+        :triggerclear="[
+          [formData.site_ids_value, 'values'],
+          [formData.site_ids, 'values'],
+        ]"
+        :trigger-options="[
+          [formData.site_ids, siteIdsTriggerOptions],
+          [formData.site_ids_value, siteIdsValueTriggerOptions],
+        ]"
       />
     </s-form-item>
     <s-form-item :wrapper-col="{ offset: 7 }">
@@ -205,14 +210,20 @@ function shopIdInner(select) {
   select.options = shopIdOptions;
 }
 
-function siteIdsTriggeractionOptions(formComponent, detail) {
-  // 问题来了，我监听多个，触发的时候如何知道哪个触发的
+function siteIdsTriggerOptions(formComponent, detail) {
   if (formData.site_ids === 0) {
     return shopIdOptions();
   } else if (formData.site_ids === 1) {
     return;
   }
 }
+
+function siteIdsValueTriggerOptions(formComponent, detail) {
+  return shopIdOptions({
+    site_ids: Object.values(formData.site_ids_value),
+  });
+}
+
 // 下一步
 function next() {
   formSection.value
