@@ -37,7 +37,7 @@ import attachment from "../../../../my_system/src/script/attachment";
 const route = useRoute();
 // 是否编辑页
 let isEdit = ref(!!route.query.marketing_id);
-let selectOptions;
+let selectOptions = ref();
 let echoSelectValue = [];
 const props = defineProps([
   "value",
@@ -50,31 +50,49 @@ const emit = defineEmits([
   "update:selectValue",
   "update:tableValue",
 ]);
-watch(
-  () => props.initialValue,
-  (newValue, oldValue) => {
-    echoSelectValue = newValue
-      .filter((item) => {
-        return !!item.is_shop_site;
-      })
-      .map((item) => {
-        return item.id;
-      });
-    emit("update:selectValue", newValue);
-  }
-);
 
+if (props.initialValue) {
+  let v = props.initialValue.map((item) => {
+    return item.id;
+  });
+  echoSelectValue = props.initialValue
+    .filter((item) => {
+      return !!item.is_shop_site;
+    })
+    .map((item) => {
+      return item.id;
+    });
+
+  emit("update:selectValue", v);
+  watch(
+    () => selectOptions.value,
+    (newValue, oldValue) => {
+      newValue
+        .filter((cur) => {
+          return Object.values(props.selectValue).includes(cur.value);
+        })
+        .forEach((cur) => {
+          cur.disabled = true;
+        });
+      let result = newValue.filter(({ id }) => {
+        return toArray(props.selectValue).includes(id);
+      });
+
+      emit("update:tableValue", result);
+    }
+  );
+}
 watch(
   () => props.selectValue,
   (newValue, oldValue) => {
     selectOptions.value
-      .filter((cur) => {
+      ?.filter((cur) => {
         return Object.values(newValue).includes(cur.value);
       })
       .forEach((cur) => {
         cur.disabled = true;
       });
-    let result = selectOptions.value.filter(({ id }) => {
+    let result = selectOptions.value?.filter(({ id }) => {
       return toArray(props.selectValue).includes(id);
     });
 
@@ -101,7 +119,7 @@ function selectInner(select) {
         value: cur.id,
       };
     });
-    selectOptions = ref(result);
+    selectOptions.value = result;
     return selectOptions.value;
   };
 }

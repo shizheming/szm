@@ -31,7 +31,6 @@
       }"
     >
       <s-range-picker showTime v-model:value="formData.times" />
-      <a-range-picker v-model:value="xxxx" />
       <div style="color: #ccc">活动到期后将自动失效，失效后不可延长</div>
     </s-form-item>
     <s-form-item
@@ -97,11 +96,7 @@
         message: '请选择所属站点',
       }"
     >
-      <s-radio-group
-        v-model:value="formData.site_ids"
-        :disabled="isEdit"
-        :initialValue="detail?.use_scope?.site_ids?.length ? 1 : 0"
-      >
+      <s-radio-group v-model:value="formData.site_ids" :disabled="isEdit">
         <s-radio :value="0">全选</s-radio>
         <s-radio :value="1">指定站点</s-radio>
       </s-radio-group>
@@ -119,7 +114,7 @@
         v-model:value="formData.site_ids_value"
         v-model:selectValue="formData.siteIdsSelectValue"
         v-model:tableValue="formData.siteIdsTableValue"
-        :initialValue="detail?.use_scope?.site_list"
+        :initialValue="siteIdsValueInnerValue"
       />
     </s-form-item>
     <s-form-item
@@ -158,29 +153,39 @@
 import axios from "../api";
 import { ref, toRefs, reactive, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
+import locale from "ant-design-vue/es/date-picker/locale/zh_CN";
 import moment from "moment";
 import Site from "./components/site.vue";
 const route = useRoute();
 const formSection = ref();
 const formData = reactive({});
 let loading = ref();
+let siteIdsValueInnerValue = ref();
 // 是否编辑页
 let marketing_id = route.query.marketing_id;
 let isEdit = ref(!!route.query.marketing_id);
 let detail = ref();
-let xxxx = ref()
-axios
-  .get(`/api/marketing/fullGift/${marketing_id}`, {
-    id: marketing_id,
-    action: "first",
-  })
-  .then(({data}) => {
-    const { basic } = data;
-    detail.value = data;
-    formData.name = basic.name;
-    // formData.times = [moment(basic.start_time), moment(basic.end_time)];
-    xxxx.value = [moment('2021-09-05'), moment('2021-09-07')]
-  });
+if (isEdit.value) {
+  axios
+    .get(`/api/marketing/fullGift/${marketing_id}`, {
+      id: marketing_id,
+      action: "first",
+    })
+    .then(({ data }) => {
+      const { basic, use_scope } = data;
+      detail.value = data;
+      formData.name = basic.name;
+      formData.times = [moment(basic.start_time), moment(basic.end_time)];
+      formData.priority = basic.priority;
+      formData.remark = basic.remark;
+      formData.business_id = use_scope.business_id;
+      formData.app_platform = use_scope.app_platform.split(",");
+      formData.site_ids = use_scope.site_ids ? 1 : 0;
+      formData.site_ids_value = use_scope.site_list;
+      siteIdsValueInnerValue.value = use_scope.site_list;
+      console.log(siteIdsValueInnerValue.value, 111);
+    });
+}
 
 function nameRule(rule, value) {
   if (!value) {
@@ -252,9 +257,6 @@ function next() {
 
 /* 
 问题
-isEdit
-2种情况
-1，编辑页，
-2，新建保存后，回到第一步，那这时的第一步页算是编辑了
+时间组件的语言问题，不知道是不是版本的问题
 */
 </script>
