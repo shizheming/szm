@@ -47,6 +47,7 @@ const props = defineProps([
   "initialValue",
   "trigger",
 ]);
+
 const emit = defineEmits([
   "update:value",
   "update:selectValue",

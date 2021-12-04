@@ -114,7 +114,6 @@
         v-model:value="formData.site_ids_value"
         v-model:selectValue="formData.siteIdsSelectValue"
         v-model:tableValue="formData.siteIdsTableValue"
-        v-model:status-site="formData.xxx"
         :initialValue="siteIdsValueInnerValue"
         :trigger="formData.shop_id"
       />
