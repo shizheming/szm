@@ -8,17 +8,15 @@ import { useAttrs } from "vue";
 import core from "./core";
 import { DatePicker } from "ant-design-vue";
 import props from "./props";
-import { addTrigger } from "./tool";
 import { inject } from "vue";
 
 let outer = inject("outer");
 const attrs = useAttrs();
 const p = defineProps({
   ...DatePicker.props,
-  ...addTrigger(DatePicker),
   ...props,
 });
-const emit = defineEmits(["update:value", "update:preValue", "update:echoValue"]);
+const emit = defineEmits(["update:value", "update:preValue"]);
 
 let newProps = core(p, emit, attrs);
 /* outer函数 */

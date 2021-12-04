@@ -2,15 +2,14 @@ import { onMounted, reactive, watch, inject, onUnmounted } from "vue";
 import { forEach, tail, isArray, isFunction, drop, isString } from "lodash";
 export default function (props, attrs, componentType) {
   /* 接受form给的数据 */
-  let detailData = inject("detailData");
   let formComponents = inject("formComponents");
 
-  /* 把change包一下，我要在里面更新数据，同时把formComponents, detailData传出去，打通表单内的所有数据 */
+  /* 把change包一下，我要在里面更新数据，同时把formComponents传出去，打通表单内的所有数据 */
   let newProps = reactive({ ...props });
   if (componentType === "button") {
     newProps.onClick = (e) => {
       if (props.onClick) {
-        props.onClick(e, formComponents, detailData.value);
+        props.onClick(e, formComponents);
       }
     };
   }
@@ -91,7 +90,6 @@ export default function (props, attrs, componentType) {
           } else {
             let result = attrs[`triggeraction-${name}`](
               formComponents,
-              detailData.value
             );
             if (Object.prototype.toString.call(result) === "[object Promise]") {
               result.then((d) => {

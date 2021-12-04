@@ -51,16 +51,16 @@ const emit = defineEmits([
   "update:tableValue",
 ]);
 watch(
-  () => props.value,
-  (newValue, oldValue) => {
-    emit("update:selectValue", newValue);
-  }
-);
-
-watch(
   () => props.initialValue,
   (newValue, oldValue) => {
-    echoSelectValue = newValue;
+    echoSelectValue = newValue
+      .filter((item) => {
+        return !!item.is_shop_site;
+      })
+      .map((item) => {
+        return item.id;
+      });
+    emit("update:selectValue", newValue);
   }
 );
 

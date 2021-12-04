@@ -10,13 +10,9 @@ import core from "./core2";
 import { Table, TableColumn } from "ant-design-vue";
 import { tableProps } from "ant-design-vue/lib/table";
 import props from "./props2";
-import { addTrigger } from "./tool";
 const attrs = useAttrs();
 const p = defineProps({
   ...tableProps(),
-  ...addTrigger({
-    props: tableProps(),
-  }),
   ...props,
 });
 let newProps = core(p, attrs, "table");

@@ -15,10 +15,6 @@ export default {
     type: [Number, String, Array, Object, Boolean],
     default: undefined,
   },
-  echoValue: {
-    type: [Number, String, Array, Object, Boolean],
-    default: undefined,
-  },
   trigger: {
     type: [Number, String, Array, Object],
     default: undefined,

@@ -3,9 +3,7 @@
     :model="formData"
     :label-col="{ span: 8 }"
     :wrapper-col="{ span: 8 }"
-    :isEdit="isEdit"
     ref="formSection"
-    :api="api"
   >
     <s-form-item
       label="活动名称"
@@ -32,7 +30,8 @@
         message: '请选择活动时间',
       }"
     >
-      <s-range-picker :showTime="true" v-model:value="formData.times" />
+      <s-range-picker showTime v-model:value="formData.times" />
+      <a-range-picker v-model:value="xxxx" />
       <div style="color: #ccc">活动到期后将自动失效，失效后不可延长</div>
     </s-form-item>
     <s-form-item
@@ -101,7 +100,7 @@
       <s-radio-group
         v-model:value="formData.site_ids"
         :disabled="isEdit"
-        :initialValue="formSection?.detail?.use_scope?.site_ids?.length ? 1 : 0"
+        :initialValue="detail?.use_scope?.site_ids?.length ? 1 : 0"
       >
         <s-radio :value="0">全选</s-radio>
         <s-radio :value="1">指定站点</s-radio>
@@ -120,7 +119,7 @@
         v-model:value="formData.site_ids_value"
         v-model:selectValue="formData.siteIdsSelectValue"
         v-model:tableValue="formData.siteIdsTableValue"
-        :initialValue="formSection?.detail?.use_scope?.site_list"
+        :initialValue="detail?.use_scope?.site_list"
       />
     </s-form-item>
     <s-form-item
@@ -136,7 +135,12 @@
         :inner="shopIdInner"
         :disabled="isEdit"
         :triggerclear="[
-          [formData.site_ids_value, 'values'],
+          [
+            formData.site_ids_value,
+            function values() {
+              return !isEdit;
+            },
+          ],
           [formData.site_ids, 'values'],
         ]"
         :trigger-options="[
@@ -154,18 +158,29 @@
 import axios from "../api";
 import { ref, toRefs, reactive, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
+import moment from "moment";
 import Site from "./components/site.vue";
 const route = useRoute();
 const formSection = ref();
 const formData = reactive({});
 let loading = ref();
 // 是否编辑页
+let marketing_id = route.query.marketing_id;
 let isEdit = ref(!!route.query.marketing_id);
-async function api() {
-  return {
-    name: 11111111111111111,
-  };
-}
+let detail = ref();
+let xxxx = ref()
+axios
+  .get(`/api/marketing/fullGift/${marketing_id}`, {
+    id: marketing_id,
+    action: "first",
+  })
+  .then(({data}) => {
+    const { basic } = data;
+    detail.value = data;
+    formData.name = basic.name;
+    // formData.times = [moment(basic.start_time), moment(basic.end_time)];
+    xxxx.value = [moment('2021-09-05'), moment('2021-09-07')]
+  });
 
 function nameRule(rule, value) {
   if (!value) {
@@ -210,15 +225,13 @@ function shopIdInner(select) {
   select.options = shopIdOptions;
 }
 
-function siteIdsTriggerOptions(formComponent, detail) {
+function siteIdsTriggerOptions(formComponent) {
   if (formData.site_ids === 0) {
     return shopIdOptions();
-  } else if (formData.site_ids === 1) {
-    return;
   }
 }
 
-function siteIdsValueTriggerOptions(formComponent, detail) {
+function siteIdsValueTriggerOptions(formComponent) {
   return shopIdOptions({
     site_ids: Object.values(formData.site_ids_value),
   });

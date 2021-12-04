@@ -8,12 +8,10 @@ import { useAttrs } from "vue";
 import core from "./core2";
 import { Button } from "ant-design-vue";
 import props from "./props2";
-import { addTrigger } from "./tool";
 
 const attrs = useAttrs();
 const p = defineProps({
   ...Button.props,
-  ...addTrigger(Button),
   ...props,
   type: {
     type: String,
