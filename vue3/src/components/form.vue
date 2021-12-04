@@ -27,6 +27,7 @@ let outerModel = reactive({});
 const formRender = ref();
 defineExpose({
   outerModel,
+  attrsValue: formComponents,
   validate() {
     // 处理outer所有的函数
     forEach(p.model, (value, key) => {

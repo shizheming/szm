@@ -114,7 +114,9 @@
         v-model:value="formData.site_ids_value"
         v-model:selectValue="formData.siteIdsSelectValue"
         v-model:tableValue="formData.siteIdsTableValue"
+        v-model:status-site="formData.xxx"
         :initialValue="siteIdsValueInnerValue"
+        :trigger="formData.shop_id"
       />
     </s-form-item>
     <s-form-item
@@ -126,18 +128,16 @@
       }"
     >
       <s-select
+        ref="shop_id"
         v-model:value="formData.shop_id"
-        :inner="shopIdInner"
         :disabled="isEdit"
+        :inner="shopIdInner"
+        :switch-triggerclear="!isEdit"
         :triggerclear="[
-          [
-            formData.site_ids_value,
-            function values() {
-              return !isEdit;
-            },
-          ],
-          [formData.site_ids, 'values'],
+          [formData.site_ids_value, 'values'],
+          [formData.site_ids, formData.site_ids_value, 'values'],
         ]"
+        :switch-trigger-options="!isEdit"
         :trigger-options="[
           [formData.site_ids, siteIdsTriggerOptions],
           [formData.site_ids_value, siteIdsValueTriggerOptions],
@@ -151,20 +151,21 @@
 </template>
 <script setup>
 import axios from "../api";
-import { ref, toRefs, reactive, onMounted, watch } from "vue";
+import { ref, toRefs, reactive, onMounted, watch, provide } from "vue";
 import { useRoute } from "vue-router";
-import locale from "ant-design-vue/es/date-picker/locale/zh_CN";
 import moment from "moment";
 import Site from "./components/site.vue";
 const route = useRoute();
 const formSection = ref();
 const formData = reactive({});
+const formAttrs = provide("formAttrs", formSection);
 let loading = ref();
 let siteIdsValueInnerValue = ref();
 // 是否编辑页
 let marketing_id = route.query.marketing_id;
 let isEdit = ref(!!route.query.marketing_id);
 let detail = ref();
+
 if (isEdit.value) {
   axios
     .get(`/api/marketing/fullGift/${marketing_id}`, {
@@ -183,7 +184,9 @@ if (isEdit.value) {
       formData.site_ids = use_scope.site_ids ? 1 : 0;
       formData.site_ids_value = use_scope.site_list;
       siteIdsValueInnerValue.value = use_scope.site_list;
-      console.log(siteIdsValueInnerValue.value, 111);
+      formData.shop_id = use_scope.shop_id;
+      console.log(formData, use_scope.shop_id, 111);
+      console.log(formSection.value, 120);
     });
 }
 
@@ -257,6 +260,12 @@ function next() {
 
 /* 
 问题
+有2个bug，
+
+切换后叉叉又有了
+切换后shopid被清掉了
+
+marketing_id还没有和融进isEdit里面去
 时间组件的语言问题，不知道是不是版本的问题
 */
 </script>

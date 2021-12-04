@@ -4,21 +4,19 @@
   </TimeRangePicker>
 </template>
 <script setup>
-import { useAttrs } from "vue";
 import core from "./core";
 import { TimeRangePicker } from "ant-design-vue";
 import props from "./props";
 import { inject } from "vue";
 
 let outer = inject("outer");
-const attrs = useAttrs();
 const p = defineProps({
   ...TimeRangePicker.props,
   ...props,
 });
 const emit = defineEmits(["update:value", "update:preValue"]);
 
-let newProps = core(p, emit, attrs);
+let newProps = core(p, emit);
 /* outer函数 */
 if (p.outer) {
   outer[p.name] = () => {

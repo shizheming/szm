@@ -28,13 +28,14 @@
 </template>
 
 <script setup>
-import { ref, toRefs, reactive, onMounted, watch } from "vue";
+import { ref, toRefs, reactive, onMounted, watch, inject } from "vue";
 import { message, Modal } from "ant-design-vue";
 import { useRoute } from "vue-router";
 import { toArray, once, cloneDeep } from "lodash";
 import axios from "../../api";
 import attachment from "../../../../my_system/src/script/attachment";
 const route = useRoute();
+const formAttrs = inject("formAttrs");
 // 是否编辑页
 let isEdit = ref(!!route.query.marketing_id);
 let selectOptions = ref();
@@ -44,6 +45,7 @@ const props = defineProps([
   "selectValue",
   "tableValue",
   "initialValue",
+  "trigger",
 ]);
 const emit = defineEmits([
   "update:value",
@@ -100,6 +102,22 @@ watch(
   }
 );
 
+watch(
+  () => props.trigger,
+  (newValue, oldValue) => {
+    if (newValue) {
+      let [obj] = formAttrs.value.attrsValue.shop_id.optionsDetail.filter(
+        (cur) => {
+          return cur.value === newValue;
+        }
+      );
+      echoSelectValue = [obj.site_id];
+    } else {
+      echoSelectValue = [];
+    }
+  }
+);
+
 function selectChange(v) {
   emit("update:value", v);
   emit("update:selectValue", v);
@@ -153,7 +171,7 @@ function siteIdsValueDelete(record, index) {
     return;
   }
   let title = "确认要移除该站点吗？";
-
+  console.log(echoSelectValue, record.id, 20);
   if (!isEdit && echoSelectValue.includes(record.id)) {
     title = `活动适用店铺属于${record.name}站点，如果删除该站点的话，增品相关信息删自动清空，确定删除该站点?`;
   }

@@ -1,8 +1,9 @@
-import { onMounted, reactive, watch, inject, onUnmounted } from "vue";
+import { onMounted, reactive, watch, inject, onUnmounted, useAttrs } from "vue";
 import { forEach, tail, isArray, isFunction, drop, isString } from "lodash";
 import { setLevelValue, getLevelValue } from "./tool";
 
-export default function (props, emit, attrs, componentType) {
+export default function (props, emit, componentType) {
+  const attrs = useAttrs();
   /* 接受form给的数据 */
   let outer = inject("outer");
   let formData = inject("formData");
@@ -46,6 +47,7 @@ export default function (props, emit, attrs, componentType) {
       emit("update:value", value);
     };
   }
+
   /* 添加默认值 */
   if (props.initialValue !== undefined) {
     emitType(props.initialValue);
@@ -166,7 +168,7 @@ export default function (props, emit, attrs, componentType) {
 
   /* 具名的触发机制 */
   forEach(attrs, (value, key) => {
-    if (/^trigger-/.test(key)) {
+    if (/^trigger-/.test(key) && attrs[`switch-${key}`] !== false) {
       let [name] = tail(key.split("-"));
       if (isArray(value[0])) {
         // 监听多个
@@ -255,7 +257,8 @@ export default function (props, emit, attrs, componentType) {
   });
 
   /* 联动关系清除值或属性 */
-  if (props.triggerclear) {
+  // switch是开关
+  if (props.triggerclear && attrs["switch-triggerclear"] !== false) {
     // 判断是不是二维数组，知道是不是要监听多个值
     if (isArray(props.triggerclear[0])) {
       props.triggerclear.forEach((current, index) => {
@@ -276,12 +279,10 @@ export default function (props, emit, attrs, componentType) {
               } else if (isFunction(value)) {
                 // 等于undefined清，也就是说，上面的值没有了，我也没有了
                 if (value.name === "value" && newValue === undefined) {
-                  emitType(undefined);
+                  if (value()) emitType(undefined);
                 } else if (value.name === "values") {
                   // 这里说明上面的值只要变了，我就清自己
-                  emitType(undefined);
-                } else {
-                  newProps[value.name] = undefined;
+                  if (value()) emitType(undefined);
                 }
               }
             });
