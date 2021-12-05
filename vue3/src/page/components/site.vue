@@ -33,20 +33,15 @@ import { message, Modal } from "ant-design-vue";
 import { useRoute } from "vue-router";
 import { toArray, once, cloneDeep } from "lodash";
 import axios from "../../api";
-import attachment from "../../../../my_system/src/script/attachment";
+
 const route = useRoute();
 const formAttrs = inject("formAttrs");
+const formDetail = inject("formDetail");
 // 是否编辑页
 let isEdit = ref(!!route.query.marketing_id);
 let selectOptions = ref();
 let echoSelectValue = [];
-const props = defineProps([
-  "value",
-  "selectValue",
-  "tableValue",
-  "initialValue",
-  "trigger",
-]);
+const props = defineProps(["value", "selectValue", "tableValue", "trigger"]);
 
 const emit = defineEmits([
   "update:value",
@@ -54,37 +49,34 @@ const emit = defineEmits([
   "update:tableValue",
 ]);
 
-if (props.initialValue) {
-  let v = props.initialValue.map((item) => {
-    return item.id;
-  });
-  echoSelectValue = props.initialValue
+if (formDetail.value) {
+  echoSelectValue = formDetail.value.use_scope.site_list
     .filter((item) => {
       return !!item.is_shop_site;
     })
     .map((item) => {
       return item.id;
     });
-
-  emit("update:selectValue", v);
-  watch(
-    () => selectOptions.value,
-    (newValue, oldValue) => {
-      newValue
-        .filter((cur) => {
-          return Object.values(props.selectValue).includes(cur.value);
-        })
-        .forEach((cur) => {
-          cur.disabled = true;
-        });
-      let result = newValue.filter(({ id }) => {
-        return toArray(props.selectValue).includes(id);
-      });
-
-      emit("update:tableValue", result);
-    }
-  );
 }
+
+emit("update:selectValue", props.value);
+watch(
+  () => selectOptions.value,
+  (newValue, oldValue) => {
+    newValue
+      .filter((cur) => {
+        return Object.values(props.selectValue).includes(cur.value);
+      })
+      .forEach((cur) => {
+        cur.disabled = true;
+      });
+    let result = newValue.filter(({ id }) => {
+      return toArray(props.selectValue).includes(id);
+    });
+
+    emit("update:tableValue", result);
+  }
+);
 watch(
   () => props.selectValue,
   (newValue, oldValue) => {
@@ -172,7 +164,6 @@ function siteIdsValueDelete(record, index) {
     return;
   }
   let title = "确认要移除该站点吗？";
-  console.log(echoSelectValue, record.id, 20);
   if (!isEdit && echoSelectValue.includes(record.id)) {
     title = `活动适用店铺属于${record.name}站点，如果删除该站点的话，增品相关信息删自动清空，确定删除该站点?`;
   }

@@ -48,11 +48,6 @@ export default function (props, emit, componentType) {
     };
   }
 
-  /* 添加默认值 */
-  if (props.initialValue !== undefined) {
-    emitType(props.initialValue);
-  }
-
   let innerObj = {};
   if (isArray(componentName.value)) {
     formComponents[componentName.value.join(".")] = innerObj;
@@ -309,6 +304,124 @@ export default function (props, emit, componentType) {
     }
   }
 
+  /* 同时满足有的条件监听 */
+  if (props.togetherhas) {
+    watch(
+      props.togetherhas[0].map((cur, index) => {
+        return () => props.togetherhas[0][index];
+      }),
+      (newValue, oldValue) => {
+        if (
+          newValue[0] !== undefined &&
+          newValue[1] !== undefined &&
+          newValue[0] !== "" &&
+          newValue[1] !== ""
+        ) {
+          let obj = {};
+          props.togetherhas[1](obj, /* 全部是实体 */ formComponents);
+          forEach(obj, (v, k) => {
+            if (isFunction(v)) {
+              v().then((d) => {
+                obj[`${k}Detail`] = d;
+                Object.assign(innerObj, obj);
+                newProps[k] = d;
+              });
+            } else {
+              newProps[k] = v;
+            }
+          });
+        }
+      }
+    );
+  }
+
+  /* 同时满足无的条件监听 */
+  if (props.togethernohas) {
+    watch(
+      props.togethernohas[0].map((cur, index) => {
+        return () => props.togethernohas[0][index];
+      }),
+      (newValue, oldValue) => {
+        if (
+          (newValue[0] === undefined && newValue[1] === undefined) ||
+          (newValue[0] === "" && newValue[1] === "")
+        ) {
+          let obj = {};
+          props.togethernohas[1](obj, /* 全部是实体 */ formComponents);
+          forEach(obj, (v, k) => {
+            if (isFunction(v)) {
+              v().then((d) => {
+                obj[`${k}Detail`] = d;
+                Object.assign(innerObj, obj);
+                newProps[k] = d;
+              });
+            } else {
+              newProps[k] = v;
+            }
+          });
+        }
+      }
+    );
+  }
+
+  /* 同时满足有的条件具名属性监听 */
+  forEach(attrs, (value, key) => {
+    if (/^togetherhas-/.test(key)) {
+      let [name] = tail(key.split("-"));
+      watch(
+        value.map((cur, index) => {
+          return () => attrs[key][0][index];
+        }),
+        (newValue, oldValue) => {
+          if (
+            newValue[0] !== undefined &&
+            newValue[1] !== undefined &&
+            newValue[0] !== "" &&
+            newValue[1] !== ""
+          ) {
+            let result = attrs[key][1](formComponents);
+            if (Object.prototype.toString.call(result) === "[object Promise]") {
+              result.then((d) => {
+                innerObj[`${name}Detail`] = d;
+                newProps[name] = d;
+              });
+            } else {
+              newProps[name] = result;
+            }
+          }
+        }
+      );
+    }
+  });
+
+  /* 同时满足有的条件具名属性监听 */
+  forEach(attrs, (value, key) => {
+    if (/^togethernohas-/.test(key)) {
+      let [name] = tail(key.split("-"));
+      watch(
+        value.map((cur, index) => {
+          return () => attrs[key][0][index];
+        }),
+        (newValue, oldValue) => {
+          if (
+            (newValue[0] === undefined && newValue[1] === undefined) ||
+            (newValue[0] === "" && newValue[1] === "")
+          ) {
+            let result = attrs[key][1](formComponents);
+            if (Object.prototype.toString.call(result) === "[object Promise]") {
+              result.then((d) => {
+                innerObj[`${name}Detail`] = d;
+                newProps[name] = d;
+              });
+            } else {
+              newProps[name] = result;
+            }
+          }
+        }
+      );
+    }
+  });
+
   /* outer函数 */
   if (props.outer) {
     if (isString(componentName.value)) {
@@ -320,26 +433,6 @@ export default function (props, emit, componentType) {
         return props.outer(props.value);
       };
     }
-  }
-
-  function running(obj) {
-    forEach(obj, (v, k) => {
-      if (k === "detail") {
-        emitType(v);
-      } else {
-        if (isFunction(v)) {
-          v().then((d) => {
-            obj[`${k}Detail`] = d;
-            Object.assign(innerObj, obj);
-            newProps[k] = d;
-          });
-        } else {
-          obj[`${k}Detail`] = v;
-          Object.assign(innerObj, obj);
-          newProps[k] = v;
-        }
-      }
-    });
   }
 
   return newProps;

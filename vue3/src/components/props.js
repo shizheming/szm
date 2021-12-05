@@ -27,8 +27,12 @@ export default {
     type: Array,
     default: undefined,
   },
-  initialValue: {
-    type: [Number, String, Array, Object, Boolean],
+  togetherhas: {
+    type: Array,
+    default: undefined,
+  },
+  togethernohas: {
+    type: Array,
     default: undefined,
   },
   clear: {

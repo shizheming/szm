@@ -16,11 +16,7 @@
       <s-input v-model:value="formData.name" placeholder="10个字以内" />
     </s-form-item>
     <s-form-item label="活动ID" name="marketing_id" v-if="isEdit">
-      <s-input
-        v-model:value="formData.marketing_id"
-        disabled
-        :initialValue="$route.query.marketing_id"
-      />
+      <s-input v-model:value="formData.marketing_id" disabled />
     </s-form-item>
     <s-form-item
       label="活动时间"
@@ -67,13 +63,14 @@
         message: '请选择业务类型',
       }"
     >
-      <s-radio-group v-model:value="formData.business_id" :initialValue="1">
+      <s-radio-group v-model:value="formData.business_id">
         <s-radio :value="1">精选</s-radio>
         <s-radio :value="2" disabled>紫荆</s-radio>
         <s-radio :value="3" disabled>到家</s-radio>
       </s-radio-group>
     </s-form-item>
     <s-form-item
+      v-if="formData.site_ids"
       label="使用终端"
       name="app_platform"
       :rules="{
@@ -96,7 +93,8 @@
         message: '请选择所属站点',
       }"
     >
-      <s-radio-group v-model:value="formData.site_ids" :disabled="isEdit">
+      <!-- :disabled="isEdit" -->
+      <s-radio-group v-model:value="formData.site_ids">
         <s-radio :value="0">全选</s-radio>
         <s-radio :value="1">指定站点</s-radio>
       </s-radio-group>
@@ -114,7 +112,6 @@
         v-model:value="formData.site_ids_value"
         v-model:selectValue="formData.siteIdsSelectValue"
         v-model:tableValue="formData.siteIdsTableValue"
-        :initialValue="siteIdsValueInnerValue"
         :trigger="formData.shop_id"
       />
     </s-form-item>
@@ -126,17 +123,16 @@
         message: '请选择适用店铺',
       }"
     >
+      <!-- :disabled="isEdit" -->
       <s-select
         ref="shop_id"
         v-model:value="formData.shop_id"
-        :disabled="isEdit"
         :inner="shopIdInner"
         :switch-triggerclear="!isEdit"
         :triggerclear="[
           [formData.site_ids_value, 'values'],
-          [formData.site_ids, formData.site_ids_value, 'values'],
+          [formData.site_ids, 'values'],
         ]"
-        :switch-trigger-options="!isEdit"
         :trigger-options="[
           [formData.site_ids, siteIdsTriggerOptions],
           [formData.site_ids_value, siteIdsValueTriggerOptions],
@@ -155,15 +151,18 @@ import { useRoute } from "vue-router";
 import moment from "moment";
 import Site from "./components/site.vue";
 const route = useRoute();
+let marketing_id = route.query.marketing_id;
 const formSection = ref();
-const formData = reactive({});
+const formData = reactive({
+  business_id: 1,
+  marketing_id,
+});
 const formAttrs = provide("formAttrs", formSection);
 let loading = ref();
-let siteIdsValueInnerValue = ref();
 // 是否编辑页
-let marketing_id = route.query.marketing_id;
 let isEdit = ref(!!route.query.marketing_id);
 let detail = ref();
+const formDetail = provide("formDetail", detail);
 
 if (isEdit.value) {
   axios
@@ -181,15 +180,13 @@ if (isEdit.value) {
       formData.business_id = use_scope.business_id;
       formData.app_platform = use_scope.app_platform.split(",");
       formData.site_ids = use_scope.site_ids ? 1 : 0;
-      formData.site_ids_value = use_scope.site_list;
-      siteIdsValueInnerValue.value = use_scope.site_list;
+      formData.site_ids_value = use_scope.site_list.map((cur) => cur.id);
       formData.shop_id = use_scope.shop_id;
-      console.log(formData, use_scope.shop_id, 111);
-      console.log(formSection.value, 120);
+      console.log(formData, 111);
     });
 }
 
-function nameRule(rule, value) {
+async function nameRule(rule, value) {
   if (!value) {
     return Promise.reject("请输入名称");
   } else if (value.length > 10) {
@@ -199,7 +196,7 @@ function nameRule(rule, value) {
   }
 }
 
-function priorityRule(rule, value) {
+async function priorityRule(rule, value) {
   if (!value) {
     return Promise.reject("请输入0-999间的正整数");
   } else if (
@@ -235,6 +232,10 @@ function shopIdInner(select) {
 function siteIdsTriggerOptions(formComponent) {
   if (formData.site_ids === 0) {
     return shopIdOptions();
+  } else if (formData.site_ids === 1 && formData.site_ids_value?.length) {
+    return shopIdOptions({
+      site_ids: Object.values(formData.site_ids_value),
+    });
   }
 }
 
@@ -259,10 +260,11 @@ function next() {
 
 /* 
 问题
-有2个bug，
+有3个bug，
 
 切换后叉叉又有了
 切换后shopid被清掉了
+切换到站点，站点有值的时候需要请求options
 
 marketing_id还没有和融进isEdit里面去
 时间组件的语言问题，不知道是不是版本的问题
