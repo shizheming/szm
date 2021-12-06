@@ -123,21 +123,50 @@
         message: '请选择适用店铺',
       }"
     >
-      <!-- :disabled="isEdit" -->
       <s-select
         ref="shop_id"
         v-model:value="formData.shop_id"
+        :disabled="isEdit"
         :inner="shopIdInner"
+        :trigger="[formData.site_ids, siteIdsChange]"
         :switch-triggerclear="!isEdit"
-        :triggerclear="[
-          [formData.site_ids_value, 'values'],
-          [formData.site_ids, 'values'],
-        ]"
+        :triggerclear="[formData.site_ids_value, 'values']"
         :trigger-options="[
           [formData.site_ids, siteIdsTriggerOptions],
           [formData.site_ids_value, siteIdsValueTriggerOptions],
         ]"
       />
+    </s-form-item>
+    <s-form-item
+      label="活动类型"
+      name="marketing_type"
+      :rules="{
+        required: true,
+        message: '请选择活动类型',
+      }"
+    >
+      <s-radio-group v-model:value="formData.marketing_type" :disabled="isEdit">
+        <s-radio value="manyuanzeng001">精选</s-radio>
+        <s-radio value="manjianzeng001">满额赠</s-radio>
+      </s-radio-group>
+    </s-form-item>
+    <s-form-item
+      label="赠品类型"
+      name="gift_type"
+      :rules="{
+        required: true,
+        message: '请选择赠品类型',
+      }"
+    >
+      <s-checkbox-group v-model:value="formData.gift_type" :disabled="isEdit">
+        <s-checkbox :value="1">商品</s-checkbox>
+        <s-checkbox :value="2">优惠券</s-checkbox>
+      </s-checkbox-group>
+    </s-form-item>
+    <s-form-item label="赠品选择规则" name="gift_select_rule">
+      <s-radio-group v-model:value="formData.gift_select_rule">
+        <s-radio :value="1">固定赠送</s-radio>
+      </s-radio-group>
     </s-form-item>
     <s-form-item :wrapper-col="{ offset: 7 }">
       <s-button :loading="loading" @click="next">下一步</s-button>
@@ -156,6 +185,8 @@ const formSection = ref();
 const formData = reactive({
   business_id: 1,
   marketing_id,
+  marketing_type: "manyuanzeng001",
+  gift_select_rule: 1,
 });
 const formAttrs = provide("formAttrs", formSection);
 let loading = ref();
@@ -171,7 +202,7 @@ if (isEdit.value) {
       action: "first",
     })
     .then(({ data }) => {
-      const { basic, use_scope } = data;
+      const { basic, use_scope, preferential_rules } = data;
       detail.value = data;
       formData.name = basic.name;
       formData.times = [moment(basic.start_time), moment(basic.end_time)];
@@ -182,6 +213,8 @@ if (isEdit.value) {
       formData.site_ids = use_scope.site_ids ? 1 : 0;
       formData.site_ids_value = use_scope.site_list.map((cur) => cur.id);
       formData.shop_id = use_scope.shop_id;
+      formData.marketing_type = preferential_rules.marketing_type;
+
       console.log(formData, 111);
     });
 }
@@ -245,6 +278,16 @@ function siteIdsValueTriggerOptions(formComponent) {
   });
 }
 
+function siteIdsChange(select, { shop_id }) {
+  if (formData.site_ids === 1) {
+    shop_id.site_ids_change_zero = formData.shop_id;
+    formData.shop_id = shop_id.site_ids_change_one;
+  } else if (formData.site_ids === 0) {
+    shop_id.site_ids_change_one = formData.shop_id;
+    formData.shop_id = shop_id.site_ids_change_zero;
+  }
+}
+
 // 下一步
 function next() {
   formSection.value
@@ -260,11 +303,6 @@ function next() {
 
 /* 
 问题
-有3个bug，
-
-切换后叉叉又有了
-切换后shopid被清掉了
-切换到站点，站点有值的时候需要请求options
 
 marketing_id还没有和融进isEdit里面去
 时间组件的语言问题，不知道是不是版本的问题

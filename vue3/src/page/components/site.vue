@@ -63,18 +63,19 @@ emit("update:selectValue", props.value);
 watch(
   () => selectOptions.value,
   (newValue, oldValue) => {
-    newValue
-      .filter((cur) => {
-        return Object.values(props.selectValue).includes(cur.value);
-      })
-      .forEach((cur) => {
-        cur.disabled = true;
+    if (props.selectValue) {
+      newValue
+        .filter((cur) => {
+          return Object.values(props.selectValue).includes(cur.value);
+        })
+        .forEach((cur) => {
+          cur.disabled = true;
+        });
+      let result = newValue.filter(({ id }) => {
+        return toArray(props.selectValue).includes(id);
       });
-    let result = newValue.filter(({ id }) => {
-      return toArray(props.selectValue).includes(id);
-    });
-
-    emit("update:tableValue", result);
+      emit("update:tableValue", result);
+    }
   }
 );
 watch(
@@ -181,7 +182,6 @@ function siteIdsValueDelete(record, index) {
         });
       emit("update:selectValue", values);
       emit("update:value", values);
-      // 这个情况感觉永远都不会成立
       /* if (!isEdit && echoSelectValue.includes(record.id)) {
         emit("clear");
       } */

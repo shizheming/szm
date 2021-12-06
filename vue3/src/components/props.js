@@ -16,11 +16,7 @@ export default {
     default: undefined,
   },
   trigger: {
-    type: [Number, String, Array, Object],
-    default: undefined,
-  },
-  triggeraction: {
-    type: Function,
+    type: Array,
     default: undefined,
   },
   triggerclear: {
