@@ -1,50 +1,48 @@
 <template>
-  <s-form
-    :model="formData"
-    :label-col="{ span: 8 }"
-    :wrapper-col="{ span: 8 }"
-    ref="formSection"
-  >
+  <s-form :model="formData" ref="formSection">
     <s-form-item
       label="活动名称"
       :rules="{
         required: true,
         validator: nameRule,
       }"
-      name="name"
+      :name="['basic', 'name']"
     >
-      <s-input v-model:value="formData.name" placeholder="10个字以内" />
+      <s-input v-model:value="formData.basic.name" placeholder="10个字以内" />
     </s-form-item>
     <s-form-item label="活动ID" name="marketing_id" v-if="isEdit">
       <s-input v-model:value="formData.marketing_id" disabled />
     </s-form-item>
     <s-form-item
       label="活动时间"
-      name="times"
+      :name="['basic', 'times']"
       :rules="{
         required: true,
         message: '请选择活动时间',
       }"
     >
-      <s-range-picker showTime v-model:value="formData.times" />
+      <s-range-picker showTime v-model:value="formData.basic.times" />
       <div style="color: #ccc">活动到期后将自动失效，失效后不可延长</div>
     </s-form-item>
     <s-form-item
       label="同活动优先级"
-      name="times"
+      :name="['basic', 'priority']"
       :rules="{
         required: true,
         validator: priorityRule,
       }"
     >
-      <s-input-number placeholder="0～999" v-model:value="formData.priority" />
+      <s-input-number
+        placeholder="0～999"
+        v-model:value="formData.basic.priority"
+      />
       <div style="color: #ccc">
         同个商品同时参与同类型活动时，取优先级最高的生效，数字越大优先级越高
       </div>
     </s-form-item>
     <s-form-item
       label="备注"
-      name="remark"
+      :name="['basic', 'remark']"
       :rules="{
         max: 200,
         message: '备注不能大于200个字符',
@@ -52,33 +50,32 @@
     >
       <s-textarea
         placeholder="用户可以在礼金卡使用说明入口查看，请描述清楚礼金卡的使用范围"
-        v-model:value="formData.remark"
+        v-model:value="formData.basic.remark"
       />
     </s-form-item>
     <s-form-item
       label="业务类型"
-      name="business_id"
+      :name="['use_scope', 'business_id']"
       :rules="{
         required: true,
         message: '请选择业务类型',
       }"
     >
-      <s-radio-group v-model:value="formData.business_id">
+      <s-radio-group v-model:value="formData.use_scope.business_id">
         <s-radio :value="1">精选</s-radio>
         <s-radio :value="2" disabled>紫荆</s-radio>
         <s-radio :value="3" disabled>到家</s-radio>
       </s-radio-group>
     </s-form-item>
     <s-form-item
-      v-if="formData.site_ids"
       label="使用终端"
-      name="app_platform"
+      :name="['use_scope', 'app_platform']"
       :rules="{
         required: true,
         message: '请选择使用终端',
       }"
     >
-      <s-checkbox-group v-model:value="formData.app_platform">
+      <s-checkbox-group v-model:value="formData.use_scope.app_platform">
         <s-checkbox value="i">iOS</s-checkbox>
         <s-checkbox value="a">Android</s-checkbox>
         <s-checkbox value="mp">小程序</s-checkbox>
@@ -87,37 +84,39 @@
     </s-form-item>
     <s-form-item
       label="所属站点"
-      name="business_id"
+      :name="['use_scope', 'site_ids']"
       :rules="{
         required: true,
         message: '请选择所属站点',
       }"
     >
-      <!-- :disabled="isEdit" -->
-      <s-radio-group v-model:value="formData.site_ids">
+      <s-radio-group
+        v-model:value="formData.use_scope.site_ids"
+        :disabled="isEdit"
+      >
         <s-radio :value="0">全选</s-radio>
         <s-radio :value="1">指定站点</s-radio>
       </s-radio-group>
     </s-form-item>
     <s-form-item
-      v-if="formData.site_ids"
+      v-if="formData.use_scope.site_ids"
       label="添加站点"
-      name="site_ids_value"
+      :name="['use_scope', 'site_ids_value']"
       :rules="{
         required: true,
         message: '请选择添加站点',
       }"
     >
       <Site
-        v-model:value="formData.site_ids_value"
-        v-model:selectValue="formData.siteIdsSelectValue"
-        v-model:tableValue="formData.siteIdsTableValue"
-        :trigger="formData.shop_id"
+        v-model:value="formData.use_scope.site_ids_value"
+        v-model:selectValue="formData.use_scope.siteIdsSelectValue"
+        v-model:tableValue="formData.use_scope.siteIdsTableValue"
+        :trigger="formData.use_scope.shop_id"
       />
     </s-form-item>
     <s-form-item
       label="适用店铺"
-      name="shop_id"
+      :name="['use_scope', 'shop_id']"
       :rules="{
         required: true,
         message: '请选择适用店铺',
@@ -125,48 +124,79 @@
     >
       <s-select
         ref="shop_id"
-        v-model:value="formData.shop_id"
+        v-model:value="formData.use_scope.shop_id"
         :disabled="isEdit"
         :inner="shopIdInner"
-        :trigger="[formData.site_ids, siteIdsChange]"
+        :trigger="[formData.use_scope.site_ids, siteIdsChange]"
         :switch-triggerclear="!isEdit"
-        :triggerclear="[formData.site_ids_value, 'values']"
+        :triggerclear="[formData.use_scope.site_ids_value, 'values']"
         :trigger-options="[
-          [formData.site_ids, siteIdsTriggerOptions],
-          [formData.site_ids_value, siteIdsValueTriggerOptions],
+          [formData.use_scope.site_ids, siteIdsTriggerOptions],
+          [formData.use_scope.site_ids_value, siteIdsValueTriggerOptions],
         ]"
       />
     </s-form-item>
     <s-form-item
       label="活动类型"
-      name="marketing_type"
+      :name="['preferential_rules', 'marketing_type']"
       :rules="{
         required: true,
         message: '请选择活动类型',
       }"
     >
-      <s-radio-group v-model:value="formData.marketing_type" :disabled="isEdit">
+      <s-radio-group
+        v-model:value="formData.preferential_rules.marketing_type"
+        :disabled="isEdit"
+      >
         <s-radio value="manyuanzeng001">精选</s-radio>
         <s-radio value="manjianzeng001">满额赠</s-radio>
       </s-radio-group>
     </s-form-item>
     <s-form-item
       label="赠品类型"
-      name="gift_type"
+      :name="['gift_settings', 'gift_type']"
       :rules="{
         required: true,
         message: '请选择赠品类型',
       }"
     >
-      <s-checkbox-group v-model:value="formData.gift_type" :disabled="isEdit">
+      <s-checkbox-group
+        v-model:value="formData.gift_settings.gift_type"
+        :disabled="isEdit"
+      >
         <s-checkbox :value="1">商品</s-checkbox>
         <s-checkbox :value="2">优惠券</s-checkbox>
       </s-checkbox-group>
     </s-form-item>
-    <s-form-item label="赠品选择规则" name="gift_select_rule">
-      <s-radio-group v-model:value="formData.gift_select_rule">
+    <s-form-item
+      label="赠品选择规则"
+      :name="['gift_settings', 'gift_select_rule']"
+    >
+      <s-radio-group v-model:value="formData.gift_settings.gift_select_rule">
         <s-radio :value="1">固定赠送</s-radio>
       </s-radio-group>
+    </s-form-item>
+    <s-form-item
+      label="赠品信息-商品"
+      name="goods"
+      :rules="{
+        required: true,
+        message: '请选择赠品信息-商品',
+      }"
+      v-if="formData.gift_settings.gift_type?.includes(1)"
+    >
+      <GiftGoods v-model:value="formData.gift_settings.gift_spu_list" />
+    </s-form-item>
+    <s-form-item
+      label="赠品信息-优惠券"
+      name="coupon"
+      :rules="{
+        required: true,
+        message: '请选择赠品信息-优惠券',
+      }"
+      v-if="formData.gift_settings.gift_type?.includes(2)"
+    >
+      赠品信息-优惠券
     </s-form-item>
     <s-form-item :wrapper-col="{ offset: 7 }">
       <s-button :loading="loading" @click="next">下一步</s-button>
@@ -179,14 +209,23 @@ import { ref, toRefs, reactive, onMounted, watch, provide } from "vue";
 import { useRoute } from "vue-router";
 import moment from "moment";
 import Site from "./components/site.vue";
+import GiftGoods from "./components/giftGoods.vue";
 const route = useRoute();
 let marketing_id = route.query.marketing_id;
 const formSection = ref();
 const formData = reactive({
-  business_id: 1,
+  basic: {},
+  use_scope: {
+    business_id: 1,
+    site_ids: 0,
+  },
+  preferential_rules: {
+    marketing_type: "manyuanzeng001",
+  },
+  gift_settings: {
+    gift_select_rule: 1,
+  },
   marketing_id,
-  marketing_type: "manyuanzeng001",
-  gift_select_rule: 1,
 });
 const formAttrs = provide("formAttrs", formSection);
 let loading = ref();
@@ -202,19 +241,24 @@ if (isEdit.value) {
       action: "first",
     })
     .then(({ data }) => {
-      const { basic, use_scope, preferential_rules } = data;
+      const { basic, use_scope, preferential_rules, gift_settings } = data;
       detail.value = data;
-      formData.name = basic.name;
-      formData.times = [moment(basic.start_time), moment(basic.end_time)];
-      formData.priority = basic.priority;
-      formData.remark = basic.remark;
-      formData.business_id = use_scope.business_id;
-      formData.app_platform = use_scope.app_platform.split(",");
-      formData.site_ids = use_scope.site_ids ? 1 : 0;
-      formData.site_ids_value = use_scope.site_list.map((cur) => cur.id);
-      formData.shop_id = use_scope.shop_id;
-      formData.marketing_type = preferential_rules.marketing_type;
-
+      formData.basic.name = basic.name;
+      formData.basic.times = [moment(basic.start_time), moment(basic.end_time)];
+      formData.basic.priority = basic.priority;
+      formData.basic.remark = basic.remark;
+      formData.use_scope.business_id = use_scope.business_id;
+      formData.use_scope.app_platform = use_scope.app_platform.split(",");
+      formData.use_scope.site_ids = use_scope.site_ids ? 1 : 0;
+      formData.use_scope.site_ids_value = use_scope.site_list.map(
+        (cur) => cur.id
+      );
+      formData.use_scope.shop_id = use_scope.shop_id;
+      formData.preferential_rules.marketing_type =
+        preferential_rules.marketing_type;
+      formData.gift_settings.gift_type =
+        gift_settings.gift_type == 3 ? [1, 2] : [gift_settings.gift_type];
+      formData.gift_settings.gift_select_rule = gift_settings.gift_select_rule;
       console.log(formData, 111);
     });
 }
@@ -263,28 +307,32 @@ function shopIdInner(select) {
 }
 
 function siteIdsTriggerOptions(formComponent) {
-  if (formData.site_ids === 0) {
+  if (formData.use_scope.site_ids === 0) {
     return shopIdOptions();
-  } else if (formData.site_ids === 1 && formData.site_ids_value?.length) {
+  } else if (
+    formData.use_scope.site_ids === 1 &&
+    formData.use_scope.site_ids_value?.length
+  ) {
     return shopIdOptions({
-      site_ids: Object.values(formData.site_ids_value),
+      site_ids: Object.values(formData.use_scope.site_ids_value),
     });
   }
 }
 
 function siteIdsValueTriggerOptions(formComponent) {
   return shopIdOptions({
-    site_ids: Object.values(formData.site_ids_value),
+    site_ids: Object.values(formData.use_scope.site_ids_value),
   });
 }
 
-function siteIdsChange(select, { shop_id }) {
-  if (formData.site_ids === 1) {
-    shop_id.site_ids_change_zero = formData.shop_id;
-    formData.shop_id = shop_id.site_ids_change_one;
-  } else if (formData.site_ids === 0) {
-    shop_id.site_ids_change_one = formData.shop_id;
-    formData.shop_id = shop_id.site_ids_change_zero;
+function siteIdsChange(select, formComponent) {
+  let shop_id = formComponent["use_scope.shop_id"];
+  if (formData.use_scope.site_ids === 1) {
+    shop_id.site_ids_change_zero = formData.use_scope.shop_id;
+    formData.use_scope.shop_id = shop_id.site_ids_change_one;
+  } else if (formData.use_scope.site_ids === 0) {
+    shop_id.site_ids_change_one = formData.use_scope.shop_id;
+    formData.use_scope.shop_id = shop_id.site_ids_change_zero;
   }
 }
 
@@ -306,5 +354,7 @@ function next() {
 
 marketing_id还没有和融进isEdit里面去
 时间组件的语言问题，不知道是不是版本的问题
+
+单看页面，如何让用户知道某些item有关系，
 */
 </script>

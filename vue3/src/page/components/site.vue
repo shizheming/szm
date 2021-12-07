@@ -100,7 +100,7 @@ watch(
   () => props.trigger,
   (newValue, oldValue) => {
     if (newValue) {
-      let [obj] = formAttrs.value.attrsValue.shop_id.optionsDetail.filter(
+      let [obj] = formAttrs.value.attrsValue['use_scope.shop_id'].optionsDetail.filter(
         (cur) => {
           return cur.value === newValue;
         }
