@@ -1,5 +1,5 @@
 <template>
-  <Cascader v-bind="newProps" :value="value">
+  <Cascader v-bind="newProps" :value="value" :changeOnSelect="true">
     <slot />
   </Cascader>
 </template>

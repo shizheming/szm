@@ -26,6 +26,7 @@ input都加了叉叉删除按钮
 textarea添加了自适应高度，叉叉删除按钮
 select添加了搜索功能，叉叉删除按钮
 treeSelect添加了叉叉，全部展开
+cascader默认每一级都能选
 
 button默认primary类型
 

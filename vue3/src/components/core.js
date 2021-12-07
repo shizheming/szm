@@ -79,9 +79,11 @@ export default function (props, emit, componentType) {
         forEach(obj, (v, k) => {
           if (isFunction(v)) {
             v().then((d) => {
+              console.log(d,190)
               obj[`${k}Detail`] = d;
               Object.assign(innerObj, obj);
               newProps[k] = d;
+              console.log(newProps,1666)
             });
           } else if (Object.prototype.toString.call(v) === "[object Promise]") {
             v.then((d) => {

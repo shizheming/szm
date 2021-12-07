@@ -17,13 +17,13 @@
       </template>
     </template>
   </a-table>
-  <ChooseGoods v-model:visible="visible"/>
+  <ChooseGoods v-model:visible="visible" />
 </template>
 
 <script setup>
 import { ref, toRefs, reactive, onMounted, inject } from "vue";
 import { message } from "ant-design-vue";
-import ChooseGoods from './chooseGoods.vue'
+import ChooseGoods from "./chooseGoods.vue";
 let formData = inject("formData");
 const visible = ref(false);
 
@@ -135,12 +135,14 @@ function chooseGoods() {
   if (formData.use_scope.site_ids === 0 && !formData.use_scope.shop_id) {
     message.warning("请先选择店铺");
     return;
-  } else if (
-    formData.use_scope.site_ids === 1 &&
-    !formData.use_scope.site_ids_value?.length
-  ) {
-    message.warning("请先选择站点");
-    return;
+  } else if (formData.use_scope.site_ids === 1) {
+    if (!formData.use_scope.site_ids_value?.length) {
+      message.warning("请先选择站点");
+      return;
+    } else if (!formData.use_scope.shop_id) {
+      message.warning("请先选择店铺");
+      return;
+    }
   }
   visible.value = true;
 }
