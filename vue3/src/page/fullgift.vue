@@ -349,6 +349,15 @@ function next() {
     });
 }
 
+// 查询商品的时候要
+let shop_id_list = ref();
+provide("shop_id_list", shop_id_list);
+watch(
+  () => formData.use_scope.shop_id,
+  (newValue) => {
+    shop_id_list.value = [newValue];
+  }
+);
 /* 
 问题
 
