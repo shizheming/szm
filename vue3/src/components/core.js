@@ -11,13 +11,13 @@ export default function (props, emit, componentType) {
   let componentName = inject("componentName");
   /* 把change包一下，我要在里面更新数据，同时把formComponents传出去，打通表单内的所有数据 */
   let newProps = reactive({ ...props });
-  newProps.onChange = (e) => {
-    let nv = e;
+  newProps.onChange = (...e) => {
+    let nv = e[0];
     if (componentType === "input" || componentType === "radioGroup") {
-      nv = e.target.value;
+      nv = e[0].target.value;
       emit("update:value", nv);
     } else if (componentType === "radio" || componentType === "checkbox") {
-      nv = e.target.checked;
+      nv = e[0].target.checked;
       emit("update:checked", nv);
     } else if (componentType === "switch") {
       emit("update:checked", nv);
@@ -25,7 +25,7 @@ export default function (props, emit, componentType) {
       emit("update:value", nv);
     }
     if (props.onChange) {
-      props.onChange(e, formComponents);
+      props.onChange(...e, formComponents);
     }
   };
 
@@ -79,11 +79,9 @@ export default function (props, emit, componentType) {
         forEach(obj, (v, k) => {
           if (isFunction(v)) {
             v().then((d) => {
-              console.log(d,190)
               obj[`${k}Detail`] = d;
               Object.assign(innerObj, obj);
               newProps[k] = d;
-              console.log(newProps,1666)
             });
           } else if (Object.prototype.toString.call(v) === "[object Promise]") {
             v.then((d) => {
