@@ -3,16 +3,16 @@ export default {
     type: [Number, String, Array, Object, Boolean],
     default: undefined,
   },
+  checked: {
+    type: Boolean,
+    default: undefined,
+  },
   inner: {
     type: Function,
     default: undefined,
   },
   outer: {
     type: Function,
-    default: undefined,
-  },
-  preValue: {
-    type: [Number, String, Array, Object, Boolean],
     default: undefined,
   },
   trigger: {
@@ -32,10 +32,6 @@ export default {
     default: undefined,
   },
   clear: {
-    type: Boolean,
-    default: undefined,
-  },
-  checked: {
     type: Boolean,
     default: undefined,
   },

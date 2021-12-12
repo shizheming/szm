@@ -99,14 +99,6 @@ export default function (props, emit, componentType) {
     });
   }
 
-  /* 记录上一次的值 */
-  watch(
-    () => props.value,
-    (newValue, oldValue) => {
-      emit("update:preValue", oldValue);
-    }
-  );
-
   /* 组件没有了删除对应的值 */
   if (props.clear === true) {
     onUnmounted(() => {
@@ -163,6 +155,9 @@ export default function (props, emit, componentType) {
 
   /* 具名的触发机制 */
   forEach(attrs, (value, key) => {
+    // 现在没有switch不是监听的，只是组件初始的时候，就定型了，中间改变没有效果，看看需不需要变成监听的？？？？？？？？？？？？
+    // 还有就是switch现在只有trigger的开关，其他一把的属性需不需要开关，有待思考？？？？？？？？？？？？？？？？？？？？
+    // 然后不能写函数，？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
     if (/^trigger-/.test(key) && attrs[`switch-${key}`] !== false) {
       let [name] = tail(key.split("-"));
       if (isArray(value[0])) {
@@ -312,6 +307,9 @@ export default function (props, emit, componentType) {
       }),
       (newValue, oldValue) => {
         if (
+          // 全由全无没有加开关switch？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+          // 这个判断不对，不只有两个值，可以是n个值？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+          // 还有就是，现在没有单个属性的全有和全无？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
           newValue[0] !== undefined &&
           newValue[1] !== undefined &&
           newValue[0] !== "" &&
