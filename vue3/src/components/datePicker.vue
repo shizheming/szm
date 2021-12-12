@@ -7,8 +7,14 @@
 import core from "./core";
 import { DatePicker } from "ant-design-vue";
 import props from "./props";
-import { inject } from "vue";
+import { useSlots, useAttrs, inject } from "vue";
+import { forEach } from "lodash";
 
+const slots = useSlots();
+let newSlots = {};
+forEach(slots, (value, key) => {
+  newSlots[key] = value();
+});
 let outer = inject("outer");
 const p = defineProps({
   ...DatePicker.props,
@@ -16,7 +22,7 @@ const p = defineProps({
 });
 const emit = defineEmits(["update:value", "update:preValue"]);
 
-let newProps = core(p, emit);
+let newProps = Object.assign(core(p, emit), newSlots);
 /* outer函数 */
 if (p.outer) {
   outer[p.name] = () => {

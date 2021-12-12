@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <a-config-provider :locale="zhCN">
     <a-layout v-if="cook">
       <a-layout-header class="header">
         <span style="color: rgba(255, 255, 255, 0.65)"
@@ -79,13 +79,14 @@
       </a-layout>
     </a-layout>
     <Login v-model:cook="cook" v-else />
-  </div>
+  </a-config-provider>
 </template>
 
 <script setup>
 import VueCookies from "vue-cookies";
 import Login from "./login.vue";
 import { ref, toRefs, reactive, onMounted } from "vue";
+import zhCN from 'ant-design-vue/es/locale/zh_CN';
 
 let cook = ref(VueCookies.get("token"));
 let kfsc = localStorage.userInfo && JSON.parse(localStorage.userInfo).platform;
