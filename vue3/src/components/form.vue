@@ -11,7 +11,24 @@ import { cloneDeep, forEach } from "lodash";
 import { setLevelValue, getLevelValue } from "./tool";
 const p = defineProps({
   ...Form.props,
+  api: {
+    type: Function,
+    default: undefined,
+  },
+  isEdit: {
+    type: Boolean,
+    default: undefined,
+  },
 });
+
+// 判断是不是编辑页
+provide("isEdit", p.isEdit);
+// 接口回来的数据
+let detailData = ref();
+provide("detailData", detailData);
+// 在不同的组件里面需要判断接口是否已经请求好了
+let isFinish = ref();
+provide("isFinish", isFinish);
 
 // 收集表单里面的组件的outer函数
 let outer = reactive({});
@@ -28,6 +45,7 @@ const formRender = ref();
 defineExpose({
   outerModel,
   attrsValue: formComponents,
+  detail: detailData,
   validate() {
     // 处理outer所有的函数
     forEach(p.model, (value, key) => {
@@ -42,4 +60,11 @@ defineExpose({
     return formRender.value.validate();
   },
 });
+/* 编辑页操作 */
+if (p.isEdit && p.api) {
+  p.api().then((data) => {
+    detailData.value = data;
+    isFinish.value = true;
+  });
+}
 </script>

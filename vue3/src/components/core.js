@@ -5,6 +5,10 @@ import { setLevelValue, getLevelValue } from "./tool";
 export default function (props, emit, componentType) {
   const attrs = useAttrs();
   /* 接受form给的数据 */
+  let isEdit = inject("isEdit");
+  let detailData = inject("detailData");
+  let isFinish = inject("isFinish");
+
   let outer = inject("outer");
   let formData = inject("formData");
   let formComponents = inject("formComponents");
@@ -25,7 +29,7 @@ export default function (props, emit, componentType) {
       emit("update:value", nv);
     }
     if (props.onChange) {
-      props.onChange(...e, formComponents);
+      props.onChange(...e, formComponents, detailData.value);
     }
   };
 
@@ -55,14 +59,71 @@ export default function (props, emit, componentType) {
     formComponents[componentName.value] = innerObj;
   }
 
-  if (props.inner) {
-    onMounted(() => {
-      let obj = {};
-      if (props.inner.toString().includes("_next")) {
-        props.inner(obj).then(() => {
+  /* 进口处理，判断是不是回显*/
+  if (isEdit) {
+    // 这里主要是为了，不如有个input一开始是隐藏的，之后被显示，这个时候显示watch早就完成了，所以要自己触发回显
+    if (isFinish.value) {
+      if (props.inner) {
+        let obj = {};
+        if (props.inner.toString().includes("_next")) {
+          props.inner(obj, detailData.value).then(() => {
+            running(obj);
+          });
+        } else {
+          props.inner(obj, detailData.value);
+          running(obj);
+        }
+      }
+    }
+    watch(
+      () => isFinish.value,
+      (newValue, oldValue) => {
+        if (props.inner) {
+          let obj = {};
+          if (props.inner.toString().includes("_next")) {
+            props.inner(obj, detailData.value).then(() => {
+              running(obj);
+            });
+          } else {
+            props.inner(obj, detailData.value);
+            running(obj);
+          }
+        }
+      }
+    );
+  } else {
+    if (props.inner) {
+      onMounted(() => {
+        let obj = {};
+        if (props.inner.toString().includes("_next")) {
+          props.inner(obj).then(() => {
+            forEach(obj, (v, k) => {
+              if (isFunction(v)) {
+                v().then((d) => {
+                  obj[`${k}Detail`] = d;
+                  Object.assign(innerObj, obj);
+                  newProps[k] = d;
+                });
+              } else {
+                obj[`${k}Detail`] = v;
+                Object.assign(innerObj, obj);
+                newProps[k] = v;
+              }
+            });
+          });
+        } else {
+          props.inner(obj);
           forEach(obj, (v, k) => {
             if (isFunction(v)) {
               v().then((d) => {
+                obj[`${k}Detail`] = d;
+                Object.assign(innerObj, obj);
+                newProps[k] = d;
+              });
+            } else if (
+              Object.prototype.toString.call(v) === "[object Promise]"
+            ) {
+              v.then((d) => {
                 obj[`${k}Detail`] = d;
                 Object.assign(innerObj, obj);
                 newProps[k] = d;
@@ -73,30 +134,9 @@ export default function (props, emit, componentType) {
               newProps[k] = v;
             }
           });
-        });
-      } else {
-        props.inner(obj);
-        forEach(obj, (v, k) => {
-          if (isFunction(v)) {
-            v().then((d) => {
-              obj[`${k}Detail`] = d;
-              Object.assign(innerObj, obj);
-              newProps[k] = d;
-            });
-          } else if (Object.prototype.toString.call(v) === "[object Promise]") {
-            v.then((d) => {
-              obj[`${k}Detail`] = d;
-              Object.assign(innerObj, obj);
-              newProps[k] = d;
-            });
-          } else {
-            obj[`${k}Detail`] = v;
-            Object.assign(innerObj, obj);
-            newProps[k] = v;
-          }
-        });
-      }
-    });
+        }
+      });
+    }
   }
 
   /* 组件没有了删除对应的值 */
@@ -115,7 +155,7 @@ export default function (props, emit, componentType) {
           () => props.trigger[index][0],
           (newValue, oldValue) => {
             let obj = {};
-            props.trigger[index][1](obj, /* 全部是实体 */ formComponents);
+            props.trigger[index][1](obj, /* 全部是实体 */ formComponents, detailData.value);
             forEach(obj, (v, k) => {
               if (isFunction(v)) {
                 v().then((d) => {
@@ -136,7 +176,7 @@ export default function (props, emit, componentType) {
         () => props.trigger[0],
         (newValue, oldValue) => {
           let obj = {};
-          props.trigger[1](obj, /* 全部是实体 */ formComponents);
+          props.trigger[1](obj, /* 全部是实体 */ formComponents, detailData.value);
           forEach(obj, (v, k) => {
             if (isFunction(v)) {
               v().then((d) => {
@@ -187,7 +227,7 @@ export default function (props, emit, componentType) {
                   newProps[name] = innerObj[name];
                 }
               } else {
-                let result = attrs[key][index][1](formComponents);
+                let result = attrs[key][index][1](formComponents, detailData.value);
                 if (
                   Object.prototype.toString.call(result) === "[object Promise]"
                 ) {
@@ -228,7 +268,7 @@ export default function (props, emit, componentType) {
                 newProps[name] = innerObj[name];
               }
             } else {
-              let result = attrs[key][1](formComponents);
+              let result = attrs[key][1](formComponents, detailData.value);
               if (
                 Object.prototype.toString.call(result) === "[object Promise]"
               ) {
@@ -316,7 +356,7 @@ export default function (props, emit, componentType) {
           newValue[1] !== ""
         ) {
           let obj = {};
-          props.togetherhas[1](obj, /* 全部是实体 */ formComponents);
+          props.togetherhas[1](obj, /* 全部是实体 */ formComponents, detailData.value);
           forEach(obj, (v, k) => {
             if (isFunction(v)) {
               v().then((d) => {
@@ -345,7 +385,7 @@ export default function (props, emit, componentType) {
           (newValue[0] === "" && newValue[1] === "")
         ) {
           let obj = {};
-          props.togethernohas[1](obj, /* 全部是实体 */ formComponents);
+          props.togethernohas[1](obj, /* 全部是实体 */ formComponents, detailData.value);
           forEach(obj, (v, k) => {
             if (isFunction(v)) {
               v().then((d) => {
@@ -377,7 +417,7 @@ export default function (props, emit, componentType) {
             newValue[0] !== "" &&
             newValue[1] !== ""
           ) {
-            let result = attrs[key][1](formComponents);
+            let result = attrs[key][1](formComponents, detailData.value);
             if (Object.prototype.toString.call(result) === "[object Promise]") {
               result.then((d) => {
                 innerObj[`${name}Detail`] = d;
@@ -392,7 +432,7 @@ export default function (props, emit, componentType) {
     }
   });
 
-  /* 同时满足有的条件具名属性监听 */
+  /* 同时满足没有的条件具名属性监听 */
   forEach(attrs, (value, key) => {
     if (/^togethernohas-/.test(key)) {
       let [name] = tail(key.split("-"));
@@ -405,7 +445,7 @@ export default function (props, emit, componentType) {
             (newValue[0] === undefined && newValue[1] === undefined) ||
             (newValue[0] === "" && newValue[1] === "")
           ) {
-            let result = attrs[key][1](formComponents);
+            let result = attrs[key][1](formComponents, detailData.value);
             if (Object.prototype.toString.call(result) === "[object Promise]") {
               result.then((d) => {
                 innerObj[`${name}Detail`] = d;
@@ -433,5 +473,24 @@ export default function (props, emit, componentType) {
     }
   }
 
+  function running(obj) {
+    forEach(obj, (v, k) => {
+      if (k === "detail") {
+        emitType(v);
+      } else {
+        if (isFunction(v)) {
+          v().then((d) => {
+            obj[`${k}Detail`] = d;
+            Object.assign(innerObj, obj);
+            newProps[k] = d;
+          });
+        } else {
+          obj[`${k}Detail`] = v;
+          Object.assign(innerObj, obj);
+          newProps[k] = v;
+        }
+      }
+    });
+  }
   return newProps;
 }
