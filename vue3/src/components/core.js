@@ -1,6 +1,13 @@
 import { onMounted, reactive, watch, inject, onUnmounted, useAttrs } from "vue";
-import { forEach, tail, isArray, isFunction, drop, isString } from "lodash";
-import { setLevelValue, getLevelValue } from "./tool";
+import {
+  forEach,
+  tail,
+  isArray,
+  isFunction,
+  drop,
+  isString,
+  get,
+} from "lodash";
 
 export default function (props, emit, componentType) {
   const attrs = useAttrs();
@@ -53,9 +60,12 @@ export default function (props, emit, componentType) {
   }
 
   let innerObj = {};
+  let componentNameStr;
   if (isArray(componentName.value)) {
-    formComponents[componentName.value.join(".")] = innerObj;
+    componentNameStr = componentName.value.join(".");
+    formComponents[componentNameStr] = innerObj;
   } else {
+    componentNameStr = componentName.value;
     formComponents[componentName.value] = innerObj;
   }
 
@@ -88,6 +98,9 @@ export default function (props, emit, componentType) {
             props.inner(obj, detailData.value);
             running(obj);
           }
+        } else {
+          // 没有就直接往上面设值
+          emitType(get(detailData.value.data, componentNameStr));
         }
       }
     );
@@ -155,7 +168,11 @@ export default function (props, emit, componentType) {
           () => props.trigger[index][0],
           (newValue, oldValue) => {
             let obj = {};
-            props.trigger[index][1](obj, /* 全部是实体 */ formComponents, detailData.value);
+            props.trigger[index][1](
+              obj,
+              /* 全部是实体 */ formComponents,
+              detailData.value
+            );
             forEach(obj, (v, k) => {
               if (isFunction(v)) {
                 v().then((d) => {
@@ -176,7 +193,11 @@ export default function (props, emit, componentType) {
         () => props.trigger[0],
         (newValue, oldValue) => {
           let obj = {};
-          props.trigger[1](obj, /* 全部是实体 */ formComponents, detailData.value);
+          props.trigger[1](
+            obj,
+            /* 全部是实体 */ formComponents,
+            detailData.value
+          );
           forEach(obj, (v, k) => {
             if (isFunction(v)) {
               v().then((d) => {
@@ -227,7 +248,10 @@ export default function (props, emit, componentType) {
                   newProps[name] = innerObj[name];
                 }
               } else {
-                let result = attrs[key][index][1](formComponents, detailData.value);
+                let result = attrs[key][index][1](
+                  formComponents,
+                  detailData.value
+                );
                 if (
                   Object.prototype.toString.call(result) === "[object Promise]"
                 ) {
@@ -356,7 +380,11 @@ export default function (props, emit, componentType) {
           newValue[1] !== ""
         ) {
           let obj = {};
-          props.togetherhas[1](obj, /* 全部是实体 */ formComponents, detailData.value);
+          props.togetherhas[1](
+            obj,
+            /* 全部是实体 */ formComponents,
+            detailData.value
+          );
           forEach(obj, (v, k) => {
             if (isFunction(v)) {
               v().then((d) => {
@@ -385,7 +413,11 @@ export default function (props, emit, componentType) {
           (newValue[0] === "" && newValue[1] === "")
         ) {
           let obj = {};
-          props.togethernohas[1](obj, /* 全部是实体 */ formComponents, detailData.value);
+          props.togethernohas[1](
+            obj,
+            /* 全部是实体 */ formComponents,
+            detailData.value
+          );
           forEach(obj, (v, k) => {
             if (isFunction(v)) {
               v().then((d) => {
@@ -462,20 +494,15 @@ export default function (props, emit, componentType) {
 
   /* outer函数 */
   if (props.outer) {
-    if (isString(componentName.value)) {
-      outer[componentName.value] = () => {
-        return props.outer(props.value);
-      };
-    } else if (isArray(componentName.value)) {
-      outer[componentName.value.join(".")] = () => {
-        return props.outer(props.value);
-      };
-    }
+    outer[componentNameStr] = () => {
+      return props.outer(props.value);
+    };
   }
 
   function running(obj) {
     forEach(obj, (v, k) => {
       if (k === "detail") {
+        // 之后加一个独立的innerData来单独处理数据？？？？？？？？？？？？？？？？？？？？？？
         emitType(v);
       } else {
         if (isFunction(v)) {

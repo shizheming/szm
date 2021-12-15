@@ -35,8 +35,8 @@ import { toArray, once, cloneDeep } from "lodash";
 import axios from "../../api";
 
 const route = useRoute();
-const formAttrs = inject("formAttrs");
-const formDetail = inject("formDetail");
+const formAttrs = inject("formComponents");
+const formDetail = inject("detailData");
 // 是否编辑页
 let isEdit = ref(!!route.query.marketing_id);
 let selectOptions = ref();
@@ -49,7 +49,7 @@ const emit = defineEmits([
   "update:tableValue",
 ]);
 
-if (formDetail.value) {
+if (formDetail.value.use_scope) {
   echoSelectValue = formDetail.value.use_scope.site_list
     .filter((item) => {
       return !!item.is_shop_site;
@@ -100,7 +100,7 @@ watch(
   () => props.trigger,
   (newValue, oldValue) => {
     if (newValue) {
-      let [obj] = formAttrs.value.attrsValue['use_scope.shop_id'].optionsDetail.filter(
+      let [obj] = formAttrs['use_scope.shop_id'].optionsDetail.filter(
         (cur) => {
           return cur.value === newValue;
         }

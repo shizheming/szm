@@ -1,5 +1,5 @@
 <template>
-  <s-form :model="formData" ref="formSection">
+  <s-form :model="formData" ref="formSection" :api="api" :isEdit="isEdit">
     <s-form-item
       label="活动名称"
       :rules="{
@@ -48,7 +48,7 @@
         message: '备注不能大于200个字符',
       }"
     >
-      <s-textarea
+      <a-textarea
         placeholder="用户可以在礼金卡使用说明入口查看，请描述清楚礼金卡的使用范围"
         v-model:value="formData.basic.remark"
       />
@@ -75,7 +75,10 @@
         message: '请选择使用终端',
       }"
     >
-      <s-checkbox-group v-model:value="formData.use_scope.app_platform">
+      <s-checkbox-group
+        v-model:value="formData.use_scope.app_platform"
+        :inner="app_platform_inner"
+      >
         <s-checkbox value="i">iOS</s-checkbox>
         <s-checkbox value="a">Android</s-checkbox>
         <s-checkbox value="mp">小程序</s-checkbox>
@@ -123,7 +126,6 @@
       }"
     >
       <s-select
-        ref="shop_id"
         v-model:value="formData.use_scope.shop_id"
         :disabled="isEdit"
         :inner="shopIdInner"
@@ -162,6 +164,7 @@
     >
       <s-checkbox-group
         v-model:value="formData.gift_settings.gift_type"
+        :inner="gift_type_inner"
         :disabled="isEdit"
       >
         <s-checkbox :value="1">商品</s-checkbox>
@@ -231,10 +234,14 @@ const formAttrs = provide("formAttrs", formSection);
 let loading = ref();
 // 是否编辑页
 let isEdit = ref(!!route.query.marketing_id);
-let detail = ref();
-const formDetail = provide("formDetail", detail);
 
-if (isEdit.value) {
+function api() {
+  return axios.get(`/api/marketing/fullGift/${marketing_id}`, {
+    id: marketing_id,
+    action: "first",
+  });
+}
+/* if (isEdit.value) {
   axios
     .get(`/api/marketing/fullGift/${marketing_id}`, {
       id: marketing_id,
@@ -242,7 +249,6 @@ if (isEdit.value) {
     })
     .then(({ data }) => {
       const { basic, use_scope, preferential_rules, gift_settings } = data;
-      detail.value = data;
       formData.basic.name = basic.name;
       formData.basic.times = [moment(basic.start_time), moment(basic.end_time)];
       formData.basic.priority = basic.priority;
@@ -261,7 +267,7 @@ if (isEdit.value) {
       formData.gift_settings.gift_select_rule = gift_settings.gift_select_rule;
       console.log(formData, 111);
     });
-}
+} */
 
 async function nameRule(rule, value) {
   if (!value) {
@@ -285,6 +291,12 @@ async function priorityRule(rule, value) {
   } else {
     return Promise.resolve();
   }
+}
+
+function gift_type_inner() {}
+
+function app_platform_inner(checkbox, { data }) {
+  checkbox.detail = data.use_scope.app_platform.split(",");
 }
 
 const shopIdOptions = async function (params = {}) {
@@ -329,7 +341,9 @@ function siteIdsChange(select, formComponent) {
   let shop_id = formComponent["use_scope.shop_id"];
   if (formData.use_scope.site_ids === 1) {
     shop_id.site_ids_change_zero = formData.use_scope.shop_id;
-    formData.use_scope.shop_id = shop_id.site_ids_change_one;
+    if ("site_ids_change_one" in shop_id) {
+      formData.use_scope.shop_id = shop_id.site_ids_change_one;
+    }
   } else if (formData.use_scope.site_ids === 0) {
     shop_id.site_ids_change_one = formData.use_scope.shop_id;
     formData.use_scope.shop_id = shop_id.site_ids_change_zero;
