@@ -1,5 +1,8 @@
 <template>
   <s-form :model="formData" ref="formSection" :api="api" :isEdit="isEdit">
+    <s-form-item label="xxxxxx" name="cccccc">
+      <s-select v-model:value="formData.cccccc" :options="kkkk"/>
+    </s-form-item>
     <s-form-item
       label="活动名称"
       :rules="{
@@ -214,6 +217,29 @@ import moment from "moment";
 import Site from "./components/site.vue";
 import GiftGoods from "./components/giftGoods.vue";
 const route = useRoute();
+
+const kkkk = ref();
+setTimeout(() => {
+  kkkk.value = [
+    {
+      label:1,
+      value:1
+    },
+    {
+      label:2,
+      value:2
+    },
+    {
+      label:3,
+      value:3
+    },
+    {
+      label:4,
+      value:4
+    }
+  ]
+},2000)
+
 let marketing_id = route.query.marketing_id;
 const formSection = ref();
 const formData = reactive({
@@ -295,8 +321,10 @@ async function priorityRule(rule, value) {
 
 function gift_type_inner() {}
 
-function app_platform_inner(checkbox, { data }) {
-  checkbox.detail = data.use_scope.app_platform.split(",");
+function app_platform_inner(checkbox, detail) {
+  if (detail) {
+    checkbox.detail = detail.data.use_scope.app_platform.split(",");
+  }
 }
 
 const shopIdOptions = async function (params = {}) {

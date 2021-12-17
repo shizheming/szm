@@ -12,14 +12,14 @@ import {
 export default function (props, emit, componentType) {
   const attrs = useAttrs();
   /* 接受form给的数据 */
-  let isEdit = inject("isEdit");
-  let detailData = inject("detailData");
-  let isFinish = inject("isFinish");
+  let isEdit = inject("isEdit", undefined);
+  let detailData = inject("detailData", undefined);
+  let isFinish = inject("isFinish", undefined);
 
-  let outer = inject("outer");
-  let formData = inject("formData");
-  let formComponents = inject("formComponents");
-  let componentName = inject("componentName");
+  let outer = inject("outer", undefined);
+  let formData = inject("formData", undefined);
+  let formComponents = inject("formComponents", undefined);
+  let componentName = inject("componentName", undefined);
   /* 把change包一下，我要在里面更新数据，同时把formComponents传出去，打通表单内的所有数据 */
   let newProps = reactive({ ...props });
   newProps.onChange = (...e) => {
@@ -36,9 +36,10 @@ export default function (props, emit, componentType) {
       emit("update:value", nv);
     }
     if (props.onChange) {
-      props.onChange(...e, formComponents, detailData.value);
+      props.onChange(...e, formComponents, detailData?.value);
     }
   };
+
 
   let emitType;
   if (componentType === "input" || componentType === "radioGroup") {
@@ -61,10 +62,10 @@ export default function (props, emit, componentType) {
 
   let innerObj = {};
   let componentNameStr;
-  if (isArray(componentName.value)) {
+  if (isArray(componentName?.value)) {
     componentNameStr = componentName.value.join(".");
     formComponents[componentNameStr] = innerObj;
-  } else {
+  } else if (isString(componentName?.value)) {
     componentNameStr = componentName.value;
     formComponents[componentName.value] = innerObj;
   }
@@ -72,35 +73,35 @@ export default function (props, emit, componentType) {
   /* 进口处理，判断是不是回显*/
   if (isEdit) {
     // 这里主要是为了，不如有个input一开始是隐藏的，之后被显示，这个时候显示watch早就完成了，所以要自己触发回显
-    if (isFinish.value) {
+    if (isFinish?.value) {
       if (props.inner) {
         let obj = {};
         if (props.inner.toString().includes("_next")) {
-          props.inner(obj, detailData.value).then(() => {
+          props.inner(obj, detailData?.value).then(() => {
             running(obj);
           });
         } else {
-          props.inner(obj, detailData.value);
+          props.inner(obj, detailData?.value);
           running(obj);
         }
       }
     }
     watch(
-      () => isFinish.value,
+      () => isFinish?.value,
       (newValue, oldValue) => {
         if (props.inner) {
           let obj = {};
           if (props.inner.toString().includes("_next")) {
-            props.inner(obj, detailData.value).then(() => {
+            props.inner(obj, detailData?.value).then(() => {
               running(obj);
             });
           } else {
-            props.inner(obj, detailData.value);
+            props.inner(obj, detailData?.value);
             running(obj);
           }
         } else {
           // 没有就直接往上面设值
-          emitType(get(detailData.value.data, componentNameStr));
+          emitType(get(detailData?.value.data, componentNameStr));
         }
       }
     );
@@ -171,7 +172,7 @@ export default function (props, emit, componentType) {
             props.trigger[index][1](
               obj,
               /* 全部是实体 */ formComponents,
-              detailData.value
+              detailData?.value
             );
             forEach(obj, (v, k) => {
               if (isFunction(v)) {
@@ -196,7 +197,7 @@ export default function (props, emit, componentType) {
           props.trigger[1](
             obj,
             /* 全部是实体 */ formComponents,
-            detailData.value
+            detailData?.value
           );
           forEach(obj, (v, k) => {
             if (isFunction(v)) {
@@ -250,7 +251,7 @@ export default function (props, emit, componentType) {
               } else {
                 let result = attrs[key][index][1](
                   formComponents,
-                  detailData.value
+                  detailData?.value
                 );
                 if (
                   Object.prototype.toString.call(result) === "[object Promise]"
@@ -292,7 +293,7 @@ export default function (props, emit, componentType) {
                 newProps[name] = innerObj[name];
               }
             } else {
-              let result = attrs[key][1](formComponents, detailData.value);
+              let result = attrs[key][1](formComponents, detailData?.value);
               if (
                 Object.prototype.toString.call(result) === "[object Promise]"
               ) {
@@ -383,7 +384,7 @@ export default function (props, emit, componentType) {
           props.togetherhas[1](
             obj,
             /* 全部是实体 */ formComponents,
-            detailData.value
+            detailData?.value
           );
           forEach(obj, (v, k) => {
             if (isFunction(v)) {
@@ -416,7 +417,7 @@ export default function (props, emit, componentType) {
           props.togethernohas[1](
             obj,
             /* 全部是实体 */ formComponents,
-            detailData.value
+            detailData?.value
           );
           forEach(obj, (v, k) => {
             if (isFunction(v)) {
@@ -449,7 +450,7 @@ export default function (props, emit, componentType) {
             newValue[0] !== "" &&
             newValue[1] !== ""
           ) {
-            let result = attrs[key][1](formComponents, detailData.value);
+            let result = attrs[key][1](formComponents, detailData?.value);
             if (Object.prototype.toString.call(result) === "[object Promise]") {
               result.then((d) => {
                 innerObj[`${name}Detail`] = d;
@@ -477,7 +478,7 @@ export default function (props, emit, componentType) {
             (newValue[0] === undefined && newValue[1] === undefined) ||
             (newValue[0] === "" && newValue[1] === "")
           ) {
-            let result = attrs[key][1](formComponents, detailData.value);
+            let result = attrs[key][1](formComponents, detailData?.value);
             if (Object.prototype.toString.call(result) === "[object Promise]") {
               result.then((d) => {
                 innerObj[`${name}Detail`] = d;
@@ -493,7 +494,7 @@ export default function (props, emit, componentType) {
   });
 
   /* outer函数 */
-  if (props.outer) {
+  if (props.outer && outer) {
     outer[componentNameStr] = () => {
       return props.outer(props.value);
     };
