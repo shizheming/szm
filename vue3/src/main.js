@@ -31,25 +31,85 @@ createApp(App)
   .use(Antd)
   .use(router)
   .component("s-input", input)
-  .component("s-select", select)
+  .component("s-select", {
+    inheritAttrs: false,
+    ...select,
+  })
   .component("s-select-option", selectOption)
-  .component("s-form", form)
-  .component("s-switch", aswitch)
-  .component("s-cascader", cascader)
-  .component("s-checkbox", checkbox)
-  .component("s-checkbox-group", checkboxGroup)
-  .component("s-date-picker", datePicker)
-  .component("s-range-picker", rangePicker)
-  .component("s-input-search", inputSearch)
-  .component("s-textarea", textarea)
-  .component("s-input-number", inputNumber)
-  .component("s-radio", radio)
-  .component("s-radio-group", radioGroup)
-  .component("s-rate", rate)
-  .component("s-time-picker", timePicker)
-  .component("s-time-range-picker", timeRangePicker)
-  .component("s-tree-select", treeSelect)
-  .component("s-form-item", formItem)
-  .component("s-button", button)
-  .component("s-table", table)
+  .component("s-form", {
+    inheritAttrs: false,
+    ...form,
+  })
+  .component("s-switch", {
+    inheritAttrs: false,
+    ...aswitch,
+  })
+  .component("s-cascader", {
+    inheritAttrs: false,
+    ...cascader,
+  })
+  .component("s-checkbox", {
+    inheritAttrs: false,
+    ...checkbox,
+  })
+  .component("s-checkbox-group", {
+    inheritAttrs: false,
+    ...checkboxGroup,
+  })
+  .component("s-date-picker", {
+    inheritAttrs: false,
+    ...datePicker,
+  })
+  .component("s-range-picker", {
+    inheritAttrs: false,
+    ...rangePicker,
+  })
+  .component("s-input-search", {
+    inheritAttrs: false,
+    ...inputSearch,
+  })
+  .component("s-textarea", {
+    inheritAttrs: false,
+    ...textarea,
+  })
+  .component("s-input-number", {
+    inheritAttrs: false,
+    ...inputNumber,
+  })
+  .component("s-radio", {
+    inheritAttrs: false,
+    ...radio,
+  })
+  .component("s-radio-group", {
+    inheritAttrs: false,
+    ...radioGroup,
+  })
+  .component("s-rate", {
+    inheritAttrs: false,
+    ...rate,
+  })
+  .component("s-time-picker", {
+    inheritAttrs: false,
+    ...timePicker,
+  })
+  .component("s-time-range-picker", {
+    inheritAttrs: false,
+    ...timeRangePicker,
+  })
+  .component("s-tree-select", {
+    inheritAttrs: false,
+    ...treeSelect,
+  })
+  .component("s-form-item", {
+    inheritAttrs: false,
+    ...formItem,
+  })
+  .component("s-button", {
+    inheritAttrs: false,
+    ...button,
+  })
+  .component("s-table", {
+    inheritAttrs: false,
+    ...table,
+  })
   .mount("#app");

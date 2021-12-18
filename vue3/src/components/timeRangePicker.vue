@@ -17,10 +17,7 @@ forEach(slots, (value, key) => {
 });
 
 let outer = inject("outer");
-const p = defineProps({
-  ...TimeRangePicker.props,
-  ...props,
-});
+const p = defineProps(props);
 const emit = defineEmits(["update:value"]);
 
 let newProps = Object.assign(core(p, emit), newSlots);

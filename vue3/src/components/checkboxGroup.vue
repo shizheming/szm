@@ -8,10 +8,7 @@ import core from "./core";
 import { CheckboxGroup } from "ant-design-vue";
 import props from "./props";
 
-const p = defineProps({
-  ...CheckboxGroup.props,
-  ...props,
-});
+const p = defineProps(props);
 const emit = defineEmits(["update:value"]);
 let newProps = core(p, emit);
 </script>

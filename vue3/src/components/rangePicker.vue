@@ -16,10 +16,7 @@ forEach(slots, (value, key) => {
   newSlots[key] = value();
 });
 let outer = inject("outer");
-const p = defineProps({
-  ...RangePicker.props,
-  ...props,
-});
+const p = defineProps(props);
 const emit = defineEmits(["update:value"]);
 
 let newProps = Object.assign(core(p, emit), newSlots);

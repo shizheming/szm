@@ -8,10 +8,7 @@ import core from "./core";
 import { Radio } from "ant-design-vue";
 import props from "./props";
 
-const p = defineProps({
-  ...Radio.props,
-  ...props,
-});
+const p = defineProps(props);
 const emit = defineEmits(["update:value", "update:checked"]);
 let newProps = core(p, emit, "radio");
 </script>

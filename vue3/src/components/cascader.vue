@@ -15,10 +15,7 @@ let newSlots = {};
 forEach(slots, (value, key) => {
   newSlots[key] = value();
 });
-const p = defineProps({
-  ...Cascader.props,
-  ...props,
-});
+const p = defineProps(props);
 const emit = defineEmits(["update:value"]);
 let newProps = Object.assign(core(p, emit), newSlots);
 </script>

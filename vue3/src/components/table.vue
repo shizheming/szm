@@ -9,9 +9,6 @@ import core from "./core2";
 import { Table, TableColumn } from "ant-design-vue";
 import { tableProps } from "ant-design-vue/lib/table";
 import props from "./props2";
-const p = defineProps({
-  ...tableProps(),
-  ...props,
-});
+const p = defineProps(props);
 let newProps = core(p, "table");
 </script>
