@@ -17,6 +17,6 @@ const p = defineProps({
   ...Switch.props,
   ...props,
 });
-const emit = defineEmits(["update:value", "update:checked", "update:preValue"]);
+const emit = defineEmits(["update:value", "update:checked"]);
 let newProps = Object.assign(core(p, emit, "switch"), newSlots);
 </script>

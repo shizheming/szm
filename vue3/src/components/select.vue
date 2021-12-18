@@ -25,7 +25,7 @@ const p = defineProps({
   ...Select.props,
   ...props,
 });
-const emit = defineEmits(["update:value", "update:preValue"]);
+const emit = defineEmits(["update:value"]);
 let newProps = Object.assign(core(p, emit), newSlots);
 function filterOption(input, option) {
   return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;

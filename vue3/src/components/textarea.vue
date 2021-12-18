@@ -13,7 +13,7 @@ const p = defineProps({
   ...Textarea.props,
   ...props,
 });
-const emit = defineEmits(["update:value", "update:preValue"]);
+const emit = defineEmits(["update:value"]);
 let newProps = core(p, emit, "input");
 
 </script>

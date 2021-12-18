@@ -12,6 +12,6 @@ const p = defineProps({
   ...RadioGroup.props,
   ...props,
 });
-const emit = defineEmits(["update:value", "update:preValue"]);
+const emit = defineEmits(["update:value"]);
 let newProps = core(p, emit, "radioGroup");
 </script>

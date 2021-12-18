@@ -19,6 +19,6 @@ const p = defineProps({
   ...Cascader.props,
   ...props,
 });
-const emit = defineEmits(["update:value", "update:preValue"]);
+const emit = defineEmits(["update:value"]);
 let newProps = Object.assign(core(p, emit), newSlots);
 </script>

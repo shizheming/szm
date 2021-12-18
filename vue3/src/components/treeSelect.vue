@@ -25,6 +25,6 @@ const p = defineProps({
   ...TreeSelect.props,
   ...props,
 });
-const emit = defineEmits(["update:value", "update:preValue"]);
+const emit = defineEmits(["update:value"]);
 let newProps = Object.assign(core(p, emit), newSlots);
 </script>

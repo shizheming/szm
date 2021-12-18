@@ -12,6 +12,6 @@ const p = defineProps({
   ...Radio.props,
   ...props,
 });
-const emit = defineEmits(["update:value", "update:checked", "update:preValue"]);
+const emit = defineEmits(["update:value", "update:checked"]);
 let newProps = core(p, emit, "radio");
 </script>
