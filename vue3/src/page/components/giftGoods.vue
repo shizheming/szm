@@ -1,5 +1,5 @@
 <template>
-  <s-button @click="chooseGoods">选择商品</s-button>
+  <s-button @click="chooseGoods" style="margin-bottom: 10px">选择商品</s-button>
   <a-table
     rowKey="id"
     :pagination="false"
@@ -17,15 +17,27 @@
       </template>
     </template>
   </a-table>
-  <ChooseGoods v-model:visible="visible" />
+  <ChooseGoods
+    v-model:visible="visible"
+    v-model:selectedRowKeys="selectedRowKeys"
+    v-model:selectedRow="selectedRow"
+  />
 </template>
 
 <script setup>
-import { ref, toRefs, reactive, onMounted, inject } from "vue";
+import { ref, toRefs, reactive, onMounted, inject, watch } from "vue";
 import { message } from "ant-design-vue";
 import ChooseGoods from "./chooseGoods.vue";
 let formData = inject("formData");
 const visible = ref(false);
+const selectedRowKeys = ref();
+const selectedRow = ref();
+
+watch(() => {
+  return selectedRow.value
+}, (newValue) => {
+  console.log(newValue,12)
+})
 
 const columns = [
   {
@@ -146,6 +158,8 @@ function chooseGoods() {
   }
   visible.value = true;
 }
+
+function siteIdsValueDelete() {}
 </script>
 
 <style></style>

@@ -6,46 +6,69 @@
     @cancel="handleCancel"
     :width="1400"
   >
-    <s-form
-      :model="formData"
-      ref="formSection"
-      :labelCol="{span:4}"
-    >
-      <s-form-item label="SPU ID" style="width:25%;display:inline-block;">
+    <s-form :model="formData" ref="formSection" :labelCol="{ span: 4 }">
+      <s-form-item
+        label="SPU ID"
+        style="width: 20%; display: inline-block; margin-right: 10px"
+      >
         <s-input v-model:value="formData.spu_id" />
       </s-form-item>
-      <s-form-item label="商品名称" style="width:25%;display:inline-block;">
+      <s-form-item
+        label="商品名称"
+        style="width: 20%; display: inline-block; margin-right: 10px"
+      >
         <s-input v-model:value="formData.name" />
       </s-form-item>
-      <s-form-item label="SKU ID" style="width:25%;display:inline-block;">
+      <s-form-item
+        label="SKU ID"
+        style="width: 20%; display: inline-block; margin-right: 10px"
+      >
         <s-input v-model:value="formData.sku_id" />
       </s-form-item>
-      <s-form-item label="SKU编码" style="width:25%;display:inline-block;">
+      <s-form-item
+        label="SKU编码"
+        style="width: 20%; display: inline-block; margin-right: 10px"
+      >
         <s-input v-model:value="formData.sku_code" />
       </s-form-item>
-      <s-form-item label="品牌" style="width:25%;display:inline-block;">
+      <s-form-item
+        label="品牌"
+        style="width: 20%; display: inline-block; margin-right: 10px"
+      >
         <s-select v-model:value="formData.brand_id" :inner="brand_id_inner" />
       </s-form-item>
-      <s-form-item label="后台类目" style="width:25%;display:inline-block;">
+      <s-form-item
+        label="后台类目"
+        style="width: 20%; display: inline-block; margin-right: 10px"
+      >
         <s-cascader
           v-model:value="formData.category_id"
           :inner="category_id_inner"
         />
       </s-form-item>
-      <s-form-item label="前台类目" style="width:25%;display:inline-block;">
+      <s-form-item
+        label="前台类目"
+        style="width: 20%; display: inline-block; margin-right: 10px"
+      >
         <s-cascader
           v-model:value="formData.user_category_id"
           :inner="user_category_id_inner"
         />
       </s-form-item>
-      <s-form-item label="供应商" style="width:25%;display:inline-block;">
+      <s-form-item
+        label="供应商"
+        style="width: 20%; display: inline-block; margin-right: 10px"
+      >
         <s-select
           v-model:value="formData.supplier_id"
           placeholder="供应商"
           :inner="supplier_id_inner"
         />
       </s-form-item>
-      <s-form-item label="上下架状态" style="width:25%;display:inline-block;">
+      <s-form-item
+        label="上下架状态"
+        style="width: 20%; display: inline-block; margin-right: 10px"
+      >
         <s-select
           v-model:value="formData.shop_is_listing"
           placeholder="上下架状态"
@@ -54,12 +77,23 @@
           <s-select-option :value="1">上架</s-select-option>
         </s-select>
       </s-form-item>
-      <s-form-item label="货号" style="width:25%;display:inline-block;">
+      <s-form-item
+        label="货号"
+        style="width: 20%; display: inline-block; margin-right: 10px"
+      >
         <s-input v-model:value="formData.sn" />
       </s-form-item>
     </s-form>
     <s-button @click="search">搜索</s-button>
-    <a-table :columns="columns" :dataSource="dataSource" rowKey="id">
+    <a-table
+      :columns="columns"
+      :dataSource="dataSource"
+      rowKey="id"
+      :rowSelection="{
+        selectedRowKeys: allSelectedRowKeys,
+        onChange: onSelectChange,
+      }"
+    >
       <template #expandedRowRender="{ record }">
         <a-table
           :columns="innerColumns"
@@ -75,11 +109,7 @@
       </template>
       <template #bodyCell="{ column, record, index }">
         <template v-if="column.key === 'img_url'">
-          <img
-            :data-item="record.name"
-            :src="record.goods_gallery[0].img_url"
-            style="width: 100px"
-          />
+          <a-image :src="record.goods_gallery[0].img_url" :width="50" />
         </template>
         <template v-if="column.key === 'shop_selling_price'">
           {{
@@ -109,15 +139,25 @@
 
 <script setup>
 import axios from "../../api";
-import { ref, reactive, inject } from "vue";
+import { ref, reactive, inject, watch } from "vue";
 import { last } from "lodash";
 let shop_id_list = inject("shop_id_list");
 const props = defineProps(["visible"]);
-const emit = defineEmits(["update:visible"]);
+const emit = defineEmits([
+  "update:visible",
+  "update:selectedRowKeys",
+  "update:selectedRow",
+]);
 const formSection = ref();
 const formData = reactive({});
 const dataSource = ref();
 const innerData = ref();
+const allSelectedRowKeys = ref([]);
+const allSelectedRows = ref([]);
+function onSelectChange(selectedRowKeys, selectedRows) {
+  allSelectedRowKeys.value = selectedRowKeys;
+  allSelectedRows.value = selectedRows;
+}
 const columns = [
   {
     title: "SPU ID",
@@ -209,7 +249,19 @@ const innerColumns = [
   },
 ];
 
+watch(
+  () => {
+    return props.visible;
+  },
+  (newValue) => {
+    if (newValue === true) {
+      search();
+    }
+  }
+);
 function handleOk() {
+  emit("update:selectedRowKeys", allSelectedRowKeys.value);
+  emit("update:selectedRow", allSelectedRows.value);
   emit("update:visible", false);
 }
 function handleCancel() {
@@ -284,7 +336,6 @@ if (is_platform != 1 || is_mqj != 1) {
 }
 
 async function search() {
-  console.log(formData, 12);
   let {
     data: { list },
   } = await axios.post("/api/goods/list", {
