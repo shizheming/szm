@@ -9,45 +9,43 @@
     <s-form
       :model="formData"
       ref="formSection"
-      layout="inline"
-      :wrapper-col="{}"
-      :label-col="{}"
+      :labelCol="{span:4}"
     >
-      <s-form-item label="SPU ID">
+      <s-form-item label="SPU ID" style="width:25%;display:inline-block;">
         <s-input v-model:value="formData.spu_id" />
       </s-form-item>
-      <s-form-item label="商品名称">
+      <s-form-item label="商品名称" style="width:25%;display:inline-block;">
         <s-input v-model:value="formData.name" />
       </s-form-item>
-      <s-form-item label="SKU ID">
+      <s-form-item label="SKU ID" style="width:25%;display:inline-block;">
         <s-input v-model:value="formData.sku_id" />
       </s-form-item>
-      <s-form-item label="SKU编码">
+      <s-form-item label="SKU编码" style="width:25%;display:inline-block;">
         <s-input v-model:value="formData.sku_code" />
       </s-form-item>
-      <s-form-item label="品牌">
+      <s-form-item label="品牌" style="width:25%;display:inline-block;">
         <s-select v-model:value="formData.brand_id" :inner="brand_id_inner" />
       </s-form-item>
-      <s-form-item label="后台类目">
+      <s-form-item label="后台类目" style="width:25%;display:inline-block;">
         <s-cascader
           v-model:value="formData.category_id"
           :inner="category_id_inner"
         />
       </s-form-item>
-      <s-form-item label="前台类目">
+      <s-form-item label="前台类目" style="width:25%;display:inline-block;">
         <s-cascader
           v-model:value="formData.user_category_id"
           :inner="user_category_id_inner"
         />
       </s-form-item>
-      <s-form-item label="供应商">
+      <s-form-item label="供应商" style="width:25%;display:inline-block;">
         <s-select
           v-model:value="formData.supplier_id"
           placeholder="供应商"
           :inner="supplier_id_inner"
         />
       </s-form-item>
-      <s-form-item label="上下架状态">
+      <s-form-item label="上下架状态" style="width:25%;display:inline-block;">
         <s-select
           v-model:value="formData.shop_is_listing"
           placeholder="上下架状态"
@@ -56,7 +54,7 @@
           <s-select-option :value="1">上架</s-select-option>
         </s-select>
       </s-form-item>
-      <s-form-item label="货号">
+      <s-form-item label="货号" style="width:25%;display:inline-block;">
         <s-input v-model:value="formData.sn" />
       </s-form-item>
     </s-form>

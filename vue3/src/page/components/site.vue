@@ -49,7 +49,7 @@ const emit = defineEmits([
   "update:tableValue",
 ]);
 
-if (formDetail.value.use_scope) {
+if (formDetail?.value?.use_scope) {
   echoSelectValue = formDetail.value.use_scope.site_list
     .filter((item) => {
       return !!item.is_shop_site;

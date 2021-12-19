@@ -67,8 +67,8 @@ export default function (props, emit, componentType) {
     } else {
       emit("update:value", nv);
     }
-    if (props.onChange) {
-      props.onChange(...e, formComponents, detailData?.value);
+    if (attrs.onChange) {
+      attrs.onChange(...e, formComponents, detailData?.value);
     }
   };
 
@@ -138,37 +138,12 @@ export default function (props, emit, componentType) {
     );
   } else {
     if (props.inner) {
-      onMounted(() => {
-        let obj = {};
-        if (props.inner.toString().includes("_next")) {
-          props.inner(obj).then(() => {
-            forEach(obj, (v, k) => {
-              if (isFunction(v)) {
-                v().then((d) => {
-                  obj[`${k}Detail`] = d;
-                  Object.assign(innerObj, obj);
-                  newProps[k] = d;
-                });
-              } else {
-                obj[`${k}Detail`] = v;
-                Object.assign(innerObj, obj);
-                newProps[k] = v;
-              }
-            });
-          });
-        } else {
-          props.inner(obj);
+      let obj = {};
+      if (props.inner.toString().includes("_next")) {
+        props.inner(obj).then(() => {
           forEach(obj, (v, k) => {
             if (isFunction(v)) {
               v().then((d) => {
-                obj[`${k}Detail`] = d;
-                Object.assign(innerObj, obj);
-                newProps[k] = d;
-              });
-            } else if (
-              Object.prototype.toString.call(v) === "[object Promise]"
-            ) {
-              v.then((d) => {
                 obj[`${k}Detail`] = d;
                 Object.assign(innerObj, obj);
                 newProps[k] = d;
@@ -179,10 +154,44 @@ export default function (props, emit, componentType) {
               newProps[k] = v;
             }
           });
-        }
-      });
+        });
+      } else {
+        props.inner(obj);
+        forEach(obj, (v, k) => {
+          if (isFunction(v)) {
+            v().then((d) => {
+              obj[`${k}Detail`] = d;
+              Object.assign(innerObj, obj);
+              newProps[k] = d;
+            });
+          } else if (Object.prototype.toString.call(v) === "[object Promise]") {
+            v.then((d) => {
+              obj[`${k}Detail`] = d;
+              Object.assign(innerObj, obj);
+              newProps[k] = d;
+            });
+          } else {
+            obj[`${k}Detail`] = v;
+            Object.assign(innerObj, obj);
+            newProps[k] = v;
+          }
+        });
+      }
     }
   }
+
+  /* 初始化单个属性 */
+  forEach(attrs, (value, key) => {
+    if (/^inner-/.test(key)) {
+      if (isFunction(value)) {
+        let [name] = tail(key.split("-"));
+        value().then((d) => {
+          innerObj[`${name}Detail`] = d;
+          newProps[name] = d;
+        });
+      }
+    }
+  });
 
   /* 组件没有了删除对应的值 */
   if (props.clear === true) {
@@ -259,41 +268,19 @@ export default function (props, emit, componentType) {
           watch(
             () => attrs[key][index][0],
             (newValue, oldValue) => {
-              if (attrs[key][index][1] === "inner") {
-                if (
-                  isFunction(innerObj[name]) &&
-                  innerObj[name].toString().includes("_next")
-                ) {
-                  innerObj[name]().then((d) => {
-                    innerObj[`${name}Detail`] = d;
-                    newProps[name] = d;
-                  });
-                } else if (
-                  Object.prototype.toString.call(innerObj[name]) ===
-                  "[object Promise]"
-                ) {
-                  innerObj[name].then((d) => {
-                    innerObj[`${name}Detail`] = d;
-                    newProps[name] = d;
-                  });
-                } else {
-                  newProps[name] = innerObj[name];
-                }
+              let result = attrs[key][index][1](
+                formComponents,
+                detailData?.value
+              );
+              if (
+                Object.prototype.toString.call(result) === "[object Promise]"
+              ) {
+                result.then((d) => {
+                  innerObj[`${name}Detail`] = d;
+                  newProps[name] = d;
+                });
               } else {
-                let result = attrs[key][index][1](
-                  formComponents,
-                  detailData?.value
-                );
-                if (
-                  Object.prototype.toString.call(result) === "[object Promise]"
-                ) {
-                  result.then((d) => {
-                    innerObj[`${name}Detail`] = d;
-                    newProps[name] = d;
-                  });
-                } else {
-                  newProps[name] = result;
-                }
+                newProps[name] = result;
               }
             }
           );

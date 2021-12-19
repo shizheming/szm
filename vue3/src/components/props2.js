@@ -6,9 +6,5 @@ export default {
   trigger: {
     type: [Number, String, Array, Object],
     default: undefined,
-  },
-  triggeraction: {
-    type: Function,
-    default: undefined,
-  },
+  }
 };

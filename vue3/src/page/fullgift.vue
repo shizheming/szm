@@ -1,8 +1,11 @@
 <template>
-  <s-form :model="formData" ref="formSection" :api="api" :isEdit="isEdit">
-    <s-form-item label="xxxxxx" name="cccccc">
-      <s-select v-model:value="formData.cccccc" :options="kkkk"/>
-    </s-form-item>
+  <s-form
+    :model="formData"
+    ref="formSection"
+    :api="api"
+    :isEdit="isEdit"
+    :labelCol="{ span: 4 }"
+  >
     <s-form-item
       label="活动名称"
       :rules="{
@@ -131,7 +134,7 @@
       <s-select
         v-model:value="formData.use_scope.shop_id"
         :disabled="isEdit"
-        :inner="shopIdInner"
+        :inner-options="shopIdOptions"
         :trigger="[formData.use_scope.site_ids, siteIdsChange]"
         :switch-triggerclear="!isEdit"
         :triggerclear="[formData.use_scope.site_ids_value, 'values']"
@@ -167,7 +170,6 @@
     >
       <s-checkbox-group
         v-model:value="formData.gift_settings.gift_type"
-        :inner="gift_type_inner"
         :disabled="isEdit"
       >
         <s-checkbox :value="1">商品</s-checkbox>
@@ -217,29 +219,6 @@ import moment from "moment";
 import Site from "./components/site.vue";
 import GiftGoods from "./components/giftGoods.vue";
 const route = useRoute();
-
-const kkkk = ref();
-setTimeout(() => {
-  kkkk.value = [
-    {
-      label:1,
-      value:1
-    },
-    {
-      label:2,
-      value:2
-    },
-    {
-      label:3,
-      value:3
-    },
-    {
-      label:4,
-      value:4
-    }
-  ]
-},2000)
-
 let marketing_id = route.query.marketing_id;
 const formSection = ref();
 const formData = reactive({
@@ -319,8 +298,6 @@ async function priorityRule(rule, value) {
   }
 }
 
-function gift_type_inner() {}
-
 function app_platform_inner(checkbox, detail) {
   if (detail) {
     checkbox.detail = detail.data.use_scope.app_platform.split(",");
@@ -341,10 +318,6 @@ const shopIdOptions = async function (params = {}) {
     };
   });
 };
-
-function shopIdInner(select) {
-  select.options = shopIdOptions;
-}
 
 function siteIdsTriggerOptions(formComponent) {
   if (formData.use_scope.site_ids === 0) {

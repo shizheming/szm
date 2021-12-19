@@ -17,10 +17,7 @@ forEach(slots, (value, key) => {
 });
 
 const attrs = useAttrs();
-const p = defineProps({
-  ...FormItem.props,
-  ...props,
-});
+const p = defineProps(props);
 const componentName = ref(p.name);
 provide("componentName", componentName);
 let newProps = Object.assign(core(p, attrs), newSlots);
