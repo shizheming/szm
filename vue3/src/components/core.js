@@ -110,8 +110,11 @@ export default function (props, emit, componentType) {
     watch(
       () => isFinish?.value,
       (newValue, oldValue) => {
-        // 没有就直接往上面设值
-        emitType(get(detailData?.value, componentNameStr));
+        if (isFunction(props.inner)) {
+          emitType(props.inner(detailData?.value))
+        } else {
+          emitType(get(detailData?.value, componentNameStr));
+        }
       }
     );
   }

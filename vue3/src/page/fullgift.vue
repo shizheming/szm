@@ -3,6 +3,7 @@
     :model="formData"
     ref="formSection"
     :api="api"
+    :callback="callback"
     :isEdit="isEdit"
     :labelCol="{ span: 4 }"
   >
@@ -27,7 +28,11 @@
         message: '请选择活动时间',
       }"
     >
-      <s-range-picker showTime v-model:value="formData.basic.times" />
+      <s-range-picker
+        showTime
+        v-model:value="formData.basic.times"
+        :inner="timesInner"
+      />
       <div style="color: #ccc">活动到期后将自动失效，失效后不可延长</div>
     </s-form-item>
     <s-form-item
@@ -101,6 +106,7 @@
     >
       <s-radio-group
         v-model:value="formData.use_scope.site_ids"
+        :inner="site_ids_inner"
         :disabled="isEdit"
       >
         <s-radio :value="0">全选</s-radio>
@@ -247,39 +253,25 @@ function api() {
     action: "first",
   });
 }
-/* if (isEdit.value) {
-  axios
-    .get(`/api/marketing/fullGift/${marketing_id}`, {
-      id: marketing_id,
-      action: "first",
-    })
-    .then(({ data }) => {
-      const { basic, use_scope, preferential_rules, gift_settings } = data;
-      formData.basic.name = basic.name;
-      formData.basic.times = [moment(basic.start_time), moment(basic.end_time)];
-      formData.basic.priority = basic.priority;
-      formData.basic.remark = basic.remark;
-      formData.use_scope.business_id = use_scope.business_id;
-      formData.use_scope.app_platform = use_scope.app_platform.split(",");
-      formData.use_scope.site_ids = use_scope.site_ids ? 1 : 0;
-      formData.use_scope.site_ids_value = use_scope.site_list.map(
-        (cur) => cur.id
-      );
-      formData.use_scope.shop_id = use_scope.shop_id;
-      formData.preferential_rules.marketing_type =
-        preferential_rules.marketing_type;
-      formData.gift_settings.gift_type =
-        gift_settings.gift_type == 3 ? [1, 2] : [gift_settings.gift_type];
-      formData.gift_settings.gift_select_rule = gift_settings.gift_select_rule;
-      console.log(formData, 111);
-    });
-} */
 
+function callback(detail) {
+  formData.use_scope.site_ids_value = detail.use_scope.site_list.map(
+    (cur) => cur.id
+  );
+}
 
-function gift_type_inner (d,detail) {
-  if (detail) {
-    d.detail = detail.gift_settings.gift_type == 3 ? [1, 2] : [detail.gift_settings.gift_type];
-  }
+function gift_type_inner(detail) {
+  return detail.gift_settings.gift_type == 3
+    ? [1, 2]
+    : [detail.gift_settings.gift_type];
+}
+
+function site_ids_inner(detail) {
+  return detail.use_scope.site_ids ? 1 : 0;
+}
+
+function timesInner(detail) {
+  return [moment(detail.basic.start_time), moment(detail.basic.end_time)];
 }
 
 async function nameRule(rule, value) {
@@ -306,10 +298,8 @@ async function priorityRule(rule, value) {
   }
 }
 
-function app_platform_inner(checkbox, detail) {
-  if (detail) {
-    checkbox.detail = detail.use_scope.app_platform.split(",");
-  }
+function app_platform_inner(detail) {
+  return detail.use_scope.app_platform.split(",");
 }
 
 const shopIdOptions = async function (params = {}) {

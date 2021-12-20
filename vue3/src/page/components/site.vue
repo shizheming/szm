@@ -2,7 +2,7 @@
   <div>
     <s-select
       mode="multiple"
-      :inner="selectInner"
+      :inner-options="selectInner"
       :value="props.selectValue"
       style="margin-bottom: 10px"
       @change="selectChange"
@@ -100,11 +100,9 @@ watch(
   () => props.trigger,
   (newValue, oldValue) => {
     if (newValue) {
-      let [obj] = formAttrs['use_scope.shop_id'].optionsDetail.filter(
-        (cur) => {
-          return cur.value === newValue;
-        }
-      );
+      let [obj] = formAttrs["use_scope.shop_id"].optionsDetail.filter((cur) => {
+        return cur.value === newValue;
+      });
       echoSelectValue = [obj.site_id];
     } else {
       echoSelectValue = [];
@@ -117,23 +115,21 @@ function selectChange(v) {
   emit("update:selectValue", v);
 }
 
-function selectInner(select) {
-  select.options = async function () {
-    let {
-      data: { list },
-    } = await axios.get("/api/sys/site", {
-      params: { page: 1, page_size: 1000, status: 1 },
-    });
-    let result = list.map((cur) => {
-      return {
-        ...cur,
-        label: cur.name,
-        value: cur.id,
-      };
-    });
-    selectOptions.value = result;
-    return selectOptions.value;
-  };
+async function selectInner() {
+  let {
+    data: { list },
+  } = await axios.get("/api/sys/site", {
+    params: { page: 1, page_size: 1000, status: 1 },
+  });
+  let result = list.map((cur) => {
+    return {
+      ...cur,
+      label: cur.name,
+      value: cur.id,
+    };
+  });
+  selectOptions.value = result;
+  return result;
 }
 
 const siteIdsValueColumns = [

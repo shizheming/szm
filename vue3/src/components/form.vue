@@ -19,6 +19,10 @@ const p = defineProps({
     type: Boolean,
     default: undefined,
   },
+  callback: {
+    type: Function,
+    default: undefined,
+  },
 });
 
 // 判断是不是编辑页
@@ -62,7 +66,8 @@ defineExpose({
 });
 /* 编辑页操作 */
 if (p.isEdit && p.api) {
-  p.api().then(({data}) => {
+  p.api().then(({ data }) => {
+    p.callback && p.callback(data);
     detailData.value = data;
     isFinish.value = true;
   });
