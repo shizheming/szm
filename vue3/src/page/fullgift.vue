@@ -170,6 +170,7 @@
     >
       <s-checkbox-group
         v-model:value="formData.gift_settings.gift_type"
+        :inner="gift_type_inner"
         :disabled="isEdit"
       >
         <s-checkbox :value="1">商品</s-checkbox>
@@ -274,6 +275,13 @@ function api() {
     });
 } */
 
+
+function gift_type_inner (d,detail) {
+  if (detail) {
+    d.detail = detail.gift_settings.gift_type == 3 ? [1, 2] : [detail.gift_settings.gift_type];
+  }
+}
+
 async function nameRule(rule, value) {
   if (!value) {
     return Promise.reject("请输入名称");
@@ -300,7 +308,7 @@ async function priorityRule(rule, value) {
 
 function app_platform_inner(checkbox, detail) {
   if (detail) {
-    checkbox.detail = detail.data.use_scope.app_platform.split(",");
+    checkbox.detail = detail.use_scope.app_platform.split(",");
   }
 }
 

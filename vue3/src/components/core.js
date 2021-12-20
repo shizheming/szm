@@ -105,79 +105,15 @@ export default function (props, emit, componentType) {
   if (isEdit) {
     // 这里主要是为了，不如有个input一开始是隐藏的，之后被显示，这个时候显示watch早就完成了，所以要自己触发回显
     if (isFinish?.value) {
-      if (props.inner) {
-        let obj = {};
-        if (props.inner.toString().includes("_next")) {
-          props.inner(obj, detailData?.value).then(() => {
-            running(obj);
-          });
-        } else {
-          props.inner(obj, detailData?.value);
-          running(obj);
-        }
-      }
+      emitType(get(detailData?.value, componentNameStr));
     }
     watch(
       () => isFinish?.value,
       (newValue, oldValue) => {
-        if (props.inner) {
-          let obj = {};
-          if (props.inner.toString().includes("_next")) {
-            props.inner(obj, detailData?.value).then(() => {
-              running(obj);
-            });
-          } else {
-            props.inner(obj, detailData?.value);
-            running(obj);
-          }
-        } else {
-          // 没有就直接往上面设值
-          emitType(get(detailData?.value.data, componentNameStr));
-        }
+        // 没有就直接往上面设值
+        emitType(get(detailData?.value, componentNameStr));
       }
     );
-  } else {
-    if (props.inner) {
-      let obj = {};
-      if (props.inner.toString().includes("_next")) {
-        props.inner(obj).then(() => {
-          forEach(obj, (v, k) => {
-            if (isFunction(v)) {
-              v().then((d) => {
-                obj[`${k}Detail`] = d;
-                Object.assign(innerObj, obj);
-                newProps[k] = d;
-              });
-            } else {
-              obj[`${k}Detail`] = v;
-              Object.assign(innerObj, obj);
-              newProps[k] = v;
-            }
-          });
-        });
-      } else {
-        props.inner(obj);
-        forEach(obj, (v, k) => {
-          if (isFunction(v)) {
-            v().then((d) => {
-              obj[`${k}Detail`] = d;
-              Object.assign(innerObj, obj);
-              newProps[k] = d;
-            });
-          } else if (Object.prototype.toString.call(v) === "[object Promise]") {
-            v.then((d) => {
-              obj[`${k}Detail`] = d;
-              Object.assign(innerObj, obj);
-              newProps[k] = d;
-            });
-          } else {
-            obj[`${k}Detail`] = v;
-            Object.assign(innerObj, obj);
-            newProps[k] = v;
-          }
-        });
-      }
-    }
   }
 
   /* 初始化单个属性 */
@@ -518,25 +454,5 @@ export default function (props, emit, componentType) {
     };
   }
 
-  function running(obj) {
-    forEach(obj, (v, k) => {
-      if (k === "detail") {
-        // 之后加一个独立的innerData来单独处理数据？？？？？？？？？？？？？？？？？？？？？？
-        emitType(v);
-      } else {
-        if (isFunction(v)) {
-          v().then((d) => {
-            obj[`${k}Detail`] = d;
-            Object.assign(innerObj, obj);
-            newProps[k] = d;
-          });
-        } else {
-          obj[`${k}Detail`] = v;
-          Object.assign(innerObj, obj);
-          newProps[k] = v;
-        }
-      }
-    });
-  }
   return newProps;
 }

@@ -18,7 +18,7 @@ forEach(slots, (value, key) => {
 
 const attrs = useAttrs();
 const p = defineProps(props);
-const componentName = ref(p.name);
+const componentName = ref(attrs.name);
 provide("componentName", componentName);
 let newProps = Object.assign(core(p, attrs), newSlots);
 </script>

@@ -62,7 +62,7 @@ defineExpose({
 });
 /* 编辑页操作 */
 if (p.isEdit && p.api) {
-  p.api().then((data) => {
+  p.api().then(({data}) => {
     detailData.value = data;
     isFinish.value = true;
   });
