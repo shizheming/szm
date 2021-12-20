@@ -226,38 +226,14 @@ export default function (props, emit, componentType) {
         watch(
           () => attrs[key][0],
           (newValue, oldValue) => {
-            if (attrs[key][1] === "inner") {
-              if (
-                isFunction(innerObj[name]) &&
-                innerObj[name].toString().includes("_next")
-              ) {
-                innerObj[name]().then((d) => {
-                  innerObj[`${name}Detail`] = d;
-                  newProps[name] = d;
-                });
-              } else if (
-                Object.prototype.toString.call(innerObj[name]) ===
-                "[object Promise]"
-              ) {
-                innerObj[name].then((d) => {
-                  innerObj[`${name}Detail`] = d;
-                  newProps[name] = d;
-                });
-              } else {
-                newProps[name] = innerObj[name];
-              }
+            let result = attrs[key][1](formComponents, detailData?.value);
+            if (Object.prototype.toString.call(result) === "[object Promise]") {
+              result.then((d) => {
+                innerObj[`${name}Detail`] = d;
+                newProps[name] = d;
+              });
             } else {
-              let result = attrs[key][1](formComponents, detailData?.value);
-              if (
-                Object.prototype.toString.call(result) === "[object Promise]"
-              ) {
-                result.then((d) => {
-                  innerObj[`${name}Detail`] = d;
-                  newProps[name] = d;
-                });
-              } else {
-                newProps[name] = result;
-              }
+              newProps[name] = result;
             }
           }
         );
