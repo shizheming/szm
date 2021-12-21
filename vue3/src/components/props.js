@@ -7,6 +7,10 @@ export default {
     type: Boolean,
     default: undefined,
   },
+  initialValue: {
+    type: [Number, String, Array, Object, Boolean],
+    default: undefined,
+  },
   inner: {
     type: Function,
     default: undefined,
