@@ -8,6 +8,7 @@ import {
   watchEffect,
   isRef,
   isReactive,
+  nextTick,
 } from "vue";
 import {
   forEach,
@@ -25,11 +26,13 @@ export default function (props, emit, componentType) {
   let isEdit = inject("isEdit", undefined);
   let detailData = inject("detailData", undefined);
   let isFinish = inject("isFinish", undefined);
+  let setDetail = inject("setDetail", undefined);
 
   let outer = inject("outer", undefined);
   let formData = inject("formData", undefined);
   let formComponents = inject("formComponents", undefined);
   let componentName = inject("componentName", undefined);
+
   /* 把change包一下，我要在里面更新数据，同时把formComponents传出去，打通表单内的所有数据 */
   let newProps = reactive({ ...props });
   forEach(attrs, (value, key) => {
@@ -50,6 +53,14 @@ export default function (props, emit, componentType) {
       if (!/^trigger-/.test(key) && !/^switch-/.test(key)) {
         if (isRef(value) || isReactive(value)) {
           newProps[key] = value;
+          // 保存值在innerObj上
+          if (innerObj[componentNameStr]) {
+            innerObj[componentNameStr][`${key}Detail`] = value;
+          } else {
+            innerObj[componentNameStr] = {
+              [`${key}Detail`]: value,
+            };
+          }
         }
       }
     });
@@ -68,6 +79,10 @@ export default function (props, emit, componentType) {
       emit("update:value", nv);
     }
     if (attrs.onChange) {
+      if (componentType === "select") {
+        // 记录一下select当前选择的值
+        formComponents[componentNameStr].current = e[1];
+      }
       attrs.onChange(...e, formComponents, detailData?.value);
     }
   };
@@ -91,7 +106,7 @@ export default function (props, emit, componentType) {
     };
   }
 
-  let innerObj = {};
+  let innerObj = reactive({});
   let componentNameStr;
   if (isArray(componentName?.value)) {
     componentNameStr = componentName.value.join(".");
@@ -101,27 +116,66 @@ export default function (props, emit, componentType) {
     formComponents[componentName.value] = innerObj;
   }
 
-  /* 默认值 */
-  if (props.initialValue !== undefined) {
-    emitType(props.initialValue);
-  }
-
   /* 进口处理，判断是不是回显*/
   if (isEdit) {
     // 这里主要是为了，不如有个input一开始是隐藏的，之后被显示，这个时候显示watch早就完成了，所以要自己触发回显
-    if (isFinish?.value) {
+    /* if (isFinish?.value) {
       emitType(get(detailData?.value, componentNameStr));
-    }
-    watch(
-      () => isFinish?.value,
-      (newValue, oldValue) => {
-        if (isFunction(props.inner)) {
-          emitType(props.inner(detailData?.value))
-        } else {
-          emitType(get(detailData?.value, componentNameStr));
-        }
+    } */
+
+    // 添加设值函数到form，让form来调用，而不是自己调回用，
+    setDetail.push((v) => {
+      let value = get(detailData?.value, componentNameStr);
+      let targetValue;
+      if (isFunction(props.inner)) {
+        value = props.inner(detailData?.value);
       }
-    );
+      if (componentType === "input" || componentType === "radioGroup") {
+        targetValue = {
+          target: {
+            value: value,
+          },
+        };
+      } else if (componentType === "radio" || componentType === "checkbox") {
+        targetValue = {
+          target: {
+            checked: value,
+          },
+        };
+      } else if (componentType === "select") {
+        targetValue = value;
+        // 加上当前选中的option
+        // 当options有的调用
+        if (formComponents[componentNameStr].optionsDetail) {
+          newProps.onChange(targetValue);
+        } else {
+          // 没有的时候监听到有了在调用
+          const unwatch = watch(innerObj, (newValue, oldValue) => {
+            if (newValue.optionsDetail) {
+              unwatch();
+              let [current] = newValue.optionsDetail.filter(
+                ({ value }) => targetValue === value
+              );
+              // 值和options里面不匹配
+              if (current === undefined) return;
+              innerObj.current = current;
+              newProps.onChange(targetValue, current);
+              // 取消监听
+            }
+          });
+        }
+        // select要单独处理，应为options，所以return掉
+        return;
+      } else {
+        targetValue = value;
+      }
+      newProps.onChange(targetValue);
+    });
+  }
+
+  /* 默认值 */
+  if (props.initialValue !== undefined) {
+    emitType(props.initialValue);
   }
 
   /* 初始化单个属性 */
@@ -167,6 +221,7 @@ export default function (props, emit, componentType) {
                 });
               } else {
                 newProps[k] = v;
+                innerObj[`${k}Detail`] = v;
               }
             });
           }
@@ -192,6 +247,7 @@ export default function (props, emit, componentType) {
               });
             } else {
               newProps[k] = v;
+              innerObj[`${k}Detail`] = v;
             }
           });
         }
@@ -225,6 +281,7 @@ export default function (props, emit, componentType) {
                 });
               } else {
                 newProps[name] = result;
+                innerObj[`${name}Detail`] = result;
               }
             }
           );
@@ -242,6 +299,7 @@ export default function (props, emit, componentType) {
               });
             } else {
               newProps[name] = result;
+              innerObj[`${name}Detail`] = result;
             }
           }
         );
@@ -333,6 +391,7 @@ export default function (props, emit, componentType) {
               });
             } else {
               newProps[k] = v;
+              innerObj[`${k}Detail`] = v;
             }
           });
         }
@@ -366,6 +425,7 @@ export default function (props, emit, componentType) {
               });
             } else {
               newProps[k] = v;
+              innerObj[`${k}Detail`] = v;
             }
           });
         }
@@ -396,6 +456,7 @@ export default function (props, emit, componentType) {
               });
             } else {
               newProps[name] = result;
+              innerObj[`${name}Detail`] = result;
             }
           }
         }
@@ -423,6 +484,7 @@ export default function (props, emit, componentType) {
                 newProps[name] = d;
               });
             } else {
+              innerObj[`${name}Detail`] = result;
               newProps[name] = result;
             }
           }

@@ -22,7 +22,7 @@ forEach(slots, (value, key) => {
 });
 const p = defineProps(props);
 const emit = defineEmits(["update:value"]);
-let newProps = Object.assign(core(p, emit), newSlots);
+let newProps = Object.assign(core(p, emit, "select"), newSlots);
 
 function filterOption(input, option) {
   return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;

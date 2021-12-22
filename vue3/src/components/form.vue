@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { reactive, provide, ref, onMounted, defineExpose } from "vue";
+import { reactive, provide, ref, onMounted, defineExpose, nextTick } from "vue";
 import { Form } from "ant-design-vue";
 import { cloneDeep, forEach } from "lodash";
 import { setLevelValue, getLevelValue } from "./tool";
@@ -39,6 +39,9 @@ provide("formData", p.model);
 let formComponents = reactive({});
 provide("formComponents", formComponents);
 
+let setDetail = [];
+provide("setDetail", setDetail);
+
 let outerModel = reactive({});
 /* 设置外面的fromRender */
 const formRender = ref();
@@ -60,11 +63,21 @@ defineExpose({
     return formRender.value.validate();
   },
 });
+
+// 通过nextTick来设值，一个接着一个，而不是一下子设，主要是为了解决triggerclear这个问题，当然这个不是此功能本身的问题
+async function forSetDetail(detail) {
+  for (let v of setDetail) {
+    await nextTick();
+    v(detail);
+  }
+}
+
 /* 编辑页操作 */
 if (p.isEdit && p.api) {
   p.api().then((data) => {
     detailData.value = data;
     isFinish.value = true;
+    forSetDetail(data);
   });
 }
 </script>
