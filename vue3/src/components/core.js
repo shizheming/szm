@@ -101,6 +101,11 @@ export default function (props, emit, componentType) {
     formComponents[componentName.value] = innerObj;
   }
 
+  /* 默认值 */
+  if (props.initialValue !== undefined) {
+    emitType(props.initialValue);
+  }
+
   /* 进口处理，判断是不是回显*/
   if (isEdit) {
     // 这里主要是为了，不如有个input一开始是隐藏的，之后被显示，这个时候显示watch早就完成了，所以要自己触发回显

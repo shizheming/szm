@@ -72,7 +72,7 @@
         message: '请选择业务类型',
       }"
     >
-      <s-radio-group v-model:value="formData.use_scope.business_id">
+      <s-radio-group v-model:value="formData.use_scope.business_id" :initialValue="1">
         <s-radio :value="1">精选</s-radio>
         <s-radio :value="2" disabled>紫荆</s-radio>
         <s-radio :value="3" disabled>到家</s-radio>
@@ -108,6 +108,7 @@
         v-model:value="formData.use_scope.site_ids"
         :inner="site_ids_inner"
         :disabled="isEdit"
+        :initialValue="0"
       >
         <s-radio :value="0">全选</s-radio>
         <s-radio :value="1">指定站点</s-radio>
@@ -161,6 +162,7 @@
       <s-radio-group
         v-model:value="formData.preferential_rules.marketing_type"
         :disabled="isEdit"
+        initialValue="manyuanzeng001"
       >
         <s-radio value="manyuanzeng001">精选</s-radio>
         <s-radio value="manjianzeng001">满额赠</s-radio>
@@ -187,7 +189,7 @@
       label="赠品选择规则"
       :name="['gift_settings', 'gift_select_rule']"
     >
-      <s-radio-group v-model:value="formData.gift_settings.gift_select_rule">
+      <s-radio-group v-model:value="formData.gift_settings.gift_select_rule" :initialValue="1">
         <s-radio :value="1">固定赠送</s-radio>
       </s-radio-group>
     </s-form-item>
@@ -230,16 +232,9 @@ let marketing_id = route.query.marketing_id;
 const formSection = ref();
 const formData = reactive({
   basic: {},
-  use_scope: {
-    business_id: 1,
-    site_ids: 0,
-  },
-  preferential_rules: {
-    marketing_type: "manyuanzeng001",
-  },
-  gift_settings: {
-    gift_select_rule: 1,
-  },
+  use_scope: {},
+  preferential_rules: {},
+  gift_settings: {},
   marketing_id,
 });
 const formAttrs = provide("formAttrs", formSection);
