@@ -6,7 +6,7 @@
     @cancel="handleCancel"
     :width="1400"
   >
-    <s-form :model="formData" ref="formSection" :labelCol="{ span: 4 }">
+    <s-form :model="formData" ref="formSection" :labelCol="{ span: 10 }">
       <s-form-item
         label="SPU ID"
         style="width: 20%; display: inline-block; margin-right: 10px"
@@ -35,7 +35,10 @@
         label="品牌"
         style="width: 20%; display: inline-block; margin-right: 10px"
       >
-        <s-select v-model:value="formData.brand_id" :inner="brand_id_inner" />
+        <s-select
+          v-model:value="formData.brand_id"
+          :inner-options="brand_id_inner"
+        />
       </s-form-item>
       <s-form-item
         label="后台类目"
@@ -43,7 +46,7 @@
       >
         <s-cascader
           v-model:value="formData.category_id"
-          :inner="category_id_inner"
+          :inner-options="category_id_inner"
         />
       </s-form-item>
       <s-form-item
@@ -52,7 +55,7 @@
       >
         <s-cascader
           v-model:value="formData.user_category_id"
-          :inner="user_category_id_inner"
+          :inner-options="user_category_id_inner"
         />
       </s-form-item>
       <s-form-item
@@ -62,7 +65,7 @@
         <s-select
           v-model:value="formData.supplier_id"
           placeholder="供应商"
-          :inner="supplier_id_inner"
+          :inner-options="supplier_id_inner"
         />
       </s-form-item>
       <s-form-item
@@ -260,34 +263,32 @@ watch(
   }
 );
 function handleOk() {
-  emit("update:selectedRowKeys", allSelectedRowKeys.value);
-  emit("update:selectedRow", allSelectedRows.value);
+  emit("update:selected", {
+    rowKeys: allSelectedRowKeys.value,
+    rows: allSelectedRows.value,
+  });
   emit("update:visible", false);
 }
 function handleCancel() {
   emit("update:visible", false);
 }
 
-function brand_id_inner(select) {
-  select.options = async function () {
-    let {
-      data: { list },
-    } = await axios.get("/api/goods/brand?page_size=99999");
+async function brand_id_inner() {
+  let {
+    data: { list },
+  } = await axios.get("/api/goods/brand?page_size=99999");
 
-    return list.map(({ name, id }) => {
-      return {
-        label: name,
-        value: id,
-      };
-    });
-  };
+  return list.map(({ name, id }) => {
+    return {
+      label: name,
+      value: id,
+    };
+  });
 }
 
-function category_id_inner(cascader) {
-  cascader.options = async function () {
-    let { data } = await axios.get("/api/goods/category");
-    return formatCategory(data);
-  };
+async function category_id_inner() {
+  let { data } = await axios.get("/api/goods/category");
+  return formatCategory(data);
 }
 
 function formatCategory(cascader) {
@@ -303,28 +304,24 @@ function formatCategory(cascader) {
   });
 }
 
-function user_category_id_inner(cascader) {
-  cascader.options = async function () {
-    let { data } = await axios.get("/api/goods/user-category");
-    return formatCategory(
-      data.filter((m) => {
-        return m.child && m.child.length > 0;
-      })
-    );
-  };
+async function user_category_id_inner() {
+  let { data } = await axios.get("/api/goods/user-category");
+  return formatCategory(
+    data.filter((m) => {
+      return m.child && m.child.length > 0;
+    })
+  );
 }
 
-function supplier_id_inner(select) {
-  select.options = async function () {
-    let { data } = await axios.get("/api/stock/supplier/get-all/list");
-    return data.map((item) => {
-      return {
-        label: item.name,
-        value: item.id,
-        code: item.code,
-      };
-    });
-  };
+async function supplier_id_inner() {
+  let { data } = await axios.get("/api/stock/supplier/get-all/list");
+  return data.map((item) => {
+    return {
+      label: item.name,
+      value: item.id,
+      code: item.code,
+    };
+  });
 }
 
 // 非平台账号才传入shop_org_id,平台账号可选择全部商品;
@@ -355,7 +352,7 @@ async function search() {
     page: 1,
     page_size: 10,
   });
-  dataSource.value = list;
+  dataSource.value = makeGoodsData(list);
 }
 
 function makeSpecCopy(item) {
@@ -382,6 +379,72 @@ function makeSellPrice(list) {
   if (list[0] == list[list.length - 1]) return list[0];
   return list[0] + "-" + list[list.length - 1];
 }
+
+function makeGoodsData(list) {
+  list.forEach((item, index) => {
+    item.key = index + "";
+    let shop_selling_price = [];
+    let spu_img_url = "";
+    let stock = 0;
+
+    item.spu_id = item.id;
+    item.unique_id = item.shop_id ? item.id + "_" + item.shop_id : item.id;
+    item.shop_spu_id = item.shop_id
+      ? item.shop_id + "-" + item.spu_id
+      : item.spu_id;
+    // spu第一张图片
+    if (
+      item.goods_gallery &&
+      item.goods_gallery.length &&
+      item.goods_gallery[0].img_url &&
+      !spu_img_url
+    ) {
+      spu_img_url = item.goods_gallery[0].img_url;
+    }
+
+    if (item.sku_list && item.sku_list.length > 0) {
+      item.sku_list.forEach((itemC, indexC) => {
+        // 活动spu_库存
+        stock = stock + (itemC.stock || 0);
+        itemC.sku_id = itemC.id;
+        // 活动现有库存
+        itemC.stock_text = 0;
+        itemC.stock = itemC.stock || 0;
+        itemC.sku_spec_copy_data = makeSpecCopy(itemC.sku_spec_copy);
+        itemC.shop_selling_price = "-";
+
+        if (itemC.channel_relation && itemC.channel_relation.length > 0) {
+          item.shop_org_id = itemC.channel_relation[0].shop_org_id; //shop_org_id=1销售组织名气家
+          itemC.is_listing = itemC.channel_relation[0].is_listing;
+          itemC.shop_is_listing = itemC.channel_relation[0].shop_is_listing;
+          itemC.shop_goods_id = itemC.channel_relation[0].shop_goods_id;
+          itemC.shop_selling_price =
+            itemC.channel_relation[0].shop_selling_price; // 店铺售价
+          itemC.shop_retail_price = itemC.channel_relation[0].shop_retail_price; // 经销价
+          shop_selling_price.push(
+            itemC.channel_relation[0].shop_selling_price || 0
+          );
+          if (
+            itemC.channel_relation[0].points &&
+            itemC.channel_relation[0].points.length
+          ) {
+            itemC.shop_exchange_price =
+              itemC.channel_relation[0].points[0].exchange_price; //兑换价格
+            itemC.shop_exchange_score =
+              itemC.channel_relation[0].points[0].exchange_score; //兑换积分
+          }
+        }
+      });
+    }
+    item.stock = stock;
+    item.spu_img_url = spu_img_url;
+    // 商品价格（每个sku都有一个价格-取区间）
+    item.shop_selling_price = makeSellPrice(shop_selling_price);
+  });
+  return list;
+}
+
+
 </script>
 
 <style></style>

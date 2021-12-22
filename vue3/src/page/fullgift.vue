@@ -3,7 +3,6 @@
     :model="formData"
     ref="formSection"
     :api="api"
-    :callback="callback"
     :isEdit="isEdit"
     :labelCol="{ span: 4 }"
   >
@@ -72,7 +71,10 @@
         message: '请选择业务类型',
       }"
     >
-      <s-radio-group v-model:value="formData.use_scope.business_id" :initialValue="1">
+      <s-radio-group
+        v-model:value="formData.use_scope.business_id"
+        :initialValue="1"
+      >
         <s-radio :value="1">精选</s-radio>
         <s-radio :value="2" disabled>紫荆</s-radio>
         <s-radio :value="3" disabled>到家</s-radio>
@@ -189,7 +191,10 @@
       label="赠品选择规则"
       :name="['gift_settings', 'gift_select_rule']"
     >
-      <s-radio-group v-model:value="formData.gift_settings.gift_select_rule" :initialValue="1">
+      <s-radio-group
+        v-model:value="formData.gift_settings.gift_select_rule"
+        :initialValue="1"
+      >
         <s-radio :value="1">固定赠送</s-radio>
       </s-radio-group>
     </s-form-item>
@@ -243,16 +248,17 @@ let loading = ref();
 let isEdit = ref(!!route.query.marketing_id);
 
 function api() {
-  return axios.get(`/api/marketing/fullGift/${marketing_id}`, {
-    id: marketing_id,
-    action: "first",
-  });
-}
-
-function callback(detail) {
-  formData.use_scope.site_ids_value = detail.use_scope.site_list.map(
-    (cur) => cur.id
-  );
+  return axios
+    .get(`/api/marketing/fullGift/${marketing_id}`, {
+      id: marketing_id,
+      action: "first",
+    })
+    .then(({ data }) => {
+      formData.use_scope.site_ids_value = data.use_scope.site_list.map(
+        (cur) => cur.id
+      );
+      return data;
+    });
 }
 
 function gift_type_inner(detail) {
