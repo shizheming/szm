@@ -103,16 +103,25 @@
           :data-source="record.sku_list"
           :pagination="false"
         >
-          <template #bodyCell="{ column }">
+          <template #bodyCell="{ column, record, index }">
             <template v-if="column.key === 'sku_spec_copy_data'">
-              {{ makeSpecCopy(column.sku_spec_copy) }}
+              {{ makeSpecCopy(record.sku_spec_copy) }}
+            </template>
+            <template v-if="column.key === 'shop_is_listing'">
+              {{ record.shop_is_listing == 1 ? "上架" : "下架" }}
             </template>
           </template>
         </a-table>
       </template>
       <template #bodyCell="{ column, record, index }">
-        <template v-if="column.key === 'img_url'">
+        <template v-if="column.key === 'goods_gallery'">
           <a-image :src="record.goods_gallery[0].img_url" :width="50" />
+        </template>
+        <template v-if="column.key === 'category'">
+          {{ record.category.name }}
+        </template>
+        <template v-if="column.key === 'is_listing'">
+          {{ record.is_listing == 1 ? "上架" : "下架" }}
         </template>
         <template v-if="column.key === 'shop_selling_price'">
           {{
@@ -122,9 +131,6 @@
               })
             )
           }}
-        </template>
-        <template v-if="column.key === 'is_listing'">
-          {{ record.is_listing == 1 ? "上架" : "下架" }}
         </template>
         <template v-if="column.key === 'stock'">
           {{
@@ -148,8 +154,7 @@ let shop_id_list = inject("shop_id_list");
 const props = defineProps(["visible"]);
 const emit = defineEmits([
   "update:visible",
-  "update:selectedRowKeys",
-  "update:selectedRow",
+  "update:selected",
 ]);
 const formSection = ref();
 const formData = reactive({});
@@ -169,8 +174,8 @@ const columns = [
   },
   {
     title: "商品图片", // 暂时没有
-    dataIndex: "img_url",
-    key: "img_url",
+    dataIndex: "goods_gallery",
+    key: "goods_gallery",
   },
   {
     title: "商品名称",
@@ -189,8 +194,8 @@ const columns = [
   },
   {
     title: "商品类目",
-    dataIndex: "category.name",
-    key: "category.name",
+    dataIndex: "category",
+    key: "category",
   },
   {
     title: "供应商",
@@ -208,7 +213,7 @@ const columns = [
     key: "is_listing",
   },
   {
-    title: "售价", // goods_sku.channel_relation.shop_selling_price
+    title: "售价",
     dataIndex: "shop_selling_price",
     key: "shop_selling_price",
   },
@@ -242,8 +247,8 @@ const innerColumns = [
   },
   {
     title: "状态",
-    dataIndex: "channel_relation[0].shop_is_listing",
-    key: "channel_relation[0].shop_is_listing",
+    dataIndex: "shop_is_listing",
+    key: "shop_is_listing",
   },
   {
     title: "创建时间",
@@ -352,18 +357,7 @@ async function search() {
     page: 1,
     page_size: 10,
   });
-  dataSource.value = makeGoodsData(list);
-}
-
-function makeSpecCopy(item) {
-  if (!item || !item.sku_specs) return "-";
-  let json = JSON.parse(item.sku_specs);
-  let t = [];
-
-  json.forEach((item, index) => {
-    t.push(item.spec_value);
-  });
-  return t.join(",");
+  dataSource.value = list;
 }
 
 function makeSellPrice(list) {
@@ -380,71 +374,16 @@ function makeSellPrice(list) {
   return list[0] + "-" + list[list.length - 1];
 }
 
-function makeGoodsData(list) {
-  list.forEach((item, index) => {
-    item.key = index + "";
-    let shop_selling_price = [];
-    let spu_img_url = "";
-    let stock = 0;
+function makeSpecCopy(item) {
+  if (!item || !item.sku_specs) return "-";
+  let json = JSON.parse(item.sku_specs);
+  let t = [];
 
-    item.spu_id = item.id;
-    item.unique_id = item.shop_id ? item.id + "_" + item.shop_id : item.id;
-    item.shop_spu_id = item.shop_id
-      ? item.shop_id + "-" + item.spu_id
-      : item.spu_id;
-    // spu第一张图片
-    if (
-      item.goods_gallery &&
-      item.goods_gallery.length &&
-      item.goods_gallery[0].img_url &&
-      !spu_img_url
-    ) {
-      spu_img_url = item.goods_gallery[0].img_url;
-    }
-
-    if (item.sku_list && item.sku_list.length > 0) {
-      item.sku_list.forEach((itemC, indexC) => {
-        // 活动spu_库存
-        stock = stock + (itemC.stock || 0);
-        itemC.sku_id = itemC.id;
-        // 活动现有库存
-        itemC.stock_text = 0;
-        itemC.stock = itemC.stock || 0;
-        itemC.sku_spec_copy_data = makeSpecCopy(itemC.sku_spec_copy);
-        itemC.shop_selling_price = "-";
-
-        if (itemC.channel_relation && itemC.channel_relation.length > 0) {
-          item.shop_org_id = itemC.channel_relation[0].shop_org_id; //shop_org_id=1销售组织名气家
-          itemC.is_listing = itemC.channel_relation[0].is_listing;
-          itemC.shop_is_listing = itemC.channel_relation[0].shop_is_listing;
-          itemC.shop_goods_id = itemC.channel_relation[0].shop_goods_id;
-          itemC.shop_selling_price =
-            itemC.channel_relation[0].shop_selling_price; // 店铺售价
-          itemC.shop_retail_price = itemC.channel_relation[0].shop_retail_price; // 经销价
-          shop_selling_price.push(
-            itemC.channel_relation[0].shop_selling_price || 0
-          );
-          if (
-            itemC.channel_relation[0].points &&
-            itemC.channel_relation[0].points.length
-          ) {
-            itemC.shop_exchange_price =
-              itemC.channel_relation[0].points[0].exchange_price; //兑换价格
-            itemC.shop_exchange_score =
-              itemC.channel_relation[0].points[0].exchange_score; //兑换积分
-          }
-        }
-      });
-    }
-    item.stock = stock;
-    item.spu_img_url = spu_img_url;
-    // 商品价格（每个sku都有一个价格-取区间）
-    item.shop_selling_price = makeSellPrice(shop_selling_price);
+  json.forEach((item, index) => {
+    t.push(item.spec_value);
   });
-  return list;
+  return t.join(",");
 }
-
-
 </script>
 
 <style></style>

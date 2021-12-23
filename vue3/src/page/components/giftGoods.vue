@@ -144,7 +144,7 @@ watch(
   },
   (newValue) => {
     let shop_spu_ids = newValue.rows.map((item) => {
-      return item.shop_id + "-" + item.spu_id;
+      return item.shop_id + "-" + item.id;
     });
     getShopList(shop_spu_ids);
   }
@@ -168,11 +168,11 @@ function getShopList(shop_spu_ids, init) {
       get_stock: 1, //是否展示库存
       shop_spu_ids,
     })
-    .then((res) => {
-      let data = makeGoodsData(res.data.list);
+    .then(({ data: { list } }) => {
+      dataSource.value = list;
 
-      init && initMerge(data);
-      !init && merge(data);
+      /* init && initMerge(data);
+      !init && merge(data); */
     });
 }
 
@@ -317,7 +317,6 @@ function merge(data) {
         }),
       };
     });
-    console.log(dataSource.value, 1000);
     return;
   }
   // 上一次data数据

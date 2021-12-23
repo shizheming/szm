@@ -26,31 +26,23 @@
           >
             <a-sub-menu key="sub1">
               <template #title>
-                <span>
-                  subnav 1
-                </span>
+                <span>营销</span>
               </template>
-              <a-menu-item key="1">option1</a-menu-item>
-              <a-menu-item key="2">option2</a-menu-item>
-              <a-menu-item key="3">option3</a-menu-item>
-              <a-menu-item key="4">option4</a-menu-item>
+              <router-link to="/fullgift"
+                ><a-menu-item key="1">满赠</a-menu-item></router-link
+              >
             </a-sub-menu>
             <a-sub-menu key="sub2">
               <template #title>
-                <span>
-                  subnav 2
-                </span>
+                <span>订单</span>
               </template>
-              <a-menu-item key="5">option5</a-menu-item>
-              <a-menu-item key="6">option6</a-menu-item>
-              <a-menu-item key="7">option7</a-menu-item>
-              <a-menu-item key="8">option8</a-menu-item>
+              <router-link to="/examine"
+                ><a-menu-item key="2">审核</a-menu-item></router-link
+              >
             </a-sub-menu>
             <a-sub-menu key="sub3">
               <template #title>
-                <span>
-                  subnav 3
-                </span>
+                <span> subnav 3 </span>
               </template>
               <a-menu-item key="9">option9</a-menu-item>
               <a-menu-item key="10">option10</a-menu-item>
@@ -86,13 +78,13 @@
 import VueCookies from "vue-cookies";
 import Login from "./login.vue";
 import { ref, toRefs, reactive, onMounted } from "vue";
-import zhCN from 'ant-design-vue/es/locale/zh_CN';
+import zhCN from "ant-design-vue/es/locale/zh_CN";
 
 let cook = ref(VueCookies.get("token"));
 let kfsc = localStorage.userInfo && JSON.parse(localStorage.userInfo).platform;
-let selectedKeys1 = ref()
-let selectedKeys2 = ref()
-let openKeys = ref()
+let selectedKeys1 = ref();
+let selectedKeys2 = ref();
+let openKeys = ref();
 </script>
 
 <style>

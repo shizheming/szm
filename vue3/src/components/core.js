@@ -116,68 +116,6 @@ export default function (props, emit, componentType) {
     formComponents[componentName.value] = innerObj;
   }
 
-  /* 进口处理，判断是不是回显*/
-  if (isEdit) {
-    // 这里主要是为了，不如有个input一开始是隐藏的，之后被显示，这个时候显示watch早就完成了，所以要自己触发回显
-    /* if (isFinish?.value) {
-      emitType(get(detailData?.value, componentNameStr));
-    } */
-
-    // 添加设值函数到form，让form来调用，而不是自己调回用，
-    setDetail.push((v) => {
-      let value = get(detailData?.value, componentNameStr);
-      let targetValue;
-      if (isFunction(props.inner)) {
-        value = props.inner(detailData?.value);
-      }
-      if (componentType === "input" || componentType === "radioGroup") {
-        targetValue = {
-          target: {
-            value: value,
-          },
-        };
-      } else if (componentType === "radio" || componentType === "checkbox") {
-        targetValue = {
-          target: {
-            checked: value,
-          },
-        };
-      } else if (componentType === "select") {
-        targetValue = value;
-        // 加上当前选中的option
-        // 当options有的调用
-        if (formComponents[componentNameStr].optionsDetail) {
-          newProps.onChange(targetValue);
-        } else {
-          // 没有的时候监听到有了在调用
-          const unwatch = watch(innerObj, (newValue, oldValue) => {
-            if (newValue.optionsDetail) {
-              unwatch();
-              let [current] = newValue.optionsDetail.filter(
-                ({ value }) => targetValue === value
-              );
-              // 值和options里面不匹配
-              if (current === undefined) return;
-              innerObj.current = current;
-              newProps.onChange(targetValue, current);
-              // 取消监听
-            }
-          });
-        }
-        // select要单独处理，应为options，所以return掉
-        return;
-      } else {
-        targetValue = value;
-      }
-      newProps.onChange(targetValue);
-    });
-  }
-
-  /* 默认值 */
-  if (props.initialValue !== undefined) {
-    emitType(props.initialValue);
-  }
-
   /* 初始化单个属性 */
   forEach(attrs, (value, key) => {
     if (/^inner-/.test(key)) {
@@ -190,6 +128,93 @@ export default function (props, emit, componentType) {
       }
     }
   });
+
+  /* 进口处理，判断是不是回显*/
+  if (isEdit) {
+    // 这里主要是为了，不如有个input一开始是隐藏的，之后被显示，这个时候显示watch早就完成了，所以要自己触发回显
+    /* if (isFinish?.value) {
+      emitType(get(detailData?.value, componentNameStr));
+    } */
+
+    // 添加设值函数到form，让form来调用，而不是自己调回用，
+    let targetValue;
+    if (componentType === "input" || componentType === "radioGroup") {
+      targetValue = function (value) {
+        return {
+          target: {
+            value: value,
+          },
+        };
+      };
+    } else if (componentType === "radio" || componentType === "checkbox") {
+      targetValue = function (value) {
+        return {
+          target: {
+            checked: value,
+          },
+        };
+      };
+    } else if (componentType === "select") {
+      targetValue = function (value) {
+        return value;
+      };
+
+      // 加上当前选中的option
+      // 没有的时候监听到有了在调用
+      const unwatch = watch(innerObj, (newValue, oldValue) => {
+        if (newValue.optionsDetail) {
+          unwatch();
+          let [current] = newValue.optionsDetail.filter(
+            ({ value }) => get(detailData?.value, componentNameStr) === value
+            );
+            console.log(current,111)
+          // 值和options里面不匹配
+          if (current === undefined) return;
+          innerObj.current = current;
+          newProps.onChange(get(detailData?.value, componentNameStr), current);
+          // 取消监听
+        }
+      });
+
+      const unwatchIsFinish = watch(
+        () => isFinish.value,
+        (newValue, oldValue) => {
+          console.log(innerObj,1000001)
+          if (innerObj.optionsDetail) {
+            unwatchIsFinish();
+            let [current] = innerObj.optionsDetail.filter(
+              ({ value }) => get(detailData?.value, componentNameStr) === value
+            );
+            // 值和options里面不匹配
+            if (current === undefined) return;
+            innerObj.current = current;
+            newProps.onChange(
+              get(detailData?.value, componentNameStr),
+              current
+            );
+            // 取消监听
+          }
+        }
+      );
+    } else {
+      targetValue = function (value) {
+        return value;
+      };
+    }
+    setDetail.push((v) => {
+      let value = get(detailData?.value, componentNameStr);
+      if (isFunction(props.inner)) {
+        value = props.inner(detailData?.value);
+      }
+      let ov = targetValue(value);
+      newProps.onChange(ov);
+    });
+  }
+
+  /* 默认值 */
+  if (props.initialValue !== undefined) {
+    emitType(props.initialValue);
+  }
 
   /* 组件没有了删除对应的值 */
   if (props.clear === true) {
@@ -298,6 +323,7 @@ export default function (props, emit, componentType) {
                 newProps[name] = d;
               });
             } else {
+              console.log(result,8888)
               newProps[name] = result;
               innerObj[`${name}Detail`] = result;
             }
