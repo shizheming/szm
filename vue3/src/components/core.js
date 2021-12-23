@@ -116,26 +116,38 @@ export default function (props, emit, componentType) {
     formComponents[componentName.value] = innerObj;
   }
 
-  /* 初始化单个属性 */
-  forEach(attrs, (value, key) => {
-    if (/^inner-/.test(key)) {
-      if (isFunction(value)) {
-        let [name] = tail(key.split("-"));
-        value().then((d) => {
-          innerObj[`${name}Detail`] = d;
-          newProps[name] = d;
-        });
-      }
+  /* 初始化options */
+  if (componentType === "select") {
+    if (isFunction(attrs["inner-options"])) {
+      value().then((d) => {
+        innerObj.optionsDetail = d;
+        newProps.options = d;
+
+        // 回显的时候的select处理，先有options才能设值
+        if (isEdit) {
+          let isFinishWatch = watch(
+            () => isFinish.value,
+            () => {
+              // 销毁监听
+              isFinishWatch();
+              let ov = get(detailData?.value, componentNameStr);
+              // 加上当前选中的option
+              let [current] = innerObj.optionsDetail.filter(
+                ({ value }) => ov === value
+              );
+              // 值和options里面不匹配
+              if (current === undefined) return;
+              innerObj.current = current;
+              newProps.onChange(ov, current);
+            }
+          );
+        }
+      });
     }
-  });
+  }
 
-  /* 进口处理，判断是不是回显*/
-  if (isEdit) {
-    // 这里主要是为了，不如有个input一开始是隐藏的，之后被显示，这个时候显示watch早就完成了，所以要自己触发回显
-    /* if (isFinish?.value) {
-      emitType(get(detailData?.value, componentNameStr));
-    } */
-
+  /* 进口处理，判断是不是回显，除了select以外的其他*/
+  if (isEdit && componentType !== "select") {
     // 添加设值函数到form，让form来调用，而不是自己调回用，
     let targetValue;
     if (componentType === "input" || componentType === "radioGroup") {
@@ -154,48 +166,6 @@ export default function (props, emit, componentType) {
           },
         };
       };
-    } else if (componentType === "select") {
-      targetValue = function (value) {
-        return value;
-      };
-
-      // 加上当前选中的option
-      // 没有的时候监听到有了在调用
-      const unwatch = watch(innerObj, (newValue, oldValue) => {
-        if (newValue.optionsDetail) {
-          unwatch();
-          let [current] = newValue.optionsDetail.filter(
-            ({ value }) => get(detailData?.value, componentNameStr) === value
-            );
-            console.log(current,111)
-          // 值和options里面不匹配
-          if (current === undefined) return;
-          innerObj.current = current;
-          newProps.onChange(get(detailData?.value, componentNameStr), current);
-          // 取消监听
-        }
-      });
-
-      const unwatchIsFinish = watch(
-        () => isFinish.value,
-        (newValue, oldValue) => {
-          console.log(innerObj,1000001)
-          if (innerObj.optionsDetail) {
-            unwatchIsFinish();
-            let [current] = innerObj.optionsDetail.filter(
-              ({ value }) => get(detailData?.value, componentNameStr) === value
-            );
-            // 值和options里面不匹配
-            if (current === undefined) return;
-            innerObj.current = current;
-            newProps.onChange(
-              get(detailData?.value, componentNameStr),
-              current
-            );
-            // 取消监听
-          }
-        }
-      );
     } else {
       targetValue = function (value) {
         return value;
@@ -323,7 +293,6 @@ export default function (props, emit, componentType) {
                 newProps[name] = d;
               });
             } else {
-              console.log(result,8888)
               newProps[name] = result;
               innerObj[`${name}Detail`] = result;
             }
