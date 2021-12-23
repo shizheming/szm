@@ -122,25 +122,36 @@ export default function (props, emit, componentType) {
       value().then((d) => {
         innerObj.optionsDetail = d;
         newProps.options = d;
-
         // 回显的时候的select处理，先有options才能设值
         if (isEdit) {
-          let isFinishWatch = watch(
-            () => isFinish.value,
-            () => {
-              // 销毁监听
-              isFinishWatch();
-              let ov = get(detailData?.value, componentNameStr);
-              // 加上当前选中的option
-              let [current] = innerObj.optionsDetail.filter(
-                ({ value }) => ov === value
-              );
-              // 值和options里面不匹配
-              if (current === undefined) return;
-              innerObj.current = current;
-              newProps.onChange(ov, current);
-            }
-          );
+          if (isFinish.value === true) {
+            let ov = get(detailData?.value, componentNameStr);
+            // 加上当前选中的option
+            let [current] = innerObj.optionsDetail.filter(
+              ({ value }) => ov === value
+            );
+            // 值和options里面不匹配
+            if (current === undefined) return;
+            innerObj.current = current;
+            newProps.onChange(ov, current);
+          } else {
+            let isFinishWatch = watch(
+              () => isFinish.value,
+              () => {
+                // 销毁监听
+                isFinishWatch();
+                let ov = get(detailData?.value, componentNameStr);
+                // 加上当前选中的option
+                let [current] = innerObj.optionsDetail.filter(
+                  ({ value }) => ov === value
+                );
+                // 值和options里面不匹配
+                if (current === undefined) return;
+                innerObj.current = current;
+                newProps.onChange(ov, current);
+              }
+            );
+          }
         }
       });
     }
