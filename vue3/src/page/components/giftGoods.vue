@@ -4,6 +4,7 @@
     rowKey="id"
     :pagination="false"
     :columns="columns"
+    :scroll="{ x: 2000 }"
     :dataSource="dataSource"
   >
     <template #bodyCell="{ column, record, index }">
@@ -17,17 +18,76 @@
           {{ item.sn || "-" }}
         </div>
       </template>
-      <template v-if="column.key === 'spu_img_url'">
-        <a-image :width="50" :src="record.spu_img_url" />
+      <template v-if="column.key === 'goods_gallery'">
+        <a-image :width="50" :src="record.goods_gallery[0].img_url" />
       </template>
       <template v-if="column.key === 'sku_id'">
         <div v-for="(item, index) in record.sku_list" :key="index">
-          {{ item.sku_id || "-" }}
+          {{ item.id || "-" }}
         </div>
       </template>
       <template v-if="column.key === 'shop_goods_id'">
         <div v-for="(item, index) in record.sku_list" :key="index">
-          {{ item.shop_goods_id || "-" }}
+          {{ item.channel_relation[0].shop_goods_id || "-" }}
+        </div>
+      </template>
+      <template v-if="column.key === 'shop_selling_price'">
+        <div v-for="(item, index) in record.sku_list" :key="index">
+          {{ item.channel_relation[0].shop_selling_price }}
+        </div>
+      </template>
+
+      <template v-if="column.key === 'stock'">
+        <div v-for="(item, index) in record.sku_list" :key="index">
+          {{ item.stock }}
+        </div>
+      </template>
+      <template v-if="column.key === 'marketing_org_stock'">
+        <div v-for="(item, index) in record.sku_list" :key="item.shop_goods_id">
+          <a-input-number
+            style="width: 80px"
+            :min="0"
+            placeholder="数量"
+            v-model:value="item.marketing_org_stock"
+          />
+        </div>
+      </template>
+      <template v-if="column.key === 'marketing_stock'">
+        <div v-for="(item, index) in record.sku_list" :key="item.shop_goods_id">
+          {{ item.marketing_stock }}
+        </div>
+      </template>
+      <template v-if="column.key === 'sponsor'">
+        <div v-for="(item, index) in record.sku_list" :key="item.shop_goods_id">
+          <a-select
+            style="width: 130px"
+            @change="(res) => onSponsorChange(res, record, item)"
+            v-model:value="item.sponsor"
+          >
+            <a-select-option :value="1">平台</a-select-option>
+            <a-select-option :value="2">销售企业</a-select-option>
+            <a-select-option :value="3">平台+销售企业</a-select-option>
+          </a-select>
+        </div>
+      </template>
+      <template v-if="column.key === 'sponsor_rate'">
+        <div v-for="(item, index) in record.sku_list" :key="item.shop_goods_id">
+          <a-input-number
+            style="width: 80px"
+            :disabled="item.sponsor != 3"
+            :min="0"
+            :max="100"
+            placeholder="平台"
+            v-model:value="item.platform_ratio"
+          />
+          <a-input-number
+            style="width: 80px"
+            :disabled="item.sponsor != 3"
+            :min="0"
+            :max="100"
+            placeholder="销售企业"
+            v-model:value="item.shop_ratio"
+          />
         </div>
       </template>
       <template v-if="column.key === 'sku_spec_copy_data'">
@@ -50,64 +110,6 @@
             {{ item.sku_spec_copy_data || "-" }}
           </div>
         </template>
-      </template>
-      <template v-if="column.key === 'stock'">
-        <div v-for="(item, index) in record.sku_list" :key="index">
-          {{ item.stock }}
-        </div>
-      </template>
-      <template v-if="column.key === 'marketing_org_stock'">
-        <div v-for="(item, index) in record.sku_list" :key="item.shop_goods_id">
-          <a-input-number
-            style="width: 80px"
-            :min="0"
-            placeholder="数量"
-            v-model="item.marketing_org_stock"
-          />
-        </div>
-      </template>
-      <template v-if="column.key === 'marketing_stock'">
-        <div v-for="(item, index) in record.sku_list" :key="item.shop_goods_id">
-          {{ item.marketing_stock }}
-        </div>
-      </template>
-      <template v-if="column.key === 'sponsor'">
-        <div v-for="(item, index) in record.sku_list" :key="item.shop_goods_id">
-          <a-select
-            style="width: 130px"
-            @change="(res) => onSponsorChange(res, record, item)"
-            v-model="item.sponsor"
-          >
-            <a-select-option :value="1">平台</a-select-option>
-            <a-select-option :value="2">销售企业</a-select-option>
-            <a-select-option :value="3">平台+销售企业</a-select-option>
-          </a-select>
-        </div>
-      </template>
-      <template v-if="column.key === 'sponsor_rate'">
-        <div v-for="(item, index) in record.sku_list" :key="item.shop_goods_id">
-          <a-input-number
-            style="width: 80px"
-            :disabled="item.sponsor != 3"
-            :min="0"
-            :max="100"
-            placeholder="平台"
-            v-model="item.platform_ratio"
-          />
-          <a-input-number
-            style="width: 80px"
-            :disabled="item.sponsor != 3"
-            :min="0"
-            :max="100"
-            placeholder="销售企业"
-            v-model="item.shop_ratio"
-          />
-        </div>
-      </template>
-      <template v-if="column.key === 'shop_selling_price'">
-        <div v-for="(item, index) in record.sku_list" :key="index">
-          {{ item.shop_selling_price }}
-        </div>
       </template>
       <template v-if="column.key === 'is_listing'">
         <div v-for="(item, index) in record.sku_list" :key="index">
@@ -169,8 +171,35 @@ function getShopList(shop_spu_ids, init) {
       shop_spu_ids,
     })
     .then(({ data: { list } }) => {
-      dataSource.value = list;
-
+      list.forEach((v, index) => {
+        let {
+          sku_list,
+          goods_gallery,
+          id,
+          name,
+          shop_name,
+          shop_id,
+          supplier_name,
+          supplier_id,
+        } = v;
+        sku_list.forEach((value) => {
+          value.marketing_org_stock = 0;
+          value.marketing_stock = "-";
+          value.sponsor = 1;
+          value.platform_ratio = 100;
+          value.shop_ratio = 0;
+          value.sku_spec_copy_data = makeSpecCopy(value.sku_spec_copy);
+          value.sku_id = value.id;
+          value.img = goods_gallery[0].img_url;
+          value.spu_id = id;
+          value.spu_name = name;
+          value.shop_name = shop_name;
+          value.shop_id = shop_id;
+          value.supplier_name = supplier_name;
+          value.supplier_id = supplier_id;
+          dataSource.value.push(value);
+        });
+      });
       /* init && initMerge(data);
       !init && merge(data); */
     });
@@ -181,105 +210,125 @@ const columns = [
     title: "操作",
     dataIndex: "action",
     key: "action",
+    width: 80,
     fixed: "left",
   },
   {
     title: "商品图片", // 暂时没有
-    dataIndex: "spu_img_url",
-    key: "spu_img_url",
+    dataIndex: "goods_gallery",
+    width: 100,
+    key: "goods_gallery",
   },
   {
     title: "SPU ID",
-    dataIndex: "spu_id",
-    key: "spu_id",
+    dataIndex: "id",
+    width: 80,
+    key: "id",
   },
   {
     title: "商品编码",
     dataIndex: "sku_code",
+    width: 120,
     key: "sku_code",
   },
   {
     title: "货号",
+    width: 120,
     dataIndex: "sn",
     key: "sn",
   },
   {
     title: "商品名称",
     dataIndex: "name",
+    width: 200,
     key: "name",
   },
   {
     title: "SKU ID",
     dataIndex: "sku_id",
+    width: 60,
     key: "sku_id",
   },
   {
     title: "shop_goods_id",
     dataIndex: "shop_goods_id",
+    width: 80,
     key: "shop_goods_id",
   },
   {
     title: "店铺售价(元)",
+    width: 110,
     dataIndex: "shop_selling_price",
     key: "shop_selling_price",
   },
   {
     title: "商品可用库存",
     dataIndex: "stock",
+    width: 110,
     key: "stock",
   },
   {
     title: "活动数量",
     dataIndex: "marketing_org_stock",
+    width: 120,
     key: "marketing_org_stock",
   },
   {
     title: "剩余活动数量",
     dataIndex: "marketing_stock",
+    width: 120,
     key: "marketing_stock",
   },
   {
     title: "成本承担方",
     dataIndex: "sponsor",
+    width: 160,
     key: "sponsor",
   },
   {
     title: "成本承担比例(%)",
     dataIndex: "sponsor_rate",
+    width: 200,
     key: "sponsor_rate",
   },
   {
     title: "规格",
     dataIndex: "sku_spec_copy_data",
+    width: 200,
     key: "sku_spec_copy_data",
   },
   {
     title: "状态",
     dataIndex: "is_listing",
+    width: 60,
     key: "is_listing",
   },
   {
     title: "店铺名称",
     dataIndex: "shop_name",
+    width: 100,
     key: "shop_name",
   },
   {
     title: "店铺ID",
     dataIndex: "shop_id",
+    width: 100,
     key: "shop_id",
   },
   {
     title: "供应商名称",
     dataIndex: "supplier_name",
+    width: 100,
     key: "supplier_name",
   },
   {
     title: "供应商编码",
     dataIndex: "supplier_id",
+    width: 100,
     key: "supplier_id",
   },
 ];
-const dataSource = ref();
+const dataSource = ref([]);
 function chooseGoods() {
   if (formData.use_scope.site_ids === 0 && !formData.use_scope.shop_id) {
     message.warning("请先选择店铺");
@@ -297,74 +346,6 @@ function chooseGoods() {
 }
 
 function siteIdsValueDelete() {}
-
-// 新增商品和旧dataSource.value 数据合并，解决已有spu下添加sku问题
-function merge(data) {
-  if (!data.length) return;
-  if (!dataSource.value?.length) {
-    dataSource.value = data.map((record) => {
-      return {
-        ...record,
-        sku_list: record.sku_list.map((item) => {
-          return {
-            ...item,
-            marketing_org_stock: 0,
-            marketing_stock: "-",
-            sponsor: 1,
-            platform_ratio: 100,
-            shop_ratio: 0,
-          };
-        }),
-      };
-    });
-    return;
-  }
-  // 上一次data数据
-  let old_shop_spu_ids = dataSource.value.map((item) => {
-    return item.shop_id + "-" + item.spu_id;
-  });
-  // 本次筛选的data数据
-  let new_shop_spu_ids = data.map((item) => {
-    return item.shop_id + "-" + item.spu_id;
-  });
-
-  data.forEach((spu) => {
-    let index = old_shop_spu_ids.indexOf(spu.shop_id + "-" + spu.spu_id);
-
-    if (index == -1) {
-      dataSource.value.push({
-        ...spu,
-        sku_list: spu.sku_list.map((sku) => {
-          return {
-            ...sku,
-            marketing_org_stock: 0,
-            marketing_stock: "-",
-            sponsor: 1,
-            platform_ratio: 100,
-            shop_ratio: 0,
-          };
-        }),
-      });
-    } else {
-      let shop_goods_ids = dataSource.value[index].sku_list.map((sku) => {
-        return sku.shop_goods_id;
-      });
-
-      spu.sku_list.forEach((sku) => {
-        if (shop_goods_ids.indexOf(sku.shop_goods_id) == -1) {
-          dataSource.value[index].sku_list.push({
-            ...sku,
-            marketing_org_stock: 0,
-            marketing_stock: "-",
-            sponsor: 1,
-            platform_ratio: 100,
-            shop_ratio: 0,
-          });
-        }
-      });
-    }
-  });
-}
 
 // 编辑初始化数据
 function initMerge(data) {
@@ -405,70 +386,6 @@ function initMerge(data) {
       sku_list,
     });
   });
-}
-
-function makeGoodsData(list) {
-  list.forEach((item, index) => {
-    item.key = index + "";
-    let shop_selling_price = [];
-    let spu_img_url = "";
-    let stock = 0;
-
-    item.spu_id = item.id;
-    item.unique_id = item.shop_id ? item.id + "_" + item.shop_id : item.id;
-    item.shop_spu_id = item.shop_id
-      ? item.shop_id + "-" + item.spu_id
-      : item.spu_id;
-    // spu第一张图片
-    if (
-      item.goods_gallery &&
-      item.goods_gallery.length &&
-      item.goods_gallery[0].img_url &&
-      !spu_img_url
-    ) {
-      spu_img_url = item.goods_gallery[0].img_url;
-    }
-
-    if (item.sku_list && item.sku_list.length > 0) {
-      item.sku_list.forEach((itemC, indexC) => {
-        // 活动spu_库存
-        stock = stock + (itemC.stock || 0);
-        itemC.sku_id = itemC.id;
-        // 活动现有库存
-        itemC.stock_text = 0;
-        itemC.stock = itemC.stock || 0;
-        itemC.sku_spec_copy_data = makeSpecCopy(itemC.sku_spec_copy);
-        itemC.shop_selling_price = "-";
-
-        if (itemC.channel_relation && itemC.channel_relation.length > 0) {
-          item.shop_org_id = itemC.channel_relation[0].shop_org_id; //shop_org_id=1销售组织名气家
-          itemC.is_listing = itemC.channel_relation[0].is_listing;
-          itemC.shop_is_listing = itemC.channel_relation[0].shop_is_listing;
-          itemC.shop_goods_id = itemC.channel_relation[0].shop_goods_id;
-          itemC.shop_selling_price =
-            itemC.channel_relation[0].shop_selling_price; // 店铺售价
-          itemC.shop_retail_price = itemC.channel_relation[0].shop_retail_price; // 经销价
-          shop_selling_price.push(
-            itemC.channel_relation[0].shop_selling_price || 0
-          );
-          if (
-            itemC.channel_relation[0].points &&
-            itemC.channel_relation[0].points.length
-          ) {
-            itemC.shop_exchange_price =
-              itemC.channel_relation[0].points[0].exchange_price; //兑换价格
-            itemC.shop_exchange_score =
-              itemC.channel_relation[0].points[0].exchange_score; //兑换积分
-          }
-        }
-      });
-    }
-    item.stock = stock;
-    item.spu_img_url = spu_img_url;
-    // 商品价格（每个sku都有一个价格-取区间）
-    item.shop_selling_price = makeSellPrice(shop_selling_price);
-  });
-  return list;
 }
 
 function makeSpecCopy(item) {

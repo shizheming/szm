@@ -200,10 +200,8 @@
     </s-form-item>
     <s-form-item
       label="赠品信息-商品"
-      name="goods"
       :rules="{
         required: true,
-        message: '请选择赠品信息-商品',
       }"
       v-if="formData.gift_settings.gift_type?.includes(1)"
     >
