@@ -1,5 +1,5 @@
 <template>
-  <s-button @click="chooseGoods" style="margin-bottom: 10px">选择商品</s-button>
+  <s-button @click="chooseGoods" style="margin-bottom: 20px">选择商品</s-button>
   <a-table
     rowKey="id"
     :pagination="false"
@@ -19,7 +19,7 @@
         </div>
       </template>
       <template v-if="column.key === 'goods_gallery'">
-        <a-image :width="50" :src="record.goods_gallery[0].img_url" />
+        <a-image :width="50" :src="record.img" />
       </template>
       <template v-if="column.key === 'sku_id'">
         <div v-for="(item, index) in record.sku_list" :key="index">
@@ -27,14 +27,10 @@
         </div>
       </template>
       <template v-if="column.key === 'shop_goods_id'">
-        <div v-for="(item, index) in record.sku_list" :key="index">
-          {{ item.channel_relation[0].shop_goods_id || "-" }}
-        </div>
+        {{ record.channel_relation[0].shop_goods_id || "-" }}
       </template>
       <template v-if="column.key === 'shop_selling_price'">
-        <div v-for="(item, index) in record.sku_list" :key="index">
-          {{ item.channel_relation[0].shop_selling_price }}
-        </div>
+        {{ record.channel_relation[0].shop_selling_price }}
       </template>
 
       <template v-if="column.key === 'stock'">
@@ -43,88 +39,74 @@
         </div>
       </template>
       <template v-if="column.key === 'marketing_org_stock'">
-        <div v-for="(item, index) in record.sku_list" :key="item.shop_goods_id">
-          <a-input-number
-            style="width: 80px"
-            :min="0"
-            placeholder="数量"
-            v-model:value="item.marketing_org_stock"
-          />
-        </div>
+        <a-input-number
+          style="width: 80px"
+          :min="1"
+          placeholder="数量"
+          v-model:value="record.marketing_org_stock"
+        />
       </template>
       <template v-if="column.key === 'marketing_stock'">
-        <div v-for="(item, index) in record.sku_list" :key="item.shop_goods_id">
-          {{ item.marketing_stock }}
-        </div>
+        {{ record.marketing_stock }}
       </template>
       <template v-if="column.key === 'sponsor'">
-        <div v-for="(item, index) in record.sku_list" :key="item.shop_goods_id">
-          <a-select
-            style="width: 130px"
-            @change="(res) => onSponsorChange(res, record, item)"
-            v-model:value="item.sponsor"
-          >
-            <a-select-option :value="1">平台</a-select-option>
-            <a-select-option :value="2">销售企业</a-select-option>
-            <a-select-option :value="3">平台+销售企业</a-select-option>
-          </a-select>
-        </div>
+        <a-select
+          style="width: 130px"
+          @change="(res) => onSponsorChange(res, record)"
+          v-model:value="record.sponsor"
+        >
+          <a-select-option :value="1">平台</a-select-option>
+          <a-select-option :value="2">销售企业</a-select-option>
+          <a-select-option :value="3">平台+销售企业</a-select-option>
+        </a-select>
       </template>
       <template v-if="column.key === 'sponsor_rate'">
-        <div v-for="(item, index) in record.sku_list" :key="item.shop_goods_id">
-          <a-input-number
-            style="width: 80px"
-            :disabled="item.sponsor != 3"
-            :min="0"
-            :max="100"
-            placeholder="平台"
-            v-model:value="item.platform_ratio"
-          />
-          <a-input-number
-            style="width: 80px"
-            :disabled="item.sponsor != 3"
-            :min="0"
-            :max="100"
-            placeholder="销售企业"
-            v-model:value="item.shop_ratio"
-          />
-        </div>
+        <a-input-number
+          style="width: 80px; margin-right: 15px"
+          :disabled="record.sponsor != 3"
+          :min="0"
+          :max="100"
+          placeholder="平台"
+          v-model:value="record.platform_ratio"
+        />
+        <a-input-number
+          style="width: 80px"
+          :disabled="record.sponsor != 3"
+          :min="0"
+          :max="100"
+          placeholder="销售企业"
+          v-model:value="record.shop_ratio"
+        />
       </template>
       <template v-if="column.key === 'sku_spec_copy_data'">
-        <template v-for="(item, index) in record.sku_list">
-          <a-tooltip
-            placement="top"
-            :key="index"
-            v-if="
-              item.sku_spec_copy_data && item.sku_spec_copy_data.length > 15
-            "
-          >
-            <template slot="title">
-              <span>{{ item.sku_spec_copy_data || "-" }}</span>
-            </template>
-            <div class="sku_spec_copy_data">
-              {{ item.sku_spec_copy_data || "-" }}
-            </div>
-          </a-tooltip>
-          <div class="sku_spec_copy_data" v-else>
-            {{ item.sku_spec_copy_data || "-" }}
+        <a-tooltip
+          placement="top"
+          :key="index"
+          v-if="
+            record.sku_spec_copy_data && record.sku_spec_copy_data.length > 15
+          "
+        >
+          <template slot="title">
+            <span>{{ record.sku_spec_copy_data || "-" }}</span>
+          </template>
+          <div class="sku_spec_copy_data">
+            {{ record.sku_spec_copy_data || "-" }}
           </div>
-        </template>
+        </a-tooltip>
+        <div class="sku_spec_copy_data" v-else>
+          {{ record.sku_spec_copy_data || "-" }}
+        </div>
       </template>
       <template v-if="column.key === 'is_listing'">
-        <div v-for="(item, index) in record.sku_list" :key="index">
-          {{ item.is_listing == 1 ? "上架" : "下架" }}
-        </div>
+        {{ record.is_listing == 1 ? "上架" : "下架" }}
       </template>
       <template v-if="column.key === 'action'">
-        <div v-for="(item, index) in record.sku_list" :key="item.shop_goods_id">
-          <a
-            href="javascript:;"
-            class="table-button-red"
-            @click="siteIdsValueDelete(indexF, index)"
-            >删除</a
-          >
-        </div>
+        <a
+          href="javascript:;"
+          class="table-button-red"
+          @click="siteIdsValueDelete()"
+          >删除</a
+        >
       </template>
     </template>
   </a-table>
@@ -182,8 +164,8 @@ function getShopList(shop_spu_ids, init) {
           supplier_name,
           supplier_id,
         } = v;
-        sku_list.forEach((value) => {
-          value.marketing_org_stock = 0;
+        sku_list.forEach((value, key) => {
+          value.marketing_org_stock = 1;
           value.marketing_stock = "-";
           value.sponsor = 1;
           value.platform_ratio = 100;
@@ -197,9 +179,12 @@ function getShopList(shop_spu_ids, init) {
           value.shop_id = shop_id;
           value.supplier_name = supplier_name;
           value.supplier_id = supplier_id;
+          value.rowSpan = key === 0 ? sku_list.length : 0;
           dataSource.value.push(value);
         });
       });
+      // 把dataSource挂到formData上面去
+      formData.goods = dataSource.value;
       /* init && initMerge(data);
       !init && merge(data); */
     });
@@ -214,16 +199,32 @@ const columns = [
     fixed: "left",
   },
   {
-    title: "商品图片", // 暂时没有
+    title: "商品图片",
     dataIndex: "goods_gallery",
     width: 100,
     key: "goods_gallery",
+    customRender({ record, index }) {
+      const obj = {
+        props: {},
+      };
+      obj.props.rowSpan = record.rowSpan;
+
+      return obj;
+    },
   },
   {
     title: "SPU ID",
-    dataIndex: "id",
+    dataIndex: "spu_id",
     width: 80,
-    key: "id",
+    key: "spu_id",
+    customRender({ record, index }) {
+      const obj = {
+        props: {},
+      };
+      obj.props.rowSpan = record.rowSpan;
+
+      return obj;
+    },
   },
   {
     title: "商品编码",
@@ -239,9 +240,17 @@ const columns = [
   },
   {
     title: "商品名称",
-    dataIndex: "name",
+    dataIndex: "spu_name",
     width: 200,
-    key: "name",
+    key: "spu_name",
+    customRender({ record, index }) {
+      const obj = {
+        props: {},
+      };
+      obj.props.rowSpan = record.rowSpan;
+
+      return obj;
+    },
   },
   {
     title: "SKU ID",
@@ -288,7 +297,7 @@ const columns = [
   {
     title: "成本承担比例(%)",
     dataIndex: "sponsor_rate",
-    width: 200,
+    width: 250,
     key: "sponsor_rate",
   },
   {
@@ -308,24 +317,56 @@ const columns = [
     dataIndex: "shop_name",
     width: 100,
     key: "shop_name",
+    customRender({ record, index }) {
+      const obj = {
+        props: {},
+      };
+      obj.props.rowSpan = record.rowSpan;
+
+      return obj;
+    },
   },
   {
     title: "店铺ID",
     dataIndex: "shop_id",
     width: 100,
     key: "shop_id",
+    customRender({ record, index }) {
+      const obj = {
+        props: {},
+      };
+      obj.props.rowSpan = record.rowSpan;
+
+      return obj;
+    },
   },
   {
     title: "供应商名称",
     dataIndex: "supplier_name",
     width: 100,
     key: "supplier_name",
+    customRender({ record, index }) {
+      const obj = {
+        props: {},
+      };
+      obj.props.rowSpan = record.rowSpan;
+
+      return obj;
+    },
   },
   {
     title: "供应商编码",
     dataIndex: "supplier_id",
     width: 100,
     key: "supplier_id",
+    customRender({ record, index }) {
+      const obj = {
+        props: {},
+      };
+      obj.props.rowSpan = record.rowSpan;
+
+      return obj;
+    },
   },
 ];
 const dataSource = ref([]);
@@ -346,7 +387,7 @@ function chooseGoods() {
 }
 
 function siteIdsValueDelete() {}
-
+function onSponsorChange() {}
 // 编辑初始化数据
 function initMerge(data) {
   // 数据库存储spu
