@@ -65,9 +65,8 @@ defineExpose({
 });
 
 // 通过nextTick来设值，一个接着一个，而不是一下子设，主要是为了解决triggerclear这个问题，当然这个不是此功能本身的问题
-async function forSetDetail(detail) {
+function forSetDetail(detail) {
   for (let v of setDetail) {
-    await nextTick();
     v(detail);
   }
 }

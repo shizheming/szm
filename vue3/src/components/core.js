@@ -116,10 +116,11 @@ export default function (props, emit, componentType) {
     formComponents[componentName.value] = innerObj;
   }
 
-  /* 初始化options */
+  /* select单独处理 */
   if (componentType === "select") {
+    // 有初始options
     if (isFunction(attrs["inner-options"])) {
-      value().then((d) => {
+      attrs["inner-options"]().then((d) => {
         innerObj.optionsDetail = d;
         newProps.options = d;
         // 回显的时候的select处理，先有options才能设值
@@ -154,7 +155,28 @@ export default function (props, emit, componentType) {
           }
         }
       });
+    } else if (isArray(attrs["trigger-options"])) {
+      if (isEdit) {
+        // 有监听options
+        let topt = watch(innerObj, (newValue, oldValue) => {
+          if (innerObj.optionsDetail) {
+            // 销毁监听
+            topt();
+            // 能监听到的话肯定是有值了，因为先有options才能设值
+            let ov = get(detailData?.value, componentNameStr);
+            // 加上当前选中的option
+            let [current] = innerObj.optionsDetail.filter(
+              ({ value }) => ov === value
+            );
+            // 值和options里面不匹配
+            if (current === undefined) return;
+            innerObj.current = current;
+            newProps.onChange(ov, current);
+          }
+        });
+      }
     }
+    // 还有同时存在inner-options和trigger-options时还没写，？？？？？？？？？？？？？？？？？？？？？？？？？
   }
 
   /* 进口处理，判断是不是回显，除了select以外的其他*/
