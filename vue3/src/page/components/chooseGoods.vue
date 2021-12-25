@@ -95,6 +95,7 @@
       :rowSelection="{
         selectedRowKeys: allSelectedRowKeys,
         onChange: onSelectChange,
+        getCheckboxProps,
       }"
     >
       <template #expandedRowRender="{ record }">
@@ -151,11 +152,8 @@ import axios from "../../api";
 import { ref, reactive, inject, watch } from "vue";
 import { last } from "lodash";
 let shop_id_list = inject("shop_id_list");
-const props = defineProps(["visible"]);
-const emit = defineEmits([
-  "update:visible",
-  "update:selected",
-]);
+const props = defineProps(["visible", "selected"]);
+const emit = defineEmits(["update:visible", "update:selected"]);
 const formSection = ref();
 const formData = reactive({});
 const dataSource = ref();
@@ -165,6 +163,13 @@ const allSelectedRows = ref([]);
 function onSelectChange(selectedRowKeys, selectedRows) {
   allSelectedRowKeys.value = selectedRowKeys;
   allSelectedRows.value = selectedRows;
+}
+function getCheckboxProps(record) {
+  if (props?.selected?.rowKeys?.includes(record.id)) {
+    return {
+      disabled: true,
+    };
+  }
 }
 const columns = [
   {

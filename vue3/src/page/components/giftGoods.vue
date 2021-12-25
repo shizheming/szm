@@ -50,33 +50,49 @@
         {{ record.marketing_stock }}
       </template>
       <template v-if="column.key === 'sponsor'">
-        <a-select
-          style="width: 130px"
-          @change="(res) => onSponsorChange(res, record)"
-          v-model:value="record.sponsor"
-        >
-          <a-select-option :value="1">平台</a-select-option>
-          <a-select-option :value="2">销售企业</a-select-option>
-          <a-select-option :value="3">平台+销售企业</a-select-option>
-        </a-select>
+        <s-form-item :name="['goods', index, 'sponsor']">
+          <s-select style="width: 130px" v-model:value="record.sponsor">
+            <a-select-option :value="1">平台</a-select-option>
+            <a-select-option :value="2">销售企业</a-select-option>
+            <a-select-option :value="3">平台+销售企业</a-select-option>
+          </s-select>
+        </s-form-item>
       </template>
       <template v-if="column.key === 'sponsor_rate'">
-        <a-input-number
-          style="width: 80px; margin-right: 15px"
-          :disabled="record.sponsor != 3"
-          :min="0"
-          :max="100"
-          placeholder="平台"
-          v-model:value="record.platform_ratio"
-        />
-        <a-input-number
-          style="width: 80px"
-          :disabled="record.sponsor != 3"
-          :min="0"
-          :max="100"
-          placeholder="销售企业"
-          v-model:value="record.shop_ratio"
-        />
+        <s-form-item
+          :name="['goods', index, 'platform_ratio']"
+          style="width: 80px; margin-right: 15px; display: inline-block"
+        >
+          <s-input-number
+            :disabled="record.sponsor != 3"
+            :min="0"
+            :max="100"
+            placeholder="平台"
+            v-model:value="record.platform_ratio"
+            :trigger="[
+              record.sponsor,
+              (select, formComponent) =>
+                platform_ratio_trigger(select, formComponent, index),
+            ]"
+          />
+        </s-form-item>
+        <s-form-item
+          :name="['goods', index, 'shop_ratio']"
+          style="width: 80px; display: inline-block"
+        >
+          <s-input-number
+            :disabled="record.sponsor != 3"
+            :min="0"
+            :max="100"
+            placeholder="销售企业"
+            v-model:value="record.shop_ratio"
+            :trigger="[
+              record.sponsor,
+              (select, formComponent) =>
+                shop_ratio_trigger(select, formComponent, index),
+            ]"
+          />
+        </s-form-item>
       </template>
       <template v-if="column.key === 'sku_spec_copy_data'">
         <a-tooltip
@@ -297,7 +313,7 @@ const columns = [
   {
     title: "成本承担比例(%)",
     dataIndex: "sponsor_rate",
-    width: 250,
+    width: 300,
     key: "sponsor_rate",
   },
   {
@@ -387,48 +403,21 @@ function chooseGoods() {
 }
 
 function siteIdsValueDelete() {}
-function onSponsorChange() {}
-// 编辑初始化数据
-function initMerge(data) {
-  // 数据库存储spu
-  let db_shop_spu_ids = this.spu_list.map((item) => {
-    return item.shop_spu_id;
-  });
 
-  data.forEach((spu) => {
-    let index = db_shop_spu_ids.indexOf(spu.shop_id + "-" + spu.spu_id);
-
-    if (index == -1) return;
-    let sku_list = [];
-    let shop_goods_ids = this.spu_list[index].gift_sku_list.map((sku) => {
-      return sku.shop_goods_id;
-    });
-
-    spu.sku_list.forEach((sku) => {
-      let i = shop_goods_ids.indexOf(sku.shop_goods_id);
-
-      if (i != -1) {
-        sku_list.push({
-          ...sku,
-          db_id: this.spu_list[index].gift_sku_list[i].id,
-          marketing_stock:
-            this.spu_list[index].gift_sku_list[i].marketing_stock,
-          marketing_org_stock:
-            this.spu_list[index].gift_sku_list[i].marketing_org_stock,
-          sponsor: this.spu_list[index].gift_sku_list[i].sponsor,
-          platform_ratio: this.spu_list[index].gift_sku_list[i].platform_ratio,
-          shop_ratio: this.spu_list[index].gift_sku_list[i].shop_ratio,
-        });
-      }
-    });
-    dataSource.value.push({
-      ...spu,
-      db_id: this.spu_list[index].id,
-      sku_list,
-    });
-  });
+function platform_ratio_trigger(select, formComponent, index) {
+  if (formData.goods[index].sponsor === 1) {
+    formData.goods[index].platform_ratio = 100;
+  } else if (formData.goods[index].sponsor === 2) {
+    formData.goods[index].platform_ratio = 0;
+  }
 }
-
+function shop_ratio_trigger(select, formComponent, index) {
+  if (formData.goods[index].sponsor === 1) {
+    formData.goods[index].shop_ratio = 0;
+  } else if (formData.goods[index].sponsor === 2) {
+    formData.goods[index].shop_ratio = 100;
+  }
+}
 function makeSpecCopy(item) {
   if (!item || !item.sku_specs) return "-";
   let json = JSON.parse(item.sku_specs);
@@ -438,20 +427,6 @@ function makeSpecCopy(item) {
     t.push(item.spec_value);
   });
   return t.join(",");
-}
-
-function makeSellPrice(list) {
-  if (!list || list.length <= 0) {
-    return "-";
-  }
-  if (list.length == 1) {
-    return list[0];
-  }
-  list.sort(function (a, b) {
-    return a - b;
-  });
-  if (list[0] == list[list.length - 1]) return list[0];
-  return list[0] + "-" + list[list.length - 1];
 }
 </script>
 

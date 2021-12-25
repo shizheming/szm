@@ -15,6 +15,7 @@ import { Select } from "ant-design-vue";
 import props from "./props";
 import { useSlots } from "vue";
 import { forEach } from "lodash";
+
 const slots = useSlots();
 let newSlots = {};
 forEach(slots, (value, key) => {
