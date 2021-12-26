@@ -93,7 +93,7 @@
       :dataSource="dataSource"
       rowKey="id"
       :rowSelection="{
-        selectedRowKeys: allSelectedRowKeys,
+        selectedRowKeys: props.selected?.rowKeys,
         onChange: onSelectChange,
         getCheckboxProps,
       }"
@@ -158,11 +158,11 @@ const formSection = ref();
 const formData = reactive({});
 const dataSource = ref();
 const innerData = ref();
-const allSelectedRowKeys = ref([]);
-const allSelectedRows = ref([]);
+let allSelectedRowKeys = [];
+let allSelectedRows = []
 function onSelectChange(selectedRowKeys, selectedRows) {
-  allSelectedRowKeys.value = selectedRowKeys;
-  allSelectedRows.value = selectedRows;
+  allSelectedRowKeys = selectedRowKeys;
+  allSelectedRows = selectedRows;
 }
 function getCheckboxProps(record) {
   if (props?.selected?.rowKeys?.includes(record.id)) {
@@ -274,8 +274,8 @@ watch(
 );
 function handleOk() {
   emit("update:selected", {
-    rowKeys: allSelectedRowKeys.value,
-    rows: allSelectedRows.value,
+    rowKeys: allSelectedRowKeys,
+    rows: allSelectedRows,
   });
   emit("update:visible", false);
 }

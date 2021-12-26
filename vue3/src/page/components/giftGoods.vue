@@ -50,13 +50,16 @@
         {{ record.marketing_stock }}
       </template>
       <template v-if="column.key === 'sponsor'">
-        <s-form-item :name="['goods', index, 'sponsor']">
-          <s-select style="width: 130px" v-model:value="record.sponsor">
+        <a-form-item
+          :name="['goods', index, 'sponsor']"
+          :rules="{ required: true, message: '请选择成本承担方' }"
+        >
+          <a-select style="width: 130px" v-model:value="record.sponsor">
             <a-select-option :value="1">平台</a-select-option>
             <a-select-option :value="2">销售企业</a-select-option>
             <a-select-option :value="3">平台+销售企业</a-select-option>
-          </s-select>
-        </s-form-item>
+          </a-select>
+        </a-form-item>
       </template>
       <template v-if="column.key === 'sponsor_rate'">
         <s-form-item
@@ -120,7 +123,7 @@
         <a
           href="javascript:;"
           class="table-button-red"
-          @click="siteIdsValueDelete()"
+          @click="siteIdsValueDelete(index)"
           >删除</a
         >
       </template>
@@ -130,37 +133,44 @@
 </template>
 
 <script setup>
-import { ref, toRefs, reactive, onMounted, inject, watch } from "vue";
-import { message } from "ant-design-vue";
+import {
+  ref,
+  toRefs,
+  reactive,
+  onMounted,
+  inject,
+  watch,
+  createVNode,
+} from "vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { message, Modal } from "ant-design-vue";
 import axios from "../../api";
+import { remove } from "lodash";
 import ChooseGoods from "./chooseGoods.vue";
 let formData = inject("formData");
 const visible = ref(false);
 const selected = ref();
-
+let shop_spu_ids;
 watch(
   () => {
     return selected.value;
   },
   (newValue) => {
-    let shop_spu_ids = newValue.rows.map((item) => {
+    console.log(8888)
+    shop_spu_ids = newValue.rows.map((item) => {
       return item.shop_id + "-" + item.id;
     });
     getShopList(shop_spu_ids);
-  }
+  },
 );
 
-function getShopList(shop_spu_ids, init) {
+// 存一下spu维度的list，删除的时候要用，需要比对
+let spuList;
+function getShopList(shop_spu_ids) {
   axios
     .post("/api/goods/list", {
       page: 1,
       page_size: 999,
-      // 英文逗号分隔，
-      // category（分类），
-      // skuList.channelRelation（sku列表）,
-      // skuList.channelRelation.gallery(相册)，
-      // skuList.skuSpecCopy（规格），
-      // goodsGallery（spu相册），
       required_data:
         "category,skuList.channelRelation,skuList.skuSpecCopy,goodsGallery",
       channel_id: 1, //渠道ID，目前固定只有一个
@@ -169,6 +179,7 @@ function getShopList(shop_spu_ids, init) {
       shop_spu_ids,
     })
     .then(({ data: { list } }) => {
+      spuList = list;
       list.forEach((v, index) => {
         let {
           sku_list,
@@ -402,20 +413,56 @@ function chooseGoods() {
   visible.value = true;
 }
 
-function siteIdsValueDelete() {}
+function siteIdsValueDelete(index) {
+  Modal.confirm({
+    title: "确定删除吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    onOk() {
+      let [delObj] = dataSource.value.splice(index, 1);
+      spuList.forEach(({ sku_list, id }, index) => {
+        spuList[index].sku_list = sku_list.filter((current) => {
+          return !(delObj.spu_id === id && delObj.sku_id === current.id);
+        });
+      });
+      // 重新设置合并单元格的参数
+      spuList.forEach(({ sku_list }) => {
+        sku_list.forEach((value, key) => {
+          value.rowSpan = key === 0 ? sku_list.length : 0;
+        });
+      });
+      spuList.forEach(({ sku_list, id }) => {
+        if (sku_list.length === 0) {
+          remove(selected.value.rows, (cur) => {
+            return cur.id === id;
+          });
+          remove(selected.value.rowKeys, (cur) => {
+            return cur === id;
+          });
+          if (selected.value.rowKeys.length === 0) {
+            selected.value.rowKeys = undefined
+          }
+          if (selected.value.rows.length === 0) {
+            selected.value.rows = undefined
+          }
+        }
+      });
+      console.log(selected.value,888)
+    },
+  });
+}
 
 function platform_ratio_trigger(select, formComponent, index) {
-  if (formData.goods[index].sponsor === 1) {
-    formData.goods[index].platform_ratio = 100;
-  } else if (formData.goods[index].sponsor === 2) {
-    formData.goods[index].platform_ratio = 0;
+  if (dataSource.value[index].sponsor === 1) {
+    dataSource.value[index].platform_ratio = 100;
+  } else if (dataSource.value[index].sponsor === 2) {
+    dataSource.value[index].platform_ratio = 0;
   }
 }
 function shop_ratio_trigger(select, formComponent, index) {
-  if (formData.goods[index].sponsor === 1) {
-    formData.goods[index].shop_ratio = 0;
-  } else if (formData.goods[index].sponsor === 2) {
-    formData.goods[index].shop_ratio = 100;
+  if (dataSource.value[index].sponsor === 1) {
+    dataSource.value[index].shop_ratio = 0;
+  } else if (dataSource.value[index].sponsor === 2) {
+    dataSource.value[index].shop_ratio = 100;
   }
 }
 function makeSpecCopy(item) {

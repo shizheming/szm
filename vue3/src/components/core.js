@@ -1,3 +1,6 @@
+// 主动与被动的关系
+// trigger和change的关系
+// 以后做完一个文件要回顾下知识点，意识到的点，和减少变量
 import {
   onMounted,
   reactive,
