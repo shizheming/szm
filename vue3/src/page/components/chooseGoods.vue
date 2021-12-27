@@ -165,11 +165,11 @@ function onSelectChange(selectedRowKeys, selectedRows) {
   });
 }
 function getCheckboxProps(record) {
-  // if (props?.selected?.rowKeys?.includes(record.id)) {
-  //   return {
-  //     disabled: true,
-  //   };
-  // }
+  if (props?.selected?.rowKeys?.includes(record.id)) {
+    return {
+      disabled: true,
+    };
+  }
 }
 const columns = [
   {
