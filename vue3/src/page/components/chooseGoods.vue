@@ -158,18 +158,18 @@ const formSection = ref();
 const formData = reactive({});
 const dataSource = ref();
 const innerData = ref();
-let allSelectedRowKeys = [];
-let allSelectedRows = []
 function onSelectChange(selectedRowKeys, selectedRows) {
-  allSelectedRowKeys = selectedRowKeys;
-  allSelectedRows = selectedRows;
+  emit("update:selected", {
+    rowKeys: selectedRowKeys,
+    rows: selectedRows,
+  });
 }
 function getCheckboxProps(record) {
-  if (props?.selected?.rowKeys?.includes(record.id)) {
-    return {
-      disabled: true,
-    };
-  }
+  // if (props?.selected?.rowKeys?.includes(record.id)) {
+  //   return {
+  //     disabled: true,
+  //   };
+  // }
 }
 const columns = [
   {
@@ -273,10 +273,10 @@ watch(
   }
 );
 function handleOk() {
-  emit("update:selected", {
+  /* emit("update:selected", {
     rowKeys: allSelectedRowKeys,
     rows: allSelectedRows,
-  });
+  }); */
   emit("update:visible", false);
 }
 function handleCancel() {

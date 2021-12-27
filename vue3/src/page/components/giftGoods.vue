@@ -155,13 +155,15 @@ watch(
   () => {
     return selected.value;
   },
-  (newValue) => {
-    console.log(8888)
-    shop_spu_ids = newValue.rows.map((item) => {
+  (newValue, oldValue) => {
+    let sd = newValue.rows.filter(current => {
+      return !oldValue?.rowKeys?.includes(current.id)
+    })
+    shop_spu_ids = sd.map((item) => {
       return item.shop_id + "-" + item.id;
     });
     getShopList(shop_spu_ids);
-  },
+  }
 );
 
 // 存一下spu维度的list，删除的时候要用，需要比对
@@ -439,14 +441,14 @@ function siteIdsValueDelete(index) {
             return cur === id;
           });
           if (selected.value.rowKeys.length === 0) {
-            selected.value.rowKeys = undefined
+            selected.value.rowKeys = undefined;
           }
           if (selected.value.rows.length === 0) {
-            selected.value.rows = undefined
+            selected.value.rows = undefined;
           }
         }
       });
-      console.log(selected.value,888)
+      console.log(selected.value, 888);
     },
   });
 }

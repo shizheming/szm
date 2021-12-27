@@ -38,7 +38,6 @@ export default function (props, emit, componentType) {
 
   /* 把change包一下，我要在里面更新数据，同时把formComponents传出去，打通表单内的所有数据 */
   let newProps = reactive({ ...props });
-  // 监听原来的属性，不直接丢上去，因为不是一个值的入口，还有trigger-xxxx值的入口，我要自己接，然后处理好放上去
   let innerObj = reactive({});
   let componentNameStr;
   if (isArray(componentName?.value)) {
@@ -77,11 +76,11 @@ export default function (props, emit, componentType) {
     } else {
       emit("update:value", nv);
     }
+    if (componentType === "select") {
+      // 记录一下select当前选择的值
+      formComponents[componentNameStr].current = e[1];
+    }
     if (attrs.onChange) {
-      if (componentType === "select") {
-        // 记录一下select当前选择的值
-        formComponents[componentNameStr].current = e[1];
-      }
       attrs.onChange(...e, formComponents, detailData?.value);
     }
   };
@@ -104,8 +103,6 @@ export default function (props, emit, componentType) {
       emit("update:value", value);
     };
   }
-
-  
 
   /* select单独处理 */
   if (componentType === "select") {

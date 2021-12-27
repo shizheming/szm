@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { reactive, provide, ref, onMounted, defineExpose, nextTick } from "vue";
+import { reactive, provide, ref, onMounted, nextTick } from "vue";
 import { Form } from "ant-design-vue";
 import { cloneDeep, forEach } from "lodash";
 import { setLevelValue, getLevelValue } from "./tool";
