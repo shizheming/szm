@@ -150,75 +150,7 @@ import ChooseGoods from "./chooseGoods.vue";
 let formData = inject("formData");
 const visible = ref(false);
 const selected = ref();
-let shop_spu_ids;
-watch(
-  () => {
-    return selected.value;
-  },
-  (newValue, oldValue) => {
-    let sd = newValue.rows.filter(current => {
-      return !oldValue?.rowKeys?.includes(current.id)
-    })
-    shop_spu_ids = sd.map((item) => {
-      return item.shop_id + "-" + item.id;
-    });
-    getShopList(shop_spu_ids);
-  }
-);
-
-// 存一下spu维度的list，删除的时候要用，需要比对
-let spuList;
-function getShopList(shop_spu_ids) {
-  axios
-    .post("/api/goods/list", {
-      page: 1,
-      page_size: 999,
-      required_data:
-        "category,skuList.channelRelation,skuList.skuSpecCopy,goodsGallery",
-      channel_id: 1, //渠道ID，目前固定只有一个
-      is_cms: 1, // 拉取有店铺的商品列表
-      get_stock: 1, //是否展示库存
-      shop_spu_ids,
-    })
-    .then(({ data: { list } }) => {
-      spuList = list;
-      list.forEach((v, index) => {
-        let {
-          sku_list,
-          goods_gallery,
-          id,
-          name,
-          shop_name,
-          shop_id,
-          supplier_name,
-          supplier_id,
-        } = v;
-        sku_list.forEach((value, key) => {
-          value.marketing_org_stock = 1;
-          value.marketing_stock = "-";
-          value.sponsor = 1;
-          value.platform_ratio = 100;
-          value.shop_ratio = 0;
-          value.sku_spec_copy_data = makeSpecCopy(value.sku_spec_copy);
-          value.sku_id = value.id;
-          value.img = goods_gallery[0].img_url;
-          value.spu_id = id;
-          value.spu_name = name;
-          value.shop_name = shop_name;
-          value.shop_id = shop_id;
-          value.supplier_name = supplier_name;
-          value.supplier_id = supplier_id;
-          value.rowSpan = key === 0 ? sku_list.length : 0;
-          dataSource.value.push(value);
-        });
-      });
-      // 把dataSource挂到formData上面去
-      formData.goods = dataSource.value;
-      /* init && initMerge(data);
-      !init && merge(data); */
-    });
-}
-
+Modal.warning()
 const columns = [
   {
     title: "操作",
@@ -398,6 +330,77 @@ const columns = [
     },
   },
 ];
+
+let shop_spu_ids;
+watch(
+  () => {
+    return selected.value;
+  },
+  (newValue, oldValue) => {
+    let sd = newValue.rows.filter(current => {
+      return !oldValue?.rowKeys?.includes(current.id)
+    })
+    shop_spu_ids = sd.map((item) => {
+      return item.shop_id + "-" + item.id;
+    });
+    getShopList(shop_spu_ids);
+  }
+);
+
+// 存一下spu维度的list，删除的时候要用，需要比对
+let spuList = [];
+function getShopList(shop_spu_ids) {
+  axios
+    .post("/api/goods/list", {
+      page: 1,
+      page_size: 999,
+      required_data:
+        "category,skuList.channelRelation,skuList.skuSpecCopy,goodsGallery",
+      channel_id: 1, //渠道ID，目前固定只有一个
+      is_cms: 1, // 拉取有店铺的商品列表
+      get_stock: 1, //是否展示库存
+      shop_spu_ids,
+    })
+    .then(({ data: { list } }) => {
+      spuList = spuList.concat(list);
+      list.forEach((v, index) => {
+        let {
+          sku_list,
+          goods_gallery,
+          id,
+          name,
+          shop_name,
+          shop_id,
+          supplier_name,
+          supplier_id,
+        } = v;
+        sku_list.forEach((value, key) => {
+          value.marketing_org_stock = 1;
+          value.marketing_stock = "-";
+          value.sponsor = 1;
+          value.platform_ratio = 100;
+          value.shop_ratio = 0;
+          value.sku_spec_copy_data = makeSpecCopy(value.sku_spec_copy);
+          value.sku_id = value.id;
+          value.img = goods_gallery[0].img_url;
+          value.spu_id = id;
+          value.spu_name = name;
+          value.shop_name = shop_name;
+          value.shop_id = shop_id;
+          value.supplier_name = supplier_name;
+          value.supplier_id = supplier_id;
+          value.rowSpan = key === 0 ? sku_list.length : 0;
+          dataSource.value.push(value);
+        });
+      });
+      // 把dataSource挂到formData上面去
+      formData.goods = dataSource.value;
+      /* init && initMerge(data);
+      !init && merge(data); */
+    });
+}
+
+
 const dataSource = ref([]);
 function chooseGoods() {
   if (formData.use_scope.site_ids === 0 && !formData.use_scope.shop_id) {
@@ -421,6 +424,7 @@ function siteIdsValueDelete(index) {
     icon: createVNode(ExclamationCircleOutlined),
     onOk() {
       let [delObj] = dataSource.value.splice(index, 1);
+      // 在spu里面把删除的sku删掉
       spuList.forEach(({ sku_list, id }, index) => {
         spuList[index].sku_list = sku_list.filter((current) => {
           return !(delObj.spu_id === id && delObj.sku_id === current.id);
@@ -432,6 +436,7 @@ function siteIdsValueDelete(index) {
           value.rowSpan = key === 0 ? sku_list.length : 0;
         });
       });
+      // 当sku_list删到空的时候，要把spu删掉
       spuList.forEach(({ sku_list, id }) => {
         if (sku_list.length === 0) {
           remove(selected.value.rows, (cur) => {
@@ -440,15 +445,8 @@ function siteIdsValueDelete(index) {
           remove(selected.value.rowKeys, (cur) => {
             return cur === id;
           });
-          if (selected.value.rowKeys.length === 0) {
-            selected.value.rowKeys = undefined;
-          }
-          if (selected.value.rows.length === 0) {
-            selected.value.rows = undefined;
-          }
         }
       });
-      console.log(selected.value, 888);
     },
   });
 }
