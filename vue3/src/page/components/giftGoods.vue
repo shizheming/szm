@@ -150,7 +150,6 @@ import ChooseGoods from "./chooseGoods.vue";
 let formData = inject("formData");
 const visible = ref(false);
 const selected = ref();
-Modal.warning()
 const columns = [
   {
     title: "操作",
