@@ -67,14 +67,14 @@ let formData = reactive({});
 let formObj = ref();
 let loading = ref();
 let auth = ref();
-let userInfo = ref();
+let userInfo;
 const emit = defineEmits();
 
 function getPermission(token) {
   const headers = {
     Authorization: token,
   };
-axios.defaults.headers.common['Authorization'] = token;
+  axios.defaults.headers.common["Authorization"] = token;
   return new Promise((resolve, reject) => {
     axios
       .get("api/manager/me", { headers })
@@ -109,7 +109,7 @@ function login() {
             .then((data) => {
               auth = data.data.data || [];
               App.storage("permission", auth);
-              userInfo.value = data.userInfo;
+              userInfo = data.userInfo;
 
               let arr = [];
               let platform = "kfsc";

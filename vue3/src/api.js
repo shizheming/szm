@@ -22,4 +22,14 @@ a.post = function (...data) {
     }
   });
 };
+a.delete = function (...data) {
+  return axios.delete(...data).then(({ data }) => {
+    if (data.code === 401) {
+      VueCookies.remove("token");
+      location.reload();
+    } else {
+      return data;
+    }
+  });
+};
 export default a;

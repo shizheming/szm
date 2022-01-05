@@ -240,10 +240,13 @@ const formData = reactive({
   gift_settings: {},
   marketing_id,
 });
-const formAttrs = provide("formAttrs", formSection);
+provide("formAttrs", formSection);
 let loading = ref();
 // 是否编辑页
-let isEdit = ref(!!route.query.marketing_id);
+let isEdit = !!route.query.marketing_id;
+let editId = route.query.marketing_id;
+provide("isEdit", isEdit);
+provide("editId", editId);
 
 function api() {
   return axios
@@ -255,6 +258,7 @@ function api() {
       formData.use_scope.site_ids_value = data.use_scope.site_list.map(
         (cur) => cur.id
       );
+      formData.gift_settings.gift_spu_list = data.gift_settings.gift_spu_list;
       return data;
     });
 }
@@ -361,15 +365,6 @@ function next() {
     });
 }
 
-// 查询商品的时候要
-let shop_id_list = ref();
-provide("shop_id_list", shop_id_list);
-watch(
-  () => formData.use_scope.shop_id,
-  (newValue) => {
-    shop_id_list.value = [newValue];
-  }
-);
 /* 
 问题
 
@@ -377,5 +372,14 @@ marketing_id还没有和融进isEdit里面去
 时间组件的语言问题，不知道是不是版本的问题
 
 单看页面，如何让用户知道某些item有关系，
+*/
+
+/* 
+想法
+1.像删除添加用icon代替，我觉得图标更快的能表达意思，文字还要念
+2.页面和弹窗的交互只通过一个入口，一个值来交互，不要搞很多值，乱，又控制不好，不止着一种，各种组件之间的交互控制好一个入口
+3.switch-triggerclear像这种控制按钮，不是监听的，要不要变成动态的，实时变化
+4.什么时候用trigger，什么时候用change，trigger基础，change一起控制大局
+5.一些公用的值可以用provide，inject，比如isEdit，组件的传值只通过v-model来，一个不够就多来几个
 */
 </script>

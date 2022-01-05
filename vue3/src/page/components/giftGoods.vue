@@ -124,8 +124,8 @@
           href="javascript:;"
           class="table-button-red"
           @click="siteIdsValueDelete(index)"
-          >删除</a
-        >
+          ><Delete-outlined
+        /></a>
       </template>
     </template>
   </a-table>
@@ -142,14 +142,21 @@ import {
   watch,
   createVNode,
 } from "vue";
-import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import {
+  ExclamationCircleOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 import axios from "../../api";
 import { remove } from "lodash";
 import ChooseGoods from "./chooseGoods.vue";
 let formData = inject("formData");
+let isEdit = inject("isEdit");
+let editId = inject("editId");
 const visible = ref(false);
 const selected = ref();
+const props = defineProps(["value"]);
+const emit = defineEmits(["update:value"]);
 const columns = [
   {
     title: "操作",
@@ -336,9 +343,9 @@ watch(
     return selected.value;
   },
   (newValue, oldValue) => {
-    let sd = newValue.rows.filter(current => {
-      return !oldValue?.rowKeys?.includes(current.id)
-    })
+    let sd = newValue.rows.filter((current) => {
+      return !oldValue?.rowKeys?.includes(current.id);
+    });
     shop_spu_ids = sd.map((item) => {
       return item.shop_id + "-" + item.id;
     });
@@ -346,9 +353,19 @@ watch(
   }
 );
 
+// 编辑页回显
+if (isEdit) {
+  getShopList(
+    props.value.map((item) => {
+      return item.shop_spu_id;
+    }),
+    true
+  );
+}
+
 // 存一下spu维度的list，删除的时候要用，需要比对
 let spuList = [];
-function getShopList(shop_spu_ids) {
+function getShopList(shop_spu_ids, isDisplay) {
   axios
     .post("/api/goods/list", {
       page: 1,
@@ -361,6 +378,13 @@ function getShopList(shop_spu_ids) {
       shop_spu_ids,
     })
     .then(({ data: { list } }) => {
+      // 编辑进来要勾选上弹窗里面的list
+      if (isDisplay) {
+        selected.value = {
+          rowKeys:list.xxxxxxxxxxxxxxxxxx,
+          rows: list
+        }
+      }
       spuList = spuList.concat(list);
       list.forEach((v, index) => {
         let {
@@ -389,16 +413,16 @@ function getShopList(shop_spu_ids) {
           value.supplier_name = supplier_name;
           value.supplier_id = supplier_id;
           value.rowSpan = key === 0 ? sku_list.length : 0;
+          value.db_id = isDisplay
+            ? props.value[index].gift_sku_list[key].id
+            : undefined;
           dataSource.value.push(value);
         });
       });
       // 把dataSource挂到formData上面去
       formData.goods = dataSource.value;
-      /* init && initMerge(data);
-      !init && merge(data); */
     });
 }
-
 
 const dataSource = ref([]);
 function chooseGoods() {
@@ -419,9 +443,16 @@ function chooseGoods() {
 
 function siteIdsValueDelete(index) {
   Modal.confirm({
-    title: "确定删除吗？",
+    title: dataSource.value[index].db_id
+      ? "如果删除该赠品将影响赠送规则中赠品的配置，确定删除？"
+      : "确定删除吗？",
     icon: createVNode(ExclamationCircleOutlined),
-    onOk() {
+    async onOk() {
+      if (dataSource.value[index].db_id) {
+        await axios.delete(
+          `/api/marketing/fullGift/${editId}/gift/sku/${dataSource.value[index].db_id}`
+        );
+      }
       let [delObj] = dataSource.value.splice(index, 1);
       // 在spu里面把删除的sku删掉
       spuList.forEach(({ sku_list, id }, index) => {
@@ -435,7 +466,7 @@ function siteIdsValueDelete(index) {
           value.rowSpan = key === 0 ? sku_list.length : 0;
         });
       });
-      // 当sku_list删到空的时候，要把spu删掉
+      // 当sku_list删到空的时候，要把spu删掉，也就是把弹窗的沟去掉
       spuList.forEach(({ sku_list, id }) => {
         if (sku_list.length === 0) {
           remove(selected.value.rows, (cur) => {

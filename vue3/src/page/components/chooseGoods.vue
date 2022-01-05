@@ -92,6 +92,8 @@
       :columns="columns"
       :dataSource="dataSource"
       rowKey="id"
+      :pagination="pagination"
+      @change="tableChange"
       :rowSelection="{
         selectedRowKeys: allSelectedRowKeys,
         onChange: onSelectChange,
@@ -151,10 +153,10 @@
 import axios from "../../api";
 import { ref, reactive, inject, watch } from "vue";
 import { last } from "lodash";
-let shop_id_list = inject("shop_id_list");
 const props = defineProps(["visible", "selected"]);
 const emit = defineEmits(["update:visible", "update:selected"]);
 const formSection = ref();
+let fd = inject("formData");
 const formData = reactive({});
 const dataSource = ref();
 const innerData = ref();
@@ -336,15 +338,17 @@ async function supplier_id_inner() {
 
 // 非平台账号才传入shop_org_id,平台账号可选择全部商品;
 let p = {};
-const { is_mqj, is_platform } = localStorage.userInfo;
+const { is_mqj, is_platform, enterprise_id } = JSON.parse(
+  localStorage.userInfo
+);
 
 if (is_platform != 1 || is_mqj != 1) {
   p.shop_org_id = localStorage.org_id;
 }
 
-async function search() {
+async function search(pag = 1) {
   let {
-    data: { list },
+    data: { list, total, page },
   } = await axios.post("/api/goods/list", {
     ...formData,
     category_id: last(formData.category_id),
@@ -356,13 +360,21 @@ async function search() {
     get_stock: 1, //是否展示库存
     is_shop: 1, //分店铺展示
     // get_stock: 1, //是否获取库存
-    enterprise_id: localStorage.userInfo.enterprise_id,
+    enterprise_id,
     ...p,
-    shop_id_list: shop_id_list.value,
-    page: 1,
+    shop_id_list: [fd.use_scope.shop_id],
+    site_id_list: Object.values(fd?.use_scope?.site_ids_value),
+    page:pag,
     page_size: 10,
   });
+  pagination.total = total;
   dataSource.value = list;
+}
+
+const pagination = reactive({});
+
+function tableChange({current}, filters, sorter) {
+  search(current);
 }
 
 function makeSellPrice(list) {
