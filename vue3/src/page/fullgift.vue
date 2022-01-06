@@ -227,8 +227,8 @@
 import axios from "../api";
 import { ref, toRefs, reactive, onMounted, watch, provide } from "vue";
 import { useRoute } from "vue-router";
-import moment from "moment";
 import Site from "./components/site.vue";
+import dayjs from 'dayjs'
 import GiftGoods from "./components/giftGoods.vue";
 const route = useRoute();
 let marketing_id = route.query.marketing_id;
@@ -274,7 +274,7 @@ function site_ids_inner(detail) {
 }
 
 function timesInner(detail) {
-  return [moment(detail.basic.start_time), moment(detail.basic.end_time)];
+  return [dayjs(detail.basic.start_time), dayjs(detail.basic.end_time)];
 }
 
 async function nameRule(rule, value) {
@@ -381,5 +381,7 @@ marketing_id还没有和融进isEdit里面去
 3.switch-triggerclear像这种控制按钮，不是监听的，要不要变成动态的，实时变化
 4.什么时候用trigger，什么时候用change，trigger基础，change一起控制大局
 5.一些公用的值可以用provide，inject，比如isEdit，组件的传值只通过v-model来，一个不够就多来几个
+6.回显弹窗勾选的我用watch加销毁，只监听第一次，然后销毁，说明只是用于回显
+7.watch会有个问题，比如不要监听的时候也监听，没有手动灵活，但是概念是完全不一样的，所以我想了下，还是在watch里面去逻辑判断下，也就是说，我监听到了，不代表我就要干事情，我还得看看条件是否成立在干，现在想到的是把判断的逻辑挂在监听的值上面，
 */
 </script>

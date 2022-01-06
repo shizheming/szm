@@ -343,6 +343,7 @@ watch(
     return selected.value;
   },
   (newValue, oldValue) => {
+    if (newValue.isDisplay) return;
     let sd = newValue.rows.filter((current) => {
       return !oldValue?.rowKeys?.includes(current.id);
     });
@@ -381,9 +382,10 @@ function getShopList(shop_spu_ids, isDisplay) {
       // 编辑进来要勾选上弹窗里面的list
       if (isDisplay) {
         selected.value = {
-          rowKeys:list.xxxxxxxxxxxxxxxxxx,
-          rows: list
-        }
+          rowKeys: list.map(({ id }) => id),
+          rows: list,
+          isDisplay: true,
+        };
       }
       spuList = spuList.concat(list);
       list.forEach((v, index) => {

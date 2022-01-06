@@ -95,6 +95,7 @@
       :pagination="pagination"
       @change="tableChange"
       :rowSelection="{
+        preserveSelectedRowKeys: true,
         selectedRowKeys: allSelectedRowKeys,
         onChange: onSelectChange,
         getCheckboxProps,
@@ -160,10 +161,25 @@ let fd = inject("formData");
 const formData = reactive({});
 const dataSource = ref();
 const innerData = ref();
-let allSelectedRowKeys = ref(props?.selected?.rowKeys);
-let allSelectedRows = ref(props?.selected?.rows);
+let allSelectedRowKeys = ref();
+let allSelectedRows = ref();
+
+const watchSelected = watch(
+  () => {
+    return props.selected;
+  },
+  (newValue) => {
+    allSelectedRowKeys.value = newValue.rowKeys;
+    allSelectedRows.value = newValue.rows;
+    console.log(allSelectedRows,384)
+    watchSelected();
+  }
+);
+
 function onSelectChange(selectedRowKeys, selectedRows) {
+  console.log(selectedRowKeys, selectedRows, 209);
   allSelectedRowKeys.value = selectedRowKeys;
+  // undefined还得回显的时候替换掉
   allSelectedRows.value = selectedRows;
 }
 function getCheckboxProps(record) {
@@ -279,9 +295,11 @@ function handleOk() {
     rowKeys: allSelectedRowKeys.value,
     rows: allSelectedRows.value,
   });
+  pagination.current = 1;
   emit("update:visible", false);
 }
 function handleCancel() {
+  pagination.current = 1;
   emit("update:visible", false);
 }
 
@@ -363,8 +381,10 @@ async function search(pag = 1) {
     enterprise_id,
     ...p,
     shop_id_list: [fd.use_scope.shop_id],
-    site_id_list: Object.values(fd?.use_scope?.site_ids_value),
-    page:pag,
+    site_id_list: fd?.use_scope?.site_ids_value
+      ? Object.values(fd?.use_scope?.site_ids_value)
+      : undefined,
+    page: pag,
     page_size: 10,
   });
   pagination.total = total;
@@ -373,7 +393,8 @@ async function search(pag = 1) {
 
 const pagination = reactive({});
 
-function tableChange({current}, filters, sorter) {
+function tableChange({ current }, filters, sorter) {
+  pagination.current = current;
   search(current);
 }
 
