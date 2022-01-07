@@ -293,6 +293,7 @@ watch(
   }
 );
 function handleOk() {
+  // 要取下已选的
   emit("update:selected", {
     rowKeys: allSelectedRowKeys.value,
     rows: allSelectedRows.value,

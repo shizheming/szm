@@ -344,13 +344,17 @@ watch(
   },
   (newValue, oldValue) => {
     if (newValue.isDisplay) return;
+
     let sd = newValue.rows.filter((current) => {
+      // 拿老的值对比下，去掉以前就有的
       return !oldValue?.rowKeys?.includes(current.id);
     });
     shop_spu_ids = sd.map((item) => {
       return item.shop_id + "-" + item.id;
     });
-    getShopList(shop_spu_ids);
+    if (sd.length) {
+      getShopList(shop_spu_ids);
+    }
   }
 );
 
