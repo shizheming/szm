@@ -153,7 +153,7 @@
 <script setup>
 import axios from "../../api";
 import { ref, reactive, inject, watch } from "vue";
-import { last } from "lodash";
+import { last, compact } from "lodash";
 const props = defineProps(["visible", "selected"]);
 const emit = defineEmits(["update:visible", "update:selected"]);
 const formSection = ref();
@@ -171,13 +171,15 @@ const watchSelected = watch(
   (newValue) => {
     allSelectedRowKeys.value = newValue.rowKeys;
     allSelectedRows.value = newValue.rows;
-    console.log(allSelectedRows,384)
     watchSelected();
   }
 );
 
 function onSelectChange(selectedRowKeys, selectedRows) {
-  console.log(selectedRowKeys, selectedRows, 209);
+  if (selectedRows.includes(undefined)) {
+    // 说明是第一次回显
+    selectedRows = [...allSelectedRows.value, ...compact(selectedRows)];
+  }
   allSelectedRowKeys.value = selectedRowKeys;
   // undefined还得回显的时候替换掉
   allSelectedRows.value = selectedRows;

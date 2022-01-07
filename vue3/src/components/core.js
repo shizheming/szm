@@ -1,6 +1,7 @@
 // 主动与被动的关系
 // trigger和change的关系
 // 以后做完一个文件要回顾下知识点，意识到的点，和减少变量
+// 每个组件自己的状态能自己记录后，怎么自动记录2个组件的某一个的状态，现在都是我们手动去操作的，以后如何变成自动的？
 import {
   onMounted,
   reactive,
@@ -20,6 +21,7 @@ import {
   isFunction,
   drop,
   isString,
+  isPlainObject,
   get,
 } from "lodash";
 
@@ -508,6 +510,19 @@ export default function (props, emit, componentType) {
       );
     }
   });
+
+  /* 记录一些状态 */
+  if (isPlainObject(props.record)) {
+    props.record.prevValue = [];
+    watch(
+      () => {
+        return props.value;
+      },
+      (newProps, oldValue) => {
+        props.record.prevValue.push(newProps);
+      }
+    );
+  }
 
   /* outer函数 */
   if (props.outer && outer) {

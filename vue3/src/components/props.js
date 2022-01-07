@@ -3,6 +3,10 @@ export default {
     type: [Number, String, Array, Object, Boolean],
     default: undefined,
   },
+  record: {
+    type: Object,
+    default: undefined,
+  },
   checked: {
     type: Boolean,
     default: undefined,
