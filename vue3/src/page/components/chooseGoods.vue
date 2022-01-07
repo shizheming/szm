@@ -91,7 +91,7 @@
     <a-table
       :columns="columns"
       :dataSource="dataSource"
-      rowKey="id"
+      rowKey="shop_spu_id"
       :pagination="pagination"
       @change="tableChange"
       :rowSelection="{
@@ -185,7 +185,7 @@ function onSelectChange(selectedRowKeys, selectedRows) {
   allSelectedRows.value = selectedRows;
 }
 function getCheckboxProps(record) {
-  if (props?.selected?.rowKeys?.includes(record.id)) {
+  if (props?.selected?.rowKeys?.includes(record.shop_spu_id)) {
     return {
       disabled: true,
     };
@@ -389,6 +389,9 @@ async function search(pag = 1) {
       : undefined,
     page: pag,
     page_size: 10,
+  });
+  list.forEach((current) => {
+    current.shop_spu_id = `${current.shop_id}-${current.id}`;
   });
   pagination.total = total;
   dataSource.value = list;

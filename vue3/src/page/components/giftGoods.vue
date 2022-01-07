@@ -63,38 +63,43 @@
       </template>
       <template v-if="column.key === 'sponsor_rate'">
         <s-form-item
-          :name="['goods', index, 'platform_ratio']"
-          style="width: 80px; margin-right: 15px; display: inline-block"
+          :rules="{ required: true, validator: ratioRule }"
+          :name="['goods', index]"
         >
-          <s-input-number
-            :disabled="record.sponsor != 3"
-            :min="0"
-            :max="100"
-            placeholder="平台"
-            v-model:value="record.platform_ratio"
-            :trigger="[
-              record.sponsor,
-              (select, formComponent) =>
-                platform_ratio_trigger(select, formComponent, index),
-            ]"
-          />
-        </s-form-item>
-        <s-form-item
-          :name="['goods', index, 'shop_ratio']"
-          style="width: 80px; display: inline-block"
-        >
-          <s-input-number
-            :disabled="record.sponsor != 3"
-            :min="0"
-            :max="100"
-            placeholder="销售企业"
-            v-model:value="record.shop_ratio"
-            :trigger="[
-              record.sponsor,
-              (select, formComponent) =>
-                shop_ratio_trigger(select, formComponent, index),
-            ]"
-          />
+          <s-form-item
+            :name="['goods', index, 'platform_ratio']"
+            style="width: 80px; margin-right: 15px; display: inline-block"
+          >
+            <s-input-number
+              :disabled="record.sponsor != 3"
+              :min="0"
+              :max="100"
+              placeholder="平台"
+              v-model:value="record.platform_ratio"
+              :trigger="[
+                record.sponsor,
+                (select, formComponent) =>
+                  platform_ratio_trigger(select, formComponent, index),
+              ]"
+            />
+          </s-form-item>
+          <s-form-item
+            :name="['goods', index, 'shop_ratio']"
+            style="width: 80px; display: inline-block"
+          >
+            <s-input-number
+              :disabled="record.sponsor != 3"
+              :min="0"
+              :max="100"
+              placeholder="销售企业"
+              v-model:value="record.shop_ratio"
+              :trigger="[
+                record.sponsor,
+                (select, formComponent) =>
+                  shop_ratio_trigger(select, formComponent, index),
+              ]"
+            />
+          </s-form-item>
         </s-form-item>
       </template>
       <template v-if="column.key === 'sku_spec_copy_data'">
@@ -148,7 +153,7 @@ import {
 } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 import axios from "../../api";
-import { remove } from "lodash";
+import { remove, values } from "lodash";
 import ChooseGoods from "./chooseGoods.vue";
 let formData = inject("formData");
 let isEdit = inject("isEdit");
@@ -345,15 +350,16 @@ watch(
   (newValue, oldValue) => {
     if (newValue.isDisplay) return;
 
-    let sd = newValue.rows.filter((current) => {
-      // 拿老的值对比下，去掉以前就有的
-      return !oldValue?.rowKeys?.includes(current.id);
-    });
-    shop_spu_ids = sd.map((item) => {
-      return item.shop_id + "-" + item.id;
-    });
+    let sd = newValue.rows
+      .filter(({ shop_spu_id }) => {
+        // 拿老的值对比下，去掉以前就有的
+        return !oldValue?.rowKeys?.includes(shop_spu_id);
+      })
+      .map(({ shop_spu_id }) => {
+        return shop_spu_id;
+      });
     if (sd.length) {
-      getShopList(shop_spu_ids);
+      getShopList(sd);
     }
   }
 );
@@ -383,10 +389,14 @@ function getShopList(shop_spu_ids, isDisplay) {
       shop_spu_ids,
     })
     .then(({ data: { list } }) => {
+      list.forEach((current) => {
+        current.shop_spu_id = `${current.shop_id}-${current.id}`;
+      });
+      console.log(list,309)
       // 编辑进来要勾选上弹窗里面的list
       if (isDisplay) {
         selected.value = {
-          rowKeys: list.map(({ id }) => id),
+          rowKeys: list.map(({ shop_spu_id }) => shop_spu_id),
           rows: list,
           isDisplay: true,
         };
@@ -428,6 +438,14 @@ function getShopList(shop_spu_ids, isDisplay) {
       // 把dataSource挂到formData上面去
       formData.goods = dataSource.value;
     });
+}
+
+async function ratioRule(rule, value) {
+  if (value.platform_ratio + value.shop_ratio !== 100) {
+    return Promise.reject("成本承担比例之和要等于100%");
+  } else {
+    return Promise.resolve();
+  }
 }
 
 const dataSource = ref([]);
