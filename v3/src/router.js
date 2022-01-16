@@ -4,17 +4,17 @@ const routes = [
   {
     path: "/",
     name: "home",
-    component: defineAsyncComponent(() => import("./life.vue")),
+    component: () => import("./life.vue"),
   },
   {
     path: "/film",
     name: "film",
-    component: defineAsyncComponent(() => import("./film.vue")),
+    component: () => import("./film.vue"),
   },
   {
     path: "/demo",
     name: "demo",
-    component: defineAsyncComponent(() => import("./demo.vue")),
+    component: () => import("./demo.vue"),
   },
 ];
 
