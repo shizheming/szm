@@ -194,7 +194,7 @@ export default function (props, emit, componentType) {
         return value;
       };
     }
-    setDetail.push((v) => {
+    setDetail?.push((v) => {
       let value = get(detailData?.value, componentNameStr);
       if (isFunction(props.inner)) {
         value = props.inner(detailData?.value);

@@ -205,7 +205,7 @@
       }"
       v-if="formData.gift_settings.gift_type?.includes(1)"
     >
-      <GiftGoods v-model:value="formData.gift_settings.gift_spu_list" />
+      <GiftGoods v-model:value="formData.gift_settings.gift_spu_list"/>
     </s-form-item>
     <s-form-item
       label="赠品信息-优惠券"
