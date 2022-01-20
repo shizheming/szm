@@ -1,6 +1,7 @@
 <template>
   <s-button @click="chooseGoods" style="margin-bottom: 20px">
-    <template #icon><select-outlined />商品</template>
+    <template #icon><select-outlined /></template>
+    商品
   </s-button>
   <a-table
     rowKey="id"

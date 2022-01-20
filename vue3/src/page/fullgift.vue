@@ -216,7 +216,7 @@
       }"
       v-if="formData.gift_settings.gift_type?.includes(2)"
     >
-      赠品信息-优惠券
+      <GiftCoupon v-model="formData.gift_settings.gift_coupon_list"/>
     </s-form-item>
     <s-form-item :wrapper-col="{ offset: 7 }">
       <s-button :loading="loading" @click="next">下一步</s-button>
@@ -230,6 +230,7 @@ import { useRoute } from "vue-router";
 import Site from "./components/site.vue";
 import dayjs from 'dayjs'
 import GiftGoods from "./components/giftGoods.vue";
+import GiftCoupon from "./components/giftCoupon.vue";
 const route = useRoute();
 let marketing_id = route.query.marketing_id;
 const formSection = ref();

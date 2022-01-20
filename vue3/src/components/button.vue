@@ -12,7 +12,6 @@ import { forEach } from "lodash";
 const slots = useSlots();
 
 let newSlots = {};
-console.log(slots,20)
 forEach(slots, (value, key) => {
   newSlots[key] = value();
 });
