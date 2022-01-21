@@ -8,7 +8,7 @@
     :pagination="false"
     :columns="columns"
     :scroll="{ x: 2000 }"
-    :dataSource="dataSource"
+    :dataSource="formData.sku_goods"
   >
     <template #bodyCell="{ column, record, index }">
       <template v-if="column.key === 'sku_code'">
@@ -49,9 +49,6 @@
           v-model:value="record.marketing_org_stock"
         />
       </template>
-      <template v-if="column.key === 'marketing_stock'">
-        {{ record.marketing_stock }}
-      </template>
       <template v-if="column.key === 'sponsor'">
         <a-select style="width: 130px" v-model:value="record.sponsor">
           <a-select-option :value="1">平台</a-select-option>
@@ -62,12 +59,17 @@
       <template v-if="column.key === 'sponsor_rate'">
         <s-form-item
           :rules="{ required: true, validator: ratioRule }"
-          :name="['goods', index]"
-          style="margin-bottom:0"
+          :name="['sku_goods', index]"
+          style="margin-bottom: 0"
         >
           <s-form-item
-            :name="['goods', index, 'platform_ratio']"
-            style="width: 80px; margin-right: 15px; display: inline-block;margin-bottom:0"
+            :name="['sku_goods', index, 'platform_ratio']"
+            style="
+              width: 80px;
+              margin-right: 15px;
+              display: inline-block;
+              margin-bottom: 0;
+            "
           >
             <s-input-number
               :disabled="record.sponsor != 3"
@@ -83,8 +85,8 @@
             />
           </s-form-item>
           <s-form-item
-            :name="['goods', index, 'shop_ratio']"
-            style="width: 80px; display: inline-block;margin-bottom:0"
+            :name="['sku_goods', index, 'shop_ratio']"
+            style="width: 80px; display: inline-block; margin-bottom: 0"
           >
             <s-input-number
               :disabled="record.sponsor != 3"
@@ -153,7 +155,7 @@ import {
 } from "@ant-design/icons-vue";
 import { message, Modal } from "ant-design-vue";
 import axios from "../../api";
-import { remove, values } from "lodash";
+import { isArray, remove, values } from "lodash";
 import ChooseGoods from "./chooseGoods.vue";
 let formData = inject("formData");
 let isEdit = inject("isEdit");
@@ -161,7 +163,7 @@ let editId = inject("editId");
 const visible = ref(false);
 const selected = ref();
 const props = defineProps(["value"]);
-const emit = defineEmits(["update:value"]);
+const emits = defineEmits(["update:value"]);
 const columns = [
   {
     title: "操作",
@@ -374,8 +376,6 @@ if (isEdit) {
   );
 }
 
-// 存一下spu维度的list，删除的时候要用，需要比对
-let spuList = [];
 function getShopList(shop_spu_ids, isDisplay) {
   axios
     .post("/api/goods/list", {
@@ -399,8 +399,12 @@ function getShopList(shop_spu_ids, isDisplay) {
           rows: list,
           isDisplay: true,
         };
+        // 为了使绑定得值使同一个地址，要更新spu_list
+        emits("update:value", list);
+      } else {
+        // 不是编辑页，就是用户操作得，要更新值
+        emits("update:value", props.value.concat(list));
       }
-      spuList = spuList.concat(list);
       list.forEach((v, index) => {
         let {
           sku_list,
@@ -413,11 +417,21 @@ function getShopList(shop_spu_ids, isDisplay) {
           supplier_id,
         } = v;
         sku_list.forEach((value, key) => {
-          value.marketing_org_stock = 1;
-          value.marketing_stock = "-";
-          value.sponsor = 1;
-          value.platform_ratio = 100;
-          value.shop_ratio = 0;
+          value.marketing_org_stock = isDisplay
+            ? props.value[index].gift_sku_list[key].marketing_org_stock
+            : 1;
+          value.marketing_stock = isDisplay
+            ? props.value[index].gift_sku_list[key].marketing_stock
+            : "-";
+          value.sponsor = isDisplay
+            ? props.value[index].gift_sku_list[key].sponsor
+            : 1;
+          value.platform_ratio = isDisplay
+            ? props.value[index].gift_sku_list[key].platform_ratio
+            : 100;
+          value.shop_ratio = isDisplay
+            ? props.value[index].gift_sku_list[key].shop_ratio
+            : 0;
           value.sku_spec_copy_data = makeSpecCopy(value.sku_spec_copy);
           value.sku_id = value.id;
           value.img = goods_gallery[0].img_url;
@@ -431,16 +445,18 @@ function getShopList(shop_spu_ids, isDisplay) {
           value.db_id = isDisplay
             ? props.value[index].gift_sku_list[key].id
             : undefined;
-          dataSource.value.push(value);
+          // 把dataSource挂到formData上面，因为有值要绑定
+          if (isArray(formData.sku_goods)) {
+            formData.sku_goods.push(value);
+          } else {
+            formData.sku_goods = [value];
+          }
         });
       });
-      // 把dataSource挂到formData上面去
-      formData.goods = dataSource.value;
     });
 }
 
 async function ratioRule(rule, value) {
-  console.log(123, rule, value);
   if (value.platform_ratio + value.shop_ratio !== 100) {
     return Promise.reject("成本承担比例之和要等于100%");
   } else {
@@ -448,7 +464,6 @@ async function ratioRule(rule, value) {
   }
 }
 
-const dataSource = ref([]);
 function chooseGoods() {
   if (formData.use_scope.site_ids === 0 && !formData.use_scope.shop_id) {
     message.warning("请先选择店铺");
@@ -467,36 +482,36 @@ function chooseGoods() {
 
 function siteIdsValueDelete(index) {
   Modal.confirm({
-    title: dataSource.value[index].db_id
+    title: form.sku_goods[index].db_id
       ? "如果删除该赠品将影响赠送规则中赠品的配置，确定删除？"
       : "确定删除吗？",
     icon: createVNode(ExclamationCircleOutlined),
     async onOk() {
       let data;
-      if (dataSource.value[index].db_id) {
+      if (form.sku_goods[index].db_id) {
         data = await axios.delete(
-          `/api/marketing/fullGift/${editId}/gift/sku/${dataSource.value[index].db_id}`
+          `/api/marketing/fullGift/${editId}/gift/sku/${form.sku_goods[index].db_id}`
         );
       }
       if (data && data.code !== 0) {
-        message.error(data.msg)
+        message.error(data.msg);
         return;
-      };
-      let [delObj] = dataSource.value.splice(index, 1);
+      }
+      let [delObj] = form.sku_goods.splice(index, 1);
       // 在spu里面把删除的sku删掉
-      spuList.forEach(({ sku_list, id }, index) => {
-        spuList[index].sku_list = sku_list.filter((current) => {
+      props.value.forEach(({ sku_list, id }, index) => {
+        props.value[index].sku_list = sku_list.filter((current) => {
           return !(delObj.spu_id === id && delObj.sku_id === current.id);
         });
       });
       // 重新设置合并单元格的参数
-      spuList.forEach(({ sku_list }) => {
+      props.value.forEach(({ sku_list }) => {
         sku_list.forEach((value, key) => {
           value.rowSpan = key === 0 ? sku_list.length : 0;
         });
       });
       // 当sku_list删到空的时候，要把spu删掉，也就是把弹窗的沟去掉
-      spuList.forEach(({ sku_list, id }) => {
+      props.value.forEach(({ sku_list, id }) => {
         if (sku_list.length === 0) {
           remove(selected.value.rows, (cur) => {
             return cur.id === id;
@@ -511,17 +526,17 @@ function siteIdsValueDelete(index) {
 }
 
 function platform_ratio_trigger(select, formComponent, index) {
-  if (dataSource.value[index].sponsor === 1) {
-    dataSource.value[index].platform_ratio = 100;
-  } else if (dataSource.value[index].sponsor === 2) {
-    dataSource.value[index].platform_ratio = 0;
+  if (form.sku_goods[index].sponsor === 1) {
+    form.sku_goods[index].platform_ratio = 100;
+  } else if (form.sku_goods[index].sponsor === 2) {
+    form.sku_goods[index].platform_ratio = 0;
   }
 }
 function shop_ratio_trigger(select, formComponent, index) {
-  if (dataSource.value[index].sponsor === 1) {
-    dataSource.value[index].shop_ratio = 0;
-  } else if (dataSource.value[index].sponsor === 2) {
-    dataSource.value[index].shop_ratio = 100;
+  if (form.sku_goods[index].sponsor === 1) {
+    form.sku_goods[index].shop_ratio = 0;
+  } else if (form.sku_goods[index].sponsor === 2) {
+    form.sku_goods[index].shop_ratio = 100;
   }
 }
 function makeSpecCopy(item) {

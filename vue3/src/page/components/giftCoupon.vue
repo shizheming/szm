@@ -10,52 +10,39 @@
     :dataSource="dataSource"
   >
     <template #bodyCell="{ column, record, index }">
-      <template v-if="column.key === 'sku_code'">
-        <div v-for="(item, index) in record.sku_list" :key="index">
-          {{ item.sku_code || "-" }}
-        </div>
-      </template>
-      <template v-if="column.key === 'sn'">
-        <div v-for="(item, index) in record.sku_list" :key="index">
-          {{ item.sn || "-" }}
-        </div>
-      </template>
-      <template v-if="column.key === 'goods_gallery'">
-        <a-image :width="50" :src="record.img" style="cursor: pointer" />
-      </template>
-      <template v-if="column.key === 'sku_id'">
-        <div v-for="(item, index) in record.sku_list" :key="index">
-          {{ item.id || "-" }}
-        </div>
-      </template>
-      <template v-if="column.key === 'shop_goods_id'">
-        {{ record.channel_relation[0].shop_goods_id || "-" }}
-      </template>
-      <template v-if="column.key === 'shop_selling_price'">
-        {{ record.channel_relation[0].shop_selling_price }}
+      <template v-if="column.key === 'marketing_org_stock'">
+        <a-input-number
+          :min="1"
+          :max="record.everyday_num"
+          placeholder="数量"
+          v-model:value="record.marketing_org_stock"
+        />
       </template>
       <template v-if="column.key === 'action'">
         <a
           href="javascript:;"
           class="table-button-red"
-          @click="siteIdsValueDelete(index)"
+          @click="deletecoupon(index)"
           ><Delete-outlined
         /></a>
       </template>
     </template>
   </a-table>
-  <AddCoupon />
+  <AddCoupon v-model:visible="visible" v-model:datasource="dataSource" />
 </template>
 
 <script setup>
+import { ref, toRefs, reactive, onMounted, watch, provide } from "vue";
 import {
   ExclamationCircleOutlined,
   SelectOutlined,
   DeleteOutlined,
 } from "@ant-design/icons-vue";
 import AddCoupon from "./addCoupon.vue";
-function add() {}
-
+const visible = ref(false);
+function add() {
+  visible.value = true;
+}
 const columns = [
   {
     title: "操作",
@@ -86,11 +73,13 @@ const columns = [
     title: "批次总量/剩余可生劵量",
     dataIndex: "total_and_everyday_num",
     key: "total_and_everyday_num",
-    customRender(text, record) {
+    customRender({record}) {
       return `${record.total}/${record.everyday_num}`;
     },
   },
 ];
+const dataSource = ref();
+function deletecoupon() {}
 </script>
 
 <style></style>

@@ -200,23 +200,25 @@
     </s-form-item>
     <s-form-item
       label="赠品信息-商品"
+      :name="['gift_settings', 'gift_spu_list']"
       :rules="{
         required: true,
+        message: '请选择商品',
       }"
       v-if="formData.gift_settings.gift_type?.includes(1)"
     >
-      <GiftGoods v-model:value="formData.gift_settings.gift_spu_list"/>
+      <GiftGoods v-model:value="formData.gift_settings.gift_spu_list" />
     </s-form-item>
     <s-form-item
       label="赠品信息-优惠券"
-      name="coupon"
+      :name="['gift_settings', 'gift_coupon_list']"
       :rules="{
         required: true,
-        message: '请选择赠品信息-优惠券',
+        message: '请添加优惠券',
       }"
       v-if="formData.gift_settings.gift_type?.includes(2)"
     >
-      <GiftCoupon v-model="formData.gift_settings.gift_coupon_list"/>
+      <GiftCoupon v-model="formData.gift_settings.gift_coupon_list" />
     </s-form-item>
     <s-form-item :wrapper-col="{ offset: 7 }">
       <s-button :loading="loading" @click="next">下一步</s-button>
@@ -228,7 +230,7 @@ import axios from "../api";
 import { ref, toRefs, reactive, onMounted, watch, provide } from "vue";
 import { useRoute } from "vue-router";
 import Site from "./components/site.vue";
-import dayjs from 'dayjs'
+import dayjs from "dayjs";
 import GiftGoods from "./components/giftGoods.vue";
 import GiftCoupon from "./components/giftCoupon.vue";
 const route = useRoute();
