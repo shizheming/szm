@@ -5,9 +5,9 @@
 </template>
 <script setup>
 import { useSlots, useAttrs, ref, provide } from "vue";
-import core from "./core2";
+import core from "./core";
 import { FormItem } from "ant-design-vue";
-import props from "./props2";
+import props from "./props";
 import { forEach } from "lodash";
 
 const slots = useSlots();
@@ -15,10 +15,10 @@ let newSlots = {};
 forEach(slots, (value, key) => {
   newSlots[key] = value();
 });
-
-const attrs = useAttrs();
 const p = defineProps(props);
+const emit = defineEmits(["update:value"]);
+const attrs = useAttrs();
 const componentName = ref(attrs.name);
 provide("componentName", componentName);
-let newProps = Object.assign(core(p, attrs), newSlots);
+let newProps = Object.assign(core(p, emit), newSlots);
 </script>

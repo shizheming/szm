@@ -1,14 +1,13 @@
 <template>
   <Button v-bind="newProps">
-    <slot name="icon"/>
     <slot/>
   </Button>
 </template>
 <script setup>
 import { Button } from "ant-design-vue";
-import props from "./props2";
+import props from "./props";
 import { useSlots, useAttrs } from "vue";
-import core from "./core2";
+import core from "./core";
 import { forEach } from "lodash";
 const slots = useSlots();
 
@@ -24,5 +23,6 @@ const p = defineProps({
     default: "primary",
   },
 });
-let newProps = Object.assign(core(p, attrs), newSlots);
+const emit = defineEmits(["update:value"]);
+let newProps = Object.assign(core(p, emit), newSlots);
 </script>
