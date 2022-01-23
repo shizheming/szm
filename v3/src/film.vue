@@ -57,8 +57,7 @@
             >（小了）</span
           ></a-list-item
         >
-        <a-list-item style="color: red">x战警黑凤凰</a-list-item>
-        <a-list-item style="color: red">复仇者联盟1</a-list-item>
+        <a-list-item>环太平洋</a-list-item>
       </a-list>
     </a-tab-pane>
     <a-tab-pane key="2" tab="亚洲电影">
@@ -67,12 +66,12 @@
           >近距离恋爱<span style="color: orange">（小了）</span></a-list-item
         >
         <a-list-item>空房间</a-list-item>
+        <a-list-item>浪客剑心（1，2，3，4，5）<span style="color: orange">（3，4，5小了）</span></a-list-item>
         <a-list-item
           >邻居同居<span style="color: orange">（小了）</span></a-list-item
         >
         <a-list-item>情书</a-list-item>
         <a-list-item>我的野蛮女友</a-list-item>
-        
       </a-list>
     </a-tab-pane>
     <a-tab-pane key="3" tab="国产电影" force-render>
@@ -101,6 +100,7 @@
         <a-list-item>太极张三丰</a-list-item>
         <a-list-item>天龙八部之天山童姥</a-list-item>
         <a-list-item>听说</a-list-item>
+        <a-list-item>头文字D<span style="color: orange">（小了）</span></a-list-item>
         <a-list-item
           >笑傲江湖（1，2，3）<span style="color: orange"
             >（1，3小了）</span
@@ -118,10 +118,8 @@
     </a-tab-pane>
     <a-tab-pane key="4" tab="徐峥">
       <a-list bordered>
-        <a-list-item>催眠大师</a-list-item
-        >
+        <a-list-item>催眠大师</a-list-item>
         <a-list-item>我不是药神</a-list-item>
-        
       </a-list>
     </a-tab-pane>
     <a-tab-pane key="5" tab="周星驰">
@@ -129,25 +127,40 @@
         <a-list-item>大话西游（1，2）</a-list-item>
         <a-list-item>大内密探零零发</a-list-item>
         <a-list-item>功夫</a-list-item>
-        <a-list-item>国产凌凌漆<span style="color: orange">（小了）</span></a-list-item>
+        <a-list-item
+          >国产凌凌漆<span style="color: orange">（小了）</span></a-list-item
+        >
         <a-list-item>九品芝麻官</a-list-item>
-        <a-list-item>鹿鼎记（1，2）<span style="color: orange">（2小了）</span></a-list-item>
+        <a-list-item
+          >鹿鼎记（1，2）<span style="color: orange"
+            >（2小了）</span
+          ></a-list-item
+        >
         <a-list-item>破坏之王</a-list-item>
         <a-list-item>少林足球</a-list-item>
-        <a-list-item>食神<span style="color: orange">（小了）</span></a-list-item>
+        <a-list-item
+          >食神<span style="color: orange">（小了）</span></a-list-item
+        >
         <a-list-item>唐伯虎点秋香</a-list-item>
-        <a-list-item>逃学威龙（1，2，3）<span style="color: orange">（1，2，3小了）</span></a-list-item>
+        <a-list-item
+          >逃学威龙（1，2，3）<span style="color: orange"
+            >（1，2，3小了）</span
+          ></a-list-item
+        >
         <a-list-item>武状元苏乞儿</a-list-item>
-        <a-list-item>喜剧之王<span style="color: orange">（小了）</span></a-list-item>
-        
+        <a-list-item
+          >喜剧之王<span style="color: orange">（小了）</span></a-list-item
+        >
       </a-list>
     </a-tab-pane>
-    
   </a-tabs>
+  <h2>想下的</h2>
+  <ul>
+    <li style="color: red">x战警黑凤凰</li>
+    <li style="color: red">复仇者联盟1</li>
+  </ul>
 </template>
 
-<script>
-export default {};
-</script>
+<script setup></script>
 
 <style></style>

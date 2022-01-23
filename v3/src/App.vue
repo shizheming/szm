@@ -1,16 +1,16 @@
 <template>
-  <a-menu v-model:selectedKeys="current" mode="horizontal" style="margin-bottom:10px;">
+  <a-menu v-model:selectedKeys="current" mode="horizontal">
     <a-menu-item key="demo">
-      <router-link to="/demo">demo</router-link>
+      首页
     </a-menu-item>
     <a-menu-item key="film">
       <router-link to="/film">电影</router-link>
     </a-menu-item>
-    <a-menu-item key="mail">
-      Navigation One
+    <a-menu-item key="TVplay">
+      <router-link to="/TVplay">电视剧</router-link>
     </a-menu-item>
-    <a-menu-item key="mail">
-      Navigation One
+    <a-menu-item key="animation">
+      <router-link to="/animation">动画电影</router-link>
     </a-menu-item>
     <a-menu-item key="mail">
       Navigation One
@@ -40,7 +40,7 @@ export default defineComponent({
   },
 
   setup() {
-    const current = ref(['mail']);
+    const current = ref(['demo']);
     return {
       current,
     };

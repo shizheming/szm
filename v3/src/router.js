@@ -12,9 +12,14 @@ const routes = [
     component: () => import("./film.vue"),
   },
   {
-    path: "/demo",
-    name: "demo",
-    component: () => import("./demo.vue"),
+    path: "/TVplay",
+    name: "TVplay",
+    component: () => import("./TVplay.vue"),
+  },
+  {
+    path: "/animation",
+    name: "animation",
+    component: () => import("./animation.vue"),
   },
 ];
 

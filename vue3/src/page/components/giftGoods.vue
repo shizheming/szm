@@ -42,33 +42,36 @@
         </div>
       </template>
       <template v-if="column.key === 'marketing_org_stock'">
-        <a-input-number
-          style="width: 80px"
-          :min="1"
-          placeholder="数量"
-          v-model:value="record.marketing_org_stock"
-        />
+        <a-form-item>
+          <a-input-number
+            style="width: 80px"
+            :min="1"
+            placeholder="数量"
+            v-model:value="record.marketing_org_stock"
+          />
+        </a-form-item>
       </template>
       <template v-if="column.key === 'sponsor'">
-        <a-select style="width: 130px" v-model:value="record.sponsor">
-          <a-select-option :value="1">平台</a-select-option>
-          <a-select-option :value="2">销售企业</a-select-option>
-          <a-select-option :value="3">平台+销售企业</a-select-option>
-        </a-select>
+        <a-form-item>
+          <a-select style="width: 130px" v-model:value="record.sponsor">
+            <a-select-option :value="1">平台</a-select-option>
+            <a-select-option :value="2">销售企业</a-select-option>
+            <a-select-option :value="3">平台+销售企业</a-select-option>
+          </a-select>
+        </a-form-item>
       </template>
       <template v-if="column.key === 'sponsor_rate'">
         <s-form-item
           :rules="{ required: true, validator: ratioRule }"
           :name="['sku_goods', index]"
-          style="margin-bottom: 0"
         >
           <s-form-item
             :name="['sku_goods', index, 'platform_ratio']"
             style="
               width: 80px;
               margin-right: 15px;
-              display: inline-block;
               margin-bottom: 0;
+              display: inline-block;
             "
           >
             <s-input-number
@@ -157,9 +160,9 @@ import { message, Modal } from "ant-design-vue";
 import axios from "../../api";
 import { isArray, remove, values } from "lodash";
 import ChooseGoods from "./chooseGoods.vue";
-let formData = inject("formData");
-let isEdit = inject("isEdit");
-let editId = inject("editId");
+let formData = inject("formData", {});
+let isEdit = inject("isEdit", false);
+let editId = inject("editId", undefined);
 const visible = ref(false);
 const selected = ref();
 const props = defineProps(["value"]);
