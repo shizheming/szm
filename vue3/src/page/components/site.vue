@@ -37,12 +37,10 @@ import axios from "../../api";
 const route = useRoute();
 const formAttrs = inject("formComponents");
 const formDetail = inject("detailData");
-// 是否编辑页
 let isEdit = ref(!!route.query.marketing_id);
 let selectOptions = ref();
 let echoSelectValue = [];
 const props = defineProps(["value", "selectValue", "tableValue", "trigger"]);
-
 const emit = defineEmits([
   "update:value",
   "update:selectValue",

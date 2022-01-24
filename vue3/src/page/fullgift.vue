@@ -127,8 +127,6 @@
     >
       <Site
         v-model:value="formData.use_scope.site_ids_value"
-        v-model:selectValue="formData.use_scope.siteIdsSelectValue"
-        v-model:tableValue="formData.use_scope.siteIdsTableValue"
         :trigger="formData.use_scope.shop_id"
       />
     </s-form-item>
@@ -225,6 +223,7 @@
     </s-form-item>
   </s-form>
 </template>
+
 <script setup>
 import axios from "../api";
 import { ref, toRefs, reactive, onMounted, watch, provide } from "vue";
@@ -233,6 +232,7 @@ import Site from "./components/site.vue";
 import dayjs from "dayjs";
 import GiftGoods from "./components/giftGoods.vue";
 import GiftCoupon from "./components/giftCoupon.vue";
+
 const route = useRoute();
 let marketing_id = route.query.marketing_id;
 const formSection = ref();
@@ -245,7 +245,6 @@ const formData = reactive({
 });
 provide("formAttrs", formSection);
 let loading = ref();
-// 是否编辑页
 let isEdit = !!route.query.marketing_id;
 let editId = route.query.marketing_id;
 provide("isEdit", isEdit);
@@ -258,9 +257,7 @@ function api() {
       action: "first",
     })
     .then(({ data }) => {
-      formData.use_scope.site_ids_value = data.use_scope.site_list.map(
-        (cur) => cur.id
-      );
+      formData.use_scope.site_ids_value = data.use_scope.site_ids;
       formData.gift_settings.gift_spu_list = data.gift_settings.gift_spu_list;
       return data;
     });
@@ -342,6 +339,7 @@ function siteIdsValueTriggerOptions(formComponent) {
   });
 }
 
+// 这里是为了所属站点在切换得时候，适用店铺显示保存得上一次对状态得店铺值，属于优化代码
 function siteIdsChange(select, formComponent) {
   let shop_id = formComponent["use_scope.shop_id"];
   if (formData.use_scope.site_ids === 1) {
@@ -355,7 +353,6 @@ function siteIdsChange(select, formComponent) {
   }
 }
 
-// 下一步
 function next() {
   formSection.value
     .validate()
@@ -370,11 +367,12 @@ function next() {
 
 /* 
 问题
-
 marketing_id还没有和融进isEdit里面去
 时间组件的语言问题，不知道是不是版本的问题
 
-单看页面，如何让用户知道某些item有关系，
+多个对象监听同一个对象的时候会出现顺序调用函数不符合预期的情况，
+是因为trigger是我组件里面给用户绑定的，里面不可控，
+如果是用户自己写watch，或是change，调用函数的顺序是完全可以自己掌控的
+所以当出现这种情况造成顺序错误的时候，需要自己统一处理分发顺序，trigger不承担这个功能
 */
-
 </script>

@@ -1,10 +1,10 @@
 <template>
   <Select
-    v-bind="newProps"
-    :value="value"
     allowClear
     :filter-option="filterOption"
     show-search
+    v-bind="newProps"
+    :value="value"
   >
     <slot />
   </Select>
