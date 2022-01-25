@@ -51,8 +51,8 @@ export default function (props, emit, componentType) {
   }
   watchEffect(() => {
     forEach(attrs, (value, key) => {
-      // 不需要监听trigger-xxxx，switch-xxx，和响应式数据
-      if (!/^trigger-/.test(key) && !/^switch-/.test(key)) {
+      // 不需要监听trigger-xxxx，switch-xxx，和响应式数据，还有on事件
+      if (!/^trigger-/.test(key) && !/^switch-/.test(key) && !/^on.*/.test(key)) {
         newProps[key] = value;
         // 保存值在innerObj上
         if (innerObj[componentNameStr]) {
@@ -65,7 +65,7 @@ export default function (props, emit, componentType) {
       }
     });
   });
-  newProps.onChange = (...e) => {
+  newProps.onChange = function changeFun(...e) {
     let nv = e[0];
     if (componentType === "input" || componentType === "radioGroup") {
       nv = e[0].target.value;
