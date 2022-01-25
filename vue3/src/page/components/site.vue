@@ -45,7 +45,30 @@ const selectValue = ref();
 const dataSource = ref();
 const props = defineProps(["value", "trigger"]);
 const emit = defineEmits(["update:value"]);
+
+
+// 获取datasource
+watch(
+  () => selectValue.value,
+  (newValue, oldValue) => {
+    console.log(2,selectOptions.value)
+    selectOptions.value
+      ?.filter((cur) => {
+        return Object.values(newValue).includes(cur.value);
+      })
+      .forEach((cur) => {
+        cur.disabled = true;
+      });
+    let result = selectOptions.value?.filter(({ id }) => {
+      return selectValue.value.includes(id);
+    });
+    dataSource.value = result;
+  }
+);
+
+// 回显
 if (formDetail?.value?.use_scope) {
+  console.log(123,39)
   selectValue.value = props.value;
   echoSelectValue = formDetail.value.use_scope.site_list
     .filter((item) => {
@@ -55,24 +78,6 @@ if (formDetail?.value?.use_scope) {
       return item.id;
     });
 }
-
-watch(
-  () => selectValue.value,
-  (newValue, oldValue) => {
-    console.log(12);
-    selectOptions.value
-      ?.filter((cur) => {
-        return Object.values(newValue).includes(cur.value);
-      })
-      .forEach((cur) => {
-        cur.disabled = true;
-      });
-    let result = selectOptions.value?.filter(({ id }) => {
-      return toArray(selectValue.value).includes(id);
-    });
-    dataSource.value = result;
-  }
-);
 
 watch(
   () => props.trigger,
@@ -89,7 +94,6 @@ watch(
 );
 
 function selectChange(v) {
-  console.log(v,2393)
   selectOptions.value
     .filter((cur) => {
       return Object.values(v).includes(cur.value);

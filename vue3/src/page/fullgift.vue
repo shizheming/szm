@@ -250,6 +250,7 @@ let editId = route.query.marketing_id;
 provide("isEdit", isEdit);
 provide("editId", editId);
 
+// 回显
 function api() {
   return axios
     .get(`/api/marketing/fullGift/${marketing_id}`, {

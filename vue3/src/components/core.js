@@ -52,7 +52,11 @@ export default function (props, emit, componentType) {
   watchEffect(() => {
     forEach(attrs, (value, key) => {
       // 不需要监听trigger-xxxx，switch-xxx，和响应式数据，还有on事件
-      if (!/^trigger-/.test(key) && !/^switch-/.test(key) && !/^on.*/.test(key)) {
+      if (
+        !/^trigger-/.test(key) &&
+        !/^switch-/.test(key) &&
+        !/^on.*/.test(key)
+      ) {
         newProps[key] = value;
         // 保存值在innerObj上
         if (innerObj[componentNameStr]) {
@@ -114,6 +118,7 @@ export default function (props, emit, componentType) {
         innerObj.optionsDetail = d;
         newProps.options = d;
         // 回显的时候的select处理，先有options才能设值
+        // 要等初始获取options的数据回来以后在设值
         if (isEdit) {
           if (isFinish.value === true) {
             let ov = get(detailData?.value, componentNameStr);
@@ -145,7 +150,9 @@ export default function (props, emit, componentType) {
           }
         }
       });
-    } else if (isArray(attrs["trigger-options"])) {
+    }
+    // 2.当options是监听获取的时候也要等能达到监听回来的数据后往上面设值
+    if (isArray(attrs["trigger-options"])) {
       if (isEdit) {
         // 有监听options
         let topt = watch(innerObj, (newValue, oldValue) => {
@@ -166,7 +173,6 @@ export default function (props, emit, componentType) {
         });
       }
     }
-    // 还有同时存在inner-options和trigger-options时还没写，？？？？？？？？？？？？？？？？？？？？？？？？？
   }
 
   /* 进口处理，判断是不是回显，除了select以外的其他*/
