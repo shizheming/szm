@@ -2,16 +2,17 @@
   <div>
     <s-select
       mode="multiple"
+      :allowClear="false"
       :inner-options="selectInner"
-      :value="props.selectValue"
+      v-model:value="selectValue"
       style="margin-bottom: 10px"
       @change="selectChange"
     />
     <a-table
       rowKey="id"
       :pagination="false"
-      :columns="siteIdsValueColumns"
-      :dataSource="props.tableValue"
+      :columns="columns"
+      :dataSource="dataSource"
     >
       <template #bodyCell="{ column, record, index }">
         <template v-if="column.key === 'name'">
@@ -37,63 +38,26 @@ import axios from "../../api";
 const route = useRoute();
 const formAttrs = inject("formComponents");
 const formDetail = inject("detailData");
-let isEdit = ref(!!route.query.marketing_id);
-let selectOptions = ref();
+let isEdit = inject("isEdit");
 let echoSelectValue = [];
-const props = defineProps(["value", "selectValue", "tableValue", "trigger"]);
-const emit = defineEmits([
-  "update:value",
-  "update:selectValue",
-  "update:tableValue",
-]);
+const selectValue = ref();
+const dataSource = ref();
+const props = defineProps(["value", "trigger"]);
+const emit = defineEmits(["update:value"]);
 
-if (formDetail?.value?.use_scope) {
-  echoSelectValue = formDetail.value.use_scope.site_list
-    .filter((item) => {
-      return !!item.is_shop_site;
-    })
-    .map((item) => {
-      return item.id;
-    });
-}
-
-emit("update:selectValue", props.value);
+// 获取datasource
 watch(
-  () => selectOptions.value,
+  () => selectValue.value,
   (newValue, oldValue) => {
-    if (props.selectValue) {
-      newValue
-        .filter((cur) => {
-          return Object.values(props.selectValue).includes(cur.value);
-        })
-        .forEach((cur) => {
-          cur.disabled = true;
-        });
-      let result = newValue.filter(({ id }) => {
-        return toArray(props.selectValue).includes(id);
-      });
-      emit("update:tableValue", result);
-    }
-  }
-);
-watch(
-  () => props.selectValue,
-  (newValue, oldValue) => {
-    selectOptions.value
-      ?.filter((cur) => {
-        return Object.values(newValue).includes(cur.value);
-      })
-      .forEach((cur) => {
-        cur.disabled = true;
-      });
-    let result = selectOptions.value?.filter(({ id }) => {
-      return toArray(props.selectValue).includes(id);
+    dataSource.value = formAttrs[
+      "use_scope.site_ids_value"
+    ].optionsDetail?.filter(({ id }) => {
+      return selectValue.value.includes(id);
     });
-
-    emit("update:tableValue", result);
   }
 );
 
+// 更新这个存站点的值
 watch(
   () => props.trigger,
   (newValue, oldValue) => {
@@ -108,9 +72,26 @@ watch(
   }
 );
 
+if (isEdit) {
+  // 编辑的时候存一下站点信息，删除的时候用
+  echoSelectValue = formDetail.value.use_scope.site_list
+    .filter((item) => {
+      return !!item.is_shop_site;
+    })
+    .map((item) => {
+      return item.id;
+    });
+}
+
 function selectChange(v) {
+  formAttrs["use_scope.site_ids_value"].optionsDetail
+    .filter((cur) => {
+      return Object.values(v).includes(cur.value);
+    })
+    .forEach((cur) => {
+      cur.disabled = true;
+    });
   emit("update:value", v);
-  emit("update:selectValue", v);
 }
 
 async function selectInner() {
@@ -126,11 +107,10 @@ async function selectInner() {
       value: cur.id,
     };
   });
-  selectOptions.value = result;
   return result;
 }
 
-const siteIdsValueColumns = [
+const columns = [
   {
     title: "站点ID",
     dataIndex: "id",
@@ -165,17 +145,18 @@ function siteIdsValueDelete(record, index) {
   Modal.confirm({
     title,
     onOk() {
-      let [detValue] = props.tableValue.splice(index, 1);
-      let values = props.tableValue.map((cur) => cur.value);
-      let a = selectOptions.value
+      let [detValue] = dataSource.value.splice(index, 1);
+      let values = dataSource.value.map((cur) => cur.value);
+      formAttrs["use_scope.site_ids_value"].optionsDetail
         .filter((cur) => {
           return detValue.value === cur.value;
         })
         .forEach((cur) => {
           cur.disabled = false;
         });
-      emit("update:selectValue", values);
+      selectValue.value = values;
       emit("update:value", values);
+      // 这东西有撒用，上面判断都已经不让删掉了
       /* if (!isEdit && echoSelectValue.includes(record.id)) {
         emit("clear");
       } */

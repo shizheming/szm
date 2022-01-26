@@ -51,8 +51,12 @@ export default function (props, emit, componentType) {
   }
   watchEffect(() => {
     forEach(attrs, (value, key) => {
-      // 不需要监听trigger-xxxx，switch-xxx，和响应式数据
-      if (!/^trigger-/.test(key) && !/^switch-/.test(key)) {
+      // 不需要监听trigger-xxxx，switch-xxx，和响应式数据，还有on事件
+      if (
+        !/^trigger-/.test(key) &&
+        !/^switch-/.test(key) &&
+        !/^on.*/.test(key)
+      ) {
         newProps[key] = value;
         // 保存值在innerObj上
         if (innerObj[componentNameStr]) {
@@ -65,7 +69,7 @@ export default function (props, emit, componentType) {
       }
     });
   });
-  newProps.onChange = (...e) => {
+  newProps.onChange = function changeFun(...e) {
     let nv = e[0];
     if (componentType === "input" || componentType === "radioGroup") {
       nv = e[0].target.value;
@@ -114,13 +118,23 @@ export default function (props, emit, componentType) {
         innerObj.optionsDetail = d;
         newProps.options = d;
         // 回显的时候的select处理，先有options才能设值
+        // 要等初始获取options的数据回来以后在设值
         if (isEdit) {
           if (isFinish.value === true) {
             let ov = get(detailData?.value, componentNameStr);
-            // 加上当前选中的option
-            let [current] = innerObj.optionsDetail.filter(
-              ({ value }) => ov === value
-            );
+            let current;
+            // 数组说明是多选
+            if (isArray(ov)) {
+              [current] = innerObj.optionsDetail.filter(
+                ({ value }) => ov.includes(value)
+              );
+            } else {
+              // 加上当前选中的option
+              [current] = innerObj.optionsDetail.filter(
+                // 这里忘记考虑多选了
+                ({ value }) => ov === value
+              );
+            }
             // 值和options里面不匹配
             if (current === undefined) return;
             innerObj.current = current;
@@ -145,7 +159,9 @@ export default function (props, emit, componentType) {
           }
         }
       });
-    } else if (isArray(attrs["trigger-options"])) {
+    }
+    // 2.当options是监听获取的时候也要等能达到监听回来的数据后往上面设值
+    if (isArray(attrs["trigger-options"])) {
       if (isEdit) {
         // 有监听options
         let topt = watch(innerObj, (newValue, oldValue) => {
@@ -166,7 +182,6 @@ export default function (props, emit, componentType) {
         });
       }
     }
-    // 还有同时存在inner-options和trigger-options时还没写，？？？？？？？？？？？？？？？？？？？？？？？？？
   }
 
   /* 进口处理，判断是不是回显，除了select以外的其他*/
@@ -200,6 +215,7 @@ export default function (props, emit, componentType) {
         value = props.inner(detailData?.value);
       }
       let ov = targetValue(value);
+      // 我这里是通过change事件来设值，而不是直接赋值，值和chang是一体的，模拟人为的
       newProps.onChange(ov);
     });
   }
