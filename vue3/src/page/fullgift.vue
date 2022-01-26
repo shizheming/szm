@@ -258,7 +258,7 @@ function api() {
       action: "first",
     })
     .then(({ data }) => {
-      formData.use_scope.site_ids_value = data.use_scope.site_ids;
+      data.use_scope.site_ids_value = data.use_scope.site_ids;
       formData.gift_settings.gift_spu_list = data.gift_settings.gift_spu_list;
       return data;
     });

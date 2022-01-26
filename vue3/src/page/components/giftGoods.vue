@@ -160,6 +160,7 @@ import { message, Modal } from "ant-design-vue";
 import axios from "../../api";
 import { isArray, remove, values } from "lodash";
 import ChooseGoods from "./chooseGoods.vue";
+
 let formData = inject("formData", {});
 let isEdit = inject("isEdit", false);
 let editId = inject("editId", undefined);
@@ -347,12 +348,13 @@ const columns = [
   },
 ];
 
-let shop_spu_ids;
+// 弹窗选好商品后，和原来的商品合在一起，去下重，在重新请求下列表
 watch(
   () => {
     return selected.value;
   },
   (newValue, oldValue) => {
+    // 回显的时候不触发
     if (newValue.isDisplay) return;
 
     let sd = newValue.rows
@@ -369,7 +371,7 @@ watch(
   }
 );
 
-// 编辑页回显
+// 回显
 if (isEdit) {
   getShopList(
     props.value.map((item) => {
@@ -379,6 +381,9 @@ if (isEdit) {
   );
 }
 
+// 请求列表，做了些处理，打平成sku维度的列表
+// 所以就同时存在了2个维度，一个编辑的时候传进来的spu维度和把spu变成sku维度
+// 我在删除的时候还是以spu维度为基础，最后演变成sku，当sku删空了后会反应回到spu，这么一个过程，而不是2个独立的，那没有联系，很难同步2个数据
 function getShopList(shop_spu_ids, isDisplay) {
   axios
     .post("/api/goods/list", {
@@ -535,6 +540,7 @@ function platform_ratio_trigger(select, formComponent, index) {
     form.sku_goods[index].platform_ratio = 0;
   }
 }
+
 function shop_ratio_trigger(select, formComponent, index) {
   if (form.sku_goods[index].sponsor === 1) {
     form.sku_goods[index].shop_ratio = 0;
@@ -542,6 +548,7 @@ function shop_ratio_trigger(select, formComponent, index) {
     form.sku_goods[index].shop_ratio = 100;
   }
 }
+
 function makeSpecCopy(item) {
   if (!item || !item.sku_specs) return "-";
   let json = JSON.parse(item.sku_specs);

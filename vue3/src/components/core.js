@@ -122,10 +122,19 @@ export default function (props, emit, componentType) {
         if (isEdit) {
           if (isFinish.value === true) {
             let ov = get(detailData?.value, componentNameStr);
-            // 加上当前选中的option
-            let [current] = innerObj.optionsDetail.filter(
-              ({ value }) => ov === value
-            );
+            let current;
+            // 数组说明是多选
+            if (isArray(ov)) {
+              [current] = innerObj.optionsDetail.filter(
+                ({ value }) => ov.includes(value)
+              );
+            } else {
+              // 加上当前选中的option
+              [current] = innerObj.optionsDetail.filter(
+                // 这里忘记考虑多选了
+                ({ value }) => ov === value
+              );
+            }
             // 值和options里面不匹配
             if (current === undefined) return;
             innerObj.current = current;
@@ -206,6 +215,7 @@ export default function (props, emit, componentType) {
         value = props.inner(detailData?.value);
       }
       let ov = targetValue(value);
+      // 我这里是通过change事件来设值，而不是直接赋值，值和chang是一体的，模拟人为的
       newProps.onChange(ov);
     });
   }
