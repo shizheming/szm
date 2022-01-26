@@ -21,6 +21,11 @@ const routes = [
     name: "animation",
     component: () => import("./animation.vue"),
   },
+  {
+    path: "/TVanimation",
+    name: "TVanimation",
+    component: () => import("./TVanimation.vue"),
+  },
 ];
 
 export default createRouter({

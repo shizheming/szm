@@ -12,8 +12,8 @@
     <a-menu-item key="animation">
       <router-link to="/animation">动画电影</router-link>
     </a-menu-item>
-    <a-menu-item key="mail">
-      Navigation One
+    <a-menu-item key="TVanimation">
+      <router-link to="/TVanimation">动画</router-link>
     </a-menu-item>
     <a-menu-item key="mail">
       Navigation One

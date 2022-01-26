@@ -8,8 +8,10 @@
     <a-tab-pane key="2" tab="国外动画">
       <a-list bordered>
         <a-list-item>黑客帝国</a-list-item>
-        <a-list-item>剑风传奇黄金时代（1，2，3）</a-list-item>
+        <a-list-item>回忆三部曲</a-list-item>
+        <a-list-item>剑风传奇黄金时代（1，2，3）<span style="color: orange">（小了）</span></a-list-item>
         <a-list-item>至爱梵高星空之谜</a-list-item>
+        <a-list-item>攻壳机动队（1，2）</a-list-item>
         <a-list-item>国教皇家骑士团（1，2，3，4，5，6，7，8，9，10）</a-list-item>
       </a-list>
     </a-tab-pane>
