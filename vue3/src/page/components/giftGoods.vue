@@ -454,11 +454,7 @@ function getShopList(shop_spu_ids, isDisplay) {
             ? props.value[index].gift_sku_list[key].id
             : undefined;
           // 把dataSource挂到formData上面，因为有值要绑定
-          if (isArray(formData.sku_goods)) {
-            formData.sku_goods.push(value);
-          } else {
-            formData.sku_goods = [value];
-          }
+          formData.sku_goods.push(value);
         });
       });
     });
@@ -490,22 +486,22 @@ function chooseGoods() {
 
 function siteIdsValueDelete(index) {
   Modal.confirm({
-    title: form.sku_goods[index].db_id
+    title: formData.sku_goods[index].db_id
       ? "如果删除该赠品将影响赠送规则中赠品的配置，确定删除？"
       : "确定删除吗？",
     icon: createVNode(ExclamationCircleOutlined),
     async onOk() {
       let data;
-      if (form.sku_goods[index].db_id) {
+      if (formData.sku_goods[index].db_id) {
         data = await axios.delete(
-          `/api/marketing/fullGift/${editId}/gift/sku/${form.sku_goods[index].db_id}`
+          `/api/marketing/fullGift/${editId}/gift/sku/${formData.sku_goods[index].db_id}`
         );
       }
       if (data && data.code !== 0) {
         message.error(data.msg);
         return;
       }
-      let [delObj] = form.sku_goods.splice(index, 1);
+      let [delObj] = formData.sku_goods.splice(index, 1);
       // 在spu里面把删除的sku删掉
       props.value.forEach(({ sku_list, id }, index) => {
         props.value[index].sku_list = sku_list.filter((current) => {
@@ -534,18 +530,18 @@ function siteIdsValueDelete(index) {
 }
 
 function platform_ratio_trigger(select, formComponent, index) {
-  if (form.sku_goods[index].sponsor === 1) {
-    form.sku_goods[index].platform_ratio = 100;
-  } else if (form.sku_goods[index].sponsor === 2) {
-    form.sku_goods[index].platform_ratio = 0;
+  if (formData.sku_goods[index].sponsor === 1) {
+    formData.sku_goods[index].platform_ratio = 100;
+  } else if (formData.sku_goods[index].sponsor === 2) {
+    formData.sku_goods[index].platform_ratio = 0;
   }
 }
 
 function shop_ratio_trigger(select, formComponent, index) {
-  if (form.sku_goods[index].sponsor === 1) {
-    form.sku_goods[index].shop_ratio = 0;
-  } else if (form.sku_goods[index].sponsor === 2) {
-    form.sku_goods[index].shop_ratio = 100;
+  if (formData.sku_goods[index].sponsor === 1) {
+    formData.sku_goods[index].shop_ratio = 0;
+  } else if (formData.sku_goods[index].sponsor === 2) {
+    formData.sku_goods[index].shop_ratio = 100;
   }
 }
 
