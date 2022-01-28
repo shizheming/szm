@@ -69,6 +69,13 @@ export default function (props, emit, componentType) {
       }
     });
   });
+
+  // 继承下除change以外的事件
+  forEach(attrs, (value, key) => {
+    if (/on.*/.test(key) && key !== "onChange") {
+      newProps[key] = value;
+    }
+  });
   newProps.onChange = function changeFun(...e) {
     let nv = e[0];
     if (componentType === "input" || componentType === "radioGroup") {
@@ -125,8 +132,8 @@ export default function (props, emit, componentType) {
             let current;
             // 数组说明是多选
             if (isArray(ov)) {
-              [current] = innerObj.optionsDetail.filter(
-                ({ value }) => ov.includes(value)
+              [current] = innerObj.optionsDetail.filter(({ value }) =>
+                ov.includes(value)
               );
             } else {
               // 加上当前选中的option

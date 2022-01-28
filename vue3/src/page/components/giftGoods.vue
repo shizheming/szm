@@ -166,7 +166,7 @@ let isEdit = inject("isEdit", false);
 let editId = inject("editId", undefined);
 const visible = ref(false);
 const selected = ref();
-const props = defineProps(["value"]);
+const props = defineProps(["value", "trigger"]);
 const emits = defineEmits(["update:value"]);
 const columns = [
   {
@@ -347,6 +347,15 @@ const columns = [
     },
   },
 ];
+
+// 所属站点变化的时候清空商品
+watch(
+  () => props.trigger,
+  () => {
+    emits("update:value", []);
+    formData.sku_goods = [];
+  }
+);
 
 // 弹窗选好商品后，和原来的商品合在一起，去下重，在重新请求下列表
 watch(

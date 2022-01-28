@@ -9,8 +9,8 @@ import props from "./props";
 import { useSlots, useAttrs } from "vue";
 import core from "./core";
 import { forEach } from "lodash";
-const slots = useSlots();
 
+const slots = useSlots();
 let newSlots = {};
 forEach(slots, (value, key) => {
   newSlots[key] = value();

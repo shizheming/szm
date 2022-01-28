@@ -205,7 +205,10 @@
       }"
       v-if="formData.gift_settings.gift_type?.includes(1)"
     >
-      <GiftGoods v-model:value="formData.gift_settings.gift_spu_list"/>
+      <GiftGoods
+        v-model:value="formData.gift_settings.gift_spu_list"
+        :trigger="formData.use_scope.site_ids"
+      />
     </s-form-item>
     <s-form-item
       label="赠品信息-优惠券"
@@ -240,9 +243,11 @@ const formData = reactive({
   basic: {},
   use_scope: {},
   preferential_rules: {},
-  gift_settings: {},
+  gift_settings: {
+    gift_spu_list: [],
+  },
   marketing_id,
-  sku_goods:[],
+  sku_goods: [],
 });
 provide("formAttrs", formSection);
 let loading = ref();
