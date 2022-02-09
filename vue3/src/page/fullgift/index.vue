@@ -267,7 +267,16 @@ function api() {
     .then(({ data }) => {
       data.use_scope.site_ids_value = data.use_scope.site_ids;
       formData.gift_settings.gift_spu_list = data.gift_settings.gift_spu_list;
-      formData.gift_settings.gift_coupon_list = data.gift_settings.gift_coupon_list;
+      formData.gift_settings.gift_coupon_list =
+        data.gift_settings.gift_coupon_list.map((item) => {
+          // 2个接口字段不一样，优惠券详情接口是everyday_num，当前页详情接口是surplus_num
+          item.everyday_num = item.surplus_num;
+          item.db_id = item.id;
+          return item;
+        });
+      formData.coupon = data.gift_settings.gift_coupon_list.map(
+        (item) => item.batch_number
+      );
       return data;
     });
 }

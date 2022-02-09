@@ -25,7 +25,7 @@
         >
           <a-input-number
             :min="1"
-            :max="record.surplus_num"
+            :max="record.everyday_num"
             placeholder="数量"
             v-model:value="record.marketing_org_stock"
           />
@@ -43,6 +43,8 @@
 
 <script setup>
 import { ref, toRefs, reactive, onMounted, watch, provide, inject } from "vue";
+import { message, Modal } from "ant-design-vue";
+import axios from "../../api";
 import {
   ExclamationCircleOutlined,
   SelectOutlined,
@@ -50,6 +52,7 @@ import {
 } from "@ant-design/icons-vue";
 import AddCoupon from "./addCoupon.vue";
 
+let editId = inject("editId", undefined);
 let formData = inject("formData", {});
 const props = defineProps(["value"]);
 const emits = defineEmits(["update:value"]);
@@ -85,14 +88,26 @@ const columns = [
     dataIndex: "total_and_everyday_num",
     key: "total_and_everyday_num",
     customRender({ record }) {
-      return `${record.total}/${record.surplus_num}`;
+      return `${record.total}/${record.everyday_num}`;
     },
   },
 ];
 function add() {
   visible.value = true;
 }
-function deletecoupon(index) {
+async function deletecoupon(index) {
+  let data;
+  // 有这个db_id说明是编辑页
+  // 不用isEdit来判断是因为，每一条数组不一样，有些要调用接口删，自己前端的就前端删
+  if (formData.gift_settings.gift_coupon_list[index].db_id) {
+    data = await axios.delete(
+      `/api/marketing/fullGift/${editId}/gift/coupon/${formData.gift_settings.gift_coupon_list[index].db_id}`
+    );
+  }
+  if (data && data.code !== 0) {
+    message.error(data.msg);
+    return;
+  }
   formData.gift_settings.gift_coupon_list.splice(index, 1);
 }
 </script>
