@@ -20,7 +20,7 @@
   </a-modal>
 </template>
 <script setup>
-import { ref, toRefs, reactive, onMounted, watch, provide,inject } from "vue";
+import { ref, toRefs, reactive, onMounted, watch, provide, inject } from "vue";
 const props = defineProps(["visible"]);
 const emits = defineEmits(["update:visible"]);
 const formData = reactive({});
@@ -40,7 +40,7 @@ function ok() {
         .then(({ data }) => {
           // 默认数量为1
           data.marketing_org_stock = 1;
-          warpFormData.gift_settings.gift_coupon_list.push(data)
+          warpFormData.gift_settings.gift_coupon_list.push(data);
           emits("update:visible", false);
         });
     })

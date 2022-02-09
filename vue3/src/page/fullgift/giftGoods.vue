@@ -129,12 +129,15 @@
         {{ record.is_listing == 1 ? "上架" : "下架" }}
       </template>
       <template v-if="column.key === 'action'">
-        <a
-          href="javascript:;"
-          class="table-button-red"
-          @click="siteIdsValueDelete(index)"
-          ><Delete-outlined
-        /></a>
+        <a-popconfirm
+          :title="
+            formData.sku_goods[index].db_id
+              ? '如果删除该赠品将影响赠送规则中赠品的配置，确定删除？'
+              : '确定删除吗？'
+          "
+          @confirm="siteIdsValueDelete(index)"
+          ><Delete-outlined />
+        </a-popconfirm>
       </template>
     </template>
   </a-table>
@@ -494,48 +497,40 @@ function chooseGoods() {
   visible.value = true;
 }
 
-function siteIdsValueDelete(index) {
-  Modal.confirm({
-    title: formData.sku_goods[index].db_id
-      ? "如果删除该赠品将影响赠送规则中赠品的配置，确定删除？"
-      : "确定删除吗？",
-    icon: createVNode(ExclamationCircleOutlined),
-    async onOk() {
-      let data;
-      if (formData.sku_goods[index].db_id) {
-        data = await axios.delete(
-          `/api/marketing/fullGift/${editId}/gift/sku/${formData.sku_goods[index].db_id}`
-        );
-      }
-      if (data && data.code !== 0) {
-        message.error(data.msg);
-        return;
-      }
-      let [delObj] = formData.sku_goods.splice(index, 1);
-      // 在spu里面把删除的sku删掉
-      props.value.forEach(({ sku_list, id }, index) => {
-        props.value[index].sku_list = sku_list.filter((current) => {
-          return !(delObj.spu_id === id && delObj.sku_id === current.id);
-        });
+async function siteIdsValueDelete(index) {
+  let data;
+  if (formData.sku_goods[index].db_id) {
+    data = await axios.delete(
+      `/api/marketing/fullGift/${editId}/gift/sku/${formData.sku_goods[index].db_id}`
+    );
+  }
+  if (data && data.code !== 0) {
+    message.error(data.msg);
+    return;
+  }
+  let [delObj] = formData.sku_goods.splice(index, 1);
+  // 在spu里面把删除的sku删掉
+  props.value.forEach(({ sku_list, id }, index) => {
+    props.value[index].sku_list = sku_list.filter((current) => {
+      return !(delObj.spu_id === id && delObj.sku_id === current.id);
+    });
+  });
+  // 重新设置合并单元格的参数
+  props.value.forEach(({ sku_list }) => {
+    sku_list.forEach((value, key) => {
+      value.rowSpan = key === 0 ? sku_list.length : 0;
+    });
+  });
+  // 当sku_list删到空的时候，要把spu删掉，也就是把弹窗的沟去掉
+  props.value.forEach(({ sku_list, id }) => {
+    if (sku_list.length === 0) {
+      remove(selected.value.rows, (cur) => {
+        return cur.id === id;
       });
-      // 重新设置合并单元格的参数
-      props.value.forEach(({ sku_list }) => {
-        sku_list.forEach((value, key) => {
-          value.rowSpan = key === 0 ? sku_list.length : 0;
-        });
+      remove(selected.value.rowKeys, (cur) => {
+        return cur === id;
       });
-      // 当sku_list删到空的时候，要把spu删掉，也就是把弹窗的沟去掉
-      props.value.forEach(({ sku_list, id }) => {
-        if (sku_list.length === 0) {
-          remove(selected.value.rows, (cur) => {
-            return cur.id === id;
-          });
-          remove(selected.value.rowKeys, (cur) => {
-            return cur === id;
-          });
-        }
-      });
-    },
+    }
   });
 }
 

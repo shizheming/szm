@@ -49,6 +49,15 @@ defineExpose({
   outerModel,
   attrsValue: formComponents,
   detail: detailData,
+  scrollToField(params) {
+    return formRender.value.scrollToField(params);
+  },
+  resetFields(params) {
+    return formRender.value.resetFields(params);
+  },
+  clearValidate(params) {
+    return formRender.value.clearValidate(params);
+  },
   validate() {
     // 处理outer所有的函数
     forEach(p.model, (value, key) => {

@@ -267,6 +267,7 @@ function api() {
     .then(({ data }) => {
       data.use_scope.site_ids_value = data.use_scope.site_ids;
       formData.gift_settings.gift_spu_list = data.gift_settings.gift_spu_list;
+      formData.gift_settings.gift_coupon_list = data.gift_settings.gift_coupon_list;
       return data;
     });
 }

@@ -25,19 +25,16 @@
         >
           <a-input-number
             :min="1"
-            :max="record.everyday_num"
+            :max="record.surplus_num"
             placeholder="数量"
             v-model:value="record.marketing_org_stock"
           />
         </a-form-item>
       </template>
       <template v-if="column.key === 'action'">
-        <a
-          href="javascript:;"
-          class="table-button-red"
-          @click="deletecoupon(index)"
-          ><Delete-outlined
-        /></a>
+        <a-popconfirm :title="'确定删除吗？'" @confirm="deletecoupon(index)"
+          ><Delete-outlined />
+        </a-popconfirm>
       </template>
     </template>
   </a-table>
@@ -88,20 +85,16 @@ const columns = [
     dataIndex: "total_and_everyday_num",
     key: "total_and_everyday_num",
     customRender({ record }) {
-      return `${record.total}/${record.everyday_num}`;
+      return `${record.total}/${record.surplus_num}`;
     },
   },
 ];
 function add() {
   visible.value = true;
 }
-/* watch(
-  () => formData.gift_coupon_list,
-  (newValue) => {
-    emits("update:value", newValue);
-  }
-); */
-function deletecoupon() {}
+function deletecoupon(index) {
+  formData.gift_settings.gift_coupon_list.splice(index, 1);
+}
 </script>
 
 <style></style>
