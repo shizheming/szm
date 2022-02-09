@@ -20,12 +20,13 @@
   </a-modal>
 </template>
 <script setup>
-import { ref, toRefs, reactive, onMounted, watch, provide } from "vue";
-const props = defineProps(["visible", "datasource"]);
-const emits = defineEmits(["update:visible", "update:datasource"]);
+import { ref, toRefs, reactive, onMounted, watch, provide,inject } from "vue";
+const props = defineProps(["visible"]);
+const emits = defineEmits(["update:visible"]);
 const formData = reactive({});
 import axios from "../../api";
 const formSection = ref();
+let warpFormData = inject("formData", {});
 function ok() {
   formSection.value
     .validate()
@@ -37,7 +38,9 @@ function ok() {
           type: 0,
         })
         .then(({ data }) => {
-          emits("update:datasource", [data]);
+          // 默认数量为1
+          data.marketing_org_stock = 1;
+          warpFormData.gift_settings.gift_coupon_list.push(data)
           emits("update:visible", false);
         });
     })

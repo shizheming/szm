@@ -7,16 +7,29 @@
     rowKey="id"
     :pagination="false"
     :columns="columns"
-    :dataSource="dataSource"
+    :dataSource="formData.gift_settings.gift_coupon_list"
   >
     <template #bodyCell="{ column, record, index }">
       <template v-if="column.key === 'marketing_org_stock'">
-        <a-input-number
-          :min="1"
-          :max="record.everyday_num"
-          placeholder="数量"
-          v-model:value="record.marketing_org_stock"
-        />
+        <a-form-item
+          :name="[
+            'gift_settings',
+            'gift_coupon_list',
+            index,
+            'marketing_org_stock',
+          ]"
+          :rules="{
+            required: true,
+            message: '请填写数量',
+          }"
+        >
+          <a-input-number
+            :min="1"
+            :max="record.everyday_num"
+            placeholder="数量"
+            v-model:value="record.marketing_org_stock"
+          />
+        </a-form-item>
       </template>
       <template v-if="column.key === 'action'">
         <a
@@ -28,21 +41,22 @@
       </template>
     </template>
   </a-table>
-  <AddCoupon v-model:visible="visible" v-model:datasource="dataSource" />
+  <AddCoupon v-model:visible="visible" />
 </template>
 
 <script setup>
-import { ref, toRefs, reactive, onMounted, watch, provide } from "vue";
+import { ref, toRefs, reactive, onMounted, watch, provide, inject } from "vue";
 import {
   ExclamationCircleOutlined,
   SelectOutlined,
   DeleteOutlined,
 } from "@ant-design/icons-vue";
 import AddCoupon from "./addCoupon.vue";
+
+let formData = inject("formData", {});
+const props = defineProps(["value"]);
+const emits = defineEmits(["update:value"]);
 const visible = ref(false);
-function add() {
-  visible.value = true;
-}
 const columns = [
   {
     title: "操作",
@@ -73,12 +87,20 @@ const columns = [
     title: "批次总量/剩余可生劵量",
     dataIndex: "total_and_everyday_num",
     key: "total_and_everyday_num",
-    customRender({record}) {
+    customRender({ record }) {
       return `${record.total}/${record.everyday_num}`;
     },
   },
 ];
-const dataSource = ref();
+function add() {
+  visible.value = true;
+}
+/* watch(
+  () => formData.gift_coupon_list,
+  (newValue) => {
+    emits("update:value", newValue);
+  }
+); */
 function deletecoupon() {}
 </script>
 

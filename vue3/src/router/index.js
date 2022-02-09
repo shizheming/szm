@@ -14,7 +14,7 @@ const routes = [
   {
     path: '/fullgift',
     name: 'fullgift',
-    component: () => import('../page/fullgift.vue')
+    component: () => import('../page/fullgift/index.vue')
   },
   // {
   //   path: '/linkage',

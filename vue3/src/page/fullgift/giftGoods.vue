@@ -393,6 +393,7 @@ if (isEdit) {
 // 请求列表，做了些处理，打平成sku维度的列表
 // 所以就同时存在了2个维度，一个编辑的时候传进来的spu维度和把spu变成sku维度
 // 我在删除的时候还是以spu维度为基础，最后演变成sku，当sku删空了后会反应回到spu，这么一个过程，而不是2个独立的，那没有联系，很难同步2个数据
+// 商品有sku和spu维度所有在formData上面我用了2个key来记录不同维度的数据，一个就是gift_spu_list，一个就是sku_goods
 function getShopList(shop_spu_ids, isDisplay) {
   axios
     .post("/api/goods/list", {
@@ -416,10 +417,10 @@ function getShopList(shop_spu_ids, isDisplay) {
           rows: list,
           isDisplay: true,
         };
-        // 为了使绑定得值使同一个地址，要更新spu_list
+        // 为了使绑定的值使用同一个地址，要更新spu_list
         emits("update:value", list);
       } else {
-        // 不是编辑页，就是用户操作得，要更新值
+        // 不是编辑页，就是用户操作的，要更新值
         emits("update:value", props.value.concat(list));
       }
       list.forEach((v, index) => {

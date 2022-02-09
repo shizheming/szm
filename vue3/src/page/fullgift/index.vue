@@ -219,7 +219,7 @@
       }"
       v-if="formData.gift_settings.gift_type?.includes(2)"
     >
-      <GiftCoupon v-model="formData.gift_settings.gift_coupon_list" />
+      <GiftCoupon v-model:value="formData.gift_settings.gift_coupon_list" />
     </s-form-item>
     <s-form-item :wrapper-col="{ offset: 7 }">
       <s-button :loading="loading" @click="next">下一步</s-button>
@@ -228,13 +228,13 @@
 </template>
 
 <script setup>
-import axios from "../api";
+import axios from "../../api";
 import { ref, toRefs, reactive, onMounted, watch, provide } from "vue";
 import { useRoute } from "vue-router";
-import Site from "./components/site.vue";
+import Site from "./site.vue";
 import dayjs from "dayjs";
-import GiftGoods from "./components/giftGoods.vue";
-import GiftCoupon from "./components/giftCoupon.vue";
+import GiftGoods from "./giftGoods.vue";
+import GiftCoupon from "./giftCoupon.vue";
 
 const route = useRoute();
 let marketing_id = route.query.marketing_id;
@@ -245,6 +245,7 @@ const formData = reactive({
   preferential_rules: {},
   gift_settings: {
     gift_spu_list: [],
+    gift_coupon_list: [],
   },
   marketing_id,
   sku_goods: [],
@@ -376,10 +377,5 @@ function next() {
 问题
 marketing_id还没有和融进isEdit里面去
 时间组件的语言问题，不知道是不是版本的问题
-
-多个对象监听同一个对象的时候会出现顺序调用函数不符合预期的情况，
-是因为trigger是我组件里面给用户绑定的，里面不可控，
-如果是用户自己写watch，或是change，调用函数的顺序是完全可以自己掌控的
-所以当出现这种情况造成顺序错误的时候，需要自己统一处理分发顺序，trigger不承担这个功能
 */
 </script>
