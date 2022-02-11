@@ -258,27 +258,24 @@ provide("isEdit", isEdit);
 provide("editId", editId);
 
 // 回显
-function api() {
-  return axios
-    .get(`/api/marketing/fullGift/${marketing_id}`, {
-      id: marketing_id,
-      action: "first",
-    })
-    .then(({ data }) => {
-      data.use_scope.site_ids_value = data.use_scope.site_ids;
-      formData.gift_settings.gift_spu_list = data.gift_settings.gift_spu_list;
-      formData.gift_settings.gift_coupon_list =
-        data.gift_settings.gift_coupon_list.map((item) => {
-          // 2个接口字段不一样，优惠券详情接口是everyday_num，当前页详情接口是surplus_num
-          item.everyday_num = item.surplus_num;
-          item.db_id = item.id;
-          return item;
-        });
-      formData.coupon = data.gift_settings.gift_coupon_list.map(
-        (item) => item.batch_number
-      );
-      return data;
+async function api() {
+  let { data } = await axios.get(`/api/marketing/fullGift/${marketing_id}`, {
+    id: marketing_id,
+    action: "first",
+  });
+  data.use_scope.site_ids_value = data.use_scope.site_ids;
+  formData.gift_settings.gift_spu_list = data.gift_settings.gift_spu_list;
+  formData.gift_settings.gift_coupon_list =
+    data.gift_settings.gift_coupon_list.map((item) => {
+      // 2个接口字段不一样，优惠券详情接口是everyday_num，当前页详情接口是surplus_num
+      item.everyday_num = item.surplus_num;
+      item.db_id = item.id;
+      return item;
     });
+  formData.coupon = data.gift_settings.gift_coupon_list.map(
+    (item) => item.batch_number
+  );
+  return data;
 }
 
 function gift_type_inner(detail) {
@@ -377,6 +374,7 @@ function next() {
     .then(() => {
       console.log("values", formData);
       console.log("最后的值", formSection.value.outerModel);
+      // formSection.value.outerModel.
     })
     .catch((error) => {
       console.log("error", formData);
