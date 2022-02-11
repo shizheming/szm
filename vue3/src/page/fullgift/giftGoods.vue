@@ -464,7 +464,7 @@ function getShopList(shop_spu_ids, isDisplay) {
           value.supplier_id = supplier_id;
           value.rowSpan = key === 0 ? sku_list.length : 0;
           value.db_id = isDisplay
-            ? props.value[index].gift_sku_list[key].id
+            ? props.value[index].id
             : undefined;
           // 把dataSource挂到formData上面，因为有值要绑定
           formData.sku_goods.push(value);

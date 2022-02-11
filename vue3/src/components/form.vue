@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { reactive, provide, ref, onMounted, nextTick } from "vue";
+import { reactive, provide, ref, onMounted, nextTick, toRaw } from "vue";
 import { Form } from "ant-design-vue";
 import { cloneDeep, forEach } from "lodash";
 import { setLevelValue, getLevelValue } from "./tool";
@@ -58,18 +58,19 @@ defineExpose({
   clearValidate(params) {
     return formRender.value.clearValidate(params);
   },
-  validate() {
-    // 处理outer所有的函数
-    forEach(p.model, (value, key) => {
-      if (!outer[key]) {
-        outerModel[key] = value;
-      }
+  validate(params) {
+    return formRender.value.validate(params).then(() => {
+      // 处理outer所有的函数
+      forEach(cloneDeep(p.model), (value, key) => {
+        if (!outer[key]) {
+          outerModel[key] = value;
+        }
+      });
+      // 处理嵌套层级数据
+      forEach(outer, (value, key) => {
+        setLevelValue(key, value(), outerModel);
+      });
     });
-    // 处理嵌套层级数据
-    forEach(outer, (value, key) => {
-      setLevelValue(key, value(), outerModel);
-    });
-    return formRender.value.validate();
   },
 });
 

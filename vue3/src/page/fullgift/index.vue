@@ -1,7 +1,7 @@
 <template>
   <s-form
-    :model="formData"
     ref="formSection"
+    :model="formData"
     :api="api"
     :isEdit="isEdit"
     :labelCol="{ span: 4 }"
@@ -10,7 +10,7 @@
       label="活动名称"
       :rules="{
         required: true,
-        validator: nameRule,
+        validator: basicNameValidator,
       }"
       :name="['basic', 'name']"
     >
@@ -30,7 +30,12 @@
       <s-range-picker
         showTime
         v-model:value="formData.basic.times"
-        :inner="timesInner"
+        :inner="
+          (detail) => [
+            dayjs(detail.basic.start_time),
+            dayjs(detail.basic.end_time),
+          ]
+        "
       />
       <div style="color: #ccc">活动到期后将自动失效，失效后不可延长</div>
     </s-form-item>
@@ -39,7 +44,7 @@
       :name="['basic', 'priority']"
       :rules="{
         required: true,
-        validator: priorityRule,
+        validator: basicPriorityValidator,
       }"
     >
       <s-input-number
@@ -90,7 +95,8 @@
     >
       <s-checkbox-group
         v-model:value="formData.use_scope.app_platform"
-        :inner="app_platform_inner"
+        :inner="(detail) => detail.use_scope.app_platform.split(',')"
+        :outer="(v) => v.join(',')"
       >
         <s-checkbox value="i">iOS</s-checkbox>
         <s-checkbox value="a">Android</s-checkbox>
@@ -108,9 +114,10 @@
     >
       <s-radio-group
         v-model:value="formData.use_scope.site_ids"
-        :inner="site_ids_inner"
         :disabled="isEdit"
         :initialValue="0"
+        :inner="(detail) => (detail.use_scope.site_ids.length ? 1 : 0)"
+        :outer="(v) => (v === 1 ? formData.use_scope.site_ids_value : [])"
       >
         <s-radio :value="0">全选</s-radio>
         <s-radio :value="1">指定站点</s-radio>
@@ -161,8 +168,8 @@
     >
       <s-radio-group
         v-model:value="formData.preferential_rules.marketing_type"
-        :disabled="isEdit"
         initialValue="manyuanzeng001"
+        :disabled="isEdit"
       >
         <s-radio value="manyuanzeng001">精选</s-radio>
         <s-radio value="manjianzeng001">满额赠</s-radio>
@@ -178,8 +185,14 @@
     >
       <s-checkbox-group
         v-model:value="formData.gift_settings.gift_type"
-        :inner="gift_type_inner"
         :disabled="isEdit"
+        :inner="
+          (detail) =>
+            detail.gift_settings.gift_type == 3
+              ? [1, 2]
+              : [detail.gift_settings.gift_type]
+        "
+        :outer="(v) => (v.length === 2 ? 3 : v[0])"
       >
         <s-checkbox :value="1">商品</s-checkbox>
         <s-checkbox :value="2">优惠券</s-checkbox>
@@ -242,7 +255,9 @@ const formSection = ref();
 const formData = reactive({
   basic: {},
   use_scope: {},
-  preferential_rules: {},
+  preferential_rules: {
+    preferential_type: 1,
+  },
   gift_settings: {
     gift_spu_list: [],
     gift_coupon_list: [],
@@ -250,10 +265,11 @@ const formData = reactive({
   marketing_id,
   sku_goods: [],
 });
-provide("formAttrs", formSection);
 let loading = ref();
 let isEdit = !!route.query.marketing_id;
 let editId = route.query.marketing_id;
+provide("formAttrs", formSection);
+
 provide("isEdit", isEdit);
 provide("editId", editId);
 
@@ -278,21 +294,7 @@ async function api() {
   return data;
 }
 
-function gift_type_inner(detail) {
-  return detail.gift_settings.gift_type == 3
-    ? [1, 2]
-    : [detail.gift_settings.gift_type];
-}
-
-function site_ids_inner(detail) {
-  return detail.use_scope.site_ids ? 1 : 0;
-}
-
-function timesInner(detail) {
-  return [dayjs(detail.basic.start_time), dayjs(detail.basic.end_time)];
-}
-
-async function nameRule(rule, value) {
+function basicNameValidator(rule, value) {
   if (!value) {
     return Promise.reject("请输入名称");
   } else if (value.length > 10) {
@@ -302,7 +304,7 @@ async function nameRule(rule, value) {
   }
 }
 
-async function priorityRule(rule, value) {
+function basicPriorityValidator(rule, value) {
   if (!value) {
     return Promise.reject("请输入0-999间的正整数");
   } else if (
@@ -316,11 +318,7 @@ async function priorityRule(rule, value) {
   }
 }
 
-function app_platform_inner(detail) {
-  return detail.use_scope.app_platform.split(",");
-}
-
-const shopIdOptions = async function (params = {}) {
+async function shopIdOptions(params = {}) {
   let {
     data: { list },
   } = await axios.get("/api/shop?page=1&page_size=999", {
@@ -333,7 +331,7 @@ const shopIdOptions = async function (params = {}) {
       value: cur.id,
     };
   });
-};
+}
 
 function siteIdsTriggerOptions(formComponent) {
   if (formData.use_scope.site_ids === 0) {
@@ -372,16 +370,45 @@ function next() {
   formSection.value
     .validate()
     .then(() => {
+      let submitData = formSection.value.outerModel;
       console.log("values", formData);
-      console.log("最后的值", formSection.value.outerModel);
-      // formSection.value.outerModel.
+      console.log("最后的值", submitData);
+      submitData.basic.start_time = submitData.basic.times[0].format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
+      submitData.basic.end_time = submitData.basic.times[1].format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
+      submitData.gift_settings.gift_spu_list =
+        submitData.gift_settings.gift_spu_list.map(
+          ({ shop_id, sku_list }, index) => {
+            return {
+              id: sku_list[0].db_id,
+              spu_id: sku_list[0].spu_id,
+              shop_id,
+              gift_sku_list: sku_list.map((item) => {
+                return {
+                  ...item,
+                  id: item.db_id,
+                };
+              }),
+            };
+          }
+        );
+      submitData.gift_settings.gift_coupon_list =
+        submitData.gift_settings.gift_coupon_list.map((item) => {
+          return {
+            ...item,
+            id: item.db_id,
+          };
+        });
     })
     .catch((error) => {
       console.log("error", formData);
     });
 }
 
-/* 
+/*
 问题
 marketing_id还没有和融进isEdit里面去
 时间组件的语言问题，不知道是不是版本的问题
