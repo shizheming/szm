@@ -2,7 +2,9 @@
   <a-tabs>
     <a-tab-pane key="1" tab="国产动画">
       <a-list bordered>
-        <a-list-item>白蛇缘起</a-list-item>
+        <a-list-item
+          >海尔兄弟<span style="color: orange">（小了）</span></a-list-item
+        >
       </a-list>
     </a-tab-pane>
     <a-tab-pane key="2" tab="国外动画">
@@ -18,6 +20,7 @@
         <a-list-item>冥王神话</a-list-item>
         <a-list-item>乒乓</a-list-item>
         <a-list-item>死亡笔记</a-list-item>
+        <a-list-item>新世纪福音战士</a-list-item>
         <a-list-item>伊藤润二精选集</a-list-item>
         <a-list-item>幽遊白書</a-list-item>
       </a-list>

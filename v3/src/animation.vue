@@ -7,12 +7,14 @@
     </a-tab-pane>
     <a-tab-pane key="2" tab="国外动画">
       <a-list bordered>
+        <a-list-item
+          >国教皇家骑士团（1，2，3，4，5，6，7，8，9，10）</a-list-item
+        >
         <a-list-item>黑客帝国</a-list-item>
         <a-list-item>回忆三部曲</a-list-item>
-        <a-list-item>剑风传奇黄金时代（1，2，3）<span style="color: orange">（小了）</span></a-list-item>
+        <a-list-item>剑风传奇黄金时代（1，2，3）</a-list-item>
         <a-list-item>至爱梵高星空之谜</a-list-item>
-        <a-list-item>攻壳机动队（1，2）</a-list-item>
-        <a-list-item>国教皇家骑士团（1，2，3，4，5，6，7，8，9，10）</a-list-item>
+        <a-list-item>吸血鬼猎人d</a-list-item>
       </a-list>
     </a-tab-pane>
     <a-tab-pane key="3" tab="上海美术电影制片厂">
@@ -34,6 +36,7 @@
         <a-list-item>狐狸分饼</a-list-item>
         <a-list-item>快乐的买买提</a-list-item>
         <a-list-item>老狼请客</a-list-item>
+        <a-list-item>天书奇谭</a-list-item>
         <a-list-item>漠风</a-list-item>
         <a-list-item>牧笛</a-list-item>
         <a-list-item>哪吒闹海</a-list-item>
@@ -114,7 +117,18 @@
         <a-list-item>唐红的恋歌</a-list-item>
       </a-list>
     </a-tab-pane>
-    <a-tab-pane key="7" tab="宫崎骏">
+    <a-tab-pane key="8" tab="新世纪福音战士">
+      <a-list bordered>
+        <a-list-item>DEATH (TRUE)²</a-list-item>
+        <a-list-item>Air</a-list-item>
+        <a-list-item>真心为你</a-list-item>
+        <a-list-item>死与新生</a-list-item>
+        <a-list-item>序</a-list-item>
+        <a-list-item>Q</a-list-item>
+        <a-list-item>破</a-list-item>
+      </a-list>
+    </a-tab-pane>
+    <a-tab-pane key="9" tab="宫崎骏">
       <a-list bordered>
         <a-list-item>风之谷</a-list-item>
         <a-list-item>红猪</a-list-item>
@@ -127,19 +141,24 @@
         <a-list-item>幽灵公主</a-list-item>
       </a-list>
     </a-tab-pane>
-    <a-tab-pane key="8" tab="新海诚">
+    <a-tab-pane key="10" tab="今敏">
+      <a-list bordered>
+        <a-list-item>东京教父</a-list-item>
+        <a-list-item>红辣椒</a-list-item>
+        <a-list-item>千年女优</a-list-item>
+        <a-list-item>未麻的部屋</a-list-item>
+      </a-list>
+    </a-tab-pane>
+    <a-tab-pane key="11" tab="新海诚">
       <a-list bordered>
         <a-list-item>你的名字</a-list-item>
         <a-list-item>天气之子</a-list-item>
         <a-list-item>言叶之庭</a-list-item>
       </a-list>
     </a-tab-pane>
-    <a-tab-pane key="9" tab="今敏">
+    <a-tab-pane key="10" tab="押井守">
       <a-list bordered>
-        <a-list-item>东京教父</a-list-item>
-        <a-list-item>红辣椒</a-list-item>
-        <a-list-item>千年女优</a-list-item>
-        <a-list-item>未麻的部屋</a-list-item>
+        <a-list-item>攻壳机动队（1，2）</a-list-item>
       </a-list>
     </a-tab-pane>
   </a-tabs>
