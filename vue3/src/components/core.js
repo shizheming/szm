@@ -89,8 +89,8 @@ export default function (props, emit, componentType) {
     } else {
       emit("update:value", nv);
     }
-    if (componentType === "select") {
-      // 记录一下select当前选择的值
+    if (componentType === "select" || componentType === "cascader") {
+      // 记录一下select和cascader当前选择的值
       formComponents[componentNameStr].current = e[1];
     }
     if (attrs.onChange) {
@@ -117,8 +117,8 @@ export default function (props, emit, componentType) {
     };
   }
 
-  /* select单独处理 */
-  if (componentType === "select") {
+  /* select和cascader单独处理 */
+  if (componentType === "select" || componentType === "cascader") {
     // 有初始options
     if (isFunction(attrs["inner-options"])) {
       attrs["inner-options"]().then((d) => {
@@ -191,8 +191,8 @@ export default function (props, emit, componentType) {
     }
   }
 
-  /* 进口处理，判断是不是回显，除了select以外的其他*/
-  if (isEdit && componentType !== "select") {
+  /* 进口处理，判断是不是回显，除了select和cascader以外的其他*/
+  if (isEdit && componentType !== "select" && componentType !== "cascader") {
     // 添加设值函数到form，让form来调用，而不是自己调回用，
     let targetValue;
     if (componentType === "input" || componentType === "radioGroup") {

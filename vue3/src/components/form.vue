@@ -19,6 +19,18 @@ const p = defineProps({
     type: Boolean,
     default: undefined,
   },
+  style: {
+    type: [String, Object],
+    default: undefined,
+  },
+  class: {
+    type: String,
+    default: undefined,
+  },
+  id: {
+    type: String,
+    default: undefined,
+  },
 });
 
 // 判断是不是编辑页

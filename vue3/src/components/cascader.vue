@@ -1,7 +1,5 @@
 <template>
-  <Cascader v-bind="newProps" :value="value" :changeOnSelect="true">
-    <slot />
-  </Cascader>
+  <Cascader v-bind="newProps" :value="value" :changeOnSelect="true"/>
 </template>
 <script setup>
 import core from "./core";
@@ -17,5 +15,5 @@ forEach(slots, (value, key) => {
 });
 const p = defineProps(props);
 const emit = defineEmits(["update:value"]);
-let newProps = Object.assign(core(p, emit), newSlots);
+let newProps = Object.assign(core(p, emit, "cascader"), newSlots);
 </script>

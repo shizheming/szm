@@ -3,6 +3,12 @@
     <a-tab-pane key="1" tab="国产动画">
       <a-list bordered>
         <a-list-item>白蛇缘起</a-list-item>
+        <a-list-item>宝莲灯</a-list-item>
+        <a-list-item>大闹天宫</a-list-item>
+        <a-list-item>金猴降妖</a-list-item>
+        <a-list-item>哪吒闹海</a-list-item>
+        <a-list-item>天书奇谭</a-list-item>
+        <a-list-item>西岳奇童<span style="color: orange">（小了）</span></a-list-item>
       </a-list>
     </a-tab-pane>
     <a-tab-pane key="2" tab="国外动画">
@@ -17,14 +23,12 @@
         <a-list-item>吸血鬼猎人d</a-list-item>
       </a-list>
     </a-tab-pane>
-    <a-tab-pane key="3" tab="上海美术电影制片厂">
+    <a-tab-pane key="3" tab="上海美术电影制片厂短片">
       <a-list bordered>
         <a-list-item>半夜鸡叫</a-list-item>
-        <a-list-item>宝莲灯</a-list-item>
         <a-list-item>笨狗熊</a-list-item>
         <a-list-item>差不多</a-list-item>
         <a-list-item>聪明的鸭子</a-list-item>
-        <a-list-item>大闹天宫</a-list-item>
         <a-list-item>蝶双飞</a-list-item>
         <a-list-item>丁丁战猴王</a-list-item>
         <a-list-item>丁铃铃</a-list-item>
@@ -36,10 +40,9 @@
         <a-list-item>狐狸分饼</a-list-item>
         <a-list-item>快乐的买买提</a-list-item>
         <a-list-item>老狼请客</a-list-item>
-        <a-list-item>天书奇谭</a-list-item>
+        <a-list-item>没头脑和不高兴</a-list-item>
         <a-list-item>漠风</a-list-item>
         <a-list-item>牧笛</a-list-item>
-        <a-list-item>哪吒闹海</a-list-item>
         <a-list-item>三十六个字</a-list-item>
         <a-list-item>三只狼</a-list-item>
         <a-list-item>山水情</a-list-item>
@@ -128,7 +131,15 @@
         <a-list-item>破</a-list-item>
       </a-list>
     </a-tab-pane>
-    <a-tab-pane key="9" tab="宫崎骏">
+    <a-tab-pane key="9" tab="圣斗士星矢">
+      <a-list bordered>
+        <a-list-item>邪神厄里斯</a-list-item>
+        <a-list-item>真红少年传说</a-list-item>
+        <a-list-item>众神的激战</a-list-item>
+        <a-list-item>最终圣战的战士们</a-list-item>
+      </a-list>
+    </a-tab-pane>
+    <a-tab-pane key="10" tab="宫崎骏">
       <a-list bordered>
         <a-list-item>风之谷</a-list-item>
         <a-list-item>红猪</a-list-item>
@@ -141,7 +152,7 @@
         <a-list-item>幽灵公主</a-list-item>
       </a-list>
     </a-tab-pane>
-    <a-tab-pane key="10" tab="今敏">
+    <a-tab-pane key="11" tab="今敏">
       <a-list bordered>
         <a-list-item>东京教父</a-list-item>
         <a-list-item>红辣椒</a-list-item>
@@ -149,14 +160,14 @@
         <a-list-item>未麻的部屋</a-list-item>
       </a-list>
     </a-tab-pane>
-    <a-tab-pane key="11" tab="新海诚">
+    <a-tab-pane key="12" tab="新海诚">
       <a-list bordered>
         <a-list-item>你的名字</a-list-item>
         <a-list-item>天气之子</a-list-item>
         <a-list-item>言叶之庭</a-list-item>
       </a-list>
     </a-tab-pane>
-    <a-tab-pane key="10" tab="押井守">
+    <a-tab-pane key="13" tab="押井守">
       <a-list bordered>
         <a-list-item>攻壳机动队（1，2）</a-list-item>
       </a-list>
