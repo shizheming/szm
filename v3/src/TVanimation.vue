@@ -14,6 +14,7 @@
         <a-list-item>魔方大厦</a-list-item>
         <a-list-item>三毛流浪记</a-list-item>
         <a-list-item>山河剑心</a-list-item>
+        <a-list-item>舒克和贝塔</a-list-item>
       </a-list>
     </a-tab-pane>
     <a-tab-pane key="2" tab="国外动画">
@@ -28,10 +29,12 @@
         <a-list-item>龙珠（z）</a-list-item>
         <a-list-item>冥王神话</a-list-item>
         <a-list-item>乒乓</a-list-item>
+        <a-list-item>森林好小子</a-list-item>
         <a-list-item>死亡笔记</a-list-item>
         <a-list-item>新世纪福音战士</a-list-item>
         <a-list-item>伊藤润二精选集</a-list-item>
         <a-list-item>幽遊白書</a-list-item>
+        <a-list-item>足球小将</a-list-item>
       </a-list>
     </a-tab-pane>
   </a-tabs>

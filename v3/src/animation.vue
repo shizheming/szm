@@ -8,7 +8,9 @@
         <a-list-item>金猴降妖</a-list-item>
         <a-list-item>哪吒闹海</a-list-item>
         <a-list-item>天书奇谭</a-list-item>
-        <a-list-item>西岳奇童<span style="color: orange">（小了）</span></a-list-item>
+        <a-list-item
+          >西岳奇童<span style="color: orange">（小了）</span></a-list-item
+        >
       </a-list>
     </a-tab-pane>
     <a-tab-pane key="2" tab="国外动画">
@@ -27,38 +29,70 @@
       <a-list bordered>
         <a-list-item>半夜鸡叫</a-list-item>
         <a-list-item>笨狗熊</a-list-item>
+        <a-list-item>不射之射</a-list-item>
+        <a-list-item>曹冲称象</a-list-item>
         <a-list-item>差不多</a-list-item>
+        <a-list-item>超级肥皂</a-list-item>
         <a-list-item>聪明的鸭子</a-list-item>
+        <a-list-item>等明天</a-list-item>
         <a-list-item>蝶双飞</a-list-item>
         <a-list-item>丁丁战猴王</a-list-item>
         <a-list-item>丁铃铃</a-list-item>
+        <a-list-item>东郭先生</a-list-item>
         <a-list-item>冬冬和瓜瓜</a-list-item>
         <a-list-item>高女人和矮丈夫</a-list-item>
         <a-list-item>过猴山</a-list-item>
+        <a-list-item>好猫咪咪</a-list-item>
         <a-list-item>黑公鸡</a-list-item>
+        <a-list-item>猴子钓鱼</a-list-item>
         <a-list-item>猴子捞月</a-list-item>
+        <a-list-item>狐狸打猎人</a-list-item>
         <a-list-item>狐狸分饼</a-list-item>
+        <a-list-item>狐狸送葡萄</a-list-item>
+        <a-list-item>骄傲的将军</a-list-item>
+        <a-list-item>金色的海螺</a-list-item>
+        <a-list-item>九色鹿</a-list-item>
         <a-list-item>快乐的买买提</a-list-item>
+        <a-list-item>狼来了</a-list-item>
+        <a-list-item>崂山道士</a-list-item>
+        <a-list-item>老虎学艺</a-list-item>
         <a-list-item>老狼请客</a-list-item>
+        <a-list-item>鹿铃</a-list-item>
         <a-list-item>没头脑和不高兴</a-list-item>
         <a-list-item>漠风</a-list-item>
         <a-list-item>牧笛</a-list-item>
+        <a-list-item>南郭先生</a-list-item>
+        <a-list-item>抢枕头</a-list-item>
+        <a-list-item>人参果</a-list-item>
+        <a-list-item>人参娃娃</a-list-item>
+        <a-list-item>日月潭</a-list-item>
+        <a-list-item>三个和尚</a-list-item>
+        <a-list-item>三件宝贝</a-list-item>
         <a-list-item>三十六个字</a-list-item>
         <a-list-item>三只狼</a-list-item>
         <a-list-item>山水情</a-list-item>
         <a-list-item>神笔</a-list-item>
         <a-list-item>十二只蚊子和五个人</a-list-item>
         <a-list-item>松鼠理发师</a-list-item>
+        <a-list-item>抬驴</a-list-item>
         <a-list-item>螳螂捕蝉</a-list-item>
+        <a-list-item>我的朋友小海豚</a-list-item>
         <a-list-item>象不象</a-list-item>
+        <a-list-item>小八戒</a-list-item>
+        <a-list-item>小和尚之游方僧</a-list-item>
         <a-list-item>小蝌蚪找妈妈</a-list-item>
         <a-list-item>小小画家</a-list-item>
+        <a-list-item>小熊猫学木匠</a-list-item>
+        <a-list-item>熊猫百货商店</a-list-item>
         <a-list-item>选美记</a-list-item>
+        <a-list-item>雪孩子</a-list-item>
         <a-list-item>雪狐</a-list-item>
         <a-list-item>雪狮子</a-list-item>
         <a-list-item>愚人买鞋</a-list-item>
         <a-list-item>鹬蚌相争</a-list-item>
+        <a-list-item>张飞审瓜</a-list-item>
         <a-list-item>长大尾巴的兔子</a-list-item>
+        <a-list-item>真假李逵</a-list-item>
         <a-list-item>争执</a-list-item>
         <a-list-item>种树</a-list-item>
         <a-list-item>猪八戒吃西瓜</a-list-item>

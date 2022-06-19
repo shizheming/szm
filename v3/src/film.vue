@@ -2,9 +2,6 @@
   <a-tabs>
     <a-tab-pane key="1" tab="国产电影" force-render>
       <a-list bordered>
-        <a-list-item
-          >101次求婚<span style="color: orange">（小了）</span></a-list-item
-        >
         <a-list-item>霸王别姬</a-list-item>
         <a-list-item>白发魔女传</a-list-item>
         <a-list-item>不能说的秘密</a-list-item>
@@ -14,9 +11,6 @@
         <a-list-item>六指琴魔</a-list-item>
         <a-list-item>倩女幽魂（1，2，3）</a-list-item>
         <a-list-item>青蛇</a-list-item>
-        <a-list-item
-          >神经侠侣<span style="color: orange">（小了）</span></a-list-item
-        >
         <a-list-item>听说</a-list-item>
         <a-list-item>头文字D</a-list-item>
         <a-list-item
@@ -39,7 +33,6 @@
         <a-list-item>本杰明巴顿</a-list-item>
         <a-list-item>超市夜未眠</a-list-item>
         <a-list-item>初恋50次</a-list-item>
-        <a-list-item>楚门的世界</a-list-item>
         <a-list-item>盗梦空间</a-list-item>
         <a-list-item>复仇者联盟（1，2，3，4）</a-list-item>
         <a-list-item>哥斯拉（1，2，哥斯拉大战金刚）</a-list-item>
@@ -62,7 +55,6 @@
         <a-list-item>诺丁山</a-list-item>
         <a-list-item>奇异博士</a-list-item>
         <a-list-item>奇异恩典</a-list-item>
-        <a-list-item>史密斯夫妇</a-list-item>
         <a-list-item>水中仙</a-list-item>
         <a-list-item>泰坦尼克</a-list-item>
         <a-list-item>特工绍特</a-list-item>

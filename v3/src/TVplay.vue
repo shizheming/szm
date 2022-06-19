@@ -33,7 +33,6 @@
       <a-list bordered>
         <a-list-item>冰上恋人</a-list-item>
         <a-list-item>回到十八岁</a-list-item>
-        <a-list-item>金秘书为何那样</a-list-item>
         <a-list-item>恋爱世纪</a-list-item>
         <a-list-item>美丽人生</a-list-item>
         <a-list-item>密会</a-list-item>
