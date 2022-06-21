@@ -1,6 +1,6 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="12222" />
+  <HelloWorld msg="122222" />
 </template>
 
 <script setup>
