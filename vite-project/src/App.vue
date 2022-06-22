@@ -1,6 +1,7 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld v-model:visible="visible" @success="ok" />
+  <detailModal v-model:visible="visible" />
+  <test v-model:visible="visible" />
   <a-button type="primary" @click="showModal">Open Modal</a-button>
 </template>
 
@@ -8,13 +9,11 @@
 import { ref, defineAsyncComponent } from "vue";
 
 const visible = ref();
-const HelloWorld = defineAsyncComponent(() =>
-  import("./components/HelloWorld.vue")
+const detailModal = defineAsyncComponent(() =>
+  import("./components/detailModal.vue")
 );
+const test = defineAsyncComponent(() => import("./components/test.vue"));
 const showModal = () => {
   visible.value = true;
-};
-const ok = () => {
-  console.log(123);
 };
 </script>
