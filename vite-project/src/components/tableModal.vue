@@ -14,7 +14,15 @@
       :columns="columns"
       :loading="loading"
       :pagination="false"
-    />
+    >
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'name'">
+          <a>
+            {{ record.name }}
+          </a>
+        </template>
+      </template>
+    </a-table>
   </a-modal>
 </template>
 <script setup>
