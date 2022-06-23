@@ -1,7 +1,7 @@
 <template>
   <a-modal :visible="props.visible" title="title" @cancel="cancel">
     <template #footer>
-      <a-button type="primary" @click="okButtonClick">确定</a-button>
+      <a-button type="primary" @click="ok">确定</a-button>
     </template>
     <a-descriptions>
       <a-descriptions-item label="label">label</a-descriptions-item>
@@ -14,7 +14,7 @@
 <script setup>
 const props = defineProps(["visible"]);
 const emits = defineEmits(["update:visible"]);
-const okButtonClick = () => {
+const ok = () => {
   emits("update:visible", false);
 };
 const cancel = () => {
