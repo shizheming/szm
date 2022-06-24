@@ -219,6 +219,7 @@ const resetformClick = () => {
 };
 
 const tableChange = async (pag = { page: 1, page_size: 10 }) => {
+  console.log(123);
   loading.value = true;
   let submitData = { ...formModel };
   if (submitData.time?.length) {
