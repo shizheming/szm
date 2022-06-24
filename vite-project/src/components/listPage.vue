@@ -1,7 +1,11 @@
 <template>
   <a-form
     ref="formRef"
-    style="border: 1px dashed #ccc; background-color: #fcfcfc"
+    style="
+      border: 1px dashed #ccc;
+      background-color: #fcfcfc;
+      padding-top: 10px;
+    "
     :model="formModel"
     @finish="finish"
   >
@@ -73,7 +77,7 @@
   <a-row style="margin: 30px 0">
     <a-space>
       <router-link to="/">
-        <a-button type="primary" @click="createPageClick">创建</a-button>
+        <a-button type="primary">创建</a-button>
       </router-link>
       <a-button type="primary" @click="chooseTableClick">选择</a-button>
     </a-space>
@@ -92,6 +96,48 @@
         <a-space>
           <router-link to="/"><a>查看</a></router-link>
           <router-link to="/"><a>编辑</a></router-link>
+          <a-popconfirm title="确定要？" @confirm="popconfirmConfirm">
+            <a>取消</a>
+          </a-popconfirm>
+        </a-space>
+      </template>
+      <template v-if="column.key === 'is_listing'">
+        <a-switch
+          :checked="!!record.is_listing"
+          @change="switchChange(record)"
+          checked-children="上架"
+          un-checked-children="下架"
+        />
+      </template>
+      <template v-if="column.key === 'stock'">
+        <a-space style="width: 100%">
+          <a-input-number
+            :disabled="!record.editStockStatus"
+            :bordered="!!record.editStockStatus"
+            v-model:value="record.stock"
+            style="background-color: #fff; color: #000"
+            :mim="0"
+          />
+          <edit-outlined
+            v-if="!record.editStockStatus"
+            style="color: #40a9ff"
+            @click="editButtonClick(record)"
+          />
+          <div v-else>
+            <check-circle-outlined
+              @click="okButtonClick(record)"
+              style="
+                font-size: 18px;
+                margin: 0 10px;
+                color: #40a9ff;
+                cursor: pointer;
+              "
+            />
+            <stop-outlined
+              style="font-size: 18px; cursor: pointer"
+              @click="cancelButtonClick(record)"
+            />
+          </div>
         </a-space>
       </template>
     </template>
@@ -101,6 +147,14 @@
 import { ref, watch, reactive } from "vue";
 import { DownOutlined, UpOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
+import {
+  SmileOutlined,
+  SearchOutlined,
+  ClearOutlined,
+  EditOutlined,
+  StopOutlined,
+  CheckCircleOutlined,
+} from "@ant-design/icons-vue";
 
 const isExpandArrow = ref();
 const formModel = reactive({});
@@ -119,13 +173,13 @@ const columns = ref([
   },
   {
     title: "title",
-    dataIndex: "name1",
-    key: "name1",
+    dataIndex: "is_listing",
+    key: "is_listing",
   },
   {
     title: "title",
-    dataIndex: "name2",
-    key: "name2",
+    dataIndex: "stock",
+    key: "stock",
   },
   {
     title: "title",
@@ -151,6 +205,7 @@ const onChange = (keys, rows) => {
   selectedRowKeys.value = keys;
   selectedRows.value = rows;
 };
+
 const finish = async (values) => {
   tableChange();
 };
@@ -158,18 +213,21 @@ const finish = async (values) => {
 const expandArrowClick = () => {
   isExpandArrow.value = !isExpandArrow.value;
 };
+
 const resetformClick = () => {
   formRef.value.resetFields();
 };
-const tableChange = async () => {
+
+const tableChange = async (pag = { page: 1, page_size: 10 }) => {
   loading.value = true;
   let submitData = { ...formModel };
   if (submitData.time?.length) {
     submitData.start = submitData.time[0].valueOf() * 1000;
     submitData.end = submitData.time[1].valueOf() * 1000;
   }
-  console.log(submitData, 293);
-  let { data } = await Promise.resolve({ data: [{ id: 1, name1: 1234 }] });
+  let { data } = await Promise.resolve({
+    data: [{ id: 1, name1: 1234 }],
+  });
   dataSource.value = data;
   pagination.total = data.total;
   pagination.page = data.page;
@@ -188,6 +246,39 @@ const chooseTableClick = async () => {
     tableChange();
   }, 500);
 };
+
+const popconfirmConfirm = async () => {
+  await Promise.resolve();
+  message.success("成功");
+  setTimeout(() => {
+    tableChange();
+  }, 500);
+};
+
+const switchChange = async () => {
+  await Promise.resolve();
+  message.success("成功");
+  setTimeout(() => {
+    tableChange();
+  }, 500);
+};
+
+function editButtonClick(record) {
+  record.editStockStatus = true;
+}
+
+function cancelButtonClick(record) {
+  record.editStockStatus = false;
+}
+
+async function okButtonClick(record) {
+  await Promise.resolve();
+  record.editStockStatus = false;
+  message.success("成功");
+  setTimeout(() => {
+    tableChange();
+  }, 500);
+}
 // 初始化
 tableChange();
 </script>

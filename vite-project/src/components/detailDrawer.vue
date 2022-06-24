@@ -1,23 +1,17 @@
 <template>
-  <a-modal :visible="props.visible" title="title" @cancel="cancel">
-    <template #footer>
-      <a-button type="primary" @click="ok">确定</a-button>
-    </template>
+  <a-drawer :visible="props.visible" title="title" @close="close">
     <a-descriptions>
       <a-descriptions-item label="label">label</a-descriptions-item>
       <a-descriptions-item label="label">label</a-descriptions-item>
       <a-descriptions-item label="label">label</a-descriptions-item>
       <a-descriptions-item label="label">label</a-descriptions-item>
     </a-descriptions>
-  </a-modal>
+  </a-drawer>
 </template>
 <script setup>
 const props = defineProps(["visible"]);
 const emits = defineEmits(["update:visible"]);
-const ok = () => {
-  emits("update:visible", false);
-};
-const cancel = () => {
+const close = () => {
   emits("update:visible", false);
 };
 </script>
