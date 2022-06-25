@@ -16,7 +16,7 @@
           message: '选输入',
         }"
       >
-        <a-input v-model:value="formModel.a" placeholder="placeholder" />
+        <a-input v-model:value="formModel.a" placeholder="选输入" />
       </a-form-item>
       <a-form-item
         label="label"
@@ -29,7 +29,7 @@
       >
         <a-input-number
           v-model:value="formModel.b"
-          placeholder="placeholder"
+          placeholder="选输入"
           style="width: 100%"
         />
       </a-form-item>
@@ -53,7 +53,7 @@
           message: '请选择',
         }"
       >
-        <a-select v-model:value="formModel.c" placeholder="placeholder">
+        <a-select v-model:value="formModel.c" placeholder="请选择">
           <a-select-option :value="0">0</a-select-option>
           <a-select-option :value="1">1</a-select-option>
         </a-select>
@@ -118,10 +118,15 @@
         :name="['h']"
         :rules="{
           required: true,
-          message: '请填写',
+          message: '请输入',
         }"
       >
-        <a-textarea v-model:value="formModel.h" show-count :maxlength="220" />
+        <a-textarea
+          v-model:value="formModel.h"
+          show-count
+          :maxlength="200"
+          placeholder="请输入"
+        />
       </a-form-item>
     </a-form>
   </a-modal>

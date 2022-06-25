@@ -36,6 +36,13 @@ const routes = [
     },
     component: () => import("../components/listPage.vue"),
   },
+  {
+    path: "/formPage",
+    meta: {
+      hidden: true,
+    },
+    component: () => import("../components/formPage.vue"),
+  },
 ];
 // path加上父级，同时打平
 let newRoute = [];

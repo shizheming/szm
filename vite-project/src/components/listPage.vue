@@ -12,14 +12,14 @@
     <a-row :gutter="24" :style="`height:${height};overflow:hidden`">
       <a-col :span="8">
         <a-form-item label="label" :label-col="{ span: 7 }" :name="['a']">
-          <a-input v-model:value="formModel.a" placeholder="placeholder" />
+          <a-input v-model:value="formModel.a" placeholder="请输入" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="label" :label-col="{ span: 7 }" :name="['b']">
           <a-input-number
             v-model:value="formModel.b"
-            placeholder="placeholder"
+            placeholder="请输入"
             style="width: 100%"
           />
         </a-form-item>
@@ -31,7 +31,7 @@
       </a-col>
       <a-col :span="8">
         <a-form-item label="label" :label-col="{ span: 7 }" :name="['c']">
-          <a-select v-model:value="formModel.c" placeholder="placeholder">
+          <a-select v-model:value="formModel.c" placeholder="请选择">
             <a-select-option :value="0">0</a-select-option>
             <a-select-option :value="1">1</a-select-option>
           </a-select>
@@ -39,27 +39,27 @@
       </a-col>
       <a-col :span="8">
         <a-form-item label="label" :label-col="{ span: 7 }" :name="['d']">
-          <a-input v-model:value="formModel.d" placeholder="placeholder" />
+          <a-input v-model:value="formModel.d" placeholder="请输入" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="label" :label-col="{ span: 7 }" :name="['e']">
-          <a-input v-model:value="formModel.e" placeholder="placeholder" />
+          <a-input v-model:value="formModel.e" placeholder="请输入" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="label" :label-col="{ span: 7 }" :name="['f']">
-          <a-input v-model:value="formModel.f" placeholder="placeholder" />
+          <a-input v-model:value="formModel.f" placeholder="请输入" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="label" :label-col="{ span: 7 }" :name="['g']">
-          <a-input v-model:value="formModel.g" placeholder="placeholder" />
+          <a-input v-model:value="formModel.g" placeholder="请输入" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="label" :label-col="{ span: 7 }" :name="['h']">
-          <a-input v-model:value="formModel.h" placeholder="placeholder" />
+          <a-input v-model:value="formModel.h" placeholder="请输入" />
         </a-form-item>
       </a-col>
     </a-row>
@@ -79,7 +79,7 @@
       <router-link to="/">
         <a-button type="primary">创建</a-button>
       </router-link>
-      <a-button type="primary" @click="chooseTableClick">选择</a-button>
+      <a-button type="primary" @click="chooseButtonClick">选择</a-button>
     </a-space>
   </a-row>
   <a-table
@@ -236,7 +236,7 @@ const tableChange = async (pag = { page: 1, page_size: 10 }) => {
   loading.value = false;
 };
 
-const chooseTableClick = async () => {
+const chooseButtonClick = async () => {
   if (selectedRowKeys.value.length === 0) {
     message.warning("请选择");
     return;
