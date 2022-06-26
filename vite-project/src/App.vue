@@ -2,6 +2,7 @@
   <a-config-provider :locale="zhCN">
     <router-link to="/listPage">列表页</router-link>
     <router-link to="/formPage">表单页</router-link>
+    <router-link to="/detailPage">详情页</router-link>
     <router-view></router-view>
     <img alt="Vue logo" src="./assets/logo.png" />
     <detailModal v-model:visible="detailModalVisible" />

@@ -9,7 +9,7 @@
     :model="formModel"
     @finish="finish"
   >
-    <a-row :gutter="24" :style="`height:${height};overflow:hidden`">
+    <a-row :style="`height:${height};overflow:hidden`">
       <a-col :span="8">
         <a-form-item label="label" :label-col="{ span: 7 }" :name="['a']">
           <a-input v-model:value="formModel.a" placeholder="请输入" />
