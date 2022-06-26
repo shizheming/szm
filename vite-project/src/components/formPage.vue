@@ -166,21 +166,26 @@
           />
         </a-form-item>
       </a-col>
-      <a-col :span="8">
-        <a-form-item
-          label="label"
-          :label-col="{ span: 7 }"
-          :name="['xxxxxxx']"
-          :rules="{
-            required: true,
-            message: '请输入',
-          }"
-        >
-          <Tx v-model:value="formModel.xxxxxxx"> </Tx>
-        </a-form-item>
-      </a-col>
+      <transition name="fade">
+        <a-col :span="8" v-if="formModel.ccc">
+          <a-form-item
+            label="label"
+            :name="['xxxxxxx']"
+            :label-col="{ span: 7 }"
+            :rules="{
+              required: true,
+              message: '请输入',
+            }"
+          >
+            <Tx v-model:value="formModel.xxxxxxx"> </Tx>
+          </a-form-item>
+        </a-col>
+      </transition>
     </a-row>
     <a-button type="primary" html-type="submit">提交</a-button>
+    <a-button type="primary" @click="() => (formModel.ccc = !formModel.ccc)"
+      >过渡效果</a-button
+    >
   </a-form>
 </template>
 <script setup>
