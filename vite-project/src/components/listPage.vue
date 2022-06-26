@@ -165,7 +165,7 @@ const height = ref();
 const pagination = reactive({});
 const selectedRowKeys = ref([]);
 const selectedRows = ref();
-const columns = ref([
+const columns = [
   {
     title: "操作",
     dataIndex: "operation",
@@ -191,7 +191,7 @@ const columns = ref([
     dataIndex: "name4",
     key: "name4",
   },
-]);
+];
 
 watch(isExpandArrow, (newValue) => {
   if (newValue) {

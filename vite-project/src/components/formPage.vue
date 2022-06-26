@@ -5,11 +5,11 @@
     @finish="formFinish"
     @finishFailed="finishFailed"
   >
-    <a-row :gutter="24">
+    <a-row>
       <a-col :span="8">
         <a-form-item
           label="label"
-          :label-col="{ span: 7 }"
+          :label-col="{ span: 6 }"
           :name="['a']"
           :rules="{
             required: true,
@@ -22,7 +22,7 @@
       <a-col :span="8">
         <a-form-item
           label="label"
-          :label-col="{ span: 7 }"
+          :label-col="{ span: 6 }"
           :name="['b']"
           :rules="{
             required: true,
@@ -39,7 +39,7 @@
       <a-col :span="8">
         <a-form-item
           label="label"
-          :label-col="{ span: 7 }"
+          :label-col="{ span: 6 }"
           :name="['time']"
           :rules="{
             required: true,
@@ -52,7 +52,7 @@
       <a-col :span="8">
         <a-form-item
           label="label"
-          :label-col="{ span: 7 }"
+          :label-col="{ span: 6 }"
           :name="['c']"
           :rules="{
             required: true,
@@ -68,7 +68,7 @@
       <a-col :span="8">
         <a-form-item
           label="label"
-          :label-col="{ span: 7 }"
+          :label-col="{ span: 6 }"
           :name="['d']"
           :rules="{
             required: true,
@@ -81,7 +81,7 @@
       <a-col :span="8">
         <a-form-item
           label="label"
-          :label-col="{ span: 7 }"
+          :label-col="{ span: 6 }"
           :name="['e']"
           :rules="{
             required: true,
@@ -98,7 +98,7 @@
       <a-col :span="8">
         <a-form-item
           label="label"
-          :label-col="{ span: 7 }"
+          :label-col="{ span: 6 }"
           :name="['f']"
           :rules="{
             required: true,
@@ -112,13 +112,13 @@
         </a-form-item>
       </a-col>
     </a-row>
-    <a-row :gutter="24">
+    <a-row>
       <a-col :span="8">
         <a-form-item
           v-for="(domain, index) in formModel.domains"
           :key="domain.key"
-          :label-col="index === 0 ? { span: 7 } : {}"
-          :wrapper-col="index !== 0 ? { offset: 7 } : {}"
+          :label-col="index === 0 ? { span: 6 } : {}"
+          :wrapper-col="index !== 0 ? { offset: 6 } : {}"
           :label="index === 0 ? 'label' : ''"
           :name="['domains', index, 'value']"
           :rules="{
@@ -138,7 +138,7 @@
             @click="removeButtonclick(domain)"
           />
         </a-form-item>
-        <a-form-item :wrapper-col="{ offset: 7 }">
+        <a-form-item :wrapper-col="{ offset: 6 }">
           <a-button type="dashed" style="width: 90%" @click="addButtonClick">
             <plus-outlined />
             添加
@@ -146,11 +146,11 @@
         </a-form-item>
       </a-col>
     </a-row>
-    <a-row :gutter="24">
+    <a-row>
       <a-col :span="8">
         <a-form-item
           label="label"
-          :label-col="{ span: 7 }"
+          :label-col="{ span: 6 }"
           :name="['h']"
           :rules="{
             required: true,
@@ -162,30 +162,47 @@
             v-model:value="formModel.h"
             placeholder="请输入"
             show-count
+            auto-size
             :maxlength="200"
           />
         </a-form-item>
       </a-col>
-      <transition name="fade">
-        <a-col :span="8" v-if="formModel.ccc">
-          <a-form-item
-            label="label"
-            :name="['xxxxxxx']"
-            :label-col="{ span: 7 }"
-            :rules="{
-              required: true,
-              message: '请输入',
-            }"
+    </a-row>
+    <a-row>
+      <a-col :span="24">
+        <a-form-item label="label" :name="['j']" :label-col="{ span: 2 }">
+          <a-table
+            rowKey="id"
+            :dataSource="formModel.dataSource"
+            :columns="columns"
+            :pagination="false"
           >
-            <Tx v-model:value="formModel.xxxxxxx"> </Tx>
-          </a-form-item>
-        </a-col>
-      </transition>
+            <template #headerCell="{ column }">
+              <template v-if="column.key === 'name3'">
+                <div class="myRequired">{{ column.title }}</div>
+              </template>
+            </template>
+            <template #bodyCell="{ column, record, index }">
+              <template v-if="column.key === 'name3'">
+                <a-form-item
+                  :name="['dataSource', index, 'abc']"
+                  :rules="{
+                    required: true,
+                    message: '请输入',
+                  }"
+                >
+                  <a-input
+                    v-model:value="formModel.dataSource[index].abc"
+                    placeholder="请输入"
+                  />
+                </a-form-item>
+              </template>
+            </template>
+          </a-table>
+        </a-form-item>
+      </a-col>
     </a-row>
     <a-button type="primary" html-type="submit">提交</a-button>
-    <a-button type="primary" @click="() => (formModel.ccc = !formModel.ccc)"
-      >过渡效果</a-button
-    >
   </a-form>
 </template>
 <script setup>
@@ -195,8 +212,36 @@ import { message } from "ant-design-vue";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons-vue";
 import Tx from "./t.vue";
 
+const columns = [
+  {
+    title: "操作",
+    dataIndex: "operation",
+    key: "operation",
+  },
+  {
+    title: "title",
+    dataIndex: "is_listing",
+    key: "is_listing",
+  },
+  {
+    title: "title",
+    dataIndex: "stock",
+    key: "stock",
+  },
+  {
+    title: "title",
+    dataIndex: "name3",
+    key: "name3",
+  },
+  {
+    title: "title",
+    dataIndex: "name4",
+    key: "name4",
+  },
+];
 const formModel = reactive({
   domains: [],
+  dataSource: [{ id: 1 }],
 });
 const formRef = ref();
 const removeButtonclick = (item) => {
@@ -229,3 +274,14 @@ const finishFailed = (e) => {
   console.log(formModel, 1);
 };
 </script>
+<style>
+.myRequired::before {
+  display: inline-block;
+  margin-right: 4px;
+  color: #ff4d4f;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+  content: "*";
+}
+</style>
