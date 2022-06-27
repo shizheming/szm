@@ -9,26 +9,19 @@ const routes = [
   {
     path: "/",
     // redirect: "/system",
-    name: "allInOneAccount",
+    name: "index",
     meta: {
       hidden: true,
     },
     component: () => import("../views/test.vue"),
   },
-  /* {
+  {
     path: "/login",
     meta: {
       hidden: true,
     },
-    component: () => import("../skeleton/login.vue"),
+    component: () => import("../login.vue"),
   },
-  {
-    path: "/404",
-    meta: {
-      hidden: true,
-    },
-    component: () => import("../skeleton/404.vue"),
-  }, */
   {
     path: "/listPage",
     meta: {
