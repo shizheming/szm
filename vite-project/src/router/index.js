@@ -13,7 +13,30 @@ const routes = [
     meta: {
       hidden: true,
     },
-    component: () => import("../views/test.vue"),
+    component: () => import("../frame.vue"),
+    children: [
+      {
+        path: "/listPage",
+        meta: {
+          hidden: true,
+        },
+        component: () => import("../components/listPage.vue"),
+      },
+      {
+        path: "/formPage",
+        meta: {
+          hidden: true,
+        },
+        component: () => import("../components/formPage.vue"),
+      },
+      {
+        path: "/detailPage",
+        meta: {
+          hidden: true,
+        },
+        component: () => import("../components/detailPage.vue"),
+      },
+    ],
   },
   {
     path: "/login",
@@ -21,27 +44,6 @@ const routes = [
       hidden: true,
     },
     component: () => import("../login.vue"),
-  },
-  {
-    path: "/listPage",
-    meta: {
-      hidden: true,
-    },
-    component: () => import("../components/listPage.vue"),
-  },
-  {
-    path: "/formPage",
-    meta: {
-      hidden: true,
-    },
-    component: () => import("../components/formPage.vue"),
-  },
-  {
-    path: "/detailPage",
-    meta: {
-      hidden: true,
-    },
-    component: () => import("../components/detailPage.vue"),
   },
 ];
 // path加上父级，同时打平
@@ -62,13 +64,14 @@ const myRouter = createRouter({
   history: createWebHistory(),
   routes,
 });
-/* let hasNecessaryRoute = true;
+let hasNecessaryRoute = true;
 
 myRouter.beforeEach((to, form) => {
   nprogress.start();
   if (vueCookie.get("token")) {
     // 主动退出登陆，我在这里删除token，所以一开始进来的时候是有token的
-    if (to.query.token === "0") {
+    console.log(to, 29);
+    if (to.params.token === "0") {
       vueCookie.remove("token");
       // 我只能通过刷新页面来实现重置路由，难道4就没有重置的方法吗？？？？
       location.href = location.href;
@@ -81,15 +84,15 @@ myRouter.beforeEach((to, form) => {
       if (hasNecessaryRoute) {
         // 添加token
         setAxiosHeader({ token: vueCookie.get("token") });
-        // 打平路由
+        /* // 打平路由
         handleRoute(cloneDeep(asyncRoutes));
         newRoute.forEach((item) => {
-          myRouter.addRoute("allInOneAccount", item);
-        });
+          // myRouter.addRoute("allInOneAccount", item);
+        }); */
         hasNecessaryRoute = false;
         // 当有token的时候打开登陆页，让他去首页
         if (to.path === "/login") {
-          return "/system";
+          return "/";
         } else {
           // 当有token的时候打开除登陆页以外的页面，让他进去
           // 触发重定向
@@ -98,35 +101,36 @@ myRouter.beforeEach((to, form) => {
       }
     }
   } else if (to.params && to.params.token) {
-    // 说明是有用户登陆，带token参数过来的，设置token和菜单
+    // 说明是用户登陆，带token参数过来的，设置token和菜单
     // 设置登录态
     vueCookie.set("token", to.params.token);
     // 设置请求头
     setAxiosHeader(to.params);
+    // 设置权限
+    localStorage.permissions = to.params.permissions;
+    localStorage.userInfo = to.params.userInfo;
     // 打平路由
-    handleRoute(cloneDeep(asyncRoutes));
-    newRoute.forEach((item) => {
+    // handleRoute(cloneDeep(asyncRoutes));
+    /* newRoute.forEach((item) => {
       myRouter.addRoute("allInOneAccount", item);
-    });
+    }); */
     if (to.query.path) {
       return to.query.path;
     } else {
-      return "/system";
+      return "/";
     }
   } else {
     // 没token的情况下跳转到登陆页，带上访问地址
     if (to.path !== "/login") {
       if (to.path === "/") {
         return "/login";
-      } else if (to.path === "/register") {
-        return true;
       } else {
         return `/login?path=${to.path}`;
       }
     }
   }
 });
- */
+
 myRouter.afterEach(() => {
   nprogress.done();
 });

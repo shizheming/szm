@@ -2,8 +2,7 @@
   <router-link to="/listPage">列表页</router-link>
   <router-link to="/formPage">表单页</router-link>
   <router-link to="/detailPage">详情页</router-link>
-  <router-view></router-view>
-  <img alt="Vue logo" src="./assets/logo.png" />
+  <img alt="Vue logo" src="../assets/logo.png" />
   <detailModal v-model:visible="detailModalVisible" />
   <detailDrawer v-model:visible="detailDrawerVisible" />
 
@@ -15,7 +14,6 @@
   />
   <formModal v-model:visible="formModalVisible" @submit="formModalSubmit" />
 
-  <test v-model:visible="visible" />
   <a-button type="primary" @click="showDetailModalbuttonClick"
     >显示详情弹窗</a-button
   >
@@ -31,7 +29,6 @@
   <a-button type="primary" @click="showDetailDrawerbuttonClick"
     >显示抽屉弹窗</a-button
   >
-  <a-button type="primary" @click="testClick">test</a-button>
 </template>
 
 <script setup>
@@ -45,21 +42,20 @@ const searchModalVisible = ref();
 const formModalVisible = ref();
 const searchModalSelectedRowKeys = ref([1]);
 const detailModal = defineAsyncComponent(() =>
-  import("./components/detailModal.vue")
+  import("../components/detailModal.vue")
 );
 const detailDrawer = defineAsyncComponent(() =>
-  import("./components/detailDrawer.vue")
+  import("../components/detailDrawer.vue")
 );
 const tableModal = defineAsyncComponent(() =>
-  import("./components/tableModal.vue")
+  import("../components/tableModal.vue")
 );
 const searchModal = defineAsyncComponent(() =>
-  import("./components/searchModal.vue")
+  import("../components/searchModal.vue")
 );
 const formModal = defineAsyncComponent(() =>
-  import("./components/formModal.vue")
+  import("../components/formModal.vue")
 );
-const test = defineAsyncComponent(() => import("./views/test.vue"));
 
 const showDetailModalbuttonClick = () => {
   detailModalVisible.value = true;

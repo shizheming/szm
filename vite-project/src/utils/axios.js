@@ -4,6 +4,7 @@ import vueCookie from "vue-cookies";
 
 export function setAxiosHeader(data) {
   axios.defaults.headers.token = data.token;
+  axios.defaults.headers.authorization = data.token;
 }
 
 let baseURL = "";
@@ -32,7 +33,7 @@ if (import.meta.env.PROD === true) {
 axios.defaults.baseURL = baseURL;
 axios.defaults.timeout = 4000;
 axios.defaults.headers = {
-  'Content-Type': 'application/json'
+  "Content-Type": "application/json",
 };
 
 // 开发环境联调需要带上的开发分支
