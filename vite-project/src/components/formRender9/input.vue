@@ -1,5 +1,10 @@
 <template>
-  <Input v-bind="newSlots" allowClear v-model:value="bindValue">
+  <Input
+    allow-clear
+    placeholder="请输入"
+    v-bind="newSlots"
+    v-model:value="bindValue"
+  >
     <slot />
   </Input>
 </template>

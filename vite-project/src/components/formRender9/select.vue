@@ -1,7 +1,8 @@
 <template>
   <Select
-    allowClear
+    allow-clear
     show-search
+    placeholder="请选择"
     :filter-option="filterOption"
     v-bind="newSlots"
     v-model:value="bindValue"

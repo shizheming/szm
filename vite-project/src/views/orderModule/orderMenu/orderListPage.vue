@@ -1,72 +1,91 @@
 <template>
-  <a-form ref="formRef" :model="formModel" @finish="finish">
+  <s-form ref="formRef" :model="formModel" @finish="formFinish">
     <a-row :style="`height:${height};overflow:hidden`">
       <a-col :span="8">
-        <a-form-item label="label" :label-col="{ span: 6 }" :name="['a']">
-          <a-input v-model:value="formModel.a" placeholder="请输入" />
+        <a-form-item label="订单搜索" :label-col="{ span: 6 }">
+          <a-input-group compact>
+            <s-select
+              :allow-clear="false"
+              style="width: 50%"
+              v-model:value="formModel.order_search_key"
+            >
+              <a-select-option value="osl_seq">订单编号</a-select-option>
+              <a-select-option value="out_ono">外部订单号</a-select-option>
+              <a-select-option value="name">收货人姓名</a-select-option>
+              <a-select-option value="mobile">收货人手机号</a-select-option>
+              <a-select-option value="mobile_tail"
+                >收货人手机号后四位</a-select-option
+              >
+              <a-select-option value="ono">主单号</a-select-option>
+            </s-select>
+            <s-input
+              v-model:value="formModel.good_search_value"
+              style="width: 50%"
+            />
+          </a-input-group>
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="label" :label-col="{ span: 6 }" :name="['b']">
+        <s-form-item label="label" :label-col="{ span: 6 }">
           <a-input-number
             v-model:value="formModel.b"
             placeholder="请输入"
             style="width: 100%"
           />
-        </a-form-item>
+        </s-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="label" :label-col="{ span: 6 }" :name="['time']">
+        <s-form-item label="label" :label-col="{ span: 6 }">
           <a-range-picker v-model:value="formModel.time" style="width: 100%" />
-        </a-form-item>
+        </s-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="label" :label-col="{ span: 6 }" :name="['c']">
+        <s-form-item label="label" :label-col="{ span: 6 }">
           <a-select v-model:value="formModel.c" placeholder="请选择">
             <a-select-option :value="0">0</a-select-option>
             <a-select-option :value="1">1</a-select-option>
           </a-select>
-        </a-form-item>
+        </s-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="label" :label-col="{ span: 6 }" :name="['d']">
+        <s-form-item label="label" :label-col="{ span: 6 }">
           <a-input v-model:value="formModel.d" placeholder="请输入" />
-        </a-form-item>
+        </s-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="label" :label-col="{ span: 6 }" :name="['e']">
+        <s-form-item label="label" :label-col="{ span: 6 }">
           <a-input v-model:value="formModel.e" placeholder="请输入" />
-        </a-form-item>
+        </s-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="label" :label-col="{ span: 6 }" :name="['f']">
+        <s-form-item label="label" :label-col="{ span: 6 }">
           <a-input v-model:value="formModel.f" placeholder="请输入" />
-        </a-form-item>
+        </s-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="label" :label-col="{ span: 6 }" :name="['g']">
+        <s-form-item label="label" :label-col="{ span: 6 }">
           <a-input v-model:value="formModel.g" placeholder="请输入" />
-        </a-form-item>
+        </s-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="label" :label-col="{ span: 6 }" :name="['h']">
+        <s-form-item label="label" :label-col="{ span: 6 }">
           <a-input v-model:value="formModel.h" placeholder="请输入" />
-        </a-form-item>
+        </s-form-item>
       </a-col>
     </a-row>
     <a-row>
       <a-col :span="8">
-        <a-form-item :wrapper-col="{ offset: 6 }">
+        <s-form-item :wrapper-col="{ offset: 6 }">
           <a-space style="font-size: 18px" size="large">
             <a-button html-type="submit"><search-outlined /></a-button>
             <clear-outlined @click="resetformClick" />
             <down-outlined @click="expandArrowClick" v-if="isExpandArrow" />
             <up-outlined @click="expandArrowClick" v-else />
           </a-space>
-        </a-form-item>
+        </s-form-item>
       </a-col>
     </a-row>
-  </a-form>
+  </s-form>
   <a-row style="margin: 30px 0">
     <a-space size="large">
       <a-button @click="chooseButtonClick">批量编辑商家备注</a-button>
@@ -149,7 +168,9 @@ import {
 } from "@ant-design/icons-vue";
 
 const isExpandArrow = ref();
-const formModel = reactive({});
+const formModel = reactive({
+  order_search_key: "osl_seq",
+});
 const formRef = ref();
 const dataSource = ref();
 const loading = ref();
@@ -198,7 +219,8 @@ const onChange = (keys, rows) => {
   selectedRows.value = rows;
 };
 
-const finish = async (values) => {
+const formFinish = async (values) => {
+  console.log(values, formModel, 123);
   tableChange();
 };
 
