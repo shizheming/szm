@@ -2,73 +2,47 @@
   <a-layout>
     <a-layout-header class="header">
       <a-menu
-        v-model:selectedKeys="navSelectedKeys"
+        v-model:selectedKeys="navigationSelectedKeys"
         theme="dark"
         mode="horizontal"
+        @select="navigationMenuSelect"
         :style="{ lineHeight: '64px' }"
       >
-        <a-menu-item v-for="(item, index) in menus" :key="index">
-          <router-link to="/listPage">
-            {{ item.display_name }}
-          </router-link>
+        <a-menu-item v-for="item in navigationData" :key="item.name">
+          <router-link :to="`/${item.name}`">{{ item.zh_CN }}</router-link>
         </a-menu-item>
       </a-menu>
       <a-space style="color: #abadaf; position: absolute; right: 10px; top: 0">
-        <span>{{ userInfo.username }}</span>
+        <span>{{ userInfoData.username }}</span>
         <a style="color: #abadaf" @click="logoutButtonClick">退出登录</a>
       </a-space>
     </a-layout-header>
     <a-layout>
       <a-layout-sider width="200" style="background: #fff">
         <a-menu
-          v-model:selectedKeys="selectedKeys2"
-          v-model:openKeys="openKeys"
+          v-model:selectedKeys="menuSelectedKeys"
+          v-model:openKeys="menuOpenKeys"
           mode="inline"
           :style="{ height: '100%', borderRight: 0 }"
         >
-          <a-sub-menu key="sub1">
-            <template #title>
-              <span>
-                <user-outlined />
-                subnav 1
-              </span>
-            </template>
-            <a-menu-item key="1">option1</a-menu-item>
-            <a-menu-item key="2">option2</a-menu-item>
-            <a-menu-item key="3">option3</a-menu-item>
-            <a-menu-item key="4">option4</a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="sub2">
-            <template #title>
-              <span>
-                <laptop-outlined />
-                subnav 2
-              </span>
-            </template>
-            <a-menu-item key="5">option5</a-menu-item>
-            <a-menu-item key="6">option6</a-menu-item>
-            <a-menu-item key="7">option7</a-menu-item>
-            <a-menu-item key="8">option8</a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="sub3">
-            <template #title>
-              <span>
-                <notification-outlined />
-                subnav 3
-              </span>
-            </template>
-            <a-menu-item key="9">option9</a-menu-item>
-            <a-menu-item key="10">option10</a-menu-item>
-            <a-menu-item key="11">option11</a-menu-item>
-            <a-menu-item key="12">option12</a-menu-item>
+          <a-sub-menu
+            v-for="item in menusData"
+            :key="item.name"
+            :title="item.meta.title"
+          >
+            <a-menu-item :key="current.name" v-for="current in item.children">
+              <router-link :to="`${item.path}/${current.path}`">{{
+                current.meta.title
+              }}</router-link>
+            </a-menu-item>
           </a-sub-menu>
         </a-menu>
       </a-layout-sider>
       <a-layout style="padding: 0 24px 24px">
         <a-breadcrumb style="margin: 16px 0">
-          <a-breadcrumb-item>Home</a-breadcrumb-item>
-          <a-breadcrumb-item>List</a-breadcrumb-item>
-          <a-breadcrumb-item>App</a-breadcrumb-item>
+          <a-breadcrumb-item v-for="item in breadcrumbData" :key="item.name">
+            <router-link :to="item.path">{{ item.meta.title }}</router-link>
+          </a-breadcrumb-item>
         </a-breadcrumb>
         <a-layout-content
           :style="{
@@ -78,7 +52,7 @@
             minHeight: '280px',
           }"
         >
-          <router-view />
+          <router-view> </router-view>
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -90,19 +64,32 @@ import {
   LaptopOutlined,
   NotificationOutlined,
 } from "@ant-design/icons-vue";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import axios from "./utils/axios";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter, onBeforeRouteUpdate } from "vue-router";
+import r from "./router/index";
+import { compact, first } from "lodash";
 
-const menus = JSON.parse(localStorage.permissions);
-const userInfo = JSON.parse(localStorage.userInfo);
+const navigationData = [
+  {
+    name: "orderModule",
+    zh_CN: "订单",
+  },
+  {
+    name: "goodsModule",
+    zh_CN: "商品",
+  },
+];
 const route = useRoute();
 const router = useRouter();
-
-const navSelectedKeys = ref();
-const selectedKeys2 = ref(["1"]);
-const collapsed = ref(false);
-const openKeys = ref(["sub1"]);
+const allRoute = r.getRoutes();
+const menusData = ref([]);
+const pathData = compact(route.path.split("/"));
+const userInfoData = JSON.parse(localStorage.userInfo);
+const menuSelectedKeys = ref([pathData[2]]);
+const menuOpenKeys = ref([pathData[1]]);
+const navigationSelectedKeys = ref([first(pathData)]);
+const breadcrumbData = ref([]);
 
 const logoutButtonClick = async () => {
   await axios.post("/api/manager/logout");
@@ -113,6 +100,43 @@ const logoutButtonClick = async () => {
     },
   });
 };
+
+// 获取面包屑导航
+const getBreadcrumbDataFn = (pathData) => {
+  const newPathData = [];
+  pathData.forEach((item, index) => {
+    if (index === 0) newPathData.push(`/${item}`);
+    else newPathData.push(`${newPathData[index - 1]}/${item}`);
+  });
+  newPathData.forEach((item) => {
+    breadcrumbData.value.push(
+      allRoute.find((current) => current.path === item)
+    );
+  });
+};
+
+// 获取侧边栏导航
+const getMenuDataFn = (path) => {
+  path = first(compact(path.split("/")));
+  menusData.value = allRoute
+    .filter((item) => item.meta.type)
+    .filter((item) => item.path.includes(path));
+};
+
+const navigationMenuSelect = (v) => {
+  getMenuDataFn(v.key);
+};
+
+// 初始化
+getBreadcrumbDataFn(pathData);
+getMenuDataFn(route.path);
+onBeforeRouteUpdate((updateGuard) => {
+  breadcrumbData.value = [];
+  getBreadcrumbDataFn(compact(updateGuard.path.split("/")));
+  const updatePathData = compact(updateGuard.path.split("/"));
+  menuSelectedKeys.value = [updatePathData[2]];
+  menuOpenKeys.value = [updatePathData[1]];
+});
 </script>
 
 <style>

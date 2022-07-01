@@ -4,6 +4,8 @@ import "nprogress/nprogress.css";
 import { cloneDeep } from "lodash";
 import vueCookie from "vue-cookies";
 import { setAxiosHeader } from "../utils/axios";
+import order from "./order";
+import goods from "./goods";
 
 const routes = [
   {
@@ -11,28 +13,49 @@ const routes = [
     // redirect: "/system",
     name: "index",
     meta: {
-      hidden: true,
+      title: "首页",
     },
     component: () => import("../frame.vue"),
     children: [
       {
-        path: "/listPage",
+        path: "/orderModule",
+        name: "orderModule",
         meta: {
-          hidden: true,
+          title: "订单模块",
+        },
+        component: () => import("../views/orderModule/orderModule.vue"),
+        children: order,
+      },
+      {
+        path: "/goodsModule",
+        name: "goodsModule",
+        meta: {
+          title: "商品模块",
+        },
+        component: () => import("../views/goodsModule/goodsModule.vue"),
+        children: goods,
+      },
+      {
+        path: "/listPage",
+        name: "listPage",
+        meta: {
+          title: "列表代码块页面",
         },
         component: () => import("../components/listPage.vue"),
       },
       {
         path: "/formPage",
+        name: "formPage",
         meta: {
-          hidden: true,
+          title: "表单代码块页面",
         },
         component: () => import("../components/formPage.vue"),
       },
       {
         path: "/detailPage",
+        name: "detailPage",
         meta: {
-          hidden: true,
+          title: "详情代码块页面",
         },
         component: () => import("../components/detailPage.vue"),
       },
@@ -40,10 +63,15 @@ const routes = [
   },
   {
     path: "/login",
-    meta: {
-      hidden: true,
-    },
+    name: "login",
+    meta: {},
     component: () => import("../login.vue"),
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    meta: {},
+    component: () => import("../404.vue"),
   },
 ];
 // path加上父级，同时打平
@@ -70,7 +98,6 @@ myRouter.beforeEach((to, form) => {
   nprogress.start();
   if (vueCookie.get("token")) {
     // 主动退出登陆，我在这里删除token，所以一开始进来的时候是有token的
-    console.log(to, 29);
     if (to.params.token === "0") {
       vueCookie.remove("token");
       // 我只能通过刷新页面来实现重置路由，难道4就没有重置的方法吗？？？？

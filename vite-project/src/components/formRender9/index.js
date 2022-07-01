@@ -19,7 +19,7 @@ import treeSelect from "./treeSelect.vue";
 import formItem from "./formItem.vue";
 import button from "./button.vue";
 
-export function mountFormRender6(App) {
+export function mountFormRender9(App) {
   App.component("s-input", input)
     .component("s-form", form)
     .component("s-select", select)
