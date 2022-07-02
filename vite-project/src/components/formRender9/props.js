@@ -1,12 +1,12 @@
 export default {
-  value: {
-    type: [Number, String, Array, Object, Boolean],
-    default: undefined,
-  },
-  checked: {
-    type: Boolean,
-    default: undefined,
-  },
+  // value: {
+  //   type: [Number, String, Array, Object, Boolean],
+  //   default: undefined,
+  // },
+  // checked: {
+  //   type: Boolean,
+  //   default: undefined,
+  // },
   isDetail: {
     type: Boolean,
     default: undefined,
@@ -23,16 +23,16 @@ export default {
     type: Array,
     default: undefined,
   },
-  togetherhas: {
-    type: Array,
-    default: undefined,
-  },
-  togethernohas: {
-    type: Array,
-    default: undefined,
-  },
-  clear: {
-    type: Boolean,
-    default: undefined,
-  },
+  // togetherhas: {
+  //   type: Array,
+  //   default: undefined,
+  // },
+  // togethernohas: {
+  //   type: Array,
+  //   default: undefined,
+  // },
+  // clear: {
+  //   type: Boolean,
+  //   default: undefined,
+  // },
 };

@@ -2,11 +2,11 @@
   <s-form ref="formRef" :model="formModel" @finish="formFinish">
     <a-row :style="`height:${height};overflow:hidden`">
       <a-col :span="8">
-        <a-form-item label="订单搜索" :label-col="{ span: 6 }">
+        <s-form-item label="订单搜索" :label-col="{ span: 6 }">
           <a-input-group compact>
             <s-select
-              :allow-clear="false"
               style="width: 50%"
+              :allow-clear="false"
               v-model:value="formModel.order_search_key"
             >
               <a-select-option value="osl_seq">订单编号</a-select-option>
@@ -19,11 +19,78 @@
               <a-select-option value="ono">主单号</a-select-option>
             </s-select>
             <s-input
-              v-model:value="formModel.good_search_value"
               style="width: 50%"
+              v-model:value="formModel.order_search_value"
             />
           </a-input-group>
-        </a-form-item>
+        </s-form-item>
+      </a-col>
+      <a-col :span="8">
+        <s-form-item label="商品搜索" :label-col="{ span: 6 }">
+          <a-input-group compact>
+            <s-select
+              style="width: 50%"
+              :allow-clear="false"
+              v-model:value="formModel.good_search_key"
+            >
+              <a-select-option value="goods_name">商品名称</a-select-option>
+              <a-select-option value="sku_code">商品编码</a-select-option>
+              <a-select-option value="shop_sku_code"
+                >店铺商品编码</a-select-option
+              >
+              <a-select-option value="sn">货号</a-select-option>
+            </s-select>
+            <s-input
+              style="width: 50%"
+              v-model:value="formModel.good_search_value"
+            />
+          </a-input-group>
+        </s-form-item>
+      </a-col>
+      <a-col :span="8">
+        <s-form-item label="订单状态" :label-col="{ span: 6 }">
+          <s-select
+            mode="multiple"
+            :options="ORDER_STATUS"
+            v-model:value="formModel.sub_status_arr"
+          />
+        </s-form-item>
+      </a-col>
+      <a-col :span="8">
+        <s-form-item label="支付状态" :label-col="{ span: 6 }">
+          <s-select
+            mode="multiple"
+            :options="PAY_STATUS"
+            v-model:value="formModel.pay_status_arr"
+          />
+        </s-form-item>
+      </a-col>
+      <a-col :span="8">
+        <s-form-item label="发货状态" :label-col="{ span: 6 }">
+          <s-select
+            mode="multiple"
+            :options="DELIVERY_STATUS"
+            v-model:value="formModel.deliver_arr"
+          />
+        </s-form-item>
+      </a-col>
+      <a-col :span="8">
+        <s-form-item label="店铺名称" :label-col="{ span: 6 }">
+          <s-input v-model:value="formModel.shop_name" />
+        </s-form-item>
+      </a-col>
+      <a-col :span="8">
+        <s-form-item label="供应商" :label-col="{ span: 6 }">
+          <Supplier v-model:value="formModel.supplier_id" />
+        </s-form-item>
+      </a-col>
+      <a-col :span="8">
+        <s-form-item label="用户等级" :label-col="{ span: 6 }">
+          <s-select
+            :options="USER_LEVEL"
+            v-model:value="formModel.user_level"
+          />
+        </s-form-item>
       </a-col>
       <a-col :span="8">
         <s-form-item label="label" :label-col="{ span: 6 }">
@@ -41,20 +108,7 @@
       </a-col>
       <a-col :span="8">
         <s-form-item label="label" :label-col="{ span: 6 }">
-          <a-select v-model:value="formModel.c" placeholder="请选择">
-            <a-select-option :value="0">0</a-select-option>
-            <a-select-option :value="1">1</a-select-option>
-          </a-select>
-        </s-form-item>
-      </a-col>
-      <a-col :span="8">
-        <s-form-item label="label" :label-col="{ span: 6 }">
           <a-input v-model:value="formModel.d" placeholder="请输入" />
-        </s-form-item>
-      </a-col>
-      <a-col :span="8">
-        <s-form-item label="label" :label-col="{ span: 6 }">
-          <a-input v-model:value="formModel.e" placeholder="请输入" />
         </s-form-item>
       </a-col>
       <a-col :span="8">
@@ -159,6 +213,13 @@ import { ref, watch, reactive } from "vue";
 import { DownOutlined, UpOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import {
+  ORDER_STATUS,
+  PAY_STATUS,
+  DELIVERY_STATUS,
+  USER_LEVEL,
+} from "../../../data/dictionary";
+import Supplier from "../../../components/select/supplier.vue";
+import {
   SmileOutlined,
   SearchOutlined,
   ClearOutlined,
@@ -167,9 +228,11 @@ import {
   CheckCircleOutlined,
 } from "@ant-design/icons-vue";
 
+// 动态数据
 const isExpandArrow = ref();
 const formModel = reactive({
   order_search_key: "osl_seq",
+  good_search_key: "goods_name",
 });
 const formRef = ref();
 const dataSource = ref();
@@ -178,6 +241,7 @@ const height = ref();
 const pagination = reactive({});
 const selectedRowKeys = ref([]);
 const selectedRows = ref();
+// 静态数据
 const columns = [
   {
     title: "操作",
@@ -220,7 +284,7 @@ const onChange = (keys, rows) => {
 };
 
 const formFinish = async (values) => {
-  console.log(values, formModel, 123);
+  console.log(formModel, 123);
   tableChange();
 };
 

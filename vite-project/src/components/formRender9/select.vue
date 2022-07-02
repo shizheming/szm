@@ -1,23 +1,14 @@
 <template>
-  <Select
-    allow-clear
-    show-search
-    placeholder="请选择"
-    :filter-option="filterOption"
-    v-bind="newSlots"
-    v-model:value="bindValue"
-  >
+  <a-select allow-clear show-search v-bind="newSlots" placeholder="请选择">
     <slot />
-  </Select>
+  </a-select>
 </template>
 <script setup>
 import core from "./core";
-import { Select } from "ant-design-vue";
 import props from "./props";
 
 const p = defineProps(props);
-const emit = defineEmits(["update:value"]);
-const { bindValue, newSlots } = core(p, emit, "select");
+const { newSlots } = core(p, "select");
 
 // 这个antd还有完善
 function filterOption(input, option) {
