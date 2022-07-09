@@ -93,9 +93,9 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="label" :label-col="{ span: 6 }">
-          <a-input-number
-            v-model:value="formModel.b"
+        <a-form-item label="后台类目" :label-col="{ span: 6 }">
+          <BackgroundCategory
+            v-model:value="formModel.category_id"
             placeholder="请输入"
             style="width: 100%"
           />
@@ -219,6 +219,7 @@ import {
   USER_LEVEL,
 } from "../../../data/dictionary";
 import Supplier from "../../../components/select/supplier.vue";
+import BackgroundCategory from "../../../components/select/backgroundCategory.vue";
 import {
   SmileOutlined,
   SearchOutlined,
@@ -240,6 +241,7 @@ interface formModel {
   shop_name?: string;
   supplier_id?: number;
   user_level?: number;
+  category_id?: number;
 }
 
 // 动态数据
