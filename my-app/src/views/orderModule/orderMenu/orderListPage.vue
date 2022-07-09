@@ -169,7 +169,7 @@
       <template v-if="column.key === 'is_listing'">
         <a-switch
           :checked="!!record.is_listing"
-          @change="switchChange(record)"
+          @change="switchChange"
           checked-children="上架"
           un-checked-children="下架"
         />
@@ -208,7 +208,7 @@
     </template>
   </a-table>
 </template>
-<script setup>
+<script setup lang="ts">
 import { ref, watch, reactive } from "vue";
 import { DownOutlined, UpOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
@@ -228,9 +228,23 @@ import {
   CheckCircleOutlined,
 } from "@ant-design/icons-vue";
 
+// 接口
+interface formModel {
+  order_search_key?: string;
+  order_search_value?: string;
+  good_search_key?: string;
+  good_search_value?: string;
+  sub_status_arr?: [];
+  pay_status_arr?: [];
+  deliver_arr?: [];
+  shop_name?: string;
+  supplier_id?: number;
+  user_level?: number;
+}
+
 // 动态数据
 const isExpandArrow = ref();
-const formModel = reactive({
+const formModel = reactive<formModel>({
   order_search_key: "osl_seq",
   good_search_key: "goods_name",
 });
@@ -278,12 +292,12 @@ watch(isExpandArrow, (newValue) => {
   }
 });
 
-const onChange = (keys, rows) => {
+const onChange = (keys: [], rows: []) => {
   selectedRowKeys.value = keys;
   selectedRows.value = rows;
 };
 
-const formFinish = async (values) => {
+const formFinish = async (values: any) => {
   console.log(formModel, 123);
   tableChange();
 };
@@ -341,15 +355,15 @@ const switchChange = async () => {
   }, 500);
 };
 
-function editButtonClick(record) {
+function editButtonClick(record: any) {
   record.editStockStatus = true;
 }
 
-function cancelButtonClick(record) {
+function cancelButtonClick(record: any) {
   record.editStockStatus = false;
 }
 
-async function okButtonClick(record) {
+async function okButtonClick(record: any) {
   await Promise.resolve();
   record.editStockStatus = false;
   message.success("成功");
