@@ -1,11 +1,12 @@
 <template>
-  <a-input allow-clear placeholder="请输入" v-bind="newSlots">
+  <Input allow-clear placeholder="请输入" v-bind="newSlots">
     <slot />
-  </a-input>
+  </Input>
 </template>
 <script setup lang="ts">
 import core from "./core";
 import props from "./props";
+import { Input } from "ant-design-vue";
 
 const p = defineProps(props);
 const { newSlots } = core(p);

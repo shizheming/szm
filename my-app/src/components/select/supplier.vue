@@ -1,5 +1,5 @@
 <template>
-  <s-select :options="options" :inner="inner" />
+  <a-select :options="options" :inner="inner" />
 </template>
 
 <script setup lang="ts">

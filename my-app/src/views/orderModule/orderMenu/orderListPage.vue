@@ -1,10 +1,10 @@
 <template>
-  <s-form ref="formRef" :model="formModel" @finish="formFinish">
+  <a-form ref="formRef" :model="formModel" @finish="formFinish">
     <a-row :style="`height:${height};overflow:hidden`">
       <a-col :span="8">
         <a-form-item label="订单搜索" :label-col="{ span: 6 }">
           <a-input-group compact>
-            <s-select
+            <a-select
               style="width: 50%"
               :allow-clear="false"
               v-model:value="formModel.order_search_key"
@@ -17,8 +17,8 @@
                 >收货人手机号后四位</a-select-option
               >
               <a-select-option value="ono">主单号</a-select-option>
-            </s-select>
-            <s-input
+            </a-select>
+            <a-input
               style="width: 50%"
               v-model:value="formModel.order_search_value"
             />
@@ -28,7 +28,7 @@
       <a-col :span="8">
         <a-form-item label="商品搜索" :label-col="{ span: 6 }">
           <a-input-group compact>
-            <s-select
+            <a-select
               style="width: 50%"
               :allow-clear="false"
               v-model:value="formModel.good_search_key"
@@ -39,8 +39,8 @@
                 >店铺商品编码</a-select-option
               >
               <a-select-option value="sn">货号</a-select-option>
-            </s-select>
-            <s-input
+            </a-select>
+            <a-input
               style="width: 50%"
               v-model:value="formModel.good_search_value"
             />
@@ -58,7 +58,7 @@
       </a-col>
       <a-col :span="8">
         <a-form-item label="支付状态" :label-col="{ span: 6 }">
-          <s-select
+          <a-select
             mode="multiple"
             :options="PAY_STATUS"
             v-model:value="formModel.pay_status_arr"
@@ -67,7 +67,7 @@
       </a-col>
       <a-col :span="8">
         <a-form-item label="发货状态" :label-col="{ span: 6 }">
-          <s-select
+          <a-select
             mode="multiple"
             :options="DELIVERY_STATUS"
             v-model:value="formModel.deliver_arr"
@@ -76,7 +76,7 @@
       </a-col>
       <a-col :span="8">
         <a-form-item label="店铺名称" :label-col="{ span: 6 }">
-          <s-input v-model:value="formModel.shop_name" />
+          <a-input v-model:value="formModel.shop_name" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -86,7 +86,7 @@
       </a-col>
       <a-col :span="8">
         <a-form-item label="用户等级" :label-col="{ span: 6 }">
-          <s-select
+          <a-select
             :options="USER_LEVEL"
             v-model:value="formModel.user_level"
           />
@@ -139,7 +139,7 @@
         </a-form-item>
       </a-col>
     </a-row>
-  </s-form>
+  </a-form>
   <a-row style="margin: 30px 0">
     <a-space size="large">
       <a-button @click="chooseButtonClick">批量编辑商家备注</a-button>

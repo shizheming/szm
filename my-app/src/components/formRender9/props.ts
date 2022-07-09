@@ -1,4 +1,5 @@
-export interface props {
+import { ExtractPropTypes } from "vue";
+export interface props<T extends object> {
   isDetail: {
     type: boolean;
     default: undefined;
