@@ -17,3 +17,7 @@ export const dictionary_api = (params: {}) =>
 // 销售站点
 export const owner_site_api = (params: {}) =>
   axios.get("/api/sys/site", { params });
+
+// 订单销售组织
+export const sub_org_api = (params: {}) =>
+  axios.get("/api/sys/org", { params });

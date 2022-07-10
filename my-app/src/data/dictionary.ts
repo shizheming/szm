@@ -7,6 +7,13 @@ enum WHETHER_ENUM {
 }
 export const WHETHER_OPTIONS = optionsEnum(WHETHER_ENUM);
 
+// 有无
+enum YES_NO_ENUM {
+  无,
+  有,
+}
+export const YES_NO_OPTIONS = optionsEnum(YES_NO_ENUM);
+
 // 订单状态
 enum ORDER_STATUS_ENUM {
   待支付 = "0",
@@ -117,3 +124,44 @@ enum GOODS_SOURCE_ENUM {
   选品池,
 }
 export const GOODS_SOURCE_OPTIONS = optionsEnum(GOODS_SOURCE_ENUM);
+
+// 营销活动明细
+enum MARTING_TYPE_ENUM {
+  普通 = "",
+  拼团 = "pintuan001",
+  秒杀 = "miaosha001",
+  抽奖 = "choujiang001",
+  满N元减 = "manyuanjian001",
+  满N元折 = "manyuanzhe001",
+  满N件减 = "manjianjian001",
+  以旧换新 = "jiuhuanxin001",
+  满N件折 = "manjianzhe001",
+  积分兑换 = "jifen001",
+  满赠 = "manyuanzeng001",
+  新人特价 = "xinrentejia001",
+  拼单预售 = "pindanyushou",
+}
+export const MARTING_TYPE_OPTIONS = optionsEnum(MARTING_TYPE_ENUM);
+
+// 订单类型
+enum ORDER_TYPE_ENUM {
+  普通 = 1,
+  供应商直送 = 5,
+  自提 = 6,
+}
+export const ORDER_TYPE_OPTIONS = optionsEnum(ORDER_TYPE_ENUM);
+
+// 业务模式
+enum BUSINESS_ENUM {
+  精选 = 1,
+  紫荆,
+}
+export const BUSINESS_OPTIONS = optionsEnum(BUSINESS_ENUM);
+
+// 拼团状态
+enum SPELL_ORDER_STATUS_ENUM {
+  进行中 = 1,
+  成功,
+  失败,
+}
+export const SPELL_ORDER_STATUS_OPTIONS = optionsEnum(SPELL_ORDER_STATUS_ENUM);

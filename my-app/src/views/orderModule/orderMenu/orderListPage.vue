@@ -197,6 +197,120 @@
           <owner-site-select v-model:value="formModel.owner_site_id" />
         </a-form-item>
       </a-col>
+      <a-col :span="8">
+        <a-form-item label="订单创建" :label-col="{ span: 6 }">
+          <a-range-picker show-time v-model:value="formModel.createTime" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="创建人ID" :label-col="{ span: 6 }">
+          <a-input v-model:value="formModel.create_user_id" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="订单支付" :label-col="{ span: 6 }">
+          <a-range-picker show-time v-model:value="formModel.paymentTime" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="支付流水号" :label-col="{ span: 6 }">
+          <a-input v-model:value="formModel.trade_no" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="要求送货" :label-col="{ span: 6 }">
+          <a-range-picker show-time v-model:value="formModel.deliveryTime" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="推荐人" :label-col="{ span: 6 }">
+          <a-input v-model:value="formModel.recommend_staff" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="营销活动明细" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.marketing_type"
+            :options="MARTING_TYPE_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="订单类型" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.order_type"
+            :options="ORDER_TYPE_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="售后" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.is_return"
+            :options="YES_NO_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="运单号" :label-col="{ span: 6 }">
+          <a-input v-model:value="formModel.package_no" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="买家备注" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.is_mem_msg"
+            :options="YES_NO_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="订单销售组织" :label-col="{ span: 6 }">
+          <sub-org-select v-model:value="formModel.sub_org_id" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="燃气用户" :label-col="{ span: 6 }">
+          <a-input v-model:value="formModel.gas_account" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="业务模式" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.business_id"
+            :options="BUSINESS_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="预订购" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.is_pre_subscribe"
+            :options="WHETHER_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="订单销售组织" :label-col="{ span: 6 }">
+          <owner-site-select v-model:value="formModel.source_site_id" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="拼单状态" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.spell_order_status"
+            :options="SPELL_ORDER_STATUS_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="对接外部系统" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.is_out_supplier"
+            :options="WHETHER_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
     </a-row>
     <a-row>
       <a-col :span="8">
@@ -296,12 +410,18 @@ import {
   GOODS_SOURCE_OPTIONS,
   IS_INVOICE_OPTIONS,
   WHETHER_OPTIONS,
+  MARTING_TYPE_OPTIONS,
+  ORDER_TYPE_OPTIONS,
+  YES_NO_OPTIONS,
+  BUSINESS_OPTIONS,
+  SPELL_ORDER_STATUS_OPTIONS,
 } from "../../../data/dictionary";
 import SupplierSelect from "../../../components/select/supplier.vue";
 import BackgroundCategoryCascader from "../../../components/select/backgroundCategory.vue";
 import GoodsBrandSelect from "../../../components/select/goodsBrand.vue";
 import SaleModeSelect from "../../../components/select/saleMode.vue";
 import OwnerSiteSelect from "../../../components/select/ownerSite.vue";
+import SubOrgSelect from "../../../components/select/subOrg.vue";
 
 import {
   SmileOutlined,
@@ -311,6 +431,8 @@ import {
   StopOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons-vue";
+
+let asdf = {};
 
 // 接口
 interface formModel {
@@ -338,6 +460,24 @@ interface formModel {
   goods_source?: number;
   distribute_order?: number;
   owner_site_id?: number;
+  createTime?: [];
+  create_user_id?: number;
+  paymentTime?: [];
+  trade_no?: number;
+  deliveryTime?: [];
+  recommend_staff?: string;
+  marketing_type?: number;
+  order_type?: number;
+  is_return?: number;
+  package_no?: string;
+  is_mem_msg?: number;
+  sub_org_id?: number;
+  gas_account?: string;
+  business_id?: number;
+  is_pre_subscribe?: number;
+  source_site_id?: number;
+  spell_order_status?: number;
+  is_out_supplier?: number;
 }
 
 // 动态数据

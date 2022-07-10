@@ -1,7 +1,5 @@
 <template>我是订单详情页</template>
 
-<script>
-export default {};
-</script>
+<script setup lang="ts"></script>
 
 <style></style>
