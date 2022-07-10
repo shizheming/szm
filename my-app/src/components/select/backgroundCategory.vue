@@ -3,7 +3,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
-import { background_Category_api } from "../../api/dictionary";
+import { background_category_api } from "../../api/dictionary";
 
 interface options {
   label: string;
@@ -27,7 +27,7 @@ const formatOptions = (category: options[]) => {
   });
 };
 const inner = async () => {
-  let { data }: { data: [] } = await background_Category_api();
+  let { data }: { data: [] } = await background_category_api();
   options.value = formatOptions(data);
 };
 </script>

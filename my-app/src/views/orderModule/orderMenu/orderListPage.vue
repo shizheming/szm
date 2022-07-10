@@ -51,7 +51,7 @@
         <a-form-item label="订单状态" :label-col="{ span: 6 }">
           <a-select
             mode="multiple"
-            :options="ORDER_STATUS"
+            :options="ORDER_STATUS_OPTIONS"
             v-model:value="formModel.sub_status_arr"
           />
         </a-form-item>
@@ -60,7 +60,7 @@
         <a-form-item label="支付状态" :label-col="{ span: 6 }">
           <a-select
             mode="multiple"
-            :options="PAY_STATUS"
+            :options="PAY_STATUS_OPTIONS"
             v-model:value="formModel.pay_status_arr"
           />
         </a-form-item>
@@ -69,7 +69,7 @@
         <a-form-item label="发货状态" :label-col="{ span: 6 }">
           <a-select
             mode="multiple"
-            :options="DELIVERY_STATUS"
+            :options="DELIVERY_STATUS_OPTIONS"
             v-model:value="formModel.deliver_arr"
           />
         </a-form-item>
@@ -81,20 +81,20 @@
       </a-col>
       <a-col :span="8">
         <a-form-item label="供应商" :label-col="{ span: 6 }">
-          <Supplier v-model:value="formModel.supplier_id" />
+          <supplier-select v-model:value="formModel.supplier_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="用户等级" :label-col="{ span: 6 }">
           <a-select
-            :options="USER_LEVEL"
+            :options="USER_LEVEL_OPTIONS"
             v-model:value="formModel.user_level"
           />
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="后台类目" :label-col="{ span: 6 }">
-          <BackgroundCategory
+          <background-category-cascader
             v-model:value="formModel.category_id"
             placeholder="请输入"
             style="width: 100%"
@@ -102,28 +102,99 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="label" :label-col="{ span: 6 }">
-          <a-range-picker v-model:value="formModel.time" style="width: 100%" />
+        <a-form-item label="商品品牌" :label-col="{ span: 6 }">
+          <goods-brand-select
+            v-model:value="formModel.brand_name_arr"
+            mode="multiple"
+          />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="label" :label-col="{ span: 6 }">
-          <a-input v-model:value="formModel.d" placeholder="请输入" />
+        <a-form-item label="用户ID" :label-col="{ span: 6 }">
+          <a-input v-model:value="formModel.user_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="label" :label-col="{ span: 6 }">
-          <a-input v-model:value="formModel.f" placeholder="请输入" />
+        <a-form-item label="录入方式" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.create_mode_arr"
+            mode="multiple"
+            :options="CREATE_MODE_OPTIONS"
+          />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="label" :label-col="{ span: 6 }">
-          <a-input v-model:value="formModel.g" placeholder="请输入" />
+        <a-form-item label="来源终端" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.app_platform"
+            :options="APP_PLATFORM_OPTIONS"
+          />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="label" :label-col="{ span: 6 }">
-          <a-input v-model:value="formModel.h" placeholder="请输入" />
+        <a-form-item label="销售渠道" :label-col="{ span: 6 }">
+          <sale-mode-select v-model:value="formModel.sale_mode" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="配送方式" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.delivery_mode"
+            :options="DELIVERY_MODE_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="支付方式" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.pay_type"
+            :options="PAY_TYPE_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="支付类型" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.payment_type"
+            :options="PAYMENT_TYPE_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="发票" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.is_invoice"
+            :options="IS_INVOICE_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="本地服务" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.is_support_local"
+            :options="WHETHER_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="订单商品来源" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.goods_source"
+            :options="GOODS_SOURCE_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="分销订单" :label-col="{ span: 6 }">
+          <a-select
+            v-model:value="formModel.distribute_order"
+            :options="WHETHER_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="销售站点" :label-col="{ span: 6 }">
+          <owner-site-select v-model:value="formModel.owner_site_id" />
         </a-form-item>
       </a-col>
     </a-row>
@@ -213,13 +284,25 @@ import { ref, watch, reactive } from "vue";
 import { DownOutlined, UpOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import {
-  ORDER_STATUS,
-  PAY_STATUS,
-  DELIVERY_STATUS,
-  USER_LEVEL,
+  ORDER_STATUS_OPTIONS,
+  PAY_STATUS_OPTIONS,
+  DELIVERY_STATUS_OPTIONS,
+  USER_LEVEL_OPTIONS,
+  APP_PLATFORM_OPTIONS,
+  DELIVERY_MODE_OPTIONS,
+  CREATE_MODE_OPTIONS,
+  PAY_TYPE_OPTIONS,
+  PAYMENT_TYPE_OPTIONS,
+  GOODS_SOURCE_OPTIONS,
+  IS_INVOICE_OPTIONS,
+  WHETHER_OPTIONS,
 } from "../../../data/dictionary";
-import Supplier from "../../../components/select/supplier.vue";
-import BackgroundCategory from "../../../components/select/backgroundCategory.vue";
+import SupplierSelect from "../../../components/select/supplier.vue";
+import BackgroundCategoryCascader from "../../../components/select/backgroundCategory.vue";
+import GoodsBrandSelect from "../../../components/select/goodsBrand.vue";
+import SaleModeSelect from "../../../components/select/saleMode.vue";
+import OwnerSiteSelect from "../../../components/select/ownerSite.vue";
+
 import {
   SmileOutlined,
   SearchOutlined,
@@ -242,6 +325,19 @@ interface formModel {
   supplier_id?: number;
   user_level?: number;
   category_id?: number;
+  brand_name_arr?: [];
+  user_id?: number;
+  create_mode_arr?: [];
+  app_platform?: string;
+  sale_mode?: number;
+  delivery_mode?: number;
+  pay_type?: number;
+  payment_type?: number;
+  is_invoice?: number;
+  is_support_local?: number;
+  goods_source?: number;
+  distribute_order?: number;
+  owner_site_id?: number;
 }
 
 // 动态数据

@@ -6,9 +6,9 @@
 import { ref } from "vue";
 import { supplier_api } from "../../api/dictionary";
 
-const options = ref([]);
+const options = ref<{ label: string; value: number }>([]);
 const inner = async () => {
-  let { data } = await supplier_api({
+  let { data }: { data: [] } = await supplier_api({
     type: "supplier_id",
   });
   options.value = data.map(({ id, name }: { id: number; name: string }) => ({
