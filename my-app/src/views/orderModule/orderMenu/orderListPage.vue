@@ -96,7 +96,6 @@
         <a-form-item label="后台类目" :label-col="{ span: 6 }">
           <background-category-cascader
             v-model:value="formModel.category_id"
-            placeholder="请输入"
             style="width: 100%"
           />
         </a-form-item>
@@ -311,12 +310,19 @@
           />
         </a-form-item>
       </a-col>
+      <a-col :span="8">
+        <a-form-item label="收货地址" :label-col="{ span: 6 }">
+          <address-cascader v-model:value="formModel.address" />
+        </a-form-item>
+      </a-col>
     </a-row>
     <a-row>
       <a-col :span="8">
         <a-form-item :wrapper-col="{ offset: 6 }">
           <a-space style="font-size: 18px" size="large">
-            <a-button html-type="submit"><search-outlined /></a-button>
+            <a-button html-type="submit" type="primary">
+              <search-outlined />
+            </a-button>
             <clear-outlined @click="resetformClick" />
             <down-outlined @click="expandArrowClick" v-if="isExpandArrow" />
             <up-outlined @click="expandArrowClick" v-else />
@@ -417,11 +423,12 @@ import {
   SPELL_ORDER_STATUS_OPTIONS,
 } from "../../../data/dictionary";
 import SupplierSelect from "../../../components/select/supplier.vue";
-import BackgroundCategoryCascader from "../../../components/select/backgroundCategory.vue";
+import BackgroundCategoryCascader from "../../../components/cascader/backgroundCategory.vue";
 import GoodsBrandSelect from "../../../components/select/goodsBrand.vue";
 import SaleModeSelect from "../../../components/select/saleMode.vue";
 import OwnerSiteSelect from "../../../components/select/ownerSite.vue";
 import SubOrgSelect from "../../../components/select/subOrg.vue";
+import AddressCascader from "../../../components/cascader/address.vue";
 
 import {
   SmileOutlined,
@@ -478,6 +485,7 @@ interface formModel {
   source_site_id?: number;
   spell_order_status?: number;
   is_out_supplier?: number;
+  address?: [];
 }
 
 // 动态数据
@@ -490,7 +498,7 @@ const formRef = ref();
 const dataSource = ref();
 const loading = ref();
 const height = ref();
-const pagination = reactive({});
+const pagination = reactive({ hideOnSinglePage: true });
 const selectedRowKeys = ref([]);
 const selectedRows = ref();
 // 静态数据

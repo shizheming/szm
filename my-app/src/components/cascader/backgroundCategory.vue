@@ -1,5 +1,10 @@
 <template>
-  <a-cascader :options="options" :inner="inner" />
+  <a-cascader
+    change-on-select
+    :options="options"
+    placeholder="请选择"
+    :inner="inner"
+  />
 </template>
 <script setup lang="ts">
 import { ref } from "vue";

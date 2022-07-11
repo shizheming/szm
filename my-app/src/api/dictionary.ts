@@ -21,3 +21,7 @@ export const owner_site_api = (params: {}) =>
 // 订单销售组织
 export const sub_org_api = (params: {}) =>
   axios.get("/api/sys/org", { params });
+
+// 地址
+export const address_api = (params: {}) =>
+  axios.get("  /api/common/area", { params });
