@@ -12,12 +12,12 @@
 import core from "./core";
 import { RangePicker } from "ant-design-vue";
 import props from "./props";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 const p = defineProps(props);
 const emit = defineEmits(["update:value"]);
 const { newSlots } = core(p);
-const ranges = {
+const ranges: { [name: string]: [Dayjs, Dayjs] } = {
   今天: [dayjs().startOf("day"), dayjs().endOf("day")],
   这周: [
     dayjs().startOf("week").add(1, "day"),

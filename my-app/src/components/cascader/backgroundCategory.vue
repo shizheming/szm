@@ -9,18 +9,19 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { background_category_api } from "../../api/dictionary";
+import type { CascaderProps } from "ant-design-vue";
 
-interface options {
-  label: string;
-  value: number;
+interface formatOptionsInterface {
   name: string;
   id: number;
-  children?: options[];
-  child?: options[];
+  label: string;
+  value: number;
+  child?: formatOptionsInterface[];
+  children?: formatOptionsInterface[];
 }
-const options: options = ref([]);
-const formatOptions = (category: options[]) => {
-  return category.map((item) => {
+const options = ref<CascaderProps["options"]>([]);
+const formatOptions = (category: formatOptionsInterface[]) => {
+  return category.map((item: formatOptionsInterface) => {
     item.label = item.name;
     item.value = item.id;
 

@@ -5,8 +5,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { supplier_api } from "../../api/dictionary";
-
-const options = ref<{ label: string; value: number }>([]);
+import type { SelectProps } from "ant-design-vue";
+const options = ref<SelectProps["options"]>([]);
 const inner = async () => {
   let { data }: { data: [] } = await supplier_api({
     type: "supplier_id",

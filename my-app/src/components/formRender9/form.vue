@@ -36,7 +36,7 @@ const p = defineProps({
 const slots = useSlots();
 let newSlots: { [name: string]: any } = {};
 forEach(slots, (value, key) => {
-  newSlots[key] = value();
+  newSlots[key] = (value as () => {})();
 });
 
 // 判断是不是编辑页
@@ -45,26 +45,26 @@ provide("isEdit", p.isEdit);
 provide("isDetail", p.isDetail);
 
 // 收集表单里面的组件的outer函数
-const outer: { [name: string]: Function } = reactive({});
+const outer = reactive<{ [narme: string]: (v: any) => {} }>({});
 provide("outer", outer);
 
-const outerModel: { [name: string]: Function } = reactive({});
+const outerModel = reactive<{ [narme: string]: any }>({});
 /* 设置外面的fromRender */
 const formRender = ref();
 
 defineExpose({
-  scrollToField(params) {
+  scrollToField(params: any) {
     return formRender.value.scrollToField(params);
   },
   // 这个有问题，样式能干掉，值干不掉
   resetFields() {
     return formRender.value.resetFields();
   },
-  clearValidate(params) {
+  clearValidate(params: any) {
     return formRender.value.clearValidate(params);
   },
-  validate(params) {
-    return formRender.value.validate(params).then((data) => {
+  validate(params: any) {
+    return formRender.value.validate(params).then((data: any) => {
       // 处理outer所有的函数
       forEach(data, (value, key) => {
         if (!outer[key]) {
@@ -78,11 +78,8 @@ defineExpose({
       return outerModel;
     });
   },
-  onlyValidate(params) {
+  onlyValidate(params: any) {
     return formRender.value.validateFields(params);
-  },
-  clearValidate(params) {
-    return formRender.value.clearValidate(params);
   },
 });
 </script>

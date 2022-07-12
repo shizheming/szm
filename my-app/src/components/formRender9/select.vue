@@ -12,14 +12,13 @@
 <script setup lang="ts">
 import core from "./core";
 import props from "./props";
-import { Select } from "ant-design-vue";
-import { DefaultOptionType } from "ant-design-vue/lib/select";
+import { Select, SelectProps } from "ant-design-vue";
 
 const p = defineProps(props);
 const { newSlots } = core(p);
 
 // 这个antd还有完善
-function filterOption(value: string, options: DefaultOptionType) {
+function filterOption(value: string, options: any) {
   return options.label.includes(value);
 }
 </script>

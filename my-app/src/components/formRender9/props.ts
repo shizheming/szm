@@ -1,5 +1,5 @@
 import { ExtractPropTypes } from "vue";
-export interface props<T extends object> {
+export interface propsInterface {
   isDetail: {
     type: boolean;
     default: undefined;
@@ -16,6 +16,7 @@ export interface props<T extends object> {
     type: Function;
     default: undefined;
   };
+  [name: string]: any;
 }
 
 export default {

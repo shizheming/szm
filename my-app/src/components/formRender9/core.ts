@@ -14,16 +14,16 @@ import {
   get,
   isObject,
 } from "lodash";
-import { props } from "./props";
+import { propsInterface } from "./props";
 
-export default function (props: props): { newSlots: {} } {
+export default function (props): { newSlots: {} } {
   /********************** 接受form给的数据 **********************/
-  const outer: Ref<{} | []> | undefined = inject("outer", undefined);
+  const outer: {} | undefined = inject("outer", undefined);
   const componentName: Ref<string | []> | undefined = inject(
     "componentName",
     undefined
   );
-  let componentNameStr: string;
+  let componentNameStr: { value: string } | undefined;
 
   const slots = useSlots();
   let newSlots: { [name: string]: any } = {};

@@ -4,7 +4,7 @@
 <script setup lang="ts">
 import core from "./core";
 import { Cascader } from "ant-design-vue";
-import props from "./props";
+import props, { propsInterface } from "./props";
 
 const p = defineProps(props);
 const { newSlots } = core(p);
