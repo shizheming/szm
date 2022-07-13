@@ -1,4 +1,4 @@
-export interface formModelInterface {
+export interface modelInterface {
   order_search_key?: string;
   order_search_value?: string;
   good_search_key?: string;
@@ -25,6 +25,7 @@ export interface formModelInterface {
   createTime?: [];
   create_user_id?: number;
   paymentTime?: [];
+  sub_status_arr?: [];
   trade_no?: number;
   deliveryTime?: [];
   recommend_staff?: string;
@@ -43,6 +44,13 @@ export interface formModelInterface {
   address?: [];
 }
 
-export interface responseInterface {
-  aaa: string;
+export interface paginationInterface {
+  page: number;
+  page_size: number;
+  total?: number;
+  current?: number;
 }
+
+export interface searchInterface
+  extends formModelInterface,
+    paginationInterface {}

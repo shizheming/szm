@@ -1,5 +1,5 @@
 <template>
-  <a-form ref="formRef" :model="formModel" @finish="formFinish">
+  <a-form ref="formRef" :model="model" @finish="finish">
     <a-row :style="`height:${height};overflow:hidden`">
       <a-col :span="8">
         <a-form-item label="订单搜索" :label-col="{ span: 6 }">
@@ -7,7 +7,7 @@
             <a-select
               style="width: 50%"
               :allow-clear="false"
-              v-model:value="formModel.order_search_key"
+              v-model:value="model.order_search_key"
             >
               <a-select-option value="osl_seq">订单编号</a-select-option>
               <a-select-option value="out_ono">外部订单号</a-select-option>
@@ -20,7 +20,7 @@
             </a-select>
             <a-input
               style="width: 50%"
-              v-model:value="formModel.order_search_value"
+              v-model:value="model.order_search_value"
             />
           </a-input-group>
         </a-form-item>
@@ -31,7 +31,7 @@
             <a-select
               style="width: 50%"
               :allow-clear="false"
-              v-model:value="formModel.good_search_key"
+              v-model:value="model.good_search_key"
             >
               <a-select-option value="goods_name">商品名称</a-select-option>
               <a-select-option value="sku_code">商品编码</a-select-option>
@@ -42,7 +42,7 @@
             </a-select>
             <a-input
               style="width: 50%"
-              v-model:value="formModel.good_search_value"
+              v-model:value="model.good_search_value"
             />
           </a-input-group>
         </a-form-item>
@@ -56,7 +56,7 @@
           <a-select
             mode="multiple"
             :options="ORDER_STATUS_OPTIONS"
-            v-model:value="formModel.sub_status_arr"
+            v-model:value="model.sub_status_arr"
           />
         </a-form-item>
       </a-col>
@@ -69,7 +69,7 @@
           <a-select
             mode="multiple"
             :options="PAY_STATUS_OPTIONS"
-            v-model:value="formModel.pay_status_arr"
+            v-model:value="model.pay_status_arr"
           />
         </a-form-item>
       </a-col>
@@ -82,7 +82,7 @@
           <a-select
             mode="multiple"
             :options="DELIVERY_STATUS_OPTIONS"
-            v-model:value="formModel.deliver_arr"
+            v-model:value="model.deliver_arr"
           />
         </a-form-item>
       </a-col>
@@ -92,7 +92,7 @@
           :label-col="{ span: 6 }"
           :name="['shop_name']"
         >
-          <a-input v-model:value="formModel.shop_name" />
+          <a-input v-model:value="model.shop_name" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -101,7 +101,7 @@
           :label-col="{ span: 6 }"
           :name="['supplier_id']"
         >
-          <supplier-select v-model:value="formModel.supplier_id" />
+          <supplier-select v-model:value="model.supplier_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -112,7 +112,7 @@
         >
           <a-select
             :options="USER_LEVEL_OPTIONS"
-            v-model:value="formModel.user_level"
+            v-model:value="model.user_level"
           />
         </a-form-item>
       </a-col>
@@ -123,7 +123,7 @@
           :name="['category_id']"
         >
           <background-category-cascader
-            v-model:value="formModel.category_id"
+            v-model:value="model.category_id"
             style="width: 100%"
           />
         </a-form-item>
@@ -135,7 +135,7 @@
           :name="['brand_name_arr']"
         >
           <goods-brand-select
-            v-model:value="formModel.brand_name_arr"
+            v-model:value="model.brand_name_arr"
             mode="multiple"
           />
         </a-form-item>
@@ -146,7 +146,7 @@
           :label-col="{ span: 6 }"
           :name="['user_id']"
         >
-          <a-input v-model:value="formModel.user_id" />
+          <a-input v-model:value="model.user_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -156,7 +156,7 @@
           :name="['create_mode_arr']"
         >
           <a-select
-            v-model:value="formModel.create_mode_arr"
+            v-model:value="model.create_mode_arr"
             mode="multiple"
             :options="CREATE_MODE_OPTIONS"
           />
@@ -169,7 +169,7 @@
           :name="['app_platform']"
         >
           <a-select
-            v-model:value="formModel.app_platform"
+            v-model:value="model.app_platform"
             :options="APP_PLATFORM_OPTIONS"
           />
         </a-form-item>
@@ -180,7 +180,7 @@
           :label-col="{ span: 6 }"
           :name="['sale_mode']"
         >
-          <sale-mode-select v-model:value="formModel.sale_mode" />
+          <sale-mode-select v-model:value="model.sale_mode" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -190,7 +190,7 @@
           :name="['delivery_mode']"
         >
           <a-select
-            v-model:value="formModel.delivery_mode"
+            v-model:value="model.delivery_mode"
             :options="DELIVERY_MODE_OPTIONS"
           />
         </a-form-item>
@@ -202,7 +202,7 @@
           :name="['pay_type']"
         >
           <a-select
-            v-model:value="formModel.pay_type"
+            v-model:value="model.pay_type"
             :options="PAY_TYPE_OPTIONS"
           />
         </a-form-item>
@@ -214,7 +214,7 @@
           :name="['payment_type']"
         >
           <a-select
-            v-model:value="formModel.payment_type"
+            v-model:value="model.payment_type"
             :options="PAYMENT_TYPE_OPTIONS"
           />
         </a-form-item>
@@ -226,7 +226,7 @@
           :name="['is_invoice']"
         >
           <a-select
-            v-model:value="formModel.is_invoice"
+            v-model:value="model.is_invoice"
             :options="IS_INVOICE_OPTIONS"
           />
         </a-form-item>
@@ -238,7 +238,7 @@
           :name="['is_support_local']"
         >
           <a-select
-            v-model:value="formModel.is_support_local"
+            v-model:value="model.is_support_local"
             :options="WHETHER_OPTIONS"
           />
         </a-form-item>
@@ -250,7 +250,7 @@
           :name="['goods_source']"
         >
           <a-select
-            v-model:value="formModel.goods_source"
+            v-model:value="model.goods_source"
             :options="GOODS_SOURCE_OPTIONS"
           />
         </a-form-item>
@@ -262,7 +262,7 @@
           :name="['distribute_order']"
         >
           <a-select
-            v-model:value="formModel.distribute_order"
+            v-model:value="model.distribute_order"
             :options="WHETHER_OPTIONS"
           />
         </a-form-item>
@@ -273,7 +273,7 @@
           :label-col="{ span: 6 }"
           :name="['owner_site_id']"
         >
-          <owner-site-select v-model:value="formModel.owner_site_id" />
+          <owner-site-select v-model:value="model.owner_site_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -282,7 +282,7 @@
           :label-col="{ span: 6 }"
           :name="['createTime']"
         >
-          <a-range-picker show-time v-model:value="formModel.createTime" />
+          <a-range-picker show-time v-model:value="model.createTime" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -291,7 +291,7 @@
           :label-col="{ span: 6 }"
           :name="['create_user_id']"
         >
-          <a-input v-model:value="formModel.create_user_id" />
+          <a-input v-model:value="model.create_user_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -300,7 +300,7 @@
           :label-col="{ span: 6 }"
           :name="['paymentTime']"
         >
-          <a-range-picker show-time v-model:value="formModel.paymentTime" />
+          <a-range-picker show-time v-model:value="model.paymentTime" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -309,7 +309,7 @@
           :label-col="{ span: 6 }"
           :name="['trade_no']"
         >
-          <a-input v-model:value="formModel.trade_no" />
+          <a-input v-model:value="model.trade_no" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -318,7 +318,7 @@
           :label-col="{ span: 6 }"
           :name="['deliveryTime']"
         >
-          <a-range-picker show-time v-model:value="formModel.deliveryTime" />
+          <a-range-picker show-time v-model:value="model.deliveryTime" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -327,7 +327,7 @@
           :label-col="{ span: 6 }"
           :name="['recommend_staff']"
         >
-          <a-input v-model:value="formModel.recommend_staff" />
+          <a-input v-model:value="model.recommend_staff" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -337,7 +337,7 @@
           :name="['marketing_type']"
         >
           <a-select
-            v-model:value="formModel.marketing_type"
+            v-model:value="model.marketing_type"
             :options="MARTING_TYPE_OPTIONS"
           />
         </a-form-item>
@@ -349,7 +349,7 @@
           :name="['order_type']"
         >
           <a-select
-            v-model:value="formModel.order_type"
+            v-model:value="model.order_type"
             :options="ORDER_TYPE_OPTIONS"
           />
         </a-form-item>
@@ -360,10 +360,7 @@
           :label-col="{ span: 6 }"
           :name="['is_return']"
         >
-          <a-select
-            v-model:value="formModel.is_return"
-            :options="YES_NO_OPTIONS"
-          />
+          <a-select v-model:value="model.is_return" :options="YES_NO_OPTIONS" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -372,7 +369,7 @@
           :label-col="{ span: 6 }"
           :name="['package_no']"
         >
-          <a-input v-model:value="formModel.package_no" />
+          <a-input v-model:value="model.package_no" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -382,7 +379,7 @@
           :name="['is_mem_msg']"
         >
           <a-select
-            v-model:value="formModel.is_mem_msg"
+            v-model:value="model.is_mem_msg"
             :options="YES_NO_OPTIONS"
           />
         </a-form-item>
@@ -393,7 +390,7 @@
           :label-col="{ span: 6 }"
           :name="['sub_org_id']"
         >
-          <sub-org-select v-model:value="formModel.sub_org_id" />
+          <sub-org-select v-model:value="model.sub_org_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -402,7 +399,7 @@
           :label-col="{ span: 6 }"
           :name="['gas_account']"
         >
-          <a-input v-model:value="formModel.gas_account" />
+          <a-input v-model:value="model.gas_account" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -412,7 +409,7 @@
           :name="['business_id']"
         >
           <a-select
-            v-model:value="formModel.business_id"
+            v-model:value="model.business_id"
             :options="BUSINESS_OPTIONS"
           />
         </a-form-item>
@@ -424,7 +421,7 @@
           :name="['is_pre_subscribe']"
         >
           <a-select
-            v-model:value="formModel.is_pre_subscribe"
+            v-model:value="model.is_pre_subscribe"
             :options="WHETHER_OPTIONS"
           />
         </a-form-item>
@@ -435,7 +432,7 @@
           :label-col="{ span: 6 }"
           :name="['source_site_id']"
         >
-          <owner-site-select v-model:value="formModel.source_site_id" />
+          <owner-site-select v-model:value="model.source_site_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -445,7 +442,7 @@
           :name="['spell_order_status']"
         >
           <a-select
-            v-model:value="formModel.spell_order_status"
+            v-model:value="model.spell_order_status"
             :options="SPELL_ORDER_STATUS_OPTIONS"
           />
         </a-form-item>
@@ -457,7 +454,7 @@
           :name="['is_out_supplier']"
         >
           <a-select
-            v-model:value="formModel.is_out_supplier"
+            v-model:value="model.is_out_supplier"
             :options="WHETHER_OPTIONS"
           />
         </a-form-item>
@@ -468,7 +465,7 @@
           :label-col="{ span: 6 }"
           :name="['address']"
         >
-          <address-cascader v-model:value="formModel.address" />
+          <address-cascader v-model:value="model.address" />
         </a-form-item>
       </a-col>
     </a-row>
@@ -479,9 +476,9 @@
             <a-button html-type="submit" type="primary">
               <search-outlined />
             </a-button>
-            <clear-outlined @click="resetformClick" />
-            <up-outlined @click="expandArrowClick" v-if="isExpandArrow" />
-            <down-outlined @click="expandArrowClick" v-else />
+            <clear-outlined @click="clearOutlinedClick" />
+            <up-outlined @click="arrowClick" v-if="isExpandArrowBoolean" />
+            <down-outlined @click="arrowClick" v-else />
           </a-space>
         </a-form-item>
       </a-col>
@@ -489,14 +486,14 @@
   </a-form>
   <a-row style="margin: 30px 0">
     <a-space size="large">
-      <a-button @click="chooseButtonClick">批量编辑商家备注</a-button>
+      <a-button @click="batchButtonClick">批量编辑商家备注</a-button>
       <router-link to="/">人工下单</router-link>
       <router-link to="/">补开发票</router-link>
     </a-space>
   </a-row>
   <a-table
     rowKey="id"
-    :row-selection="{ selectedRowKeys, onChange }"
+    :row-selection="{ selectedRowKeys, onChange: rowSelectionOnChange }"
     :dataSource="dataSource"
     :columns="columns"
     :loading="loading"
@@ -533,11 +530,11 @@
           <edit-outlined
             v-if="!record.editStockStatus"
             style="color: #40a9ff"
-            @click="editButtonClick(record)"
+            @click="editOutlinedIconClick(record)"
           />
           <div v-else>
             <check-outlined
-              @click="okButtonClick(record)"
+              @click="checkOutlinedIconClick(record)"
               style="
                 font-size: 18px;
                 margin: 0 10px;
@@ -547,7 +544,7 @@
             />
             <close-outlined
               style="font-size: 18px; cursor: pointer"
-              @click="cancelButtonClick(record)"
+              @click="closeOutlinedIconClick(record)"
             />
           </div>
         </a-space>
@@ -594,12 +591,14 @@ import {
   CloseOutlined,
   CheckOutlined,
 } from "@ant-design/icons-vue";
-import type { formModelInterface } from "./interface";
+import type { modelInterface } from "./interface";
 import { order_list_page_api } from "./api";
+import { usePagination } from "vue-request";
 
-// 动态数据
-const isExpandArrow = ref<boolean>(false);
-const formModel = reactive<formModelInterface>({
+// 实体
+
+// 属性
+const model = reactive<modelInterface>({
   order_search_key: "osl_seq",
   good_search_key: "goods_name",
 });
@@ -609,44 +608,31 @@ const loading = ref<boolean>(false);
 const height = ref<string>("220px");
 const pagination = reactive({ hideOnSinglePage: true });
 const selectedRowKeys = ref([]);
-const selectedRows = ref();
-// 静态数据
 
-order_list_page_api({}).then(({ data }) => {
-  console.log(data.aaa, 3);
-});
-
-watch(isExpandArrow, (newValue) => {
-  if (newValue) {
-    height.value = "auto";
-  } else {
-    height.value = "220px";
-  }
-});
-
-const onChange = (keys: [], rows: []) => {
+// 事件
+const rowSelectionOnChange = (keys: [], rows: []) => {
   selectedRowKeys.value = keys;
-  selectedRows.value = rows;
+  selectedRowsArray.value = rows;
 };
 
-const formFinish = async (values: any) => {
-  console.log(formModel, 123);
+const finish = async (values: any) => {
+  console.log(model, 123);
   tableChange();
 };
 
-const expandArrowClick = () => {
-  isExpandArrow.value = !isExpandArrow.value;
+const arrowClick = () => {
+  isExpandArrowBoolean.value = !isExpandArrowBoolean.value;
 };
 
-const resetformClick = () => {
+const clearOutlinedClick = () => {
   formRef.value?.resetFields();
-  formModel.order_search_value = undefined;
-  formModel.good_search_value = undefined;
+  model.order_search_value = undefined;
+  model.good_search_value = undefined;
 };
 
 const tableChange = async (pag = { page: 1, page_size: 10 }) => {
   loading.value = true;
-  let submitData = { ...formModel };
+  let submitData = { ...model };
   if (submitData.time?.length) {
     submitData.start = submitData.time[0].valueOf() * 1000;
     submitData.end = submitData.time[1].valueOf() * 1000;
@@ -661,7 +647,7 @@ const tableChange = async (pag = { page: 1, page_size: 10 }) => {
   loading.value = false;
 };
 
-const chooseButtonClick = async () => {
+const batchButtonClick = async () => {
   if (selectedRowKeys.value.length === 0) {
     message.warning("请选择");
     return;
@@ -689,15 +675,15 @@ const switchChange = async () => {
   }, 500);
 };
 
-function editButtonClick(record: any) {
+function editOutlinedIconClick(record: any) {
   record.editStockStatus = true;
 }
 
-function cancelButtonClick(record: any) {
+function closeOutlinedIconClick(record: any) {
   record.editStockStatus = false;
 }
 
-async function okButtonClick(record: any) {
+async function checkOutlinedIconClick(record: any) {
   await Promise.resolve();
   record.editStockStatus = false;
   message.success("成功");
@@ -705,6 +691,23 @@ async function okButtonClick(record: any) {
     tableChange();
   }, 500);
 }
+
+// 数据
+const isExpandArrowBoolean = ref<boolean>(false);
+const selectedRowsArray = ref();
+
+order_list_page_api({}).then(({ data }) => {
+  console.log(data.aaa, 3);
+});
+
+watch(isExpandArrowBoolean, (newValue) => {
+  if (newValue) {
+    height.value = "auto";
+  } else {
+    height.value = "220px";
+  }
+});
+
 // 初始化
 tableChange();
 </script>
