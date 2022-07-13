@@ -11,6 +11,5 @@ import { useSlots, inject, useAttrs } from "vue";
 
 let outer = inject("outer");
 const p = defineProps(props);
-const emit = defineEmits(["update:value"]);
 const { newSlots } = core(p);
 </script>

@@ -15,7 +15,6 @@ import props from "./props";
 import dayjs, { Dayjs } from "dayjs";
 
 const p = defineProps(props);
-const emit = defineEmits(["update:value"]);
 const { newSlots } = core(p);
 const ranges: { [name: string]: [Dayjs, Dayjs] } = {
   今天: [dayjs().startOf("day"), dayjs().endOf("day")],

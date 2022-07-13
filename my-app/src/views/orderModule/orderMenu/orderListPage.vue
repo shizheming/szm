@@ -48,7 +48,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="订单状态" :label-col="{ span: 6 }">
+        <a-form-item
+          label="订单状态"
+          :label-col="{ span: 6 }"
+          :name="['sub_status_arr']"
+        >
           <a-select
             mode="multiple"
             :options="ORDER_STATUS_OPTIONS"
@@ -57,7 +61,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="支付状态" :label-col="{ span: 6 }">
+        <a-form-item
+          label="支付状态"
+          :label-col="{ span: 6 }"
+          :name="['pay_status_arr']"
+        >
           <a-select
             mode="multiple"
             :options="PAY_STATUS_OPTIONS"
@@ -66,7 +74,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="发货状态" :label-col="{ span: 6 }">
+        <a-form-item
+          label="发货状态"
+          :label-col="{ span: 6 }"
+          :name="['deliver_arr']"
+        >
           <a-select
             mode="multiple"
             :options="DELIVERY_STATUS_OPTIONS"
@@ -75,17 +87,29 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="店铺名称" :label-col="{ span: 6 }">
+        <a-form-item
+          label="店铺名称"
+          :label-col="{ span: 6 }"
+          :name="['shop_name']"
+        >
           <a-input v-model:value="formModel.shop_name" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="供应商" :label-col="{ span: 6 }">
+        <a-form-item
+          label="供应商"
+          :label-col="{ span: 6 }"
+          :name="['supplier_id']"
+        >
           <supplier-select v-model:value="formModel.supplier_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="用户等级" :label-col="{ span: 6 }">
+        <a-form-item
+          label="用户等级"
+          :label-col="{ span: 6 }"
+          :name="['user_level']"
+        >
           <a-select
             :options="USER_LEVEL_OPTIONS"
             v-model:value="formModel.user_level"
@@ -93,7 +117,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="后台类目" :label-col="{ span: 6 }">
+        <a-form-item
+          label="后台类目"
+          :label-col="{ span: 6 }"
+          :name="['category_id']"
+        >
           <background-category-cascader
             v-model:value="formModel.category_id"
             style="width: 100%"
@@ -101,7 +129,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="商品品牌" :label-col="{ span: 6 }">
+        <a-form-item
+          label="商品品牌"
+          :label-col="{ span: 6 }"
+          :name="['brand_name_arr']"
+        >
           <goods-brand-select
             v-model:value="formModel.brand_name_arr"
             mode="multiple"
@@ -109,12 +141,20 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="用户ID" :label-col="{ span: 6 }">
+        <a-form-item
+          label="用户ID"
+          :label-col="{ span: 6 }"
+          :name="['user_id']"
+        >
           <a-input v-model:value="formModel.user_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="录入方式" :label-col="{ span: 6 }">
+        <a-form-item
+          label="录入方式"
+          :label-col="{ span: 6 }"
+          :name="['create_mode_arr']"
+        >
           <a-select
             v-model:value="formModel.create_mode_arr"
             mode="multiple"
@@ -123,7 +163,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="来源终端" :label-col="{ span: 6 }">
+        <a-form-item
+          label="来源终端"
+          :label-col="{ span: 6 }"
+          :name="['app_platform']"
+        >
           <a-select
             v-model:value="formModel.app_platform"
             :options="APP_PLATFORM_OPTIONS"
@@ -131,12 +175,20 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="销售渠道" :label-col="{ span: 6 }">
+        <a-form-item
+          label="销售渠道"
+          :label-col="{ span: 6 }"
+          :name="['sale_mode']"
+        >
           <sale-mode-select v-model:value="formModel.sale_mode" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="配送方式" :label-col="{ span: 6 }">
+        <a-form-item
+          label="配送方式"
+          :label-col="{ span: 6 }"
+          :name="['delivery_mode']"
+        >
           <a-select
             v-model:value="formModel.delivery_mode"
             :options="DELIVERY_MODE_OPTIONS"
@@ -144,7 +196,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="支付方式" :label-col="{ span: 6 }">
+        <a-form-item
+          label="支付方式"
+          :label-col="{ span: 6 }"
+          :name="['pay_type']"
+        >
           <a-select
             v-model:value="formModel.pay_type"
             :options="PAY_TYPE_OPTIONS"
@@ -152,7 +208,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="支付类型" :label-col="{ span: 6 }">
+        <a-form-item
+          label="支付类型"
+          :label-col="{ span: 6 }"
+          :name="['payment_type']"
+        >
           <a-select
             v-model:value="formModel.payment_type"
             :options="PAYMENT_TYPE_OPTIONS"
@@ -160,7 +220,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="发票" :label-col="{ span: 6 }">
+        <a-form-item
+          label="发票"
+          :label-col="{ span: 6 }"
+          :name="['is_invoice']"
+        >
           <a-select
             v-model:value="formModel.is_invoice"
             :options="IS_INVOICE_OPTIONS"
@@ -168,7 +232,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="本地服务" :label-col="{ span: 6 }">
+        <a-form-item
+          label="本地服务"
+          :label-col="{ span: 6 }"
+          :name="['is_support_local']"
+        >
           <a-select
             v-model:value="formModel.is_support_local"
             :options="WHETHER_OPTIONS"
@@ -176,7 +244,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="订单商品来源" :label-col="{ span: 6 }">
+        <a-form-item
+          label="订单商品来源"
+          :label-col="{ span: 6 }"
+          :name="['goods_source']"
+        >
           <a-select
             v-model:value="formModel.goods_source"
             :options="GOODS_SOURCE_OPTIONS"
@@ -184,7 +256,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="分销订单" :label-col="{ span: 6 }">
+        <a-form-item
+          label="分销订单"
+          :label-col="{ span: 6 }"
+          :name="['distribute_order']"
+        >
           <a-select
             v-model:value="formModel.distribute_order"
             :options="WHETHER_OPTIONS"
@@ -192,42 +268,74 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="销售站点" :label-col="{ span: 6 }">
+        <a-form-item
+          label="销售站点"
+          :label-col="{ span: 6 }"
+          :name="['owner_site_id']"
+        >
           <owner-site-select v-model:value="formModel.owner_site_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="订单创建" :label-col="{ span: 6 }">
+        <a-form-item
+          label="订单创建"
+          :label-col="{ span: 6 }"
+          :name="['createTime']"
+        >
           <a-range-picker show-time v-model:value="formModel.createTime" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="创建人ID" :label-col="{ span: 6 }">
+        <a-form-item
+          label="创建人ID"
+          :label-col="{ span: 6 }"
+          :name="['create_user_id']"
+        >
           <a-input v-model:value="formModel.create_user_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="订单支付" :label-col="{ span: 6 }">
+        <a-form-item
+          label="订单支付"
+          :label-col="{ span: 6 }"
+          :name="['paymentTime']"
+        >
           <a-range-picker show-time v-model:value="formModel.paymentTime" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="支付流水号" :label-col="{ span: 6 }">
+        <a-form-item
+          label="支付流水号"
+          :label-col="{ span: 6 }"
+          :name="['trade_no']"
+        >
           <a-input v-model:value="formModel.trade_no" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="要求送货" :label-col="{ span: 6 }">
+        <a-form-item
+          label="要求送货"
+          :label-col="{ span: 6 }"
+          :name="['deliveryTime']"
+        >
           <a-range-picker show-time v-model:value="formModel.deliveryTime" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="推荐人" :label-col="{ span: 6 }">
+        <a-form-item
+          label="推荐人"
+          :label-col="{ span: 6 }"
+          :name="['recommend_staff']"
+        >
           <a-input v-model:value="formModel.recommend_staff" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="营销活动明细" :label-col="{ span: 6 }">
+        <a-form-item
+          label="营销活动明细"
+          :label-col="{ span: 6 }"
+          :name="['marketing_type']"
+        >
           <a-select
             v-model:value="formModel.marketing_type"
             :options="MARTING_TYPE_OPTIONS"
@@ -235,7 +343,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="订单类型" :label-col="{ span: 6 }">
+        <a-form-item
+          label="订单类型"
+          :label-col="{ span: 6 }"
+          :name="['order_type']"
+        >
           <a-select
             v-model:value="formModel.order_type"
             :options="ORDER_TYPE_OPTIONS"
@@ -243,7 +355,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="售后" :label-col="{ span: 6 }">
+        <a-form-item
+          label="售后"
+          :label-col="{ span: 6 }"
+          :name="['is_return']"
+        >
           <a-select
             v-model:value="formModel.is_return"
             :options="YES_NO_OPTIONS"
@@ -251,12 +367,20 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="运单号" :label-col="{ span: 6 }">
+        <a-form-item
+          label="运单号"
+          :label-col="{ span: 6 }"
+          :name="['package_no']"
+        >
           <a-input v-model:value="formModel.package_no" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="买家备注" :label-col="{ span: 6 }">
+        <a-form-item
+          label="买家备注"
+          :label-col="{ span: 6 }"
+          :name="['is_mem_msg']"
+        >
           <a-select
             v-model:value="formModel.is_mem_msg"
             :options="YES_NO_OPTIONS"
@@ -264,17 +388,29 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="订单销售组织" :label-col="{ span: 6 }">
+        <a-form-item
+          label="订单销售组织"
+          :label-col="{ span: 6 }"
+          :name="['sub_org_id']"
+        >
           <sub-org-select v-model:value="formModel.sub_org_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="燃气用户" :label-col="{ span: 6 }">
+        <a-form-item
+          label="燃气用户"
+          :label-col="{ span: 6 }"
+          :name="['gas_account']"
+        >
           <a-input v-model:value="formModel.gas_account" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="业务模式" :label-col="{ span: 6 }">
+        <a-form-item
+          label="业务模式"
+          :label-col="{ span: 6 }"
+          :name="['business_id']"
+        >
           <a-select
             v-model:value="formModel.business_id"
             :options="BUSINESS_OPTIONS"
@@ -282,7 +418,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="预订购" :label-col="{ span: 6 }">
+        <a-form-item
+          label="预订购"
+          :label-col="{ span: 6 }"
+          :name="['is_pre_subscribe']"
+        >
           <a-select
             v-model:value="formModel.is_pre_subscribe"
             :options="WHETHER_OPTIONS"
@@ -290,12 +430,20 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="订单销售组织" :label-col="{ span: 6 }">
+        <a-form-item
+          label="订单销售组织"
+          :label-col="{ span: 6 }"
+          :name="['source_site_id']"
+        >
           <owner-site-select v-model:value="formModel.source_site_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="拼单状态" :label-col="{ span: 6 }">
+        <a-form-item
+          label="拼单状态"
+          :label-col="{ span: 6 }"
+          :name="['spell_order_status']"
+        >
           <a-select
             v-model:value="formModel.spell_order_status"
             :options="SPELL_ORDER_STATUS_OPTIONS"
@@ -303,7 +451,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="对接外部系统" :label-col="{ span: 6 }">
+        <a-form-item
+          label="对接外部系统"
+          :label-col="{ span: 6 }"
+          :name="['is_out_supplier']"
+        >
           <a-select
             v-model:value="formModel.is_out_supplier"
             :options="WHETHER_OPTIONS"
@@ -311,7 +463,11 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="收货地址" :label-col="{ span: 6 }">
+        <a-form-item
+          label="收货地址"
+          :label-col="{ span: 6 }"
+          :name="['address']"
+        >
           <address-cascader v-model:value="formModel.address" />
         </a-form-item>
       </a-col>
@@ -324,8 +480,8 @@
               <search-outlined />
             </a-button>
             <clear-outlined @click="resetformClick" />
-            <down-outlined @click="expandArrowClick" v-if="isExpandArrow" />
-            <up-outlined @click="expandArrowClick" v-else />
+            <up-outlined @click="expandArrowClick" v-if="isExpandArrow" />
+            <down-outlined @click="expandArrowClick" v-else />
           </a-space>
         </a-form-item>
       </a-col>
@@ -380,7 +536,7 @@
             @click="editButtonClick(record)"
           />
           <div v-else>
-            <check-circle-outlined
+            <check-outlined
               @click="okButtonClick(record)"
               style="
                 font-size: 18px;
@@ -389,7 +545,7 @@
                 cursor: pointer;
               "
             />
-            <stop-outlined
+            <close-outlined
               style="font-size: 18px; cursor: pointer"
               @click="cancelButtonClick(record)"
             />
@@ -402,7 +558,7 @@
 <script setup lang="ts">
 import { ref, watch, reactive } from "vue";
 import { DownOutlined, UpOutlined } from "@ant-design/icons-vue";
-import { message } from "ant-design-vue";
+import { message, FormInstance } from "ant-design-vue";
 import {
   ORDER_STATUS_OPTIONS,
   PAY_STATUS_OPTIONS,
@@ -429,112 +585,42 @@ import SaleModeSelect from "../../../components/select/saleMode.vue";
 import OwnerSiteSelect from "../../../components/select/ownerSite.vue";
 import SubOrgSelect from "../../../components/select/subOrg.vue";
 import AddressCascader from "../../../components/cascader/address.vue";
-
+import { columns } from "./orderListPageData";
 import {
   SmileOutlined,
   SearchOutlined,
   ClearOutlined,
   EditOutlined,
-  StopOutlined,
-  CheckCircleOutlined,
+  CloseOutlined,
+  CheckOutlined,
 } from "@ant-design/icons-vue";
-
-let asdf = {};
-
-// 接口
-interface formModel {
-  order_search_key?: string;
-  order_search_value?: string;
-  good_search_key?: string;
-  good_search_value?: string;
-  sub_status_arr?: [];
-  pay_status_arr?: [];
-  deliver_arr?: [];
-  shop_name?: string;
-  supplier_id?: number;
-  user_level?: number;
-  category_id?: number;
-  brand_name_arr?: [];
-  user_id?: number;
-  create_mode_arr?: [];
-  app_platform?: string;
-  sale_mode?: number;
-  delivery_mode?: number;
-  pay_type?: number;
-  payment_type?: number;
-  is_invoice?: number;
-  is_support_local?: number;
-  goods_source?: number;
-  distribute_order?: number;
-  owner_site_id?: number;
-  createTime?: [];
-  create_user_id?: number;
-  paymentTime?: [];
-  trade_no?: number;
-  deliveryTime?: [];
-  recommend_staff?: string;
-  marketing_type?: number;
-  order_type?: number;
-  is_return?: number;
-  package_no?: string;
-  is_mem_msg?: number;
-  sub_org_id?: number;
-  gas_account?: string;
-  business_id?: number;
-  is_pre_subscribe?: number;
-  source_site_id?: number;
-  spell_order_status?: number;
-  is_out_supplier?: number;
-  address?: [];
-}
+import type { formModelInterface } from "./interface";
+import { order_list_page_api } from "./api";
 
 // 动态数据
-const isExpandArrow = ref();
-const formModel = reactive<formModel>({
+const isExpandArrow = ref<boolean>(false);
+const formModel = reactive<formModelInterface>({
   order_search_key: "osl_seq",
   good_search_key: "goods_name",
 });
-const formRef = ref();
+const formRef = ref<FormInstance>();
 const dataSource = ref();
-const loading = ref();
-const height = ref();
+const loading = ref<boolean>(false);
+const height = ref<string>("220px");
 const pagination = reactive({ hideOnSinglePage: true });
 const selectedRowKeys = ref([]);
 const selectedRows = ref();
 // 静态数据
-const columns = [
-  {
-    title: "操作",
-    dataIndex: "operation",
-    key: "operation",
-  },
-  {
-    title: "title",
-    dataIndex: "is_listing",
-    key: "is_listing",
-  },
-  {
-    title: "title",
-    dataIndex: "stock",
-    key: "stock",
-  },
-  {
-    title: "title",
-    dataIndex: "name3",
-    key: "name3",
-  },
-  {
-    title: "title",
-    dataIndex: "name4",
-    key: "name4",
-  },
-];
+
+order_list_page_api({}).then(({ data }) => {
+  console.log(data.aaa, 3);
+});
 
 watch(isExpandArrow, (newValue) => {
   if (newValue) {
-    height.value = "100px";
-  } else {
     height.value = "auto";
+  } else {
+    height.value = "220px";
   }
 });
 
@@ -553,7 +639,9 @@ const expandArrowClick = () => {
 };
 
 const resetformClick = () => {
-  formRef.value.resetFields();
+  formRef.value?.resetFields();
+  formModel.order_search_value = undefined;
+  formModel.good_search_value = undefined;
 };
 
 const tableChange = async (pag = { page: 1, page_size: 10 }) => {

@@ -9,7 +9,7 @@ const keyHex = CryptoJS.enc.Utf8.parse("70682896");
  * @param {*} keyHex
  * @returns
  */
-export const encrypt = (encryptText) => {
+export const encrypt = (encryptText: any) => {
   const encrypted = CryptoJS.DES.encrypt(encryptText, keyHex, {
     mode: CryptoJS.mode.ECB,
     padding: CryptoJS.pad.Pkcs7,

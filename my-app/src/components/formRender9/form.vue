@@ -38,7 +38,6 @@ let newSlots: { [name: string]: any } = {};
 forEach(slots, (value, key) => {
   newSlots[key] = (value as () => {})();
 });
-
 // 判断是不是编辑页
 provide("isEdit", p.isEdit);
 // 判断是不是详情页

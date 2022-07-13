@@ -12,6 +12,5 @@ import props from "./props";
 delete Textarea.props.prefix;
 
 const p = defineProps(props);
-const emit = defineEmits(["update:value"]);
 const { newSlots } = core(p);
 </script>

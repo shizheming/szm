@@ -9,6 +9,6 @@ import { RadioGroup } from "ant-design-vue";
 import props from "./props";
 
 const p = defineProps(props);
-const emit = defineEmits(["update:value"]);
+
 const { newSlots } = core(p);
 </script>
