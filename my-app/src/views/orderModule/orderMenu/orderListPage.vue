@@ -282,7 +282,11 @@
           :label-col="{ span: 6 }"
           :name="['createTime']"
         >
-          <a-range-picker show-time v-model:value="model.createTime" />
+          <a-range-picker
+            show-time
+            v-model:value="model.createTime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+          />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -300,7 +304,11 @@
           :label-col="{ span: 6 }"
           :name="['paymentTime']"
         >
-          <a-range-picker show-time v-model:value="model.paymentTime" />
+          <a-range-picker
+            show-time
+            v-model:value="model.paymentTime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+          />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -318,7 +326,11 @@
           :label-col="{ span: 6 }"
           :name="['deliveryTime']"
         >
-          <a-range-picker show-time v-model:value="model.deliveryTime" />
+          <a-range-picker
+            show-time
+            v-model:value="model.deliveryTime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+          />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -574,6 +586,7 @@ import {
   YES_NO_OPTIONS,
   BUSINESS_OPTIONS,
   SPELL_ORDER_STATUS_OPTIONS,
+  SORT_ENUM,
 } from "../../../data/dictionary";
 import SupplierSelect from "../../../components/select/supplier.vue";
 import BackgroundCategoryCascader from "../../../components/cascader/backgroundCategory.vue";
@@ -614,16 +627,12 @@ const {
   loading,
   total,
 } = usePagination(order_list_page_api, {
-  defaultParams: [
-    {
-      page: 1,
-      page_size: 10,
-    },
-  ],
   formatResult: ({ data }) => {
     return data;
   },
   pagination: {
+    currentKey: "page",
+    pageSizeKey: "page_size",
     totalKey: "total",
   },
 });
@@ -662,11 +671,21 @@ const clearOutlinedClick = () => {
   model.good_search_value = undefined;
 };
 
-const tableChange: TableProps["onChange"] = async (pag) => {
+const tableChange: TableProps["onChange"] = async (
+  pag,
+  filters: any,
+  sorter: any
+) => {
+  let sorterAny: { [name: string]: any } = {};
+  if (sorter.order) {
+    sorterAny[SORT_KEY_ENUM[sorter.columnKey as keyof typeof SORT_KEY_ENUM]] =
+      SORT_ENUM[sorter.order];
+  }
   run({
     page: pag.current as number,
-    page_size: 10,
+    page_size: pag.pageSize as number,
     ...model,
+    ...sorterAny,
   });
 };
 
@@ -730,6 +749,10 @@ async function checkOutlinedIconClick(record: any) {
 // 数据
 const isExpandArrowBoolean = ref<boolean>(false);
 const selectedRowsArray = ref();
+enum SORT_KEY_ENUM {
+  order_time = "createtime_sort",
+  sub_total_amount = "amount_sort",
+}
 
 watch(isExpandArrowBoolean, (newValue) => {
   if (newValue) {

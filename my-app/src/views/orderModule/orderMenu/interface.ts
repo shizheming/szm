@@ -52,7 +52,23 @@ export interface paginationInterface {
 }
 
 export interface resultInterface extends modelInterface {
-  list: [];
+  list: {
+    sub_status: {
+      name: string;
+    };
+    order_type: {
+      name: string;
+    };
+    is_support_local: number;
+    distribute_order: number;
+    sub_total_amount: number;
+    sub_total_freight: number;
+    is_pre_subscribe: number;
+    goods_source: number;
+    order_time: string;
+    create_datetime: string;
+    shop_name: string;
+  }[];
 }
 
 export interface paramsInterface extends modelInterface {

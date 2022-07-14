@@ -1,5 +1,11 @@
 import { optionsEnum } from "../utils/tool";
 
+// 排序
+export enum SORT_ENUM {
+  ascend,
+  descend,
+}
+
 // 是否
 enum WHETHER_ENUM {
   否,
@@ -8,7 +14,7 @@ enum WHETHER_ENUM {
 export const WHETHER_OPTIONS = optionsEnum(WHETHER_ENUM);
 
 // 有无
-enum YES_NO_ENUM {
+export enum YES_NO_ENUM {
   无,
   有,
 }
