@@ -45,12 +45,17 @@ export interface modelInterface {
 }
 
 export interface paginationInterface {
-  page: number;
-  page_size: number;
+  page?: number;
+  pageSize?: number;
   total?: number;
   current?: number;
 }
 
-export interface searchInterface
-  extends formModelInterface,
-    paginationInterface {}
+export interface resultInterface extends modelInterface {
+  list: [];
+}
+
+export interface paramsInterface extends modelInterface {
+  page: number;
+  page_size: number;
+}

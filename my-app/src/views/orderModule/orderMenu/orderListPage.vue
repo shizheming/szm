@@ -494,7 +494,7 @@
   <a-table
     rowKey="id"
     :row-selection="{ selectedRowKeys, onChange: rowSelectionOnChange }"
-    :dataSource="dataSource"
+    :dataSource="dataSource?.list"
     :columns="columns"
     :loading="loading"
     :pagination="pagination"
@@ -555,7 +555,7 @@
 <script setup lang="ts">
 import { ref, watch, reactive } from "vue";
 import { DownOutlined, UpOutlined } from "@ant-design/icons-vue";
-import { message, FormInstance } from "ant-design-vue";
+import { message, FormInstance, TableProps } from "ant-design-vue";
 import {
   ORDER_STATUS_OPTIONS,
   PAY_STATUS_OPTIONS,
@@ -594,6 +594,7 @@ import {
 import type { modelInterface } from "./interface";
 import { order_list_page_api } from "./api";
 import { usePagination } from "vue-request";
+import { computed } from "@vue/reactivity";
 
 // 实体
 
@@ -603,11 +604,38 @@ const model = reactive<modelInterface>({
   good_search_key: "goods_name",
 });
 const formRef = ref<FormInstance>();
-const dataSource = ref();
-const loading = ref<boolean>(false);
 const height = ref<string>("220px");
-const pagination = reactive({ hideOnSinglePage: true });
 const selectedRowKeys = ref([]);
+const {
+  data: dataSource,
+  current,
+  pageSize,
+  run,
+  loading,
+  total,
+} = usePagination(order_list_page_api, {
+  defaultParams: [
+    {
+      page: 1,
+      page_size: 10,
+    },
+  ],
+  formatResult: ({ data }) => {
+    return data;
+  },
+  pagination: {
+    totalKey: "total",
+  },
+});
+
+const pagination = computed(() => {
+  return {
+    total: total.value,
+    current: current.value,
+    pageSize: pageSize.value,
+    hideOnSinglePage: true,
+  };
+});
 
 // 事件
 const rowSelectionOnChange = (keys: [], rows: []) => {
@@ -617,7 +645,11 @@ const rowSelectionOnChange = (keys: [], rows: []) => {
 
 const finish = async (values: any) => {
   console.log(model, 123);
-  tableChange();
+  run({
+    page: 1,
+    page_size: 10,
+    ...model,
+  });
 };
 
 const arrowClick = () => {
@@ -630,21 +662,12 @@ const clearOutlinedClick = () => {
   model.good_search_value = undefined;
 };
 
-const tableChange = async (pag = { page: 1, page_size: 10 }) => {
-  loading.value = true;
-  let submitData = { ...model };
-  if (submitData.time?.length) {
-    submitData.start = submitData.time[0].valueOf() * 1000;
-    submitData.end = submitData.time[1].valueOf() * 1000;
-  }
-  let { data } = await Promise.resolve({
-    data: [{ id: 1, name1: 1234 }],
+const tableChange: TableProps["onChange"] = async (pag) => {
+  run({
+    page: pag.current as number,
+    page_size: 10,
+    ...model,
   });
-  dataSource.value = data;
-  pagination.total = data.total;
-  pagination.page = data.page;
-  pagination.pageSize = data.pageSize;
-  loading.value = false;
 };
 
 const batchButtonClick = async () => {
@@ -655,7 +678,10 @@ const batchButtonClick = async () => {
   await Promise.resolve();
   message.success("成功");
   setTimeout(() => {
-    tableChange();
+    run({
+      page: 1,
+      page_size: 10,
+    });
   }, 500);
 };
 
@@ -663,7 +689,10 @@ const popconfirmConfirm = async () => {
   await Promise.resolve();
   message.success("成功");
   setTimeout(() => {
-    tableChange();
+    run({
+      page: 1,
+      page_size: 10,
+    });
   }, 500);
 };
 
@@ -671,7 +700,10 @@ const switchChange = async () => {
   await Promise.resolve();
   message.success("成功");
   setTimeout(() => {
-    tableChange();
+    run({
+      page: 1,
+      page_size: 10,
+    });
   }, 500);
 };
 
@@ -688,17 +720,16 @@ async function checkOutlinedIconClick(record: any) {
   record.editStockStatus = false;
   message.success("成功");
   setTimeout(() => {
-    tableChange();
+    run({
+      page: 1,
+      page_size: 10,
+    });
   }, 500);
 }
 
 // 数据
 const isExpandArrowBoolean = ref<boolean>(false);
 const selectedRowsArray = ref();
-
-order_list_page_api({}).then(({ data }) => {
-  console.log(data.aaa, 3);
-});
 
 watch(isExpandArrowBoolean, (newValue) => {
   if (newValue) {
@@ -709,5 +740,4 @@ watch(isExpandArrowBoolean, (newValue) => {
 });
 
 // 初始化
-tableChange();
 </script>

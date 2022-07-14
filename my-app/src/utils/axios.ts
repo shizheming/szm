@@ -62,7 +62,6 @@ axios.interceptors.response.use(
       }
       return Promise.reject();
     }
-    console.log(response, 999);
 
     return response.data;
   },
