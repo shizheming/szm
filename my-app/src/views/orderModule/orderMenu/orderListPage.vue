@@ -497,8 +497,19 @@
     </a-row>
   </a-form>
   <a-row style="margin: 30px 0">
-    <a-space size="large">
-      <a-button @click="batchButtonClick">批量编辑商家备注</a-button>
+    <a-space>
+      <a-button @click="batchButtonClick" type="primary" size="small"
+        >批量编辑商家备注</a-button
+      >
+      <a-button @click="taskButtonClick" type="primary" size="small"
+        >查看任务</a-button
+      >
+      <a-button @click="exporButtonClick" type="primary" size="small"
+        >导出发货信息</a-button
+      >
+      <a-button @click="exporButtonClick" type="primary" size="small"
+        >导出订单明细</a-button
+      >
       <router-link to="/">人工下单</router-link>
       <router-link to="/">补开发票</router-link>
     </a-space>
@@ -512,17 +523,70 @@
     :pagination="pagination"
     @change="tableChange"
   >
-    <template #bodyCell="{ column, record }">
+    <template
+      #bodyCell="{
+        column,
+        record,
+      }: {
+        column: TableColumnType,
+        record: listItemInterface,
+      }"
+    >
       <template v-if="column.key === 'operation'">
         <a-space>
-          <router-link to="/"><a>查看</a></router-link>
-          <router-link to="/"><a>编辑</a></router-link>
-          <a-popconfirm title="确定要？" @confirm="popconfirmConfirm">
-            <a-button size="small">取消</a-button>
+          <router-link to="/">
+            <a-button type="link" size="small">查看</a-button>
+          </router-link>
+          <router-link
+            to="/"
+            v-if="
+              record.distribute_order != 1 &&
+              record.sub_status.value == 30 &&
+              record.is_electron === 1 &&
+              record.out_delivery_tag === 0 &&
+              record.delivery_mode.value == 1
+            "
+          >
+            <a-button type="link" size="small">京东快递发货</a-button>
+          </router-link>
+
+          <router-link
+            v-if="
+              record.external_system_code != 'JINGDONG' &&
+              record.distribute_order != 1 &&
+              record.sub_status.value == 30 &&
+              record.delivery_mode.value == 1
+            "
+            to="/"
+          >
+            <a-button type="link" size="small">发货</a-button>
+          </router-link>
+          <a-popconfirm
+            title="请确认用户已经签收，否则可能会引起用户投诉！"
+            @confirm="
+              popconfirmConfirm(confirmsign_api, {
+                user_id: record.user.user_id,
+                osl_seq: record.osl_seq,
+                operator: USER_INFO.user_id,
+              })
+            "
+          >
+            <a-button size="small">确认签收</a-button>
+          </a-popconfirm>
+          <a-popconfirm
+            v-if="record.is_pre_subscribe && record.status == 20"
+            title="订单确认后，在系统中可以对订单进行发货操作"
+            @confirm="
+              popconfirmConfirm(confirmPreOrder_api, {
+                osl_seq: record.osl_seq,
+              })
+            "
+          >
+            <a-button size="small">预订购确认</a-button>
           </a-popconfirm>
         </a-space>
       </template>
-      <template v-if="column.key === 'is_listing'">
+      <!-- <template v-if="column.key === 'is_listing'">
         <a-switch
           :checked="!!record.is_listing"
           @change="switchChange"
@@ -560,14 +624,19 @@
             />
           </div>
         </a-space>
-      </template>
+      </template> -->
     </template>
   </a-table>
 </template>
 <script setup lang="ts">
 import { ref, watch, reactive } from "vue";
 import { DownOutlined, UpOutlined } from "@ant-design/icons-vue";
-import { message, FormInstance, TableProps } from "ant-design-vue";
+import {
+  message,
+  FormInstance,
+  TableProps,
+  TableColumnType,
+} from "ant-design-vue";
 import {
   ORDER_STATUS_OPTIONS,
   PAY_STATUS_OPTIONS,
@@ -587,6 +656,7 @@ import {
   BUSINESS_OPTIONS,
   SPELL_ORDER_STATUS_OPTIONS,
   SORT_ENUM,
+  USER_INFO,
 } from "../../../data/dictionary";
 import SupplierSelect from "../../../components/select/supplier.vue";
 import BackgroundCategoryCascader from "../../../components/cascader/backgroundCategory.vue";
@@ -604,8 +674,13 @@ import {
   CloseOutlined,
   CheckOutlined,
 } from "@ant-design/icons-vue";
-import type { modelInterface } from "./interface";
-import { order_list_page_api } from "./api";
+import type {
+  modelInterface,
+  listItemInterface,
+  confirmsignInterface,
+  confirmPreOrderInterface,
+} from "./interface";
+import { order_api, confirmsign_api, confirmPreOrder_api } from "./api";
 import { usePagination } from "vue-request";
 import { computed } from "@vue/reactivity";
 
@@ -626,7 +701,7 @@ const {
   run,
   loading,
   total,
-} = usePagination(order_list_page_api, {
+} = usePagination(order_api, {
   formatResult: ({ data }) => {
     return data;
   },
@@ -704,13 +779,20 @@ const batchButtonClick = async () => {
   }, 500);
 };
 
-const popconfirmConfirm = async () => {
-  await Promise.resolve();
+const taskButtonClick = () => {};
+const exporButtonClick = () => {};
+
+const popconfirmConfirm = async (
+  api: (p: any) => Promise<any>,
+  params: confirmsignInterface | confirmPreOrderInterface
+) => {
+  await api(params);
   message.success("成功");
   setTimeout(() => {
     run({
       page: 1,
       page_size: 10,
+      ...model,
     });
   }, 500);
 };

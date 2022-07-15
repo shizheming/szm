@@ -1,9 +1,14 @@
-import { YES_NO_ENUM } from "../../../data/dictionary";
-export const columns = [
+import {
+  YES_NO_ENUM,
+  WHETHER_ENUM,
+  GOODS_SOURCE_ENUM,
+} from "../../../data/dictionary";
+import { TableColumnsType } from "ant-design-vue";
+export const columns: TableColumnsType = [
   {
     title: "操作",
-    dataIndex: "opration",
-    key: "opration",
+    dataIndex: "operation",
+    key: "operation",
   },
   {
     title: "订单编号",
@@ -24,7 +29,7 @@ export const columns = [
     title: "本地服务",
     dataIndex: "is_support_local",
     key: "is_support_local",
-    customRender({ text }: { text: number }) {
+    customRender({ text }) {
       return YES_NO_ENUM[text];
     },
   },
@@ -32,8 +37,8 @@ export const columns = [
     title: "是否分销订单",
     dataIndex: "distribute_order",
     key: "distribute_order",
-    customRender({ text }: { text: number }) {
-      return ["否", "是"][text];
+    customRender({ text }) {
+      return WHETHER_ENUM[text];
     },
   },
   {
@@ -72,16 +77,16 @@ export const columns = [
     title: "预订购",
     dataIndex: "is_pre_subscribe",
     key: "is_pre_subscribe",
-    customRender({ text }: { text: number }) {
-      return ["否", "是"][text];
+    customRender({ text }) {
+      return WHETHER_ENUM[text];
     },
   },
   {
     title: "订单商品来源",
     dataIndex: "goods_source",
     key: "goods_source",
-    customRender({ text }: { text: number }) {
-      return ["自建商品", "选品池商品"][text];
+    customRender({ text }) {
+      return GOODS_SOURCE_ENUM[text];
     },
   },
 ];

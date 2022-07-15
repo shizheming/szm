@@ -51,27 +51,53 @@ export interface paginationInterface {
   current?: number;
 }
 
+export interface listItemInterface {
+  sub_status: {
+    name: string;
+    value: number;
+  };
+  order_type: {
+    name: string;
+  };
+  user: {
+    user_id: string;
+  };
+  delivery_mode: {
+    value: number;
+  };
+  status: number;
+  external_system_code: string;
+  is_support_local: number;
+  distribute_order: number;
+  sub_total_amount: number;
+  sub_total_freight: number;
+  is_pre_subscribe: number;
+  goods_source: number;
+  order_time: string;
+  create_datetime: string;
+  is_electron: number;
+  out_delivery_tag: number;
+  shop_name: string;
+  osl_seq: string;
+}
 export interface resultInterface extends modelInterface {
-  list: {
-    sub_status: {
-      name: string;
-    };
-    order_type: {
-      name: string;
-    };
-    is_support_local: number;
-    distribute_order: number;
-    sub_total_amount: number;
-    sub_total_freight: number;
-    is_pre_subscribe: number;
-    goods_source: number;
-    order_time: string;
-    create_datetime: string;
-    shop_name: string;
-  }[];
+  list: listItemInterface[];
 }
 
 export interface paramsInterface extends modelInterface {
   page: number;
   page_size: number;
+}
+export interface confirmsignInterface {
+  user_id: string;
+  osl_seq: string;
+  operator: string;
+}
+
+export interface confirmPreOrderInterface {
+  osl_seq: string;
+}
+
+export interface remarkInterface {
+  remark: string;
 }

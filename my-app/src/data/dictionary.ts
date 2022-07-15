@@ -7,7 +7,7 @@ export enum SORT_ENUM {
 }
 
 // 是否
-enum WHETHER_ENUM {
+export enum WHETHER_ENUM {
   否,
   是,
 }
@@ -125,7 +125,7 @@ enum IS_INVOICE_ENUM {
 export const IS_INVOICE_OPTIONS = optionsEnum(IS_INVOICE_ENUM);
 
 // 订单商品来源
-enum GOODS_SOURCE_ENUM {
+export enum GOODS_SOURCE_ENUM {
   自建,
   选品池,
 }
@@ -171,3 +171,6 @@ enum SPELL_ORDER_STATUS_ENUM {
   失败,
 }
 export const SPELL_ORDER_STATUS_OPTIONS = optionsEnum(SPELL_ORDER_STATUS_ENUM);
+
+// user-info
+export const USER_INFO = JSON.parse(localStorage.getItem("userInfo") as string);
