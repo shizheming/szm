@@ -1,4 +1,4 @@
-export interface modelInterface {
+export interface ModelInterface {
   order_search_key?: string;
   order_search_value?: string;
   good_search_key?: string;
@@ -51,7 +51,7 @@ export interface paginationInterface {
   current?: number;
 }
 
-export interface listItemInterface {
+export interface ListItemInterface {
   sub_status: {
     name: string;
     value: number;
@@ -80,24 +80,32 @@ export interface listItemInterface {
   shop_name: string;
   osl_seq: string;
 }
-export interface resultInterface extends modelInterface {
+export interface ResultInterface extends ModelInterface {
   list: listItemInterface[];
 }
 
-export interface paramsInterface extends modelInterface {
+export interface RaramsInterface extends ModelInterface {
   page: number;
   page_size: number;
 }
-export interface confirmsignInterface {
+export interface ConfirmsignInterface {
   user_id: string;
   osl_seq: string;
   operator: string;
 }
 
-export interface confirmPreOrderInterface {
+export interface ConfirmPreOrderInterface {
   osl_seq: string;
 }
 
-export interface remarkInterface {
-  remark: string;
+export interface RemarkFormInterface {
+  merchant_remark: string;
+}
+
+export interface RemarkInterface {
+  ids: {
+    merchant_remark: string;
+    osl_seq: string;
+    user_id: string;
+  }[];
 }

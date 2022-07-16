@@ -4,6 +4,7 @@ import type {
   resultInterface,
   confirmsignInterface,
   confirmPreOrderInterface,
+  remarkInterface,
 } from "./interface";
 // 列表
 export const order_api = (params: paramsInterface) => {
@@ -20,4 +21,9 @@ export const confirmsign_api = (params: confirmsignInterface) => {
 // 预订购确认
 export const confirmPreOrder_api = (params: confirmPreOrderInterface) => {
   return axios.post("/api/proxy/order/manage/edit/confirmPreOrder", params);
+};
+
+// 批量修改卖家备注
+export const merchant_remark_api = (params: remarkInterface) => {
+  return axios.put("/api/order/merchant-remark/batch", params);
 };

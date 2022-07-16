@@ -529,7 +529,7 @@
         record,
       }: {
         column: TableColumnType,
-        record: listItemInterface,
+        record: ListItemInterface,
       }"
     >
       <template v-if="column.key === 'operation'">
@@ -627,9 +627,13 @@
       </template> -->
     </template>
   </a-table>
+  <remark-modal
+    v-model:visible="remarkModalVisible"
+    :selectedRowsArray="selectedRowsArray"
+  />
 </template>
 <script setup lang="ts">
-import { ref, watch, reactive } from "vue";
+import { ref, watch, reactive, defineAsyncComponent } from "vue";
 import { DownOutlined, UpOutlined } from "@ant-design/icons-vue";
 import {
   message,
@@ -675,10 +679,10 @@ import {
   CheckOutlined,
 } from "@ant-design/icons-vue";
 import type {
-  modelInterface,
-  listItemInterface,
-  confirmsignInterface,
-  confirmPreOrderInterface,
+  ModelInterface,
+  ListItemInterface,
+  ConfirmsignInterface,
+  ConfirmPreOrderInterface,
 } from "./interface";
 import { order_api, confirmsign_api, confirmPreOrder_api } from "./api";
 import { usePagination } from "vue-request";
@@ -686,11 +690,17 @@ import { computed } from "@vue/reactivity";
 
 // 实体
 
+// 异步组件
+const remarkModal = defineAsyncComponent(
+  () => import("./components/remarkModal.vue")
+);
+
 // 属性
-const model = reactive<modelInterface>({
+const model = reactive<ModelInterface>({
   order_search_key: "osl_seq",
   good_search_key: "goods_name",
 });
+const remarkModalVisible = ref<boolean>(false);
 const formRef = ref<FormInstance>();
 const height = ref<string>("220px");
 const selectedRowKeys = ref([]);
@@ -769,14 +779,7 @@ const batchButtonClick = async () => {
     message.warning("请选择");
     return;
   }
-  await Promise.resolve();
-  message.success("成功");
-  setTimeout(() => {
-    run({
-      page: 1,
-      page_size: 10,
-    });
-  }, 500);
+  remarkModalVisible.value = true;
 };
 
 const taskButtonClick = () => {};
@@ -784,7 +787,7 @@ const exporButtonClick = () => {};
 
 const popconfirmConfirm = async (
   api: (p: any) => Promise<any>,
-  params: confirmsignInterface | confirmPreOrderInterface
+  params: ConfirmsignInterface | ConfirmPreOrderInterface
 ) => {
   await api(params);
   message.success("成功");
@@ -830,7 +833,7 @@ async function checkOutlinedIconClick(record: any) {
 
 // 数据
 const isExpandArrowBoolean = ref<boolean>(false);
-const selectedRowsArray = ref();
+const selectedRowsArray = ref<ListItemInterface[]>([]);
 enum SORT_KEY_ENUM {
   order_time = "createtime_sort",
   sub_total_amount = "amount_sort",

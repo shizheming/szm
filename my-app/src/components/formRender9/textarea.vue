@@ -1,5 +1,5 @@
 <template>
-  <Textarea allowClear auto-size v-bind="newSlots">
+  <Textarea allowClear auto-size show-count :maxlength="200" v-bind="newSlots">
     <slot />
   </Textarea>
 </template>
