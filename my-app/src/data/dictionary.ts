@@ -172,5 +172,12 @@ enum SPELL_ORDER_STATUS_ENUM {
 }
 export const SPELL_ORDER_STATUS_OPTIONS = optionsEnum(SPELL_ORDER_STATUS_ENUM);
 
+// 任务类
+enum TYPE_ENUM {
+  导出订单明细 = 2,
+  导出发货信息 = 6,
+}
+export const TYPE_OPTIONS = optionsEnum(TYPE_ENUM);
+
 // user-info
 export const USER_INFO = JSON.parse(localStorage.getItem("userInfo") as string);

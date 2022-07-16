@@ -1,3 +1,4 @@
+// 表单绑定值-接口出参单个对象
 export interface ModelInterface {
   order_search_key?: string;
   order_search_value?: string;
@@ -44,6 +45,7 @@ export interface ModelInterface {
   address?: [];
 }
 
+// 分页
 export interface paginationInterface {
   page?: number;
   pageSize?: number;
@@ -51,43 +53,17 @@ export interface paginationInterface {
   current?: number;
 }
 
-export interface ListItemInterface {
-  sub_status: {
-    name: string;
-    value: number;
-  };
-  order_type: {
-    name: string;
-  };
-  user: {
-    user_id: string;
-  };
-  delivery_mode: {
-    value: number;
-  };
-  status: number;
-  external_system_code: string;
-  is_support_local: number;
-  distribute_order: number;
-  sub_total_amount: number;
-  sub_total_freight: number;
-  is_pre_subscribe: number;
-  goods_source: number;
-  order_time: string;
-  create_datetime: string;
-  is_electron: number;
-  out_delivery_tag: number;
-  shop_name: string;
-  osl_seq: string;
-}
-export interface ResultInterface extends ModelInterface {
-  list: listItemInterface[];
+// 搜索出参
+export interface ResultInterface {
+  list: ModelInterface[];
 }
 
-export interface RaramsInterface extends ModelInterface {
+// 搜索入参
+export interface ParamsInterface extends ModelInterface {
   page: number;
   page_size: number;
 }
+
 export interface ConfirmsignInterface {
   user_id: string;
   osl_seq: string;
@@ -108,4 +84,21 @@ export interface RemarkInterface {
     osl_seq: string;
     user_id: string;
   }[];
+}
+
+export interface TaskFormModelInterface {
+  sync_id?: number;
+  type?: number;
+  user_name?: number;
+  time?: [];
+}
+
+export interface TaskResultInterface {
+  list: TaskFormModelInterface[];
+}
+
+// 搜索入参
+export interface TaskParamsInterface extends TaskFormModelInterface {
+  page: number;
+  page_size: number;
 }

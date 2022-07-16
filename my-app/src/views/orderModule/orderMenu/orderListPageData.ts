@@ -90,3 +90,46 @@ export const columns: TableColumnsType = [
     },
   },
 ];
+
+export const taskColumns: TableColumnsType = [
+  {
+    title: "任务编号",
+    dataIndex: "id",
+    key: "id",
+  },
+  {
+    title: "任务类型",
+    dataIndex: "type_format",
+    key: "type_format",
+  },
+  {
+    title: "操作人",
+    dataIndex: "operator",
+    key: "operator",
+  },
+  {
+    title: "任务状态",
+    dataIndex: "status_format",
+    key: "status_format",
+  },
+  {
+    title: "操作时间",
+    dataIndex: "operate_time",
+    key: "operate_time",
+  },
+  {
+    title: "总记录数",
+    dataIndex: "total_num",
+    key: "total_num",
+  },
+  {
+    title: "成功记录数",
+    dataIndex: "success_num",
+    key: "success_num",
+  },
+  {
+    title: "操作",
+    dataIndex: "operation",
+    key: "operation",
+  },
+];

@@ -529,7 +529,7 @@
         record,
       }: {
         column: TableColumnType,
-        record: ListItemInterface,
+        record: ModelInterface,
       }"
     >
       <template v-if="column.key === 'operation'">
@@ -631,15 +631,19 @@
     v-model:visible="remarkModalVisible"
     :selectedRowsArray="selectedRowsArray"
   />
+  <taskModal
+    v-model:visible="taskModalVisible"
+    :selectedRowKeys="selectedRowKeys"
+  />
 </template>
 <script setup lang="ts">
 import { ref, watch, reactive, defineAsyncComponent } from "vue";
-import { DownOutlined, UpOutlined } from "@ant-design/icons-vue";
 import {
   message,
   FormInstance,
   TableProps,
   TableColumnType,
+  FormProps,
 } from "ant-design-vue";
 import {
   ORDER_STATUS_OPTIONS,
@@ -671,16 +675,13 @@ import SubOrgSelect from "../../../components/select/subOrg.vue";
 import AddressCascader from "../../../components/cascader/address.vue";
 import { columns } from "./orderListPageData";
 import {
-  SmileOutlined,
+  DownOutlined,
+  UpOutlined,
   SearchOutlined,
   ClearOutlined,
-  EditOutlined,
-  CloseOutlined,
-  CheckOutlined,
 } from "@ant-design/icons-vue";
 import type {
   ModelInterface,
-  ListItemInterface,
   ConfirmsignInterface,
   ConfirmPreOrderInterface,
 } from "./interface";
@@ -694,6 +695,9 @@ import { computed } from "@vue/reactivity";
 const remarkModal = defineAsyncComponent(
   () => import("./components/remarkModal.vue")
 );
+const taskModal = defineAsyncComponent(
+  () => import("./components/taskModal.vue")
+);
 
 // 属性
 const model = reactive<ModelInterface>({
@@ -701,6 +705,7 @@ const model = reactive<ModelInterface>({
   good_search_key: "goods_name",
 });
 const remarkModalVisible = ref<boolean>(false);
+const taskModalVisible = ref<boolean>(false);
 const formRef = ref<FormInstance>();
 const height = ref<string>("220px");
 const selectedRowKeys = ref([]);
@@ -737,7 +742,7 @@ const rowSelectionOnChange = (keys: [], rows: []) => {
   selectedRowsArray.value = rows;
 };
 
-const finish = async (values: any) => {
+const finish: FormProps["onFinish"] = async (values) => {
   console.log(model, 123);
   run({
     page: 1,
@@ -782,7 +787,9 @@ const batchButtonClick = async () => {
   remarkModalVisible.value = true;
 };
 
-const taskButtonClick = () => {};
+const taskButtonClick = () => {
+  taskModalVisible.value = true;
+};
 const exporButtonClick = () => {};
 
 const popconfirmConfirm = async (
@@ -833,7 +840,7 @@ async function checkOutlinedIconClick(record: any) {
 
 // 数据
 const isExpandArrowBoolean = ref<boolean>(false);
-const selectedRowsArray = ref<ListItemInterface[]>([]);
+const selectedRowsArray = ref<ModelInterface[]>([]);
 enum SORT_KEY_ENUM {
   order_time = "createtime_sort",
   sub_total_amount = "amount_sort",
