@@ -102,7 +102,7 @@ import {
 import { TaskFormModelInterface, TaskResultInterface } from "../interface";
 import { orderSyncList_api, getFileByUrl_api } from "../api";
 import { TYPE_OPTIONS } from "../../../../data/dictionary";
-import { taskColumns } from "../orderListPageData";
+import { taskColumns } from "../data";
 import { usePagination } from "vue-request";
 import { SearchOutlined, ClearOutlined } from "@ant-design/icons-vue";
 import { TableRowSelection } from "ant-design-vue/es/table/interface";

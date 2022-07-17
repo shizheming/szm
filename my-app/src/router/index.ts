@@ -42,30 +42,6 @@ const routes = [
         component: () => import("../views/goodsModule/goodsModule.vue"),
         children: goods,
       },
-      {
-        path: "/listPage",
-        name: "listPage",
-        meta: {
-          title: "列表代码块页面",
-        },
-        component: () => import("../components/listPage.vue"),
-      },
-      {
-        path: "/formPage",
-        name: "formPage",
-        meta: {
-          title: "表单代码块页面",
-        },
-        component: () => import("../components/formPage.vue"),
-      },
-      {
-        path: "/detailPage",
-        name: "detailPage",
-        meta: {
-          title: "详情代码块页面",
-        },
-        component: () => import("../components/detailPage.vue"),
-      },
     ],
   },
   {

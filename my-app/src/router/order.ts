@@ -18,6 +18,15 @@ export default [
           import("../views/orderModule/orderMenu/orderListPage.vue"),
       },
       {
+        path: "orderFormPage",
+        name: "orderFormPage",
+        meta: {
+          title: "人工下单",
+        },
+        component: () =>
+          import("../views/orderModule/orderMenu/orderFormPage.vue"),
+      },
+      {
         path: "orderDetailPage",
         name: "orderDetailPage",
         meta: {

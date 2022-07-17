@@ -510,7 +510,7 @@
       <a-button @click="exporButtonClick" type="primary" size="small"
         >导出订单明细</a-button
       >
-      <router-link to="/">人工下单</router-link>
+      <router-link :to="{ name: 'orderFormPage' }">人工下单</router-link>
       <router-link to="/">补开发票</router-link>
     </a-space>
   </a-row>
@@ -750,7 +750,7 @@ import SaleModeSelect from "../../../components/select/saleMode.vue";
 import OwnerSiteSelect from "../../../components/select/ownerSite.vue";
 import SubOrgSelect from "../../../components/select/subOrg.vue";
 import AddressCascader from "../../../components/cascader/address.vue";
-import { columns, goodsColumns } from "./orderListPageData";
+import { columns, goodsColumns } from "./data";
 import {
   DownOutlined,
   UpOutlined,

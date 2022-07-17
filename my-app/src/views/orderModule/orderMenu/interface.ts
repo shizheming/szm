@@ -102,3 +102,10 @@ export interface TaskParamsInterface extends TaskFormModelInterface {
   page: number;
   page_size: number;
 }
+
+export interface orderFormInterface {
+  entryMode: string;
+  sale_mode: string;
+  out_ono: string;
+  businessType: string;
+}
