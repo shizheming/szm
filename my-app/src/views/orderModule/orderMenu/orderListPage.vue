@@ -523,6 +523,120 @@
     :pagination="pagination"
     @change="tableChange"
   >
+    <template #expandedRowRender="{ record }: { record: ModelInterface }">
+      <a-tabs v-model:activeKey="activeKey">
+        <a-tab-pane key="1" tab="基本信息">
+          <a-descriptions>
+            <a-descriptions-item label="主单编号">
+              {{ record.ono }}
+            </a-descriptions-item>
+            <a-descriptions-item label="外部订单号">
+              {{ record.out_ono }}
+            </a-descriptions-item>
+            <a-descriptions-item label="供应商">
+              {{ record.supplier_name }}
+            </a-descriptions-item>
+            <a-descriptions-item label="销售组织">
+              {{ record.sub_org_name }}
+            </a-descriptions-item>
+            <a-descriptions-item label="销售渠道">
+              {{ record.sale_mode.name }}
+            </a-descriptions-item>
+            <a-descriptions-item label="销售站点">
+              {{ record.owner_site_name }}
+            </a-descriptions-item>
+            <a-descriptions-item label="预计发货时间">
+              {{ record.pre_delivery_time }}
+            </a-descriptions-item>
+            <a-descriptions-item label="拼团状态">
+              {{ SPELL_ORDER_STATUS_ENUM[record.spell_order_status as number] }}
+            </a-descriptions-item>
+            <a-descriptions-item label="支付时间">
+              {{ record.pay_time }}
+            </a-descriptions-item>
+            <a-descriptions-item label="创建人">
+              {{ record.create_user_id }}
+            </a-descriptions-item>
+            <a-descriptions-item label="用户等级">
+              {{ record.user.user_level }}
+            </a-descriptions-item>
+            <a-descriptions-item label="燃气户号">
+              {{ record.gas_account }}
+            </a-descriptions-item>
+            <a-descriptions-item label="是否企业用户">
+              {{ WHETHER_ENUM[record.business_user] }}
+            </a-descriptions-item>
+            <a-descriptions-item label="推荐人">
+              {{ record.recommend_staff }}
+            </a-descriptions-item>
+            <a-descriptions-item label="是否申请开发票">
+              {{ WHETHER_ENUM[record.is_invoice] }}
+            </a-descriptions-item>
+            <a-descriptions-item label="配送方式">
+              {{ record.delivery_mode.name }}
+            </a-descriptions-item>
+            <a-descriptions-item label="业务类型">
+              {{ record.business_name }}
+            </a-descriptions-item>
+            <a-descriptions-item label="销售人员">
+              {{ record.shop_account_name }}
+            </a-descriptions-item>
+            <a-descriptions-item label="销售人员所属网点">
+              {{ record.salesman_node_name }}
+            </a-descriptions-item>
+            <a-descriptions-item label="外部系统履约">
+              {{ record.external_system_code }}
+            </a-descriptions-item>
+            <a-descriptions-item label="收件人姓名">
+              {{ record.consignee.name }}
+            </a-descriptions-item>
+            <a-descriptions-item label="收件人手机">
+              {{ record.consignee.mobile }}
+            </a-descriptions-item>
+            <a-descriptions-item label="订单收货地址">
+              {{ record.detailAddress }}
+            </a-descriptions-item>
+            <a-descriptions-item label="买家备注">
+              {{ record.mem_msg }}
+            </a-descriptions-item>
+            <a-descriptions-item label="卖家备注">
+              {{ record.merchant_remark }}
+            </a-descriptions-item>
+            <a-descriptions-item label="供货组织">
+              {{ record.distribute_org_name }}
+            </a-descriptions-item>
+            <a-descriptions-item label="供货组织来源平台企业id">
+              {{ record.distribute_org_enterprise_id }}
+            </a-descriptions-item>
+            <a-descriptions-item label="录入方式">
+              {{ record.create_mode.name }}
+            </a-descriptions-item>
+          </a-descriptions>
+        </a-tab-pane>
+        <a-tab-pane key="2" tab="商品信息" force-render>
+          <a-table
+            size="small"
+            :columns="goodsColumns"
+            :pagination="false"
+            :data-source="record.item"
+          >
+            <template
+              #bodyCell="{
+                column,
+                record,
+              }: {
+                column: TableColumnType,
+                record: any,
+              }"
+            >
+              <template v-if="column.key === 'pic'">
+                <a-image :src="record.pic_url_pic" :width="100" />
+              </template>
+            </template>
+          </a-table>
+        </a-tab-pane>
+      </a-tabs>
+    </template>
     <template
       #bodyCell="{
         column,
@@ -586,45 +700,6 @@
           </a-popconfirm>
         </a-space>
       </template>
-      <!-- <template v-if="column.key === 'is_listing'">
-        <a-switch
-          :checked="!!record.is_listing"
-          @change="switchChange"
-          checked-children="上架"
-          un-checked-children="下架"
-        />
-      </template>
-      <template v-if="column.key === 'stock'">
-        <a-space style="width: 100%">
-          <a-input-number
-            :disabled="!record.editStockStatus"
-            :bordered="!!record.editStockStatus"
-            v-model:value="record.stock"
-            style="background-color: #fff; color: #000"
-            :mim="0"
-          />
-          <edit-outlined
-            v-if="!record.editStockStatus"
-            style="color: #40a9ff"
-            @click="editOutlinedIconClick(record)"
-          />
-          <div v-else>
-            <check-outlined
-              @click="checkOutlinedIconClick(record)"
-              style="
-                font-size: 18px;
-                margin: 0 10px;
-                color: #40a9ff;
-                cursor: pointer;
-              "
-            />
-            <close-outlined
-              style="font-size: 18px; cursor: pointer"
-              @click="closeOutlinedIconClick(record)"
-            />
-          </div>
-        </a-space>
-      </template> -->
     </template>
   </a-table>
   <remark-modal
@@ -665,6 +740,8 @@ import {
   SPELL_ORDER_STATUS_OPTIONS,
   SORT_ENUM,
   USER_INFO,
+  WHETHER_ENUM,
+  SPELL_ORDER_STATUS_ENUM,
 } from "../../../data/dictionary";
 import SupplierSelect from "../../../components/select/supplier.vue";
 import BackgroundCategoryCascader from "../../../components/cascader/backgroundCategory.vue";
@@ -673,12 +750,15 @@ import SaleModeSelect from "../../../components/select/saleMode.vue";
 import OwnerSiteSelect from "../../../components/select/ownerSite.vue";
 import SubOrgSelect from "../../../components/select/subOrg.vue";
 import AddressCascader from "../../../components/cascader/address.vue";
-import { columns } from "./orderListPageData";
+import { columns, goodsColumns } from "./orderListPageData";
 import {
   DownOutlined,
   UpOutlined,
   SearchOutlined,
   ClearOutlined,
+  EditOutlined,
+  CloseOutlined,
+  CheckOutlined,
 } from "@ant-design/icons-vue";
 import type {
   ModelInterface,
@@ -688,8 +768,7 @@ import type {
 import { order_api, confirmsign_api, confirmPreOrder_api } from "./api";
 import { usePagination } from "vue-request";
 import { computed } from "@vue/reactivity";
-
-// 实体
+import { TableRowSelection } from "ant-design-vue/es/table/interface";
 
 // 异步组件
 const remarkModal = defineAsyncComponent(
@@ -708,7 +787,7 @@ const remarkModalVisible = ref<boolean>(false);
 const taskModalVisible = ref<boolean>(false);
 const formRef = ref<FormInstance>();
 const height = ref<string>("220px");
-const selectedRowKeys = ref([]);
+
 const {
   data: dataSource,
   current,
@@ -736,8 +815,9 @@ const pagination = computed(() => {
   };
 });
 
-// 事件
-const rowSelectionOnChange = (keys: [], rows: []) => {
+const selectedRowKeys = ref<any[]>([]);
+const selectedRowsArray = ref<ModelInterface[]>([]);
+const rowSelectionOnChange: TableRowSelection["onChange"] = (keys, rows) => {
   selectedRowKeys.value = keys;
   selectedRowsArray.value = rows;
 };
@@ -807,44 +887,13 @@ const popconfirmConfirm = async (
   }, 500);
 };
 
-const switchChange = async () => {
-  await Promise.resolve();
-  message.success("成功");
-  setTimeout(() => {
-    run({
-      page: 1,
-      page_size: 10,
-    });
-  }, 500);
-};
-
-function editOutlinedIconClick(record: any) {
-  record.editStockStatus = true;
-}
-
-function closeOutlinedIconClick(record: any) {
-  record.editStockStatus = false;
-}
-
-async function checkOutlinedIconClick(record: any) {
-  await Promise.resolve();
-  record.editStockStatus = false;
-  message.success("成功");
-  setTimeout(() => {
-    run({
-      page: 1,
-      page_size: 10,
-    });
-  }, 500);
-}
-
-// 数据
 const isExpandArrowBoolean = ref<boolean>(false);
-const selectedRowsArray = ref<ModelInterface[]>([]);
 enum SORT_KEY_ENUM {
   order_time = "createtime_sort",
   sub_total_amount = "amount_sort",
 }
+
+const activeKey = ref<string>("1");
 
 watch(isExpandArrowBoolean, (newValue) => {
   if (newValue) {

@@ -6,10 +6,27 @@
 <script setup lang="ts">
 import core from "./core";
 import { TimePicker } from "ant-design-vue";
-import props from "./props";
+import { PropsInterface } from "./props";
 import { useSlots, inject, useAttrs } from "vue";
 
 let outer = inject("outer");
-const p = defineProps(props);
+const p = defineProps<{
+  isDetail?: Boolean;
+  inner?: Function;
+  trigger?: any[];
+  outer?: Function;
+  // togetherhas: {
+  //   type: Array,
+  //   default: undefined,
+  // },
+  // togethernohas: {
+  //   type: Array,
+  //   default: undefined,
+  // },
+  // clear: {
+  //   type: Boolean,
+  //   default: undefined,
+  // },
+}>();
 const { newSlots } = core(p);
 </script>

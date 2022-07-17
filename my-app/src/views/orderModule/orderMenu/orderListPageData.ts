@@ -3,8 +3,13 @@ import {
   WHETHER_ENUM,
   GOODS_SOURCE_ENUM,
 } from "../../../data/dictionary";
-import { TableColumnsType } from "ant-design-vue";
+import { TableColumn, TableColumnsType } from "ant-design-vue";
 export const columns: TableColumnsType = [
+  {
+    title: "操作",
+    dataIndex: "key",
+    key: "key",
+  },
   {
     title: "操作",
     dataIndex: "operation",
@@ -88,6 +93,74 @@ export const columns: TableColumnsType = [
     customRender({ text }) {
       return GOODS_SOURCE_ENUM[text];
     },
+  },
+];
+
+export const goodsColumns: TableColumnsType = [
+  {
+    title: "图片",
+    dataIndex: "pic",
+    key: "pic",
+  },
+  {
+    title: "商品名称",
+    dataIndex: "goods_name",
+    key: "goods_name",
+  },
+  {
+    title: "商品编码",
+    dataIndex: "sku_code",
+    key: "sku_code",
+  },
+  {
+    title: "店铺商品编码",
+    dataIndex: "shop_goods_code",
+    key: "shop_goods_code",
+  },
+  {
+    title: "货号",
+    dataIndex: "sn",
+    key: "sn",
+  },
+  {
+    title: "规格/属性",
+    dataIndex: "sku_specs",
+    key: "sku_specs",
+  },
+  {
+    title: "品牌",
+    dataIndex: "brand_name",
+    key: "brand_name",
+  },
+  {
+    title: "类目",
+    dataIndex: "category_id",
+    key: "category_id",
+  },
+  {
+    title: "销售单价",
+    dataIndex: "price",
+    key: "price",
+  },
+  {
+    title: "购买数量",
+    dataIndex: "qty",
+    key: "qty",
+  },
+  {
+    title: "单位",
+    dataIndex: "sale_unit",
+    key: "sale_unit",
+  },
+  {
+    title: "购买金额（元）",
+    dataIndex: "buy_amount",
+    key: "buy_amount",
+  },
+  {
+    title: "附加费用（元）",
+    dataIndex: "item_extra_fee",
+    key: "item_extra_fee",
   },
 ];
 

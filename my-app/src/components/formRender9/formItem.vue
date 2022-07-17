@@ -7,9 +7,26 @@
 import { useSlots, useAttrs, ref, provide } from "vue";
 import core from "./core";
 import { FormItem } from "ant-design-vue";
-import props from "./props";
+import { PropsInterface } from "./props";
 
-const p = defineProps(props);
+const p = defineProps<{
+  isDetail?: Boolean;
+  inner?: Function;
+  trigger?: any[];
+  outer?: Function;
+  // togetherhas: {
+  //   type: Array,
+  //   default: undefined,
+  // },
+  // togethernohas: {
+  //   type: Array,
+  //   default: undefined,
+  // },
+  // clear: {
+  //   type: Boolean,
+  //   default: undefined,
+  // },
+}>();
 const attrs = useAttrs();
 const componentName = ref<string>(attrs.name as string);
 provide("componentName", componentName);

@@ -165,7 +165,7 @@ enum BUSINESS_ENUM {
 export const BUSINESS_OPTIONS = optionsEnum(BUSINESS_ENUM);
 
 // 拼团状态
-enum SPELL_ORDER_STATUS_ENUM {
+export enum SPELL_ORDER_STATUS_ENUM {
   进行中 = 1,
   成功,
   失败,

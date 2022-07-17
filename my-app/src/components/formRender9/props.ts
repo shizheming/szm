@@ -1,41 +1,8 @@
-import { ExtractPropTypes } from "vue";
-export interface propsInterface {
-  isDetail: {
-    type: boolean;
-    default: undefined;
-  };
-  inner: {
-    type: Function;
-    default: undefined;
-  };
-  trigger: {
-    type: [];
-    default: undefined;
-  };
-  outer: {
-    type: Function;
-    default: undefined;
-  };
-  [name: string]: any;
-}
-
-export default {
-  isDetail: {
-    type: Boolean,
-    default: undefined,
-  },
-  inner: {
-    type: Function,
-    default: undefined,
-  },
-  trigger: {
-    type: Array,
-    default: undefined,
-  },
-  outer: {
-    type: Function,
-    default: undefined,
-  },
+export interface PropsInterface {
+  isDetail?: Boolean;
+  inner?: Function;
+  trigger?: any[];
+  outer?: Function;
   // togetherhas: {
   //   type: Array,
   //   default: undefined,
@@ -48,4 +15,4 @@ export default {
   //   type: Boolean,
   //   default: undefined,
   // },
-};
+}
