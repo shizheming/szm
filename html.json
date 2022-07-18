@@ -1,0 +1,138 @@
+{
+  // Place your snippets for html here. Each snippet is defined under a snippet name and has a prefix, body and
+  // description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the
+  // same ids are connected.
+  // Example:
+  // "Print to console": {
+  // 	"prefix": "log",
+  // 	"body": [
+  // 		"console.log('$1');",
+  // 		"$2"
+  // 	],
+  // 	"description": "Log output to console"
+  // }
+  "文本框": {
+    "prefix": "a-textarea",
+    "body": [
+      "<a-form-item",
+      "  label=\"label\"",
+      "  :name=\"['name']\"",
+      "  :rules=\"{",
+      "    required: true,",
+      "    message: '请填写',",
+      "  }\"",
+      ">",
+      "  <a-textarea v-model:value=\"model.name\" />",
+      "</a-form-item>"
+    ],
+    "description": "文本框"
+  },
+  "选择器": {
+    "prefix": "a-select",
+    "body": [
+      "<a-form-item",
+      "  label=\"label\"",
+      "  :name=\"['name']\"",
+      "  :rules=\"{",
+      "    required: true,",
+      "    message: '请选择',",
+      "  }\"",
+      ">",
+      "  <a-select",
+      "    :options=\"options\"",
+      "    v-model:value=\"model.name\"",
+      "  />",
+      "</a-form-item>"
+    ],
+    "description": "选择器"
+  },
+  "输入框": {
+    "prefix": "a-input",
+    "body": [
+      "<a-form-item",
+      "  label=\"label\"",
+      "  :name=\"['name']\"",
+      "  :rules=\"{",
+      "    required: true,",
+      "    message: '请填写',",
+      "  }\"",
+      ">",
+      "  <a-input",
+      "    v-model:value=\"model.name\"",
+      "  />",
+      "</a-form-item>"
+    ],
+    "description": "输入框"
+  },
+  "日期选择框": {
+    "prefix": "a-range-picker",
+    "body": [
+      "<a-form-item",
+      "  label=\"label\"",
+      "  :name=\"['name']\"",
+      "  :rules=\"{",
+      "    required: true,",
+      "    message: '请选择',",
+      "  }\"",
+      ">",
+      "  <a-range-picker",
+      "    show-time",
+      "    value-format=\"YYYY-MM-DD HH:mm:ss\"",
+      "    v-model:value=\"model.name\"",
+      "  />",
+      "</a-form-item>"
+    ],
+    "description": "日期选择框"
+  },
+  "表格开关": {
+    "prefix": "table-switch",
+    "body": [
+      "<template v-if=\"column.key === 'key'\">",
+      "  <a-switch",
+      "    :checked=\"!!record.key\"",
+      "    @change=\"switchChange\"",
+      "    checked-children=\"checked\"",
+      "    un-checked-children=\"un-checked\"",
+      "  />",
+      "</template>"
+    ],
+    "description": "表格开关"
+  },
+  "表格输入框": {
+    "prefix": "table-input",
+    "body": [
+      "<template v-if=\"column.key === 'key'\">",
+      "  <a-space style=\"width: 100%\">",
+      "    <a-input-number",
+      "      :isDetail=\"!record.disabled\"",
+      "      v-model:value=\"record.key\"",
+      "      style=\"background-color: #fff; color: #000\"",
+      "      :mim=\"0\"",
+      "    />",
+      "    <edit-outlined",
+      "      v-if=\"!record.disabled\"",
+      "      style=\"color: #40a9ff\"",
+      "      @click=\"editOutlinedIconClick(record)\"",
+      "    />",
+      "    <div v-else>",
+      "      <check-outlined",
+      "        @click=\"checkOutlinedIconClick(record)\"",
+      "        style=\"",
+      "          font-size: 18px;",
+      "          margin: 0 10px;",
+      "          color: #40a9ff;",
+      "          cursor: pointer;",
+      "        \"",
+      "      />",
+      "      <close-outlined",
+      "        style=\"font-size: 18px; cursor: pointer\"",
+      "        @click=\"closeOutlinedIconClick(record)\"",
+      "      />",
+      "    </div>",
+      "  </a-space>",
+      "</template>"
+    ],
+    "description": "表格输入框"
+  }
+}
