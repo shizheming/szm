@@ -1,5 +1,6 @@
-// 表单绑定值-接口出参单个对象
-export interface ModelInterface {
+import { PageInterface } from "../../../interface/index";
+
+export interface orderFormModelInterface {
   order_search_key?: string;
   order_search_value?: string;
   good_search_key?: string;
@@ -45,40 +46,29 @@ export interface ModelInterface {
   address?: [];
 }
 
-// 分页
-export interface paginationInterface {
-  page?: number;
-  pageSize?: number;
-  total?: number;
-  current?: number;
+export interface OrderResultInterface {
+  list: orderFormModelInterface[];
 }
 
-// 搜索出参
-export interface ResultInterface {
-  list: ModelInterface[];
-}
+export interface OrderParamsInterface
+  extends orderFormModelInterface,
+    PageInterface {}
 
-// 搜索入参
-export interface ParamsInterface extends ModelInterface {
-  page: number;
-  page_size: number;
-}
-
-export interface ConfirmsignInterface {
+export interface ConfirmsignParamsInterface {
   user_id: string;
   osl_seq: string;
   operator: string;
 }
 
-export interface ConfirmPreOrderInterface {
+export interface ConfirmPreOrderParamsInterface {
   osl_seq: string;
 }
 
-export interface RemarkFormInterface {
+export interface RemarkFormModelInterface {
   merchant_remark: string;
 }
 
-export interface RemarkInterface {
+export interface BatchParamsInterface {
   ids: {
     merchant_remark: string;
     osl_seq: string;
@@ -93,19 +83,42 @@ export interface TaskFormModelInterface {
   time?: [];
 }
 
-export interface TaskResultInterface {
+export interface OrderSyncListResultInterface {
   list: TaskFormModelInterface[];
 }
 
-// 搜索入参
-export interface TaskParamsInterface extends TaskFormModelInterface {
-  page: number;
-  page_size: number;
-}
+export interface OrderSyncListParamsInterface
+  extends TaskFormModelInterface,
+    PageInterface {}
 
-export interface orderFormInterface {
+export interface orderCreateFormModelInterface {
   entryMode: string;
   sale_mode: string;
   out_ono: string;
   businessType: string;
+  user_id: string;
+  phone: string;
+  wx_nickname: string;
+  user_level_name: string;
+  username: string;
+  name: string;
+  company_name: string;
+  buyer_note: string;
+  merchant_note: string;
+  addressInfo: {
+    name: string;
+    mobile: string;
+    addressIds: number[];
+    address: string;
+    tel: string;
+    zipcode: string;
+  };
 }
+
+export interface UserFormModelInterface {
+  user_id?: string;
+}
+
+export interface EpUserSearchParamsInterface
+  extends UserFormModelInterface,
+    PageInterface {}

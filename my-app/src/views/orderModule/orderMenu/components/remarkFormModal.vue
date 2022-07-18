@@ -23,18 +23,21 @@
 <script setup lang="ts">
 import { ref, watch, reactive } from "vue";
 import { FormInstance, message, ModalProps } from "ant-design-vue";
-import { RemarkFormInterface, ListItemInterface } from "../interface";
-import { merchant_remark_api } from "../api";
+import {
+  RemarkFormModelInterface,
+  orderFormModelInterface,
+} from "../interface";
+import { batch_api } from "../api";
 
 const props = defineProps<{
   visible: boolean;
-  selectedRowsArray: ListItemInterface[];
+  selectedRowsArray: orderFormModelInterface[];
 }>();
 const emits = defineEmits<{
   (event: "update:visible", visible: boolean): void;
   (event: "submit"): void;
 }>();
-const model = reactive<RemarkFormInterface>({ merchant_remark: "" });
+const model = reactive<RemarkFormModelInterface>({ merchant_remark: "" });
 const formRef = ref<FormInstance>();
 const confirmLoading = ref<boolean>(false);
 
@@ -50,10 +53,10 @@ watch(
 const ok: ModalProps["onOk"] = async (e) => {
   try {
     let data = await formRef.value?.validate();
-    await merchant_remark_api({
+    await batch_api({
       ids: props.selectedRowsArray.map(({ osl_seq, user: { user_id } }) => {
         return {
-          ...(data as RemarkFormInterface),
+          ...(data as RemarkFormModelInterface),
           osl_seq,
           user_id,
         };

@@ -206,3 +206,41 @@ export const taskColumns: TableColumnsType = [
     key: "operation",
   },
 ];
+
+export const userListModalColumns: TableColumnsType = [
+  {
+    title: "用户名",
+    dataIndex: "username",
+    key: "username",
+  },
+  {
+    title: "用户ID",
+    dataIndex: "user_id",
+    key: "user_id",
+  },
+  {
+    title: "微信昵称",
+    dataIndex: "wx_nickname",
+    key: "wx_nickname",
+  },
+  {
+    title: "买家姓名",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "手机号",
+    dataIndex: "phone",
+    key: "phone",
+  },
+  {
+    title: "用户等级",
+    dataIndex: "user_level_name",
+    key: "user_level_name",
+  },
+  {
+    title: "企业名称",
+    dataIndex: "company_name",
+    key: "company_name",
+  },
+];

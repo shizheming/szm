@@ -17,23 +17,25 @@ import timePicker from "./timePicker.vue";
 import timeRangePicker from "./timeRangePicker.vue";
 import treeSelect from "./treeSelect.vue";
 import formItem from "./formItem.vue";
+import col from "./col.vue";
 
 export function mountFormRender9(App) {
   App.component("a-input", input)
-    .component("a-form", form)
+    .component("a-input-number", inputNumber)
+    .component("a-input-search", inputSearch)
     .component("a-select", select)
+    .component("a-tree-select", treeSelect)
     .component("a-switch", aswitch)
     .component("a-cascader", cascader)
     .component("a-checkbox-group", checkboxGroup)
+    .component("a-radio-group", radioGroup)
     .component("a-date-picker", datePicker)
     .component("a-range-picker", rangePicker)
-    .component("a-input-search", inputSearch)
     .component("a-textarea", textarea)
-    .component("a-input-number", inputNumber)
-    .component("a-radio-group", radioGroup)
     .component("a-rate", rate)
     .component("a-time-picker", timePicker)
     .component("a-time-range-picker", timeRangePicker)
-    .component("a-tree-select", treeSelect)
-    .component("a-form-item", formItem);
+    .component("a-form", form)
+    .component("a-form-item", formItem)
+    .component("a-col", col);
 }
