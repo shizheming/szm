@@ -1,7 +1,7 @@
 <template>
   <a-modal
     :visible="props.visible"
-    title="title"
+    title="用户选择"
     @ok="ok"
     @cancel="cancel"
     :width="1400"
