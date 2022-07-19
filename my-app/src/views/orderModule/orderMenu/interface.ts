@@ -113,6 +113,8 @@ export interface orderCreateFormModelInterface {
     tel: string;
     zipcode: string;
   };
+  stockFreeze: string;
+  delivery_mode: string;
 }
 
 export interface UserFormModelInterface {

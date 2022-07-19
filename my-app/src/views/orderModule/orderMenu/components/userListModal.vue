@@ -33,11 +33,10 @@
       </a-row>
     </a-form>
     <a-table
-      rowKey="id"
+      rowKey="user_id"
       :row-selection="{
         selectedRowKeys,
         onChange: rowSelectionOnChange,
-        getCheckboxProps,
         type: 'radio',
       }"
       :dataSource="dataSource?.list"
@@ -78,7 +77,6 @@ import { TableRowSelection } from "ant-design-vue/es/table/interface";
 
 const props = defineProps<{
   visible: boolean;
-  selectedRowKeys: UserFormModelInterface[];
 }>();
 const emits = defineEmits<{
   (event: "update:visible", visible: boolean): void;
@@ -140,12 +138,6 @@ const tableChange: TableProps["onChange"] = async (pag) => {
     page_size: pag.pageSize as number,
     ...model,
   });
-};
-
-const getCheckboxProps: TableRowSelection["getCheckboxProps"] = (record) => {
-  return {
-    disabled: props.selectedRowKeys.includes(record.id),
-  };
 };
 
 const clearOutlinedClick = () => {

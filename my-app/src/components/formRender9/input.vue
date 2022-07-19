@@ -1,5 +1,12 @@
 <template>
-  <Input allow-clear placeholder="请输入" v-bind="newSlots">
+  <Input
+    allow-clear
+    :placeholder="$props.isDetail ? '' : '请输入'"
+    :disabled="detailStyleObj.disabled"
+    :bordered="detailStyleObj.bordered"
+    :class="detailStyleObj.class"
+    v-bind="newSlots"
+  >
     <slot />
   </Input>
 </template>
@@ -26,12 +33,16 @@ const p = defineProps<{
   //   default: undefined,
   // },
 }>();
-const { newSlots } = core(p);
+const { newSlots, detailStyleObj } = core(p);
 </script>
 
 <style>
-/* .formDetail .ant-input-disabled {
-  color:#000;
+.formDetail {
   cursor: context-menu;
-} */
+}
+.formDetail .ant-input {
+  color: #000;
+  cursor: context-menu;
+  background-color: white;
+}
 </style>

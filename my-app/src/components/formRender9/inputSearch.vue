@@ -1,5 +1,12 @@
 <template>
-  <InputSearch allowClear v-bind="newSlots">
+  <InputSearch
+    allowClear
+    :placeholder="$props.isDetail ? '' : '请输入'"
+    :disabled="detailStyleObj.disabled"
+    :bordered="detailStyleObj.bordered"
+    :class="detailStyleObj.class"
+    v-bind="newSlots"
+  >
     <slot />
   </InputSearch>
 </template>
@@ -26,5 +33,14 @@ const p = defineProps<{
   //   default: undefined,
   // },
 }>();
-const { newSlots } = core(p);
+const { newSlots, detailStyleObj } = core(p);
 </script>
+<style>
+.formDetail .ant-input-affix-wrapper {
+  cursor: context-menu;
+}
+.formDetail .ant-input {
+  color: #000;
+  background-color: white;
+}
+</style>

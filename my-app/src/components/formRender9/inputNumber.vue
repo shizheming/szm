@@ -36,9 +36,6 @@ const { newSlots, detailStyleObj } = core(p);
 </script>
 
 <style>
-.formDetail {
-  margin: 0;
-}
 .formDetail .ant-input-number-input {
   color: #000;
   cursor: context-menu;

@@ -3,51 +3,23 @@
     <h1 style="font-weight: 700">基本信息</h1>
     <a-row>
       <a-col>
-        <a-form-item
-          label="录入方式"
-          :name="['entryMode']"
-          :rules="{
-            required: true,
-            message: '请填写',
-          }"
-        >
-          <a-input v-model:value="model.entryMode" />
+        <a-form-item label="录入方式" :name="['entryMode']">
+          <a-input v-model:value="model.entryMode" :is-detail="true" />
         </a-form-item>
       </a-col>
       <a-col>
-        <a-form-item
-          label="销售渠道"
-          :name="['sale_mode']"
-          :rules="{
-            required: true,
-            message: '请填写',
-          }"
-        >
-          <a-input v-model:value="model.sale_mode" />
+        <a-form-item label="销售渠道" :name="['sale_mode']">
+          <a-input v-model:value="model.sale_mode" :is-detail="true" />
         </a-form-item>
       </a-col>
       <a-col>
-        <a-form-item
-          label="外部订单号"
-          :name="['out_ono']"
-          :rules="{
-            required: true,
-            message: '请填写',
-          }"
-        >
+        <a-form-item label="外部订单号" :name="['out_ono']">
           <a-input v-model:value="model.out_ono" />
         </a-form-item>
       </a-col>
       <a-col>
-        <a-form-item
-          label="站点/业务类型"
-          :name="['businessType']"
-          :rules="{
-            required: true,
-            message: '请填写',
-          }"
-        >
-          <a-input v-model:value="model.businessType" />
+        <a-form-item label="站点/业务类型" :name="['businessType']">
+          <a-input v-model:value="model.businessType" :is-detail="true" />
         </a-form-item>
       </a-col>
       <a-col>
@@ -56,10 +28,13 @@
           :name="['user_id']"
           :rules="{
             required: true,
-            message: '请填写',
+            message: '请选择',
           }"
         >
           <a-input-search
+            :disabled="true"
+            :is-detail="true"
+            :style="`width:${userInputSearchStyle}`"
             v-model:value="model.user_id"
             @search="inputSearchSearch"
           >
@@ -70,75 +45,33 @@
         </a-form-item>
       </a-col>
       <a-col>
-        <a-form-item
-          label="关联手机号"
-          :name="['phone']"
-          :rules="{
-            required: true,
-            message: '请填写',
-          }"
-        >
-          <a-input v-model:value="model.phone" />
+        <a-form-item label="关联手机号" :name="['phone']">
+          <a-input v-model:value="model.phone" :is-detail="true" />
         </a-form-item>
       </a-col>
       <a-col>
-        <a-form-item
-          label="微信昵称"
-          :name="['wx_nickname']"
-          :rules="{
-            required: true,
-            message: '请填写',
-          }"
-        >
-          <a-input v-model:value="model.wx_nickname" />
+        <a-form-item label="微信昵称" :name="['wx_nickname']">
+          <a-input v-model:value="model.wx_nickname" :is-detail="true" />
         </a-form-item>
       </a-col>
       <a-col>
-        <a-form-item
-          label="用户等级"
-          :name="['user_level_name']"
-          :rules="{
-            required: true,
-            message: '请填写',
-          }"
-        >
-          <a-input v-model:value="model.user_level_name" />
+        <a-form-item label="用户等级" :name="['user_level_name']">
+          <a-input v-model:value="model.user_level_name" :is-detail="true" />
         </a-form-item>
       </a-col>
       <a-col>
-        <a-form-item
-          label="用户名"
-          :name="['username']"
-          :rules="{
-            required: true,
-            message: '请填写',
-          }"
-        >
-          <a-input v-model:value="model.username" />
+        <a-form-item label="用户名" :name="['username']">
+          <a-input v-model:value="model.username" :is-detail="true" />
         </a-form-item>
       </a-col>
       <a-col>
-        <a-form-item
-          label="买家姓名"
-          :name="['name']"
-          :rules="{
-            required: true,
-            message: '请填写',
-          }"
-        >
-          <a-input v-model:value="model.name" />
+        <a-form-item label="买家姓名" :name="['name']">
+          <a-input v-model:value="model.name" :is-detail="true" />
         </a-form-item>
       </a-col>
       <a-col>
-        <a-form-item
-          label="企业名称"
-          :name="['company_name']"
-          :rules="{
-            required: true,
-            message: '请填写',
-          }"
-        >
-          <a-input v-model:value="model.company_name" />
+        <a-form-item label="企业名称" :name="['company_name']">
+          <a-input v-model:value="model.company_name" :is-detail="true" />
         </a-form-item>
       </a-col>
       <a-col>
@@ -190,79 +123,73 @@
         </a-form-item>
       </a-col>
       <a-col>
-        <a-form-item
-          label="收货人电话"
-          :name="['addressInfo', 'tel']"
-          :rules="{
-            required: true,
-            message: '请填写',
-          }"
-        >
+        <a-form-item label="收货人电话" :name="['addressInfo', 'tel']">
           <a-input v-model:value="model.addressInfo.tel" />
         </a-form-item>
       </a-col>
       <a-col>
-        <a-form-item
-          label="邮编"
-          :name="['addressInfo', 'zipcode']"
-          :rules="{
-            required: true,
-            message: '请填写',
-          }"
-        >
+        <a-form-item label="邮编" :name="['addressInfo', 'zipcode']">
           <a-input v-model:value="model.addressInfo.zipcode" />
         </a-form-item>
       </a-col>
     </a-row>
     <a-row>
       <a-col>
-        <a-form-item
-          label="买家备注"
-          :name="['buyer_note']"
-          :rules="{
-            required: true,
-            message: '请填写',
-          }"
-        >
+        <a-form-item label="买家备注" :name="['buyer_note']">
           <a-textarea v-model:value="model.buyer_note" />
         </a-form-item>
       </a-col>
       <a-col>
-        <a-form-item
-          label="商家备注"
-          :name="['merchant_note']"
-          :rules="{
-            required: true,
-            message: '请填写',
-          }"
-        >
+        <a-form-item label="商家备注" :name="['merchant_note']">
           <a-textarea v-model:value="model.merchant_note" />
         </a-form-item>
       </a-col>
     </a-row>
+    <h1 style="font-weight: 700">发运计划</h1>
+    <a-row>
+      <a-col>
+        <a-form-item label="库存冻结" :name="['stockFreeze']">
+          <a-input v-model:value="model.stockFreeze" :is-detail="true" />
+        </a-form-item>
+      </a-col>
+      <a-col>
+        <a-form-item label="配送方式" :name="['delivery_mode']">
+          <a-input v-model:value="model.delivery_mode" :is-detail="true" />
+        </a-form-item>
+      </a-col>
+    </a-row>
+    <h1 style="font-weight: 700">开票申请</h1>
+    <a-row>
+      <a-col> </a-col>
+    </a-row>
   </a-form>
   <user-list-modal
     v-model:visible="userListModalVisible"
-    :selected-row-keys="selectedRowKeys"
+    @select="userListModalSelect"
   />
 </template>
 <script setup lang="ts">
-import { reactive, defineAsyncComponent, ref } from "vue";
+import { reactive, defineAsyncComponent, ref, watch } from "vue";
 import { FormInstance, InputProps } from "ant-design-vue";
-import { orderCreateFormModelInterface } from "./interface";
+import {
+  orderCreateFormModelInterface,
+  UserFormModelInterface,
+} from "./interface";
 import { PlusOutlined } from "@ant-design/icons-vue";
 import AddressCascader from "../../../components/cascader/address.vue";
+import { EditOutlined } from "@ant-design/icons-vue";
 
 const UserListModal = defineAsyncComponent(
   () => import("./components/userListModal.vue")
 );
 const userListModalVisible = ref<boolean>(false);
 const selectedRowKeys = ref<any[]>([]);
+const userInputSearchStyle = ref<string>("0");
 const model = reactive<orderCreateFormModelInterface>({
-  entryMode: "",
-  sale_mode: "",
+  entryMode: "手工创建订单",
+  sale_mode: "名气商城",
   out_ono: "",
-  businessType: "",
+  businessType: "名气家/精选",
   user_id: "",
   phone: "",
   wx_nickname: "",
@@ -280,9 +207,40 @@ const model = reactive<orderCreateFormModelInterface>({
     tel: "",
     zipcode: "",
   },
+  stockFreeze: "提交订单",
+  delivery_mode: "快递",
 });
 
 const inputSearchSearch: InputProps["onChange"] = () => {
   userListModalVisible.value = true;
+};
+
+const userListModalSelect: (
+  rowKeys: any[],
+  rows: UserFormModelInterface[]
+) => void = (
+  rowKeys,
+  [
+    {
+      user_id,
+      phone,
+      wx_nickname,
+      name,
+      user_level_name,
+      username,
+      company_name,
+    },
+  ]
+) => {
+  userInputSearchStyle.value = "50%";
+  Object.assign(model, {
+    user_id,
+    phone,
+    wx_nickname,
+    user_level_name,
+    username,
+    name,
+    company_name,
+  });
 };
 </script>
