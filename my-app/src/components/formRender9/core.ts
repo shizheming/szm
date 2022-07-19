@@ -26,13 +26,13 @@ import { PropsInterface } from "./props";
 
 export default function (props: PropsInterface): {
   newSlots: {};
-  detailStyleObj: {
+  detailStyleObj: Ref<{
     disabled: boolean;
     bordered: boolean;
     showArrow: boolean;
     class: string;
     style: string;
-  };
+  }>;
 } {
   /********************** 接受form给的数据 **********************/
   const outer = inject<Ref>("outer", ref());
@@ -52,6 +52,7 @@ export default function (props: PropsInterface): {
     style: "",
   });
   const slots = useSlots();
+
   let newSlots: { [name: string]: any } = {};
   forEach(slots, (value, key) => {
     newSlots[key] = (<Function>value)();
