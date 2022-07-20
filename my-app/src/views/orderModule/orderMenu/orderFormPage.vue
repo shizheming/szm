@@ -160,7 +160,281 @@
     </a-row>
     <h1 style="font-weight: 700">开票申请</h1>
     <a-row>
-      <a-col> </a-col>
+      <a-col>
+        <a-form-item
+          label="开具发票"
+          :name="['isInvoice']"
+          :rules="{
+            required: true,
+            message: '请选择',
+          }"
+        >
+          <a-radio-group
+            v-model:value="model.isInvoice"
+            :options="WHETHER_OPTIONS"
+          />
+        </a-form-item>
+      </a-col>
+    </a-row>
+    <div v-if="model.isInvoice">
+      <a-row>
+        <a-col>
+          <a-form-item
+            label="增值税发票类型"
+            :name="['order_invoice', 'invoice_form']"
+            :rules="{
+              required: true,
+              message: '请选择',
+            }"
+          >
+            <a-radio-group v-model:value="model.order_invoice.invoice_form">
+              <a-radio :value="3">电子普通发票</a-radio>
+              <a-radio :value="2">专用发票</a-radio>
+            </a-radio-group>
+          </a-form-item>
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col>
+          <a-form-item
+            label="发票抬头类型"
+            :name="['order_invoice', 'invoice_kind']"
+            :rules="{
+              required: true,
+              message: '请选择',
+            }"
+          >
+            <a-radio-group v-model:value="model.order_invoice.invoice_kind">
+              <a-radio :value="2">企业</a-radio>
+              <a-radio :value="1" :disabled="manRadioDisabled">个人</a-radio>
+            </a-radio-group>
+          </a-form-item>
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col>
+          <a-form-item
+            label="发票内容"
+            :name="['order_invoice', 'content_type']"
+            :rules="{
+              required: true,
+              message: '请选择',
+            }"
+          >
+            <a-radio-group v-model:value="model.order_invoice.content_type">
+              <a-radio :value="0">商品明细</a-radio>
+              <a-radio :value="1">商品类别</a-radio>
+            </a-radio-group>
+          </a-form-item>
+        </a-col>
+        <a-col>
+          <a-form-item
+            label="开票备注"
+            :name="['order_invoice', 'invoice_notice']"
+            :rules="{
+              required: true,
+              message: '请填写',
+            }"
+          >
+            <a-textarea v-model:value="model.order_invoice.invoice_notice" />
+          </a-form-item>
+        </a-col>
+        <a-col>
+          <a-form-item
+            label="发票抬头"
+            :name="['order_invoice', 'invoice_title']"
+            :rules="{
+              required: true,
+              message: '请填写',
+            }"
+          >
+            <a-input v-model:value="model.order_invoice.invoice_title" />
+          </a-form-item>
+        </a-col>
+        <a-col>
+          <a-form-item
+            v-if="
+              commonElectronEnterpriseBoolean ||
+              commonPaperEnterpriseBoolean ||
+              specialPaperEnterpriseBoolean
+            "
+            label="税号"
+            :name="['order_invoice', 'vat_number']"
+            :rules="{
+              required: true,
+              message: '请填写',
+            }"
+          >
+            <a-input v-model:value="model.order_invoice.vat_number" />
+          </a-form-item>
+        </a-col>
+        <a-col>
+          <a-form-item
+            v-if="
+              commonElectronEnterpriseBoolean ||
+              commonPaperEnterpriseBoolean ||
+              specialPaperEnterpriseBoolean
+            "
+            label="注册地址"
+            :name="['order_invoice', 'et_address']"
+            :rules="{
+              required: specialPaperEnterpriseBoolean,
+              message: '请填写',
+            }"
+          >
+            <a-input v-model:value="model.order_invoice.et_address" />
+          </a-form-item>
+        </a-col>
+        <a-col>
+          <a-form-item
+            v-if="
+              commonElectronEnterpriseBoolean ||
+              commonPaperEnterpriseBoolean ||
+              specialPaperEnterpriseBoolean
+            "
+            label="注册电话"
+            :name="['order_invoice', 'et_phone_num']"
+            :rules="{
+              required: specialPaperEnterpriseBoolean,
+              message: '请填写',
+            }"
+          >
+            <a-input v-model:value="model.order_invoice.et_phone_num" />
+          </a-form-item>
+        </a-col>
+        <a-col>
+          <a-form-item
+            v-if="
+              commonElectronEnterpriseBoolean ||
+              commonPaperEnterpriseBoolean ||
+              specialPaperEnterpriseBoolean
+            "
+            label="开户银行"
+            :name="['order_invoice', 'et_bank_name']"
+            :rules="{
+              required: specialPaperEnterpriseBoolean,
+              message: '请填写',
+            }"
+          >
+            <a-input v-model:value="model.order_invoice.et_bank_name" />
+          </a-form-item>
+        </a-col>
+        <a-col>
+          <a-form-item
+            v-if="
+              commonElectronEnterpriseBoolean ||
+              commonPaperEnterpriseBoolean ||
+              specialPaperEnterpriseBoolean
+            "
+            label="银行账号"
+            :name="['order_invoice', 'et_bank_account']"
+            :rules="{
+              required: specialPaperEnterpriseBoolean,
+              message: '请填写',
+            }"
+          >
+            <a-input v-model:value="model.order_invoice.et_bank_account" />
+          </a-form-item>
+        </a-col>
+        <a-col>
+          <a-form-item
+            v-if="
+              commonPaperPersonalBoolean ||
+              commonPaperEnterpriseBoolean ||
+              specialPaperEnterpriseBoolean
+            "
+            label="收票人姓名"
+            :name="['order_invoice', 'invoice_username']"
+            :rules="{
+              required:
+                commonPaperPersonalBoolean ||
+                commonPaperEnterpriseBoolean ||
+                specialPaperEnterpriseBoolean,
+              message: '请填写',
+            }"
+          >
+            <a-input v-model:value="model.order_invoice.invoice_username" />
+          </a-form-item>
+        </a-col>
+        <a-col>
+          <a-form-item
+            label="收票人手机"
+            :name="['order_invoice', 'invoice_phone_num']"
+            :rules="{
+              required: true,
+              message: '请填写',
+            }"
+          >
+            <a-input v-model:value="model.order_invoice.invoice_phone_num" />
+          </a-form-item>
+        </a-col>
+        <a-col>
+          <a-form-item
+            v-if="
+              commonElectronPersonalBoolean || commonElectronEnterpriseBoolean
+            "
+            label="收票人邮箱"
+            :name="['order_invoice', 'invoice_email']"
+            :rules="{
+              required: true,
+              message: '请填写',
+            }"
+          >
+            <a-input v-model:value="model.order_invoice.invoice_email" />
+          </a-form-item>
+        </a-col>
+        <a-col>
+          <a-form-item
+            v-if="
+              commonPaperPersonalBoolean ||
+              commonPaperEnterpriseBoolean ||
+              specialPaperEnterpriseBoolean
+            "
+            label="label"
+            :name="['order_invoice', 'mArea']"
+            :rules="{
+              required: true,
+              message: '请选择',
+            }"
+          >
+            <address-cascader v-model:value="model.order_invoice.mArea" />
+          </a-form-item>
+        </a-col>
+        <a-col>
+          <a-form-item
+            v-if="
+              commonPaperPersonalBoolean ||
+              commonPaperEnterpriseBoolean ||
+              specialPaperEnterpriseBoolean
+            "
+            label="收票详细地址"
+            :name="['order_invoice', 'invoice_address']"
+            :rules="{
+              required: true,
+              message: '请填写',
+            }"
+          >
+            <a-input v-model:value="model.order_invoice.invoice_address" />
+          </a-form-item>
+        </a-col>
+      </a-row>
+    </div>
+    <h1 style="font-weight: 700">支付和结算</h1>
+    <a-row>
+      <a-col>
+        <a-form-item label="支付类型" :name="['pay_mode']">
+          <a-select
+            :options="[
+              {
+                label: '货到付款',
+                value: 0,
+              },
+            ]"
+            :is-detail="true"
+            v-model:value="model.pay_mode"
+          />
+        </a-form-item>
+      </a-col>
     </a-row>
   </a-form>
   <user-list-modal
@@ -169,7 +443,7 @@
   />
 </template>
 <script setup lang="ts">
-import { reactive, defineAsyncComponent, ref, watch } from "vue";
+import { reactive, defineAsyncComponent, ref, watch, computed } from "vue";
 import { FormInstance, InputProps } from "ant-design-vue";
 import {
   orderCreateFormModelInterface,
@@ -177,7 +451,7 @@ import {
 } from "./interface";
 import { PlusOutlined } from "@ant-design/icons-vue";
 import AddressCascader from "../../../components/cascader/address.vue";
-import { EditOutlined } from "@ant-design/icons-vue";
+import { WHETHER_OPTIONS } from "../../../data/dictionary";
 
 const UserListModal = defineAsyncComponent(
   () => import("./components/userListModal.vue")
@@ -188,29 +462,30 @@ const userInputSearchStyle = ref<string>("0");
 const model = reactive<orderCreateFormModelInterface>({
   entryMode: "手工创建订单",
   sale_mode: "名气商城",
-  out_ono: "",
   businessType: "名气家/精选",
   user_id: "",
-  phone: "",
-  wx_nickname: "",
-  user_level_name: "",
-  username: "",
-  name: "",
-  company_name: "",
-  buyer_note: "",
-  merchant_note: "",
   addressInfo: {
     name: "",
     mobile: "",
     addressIds: [],
     address: "",
-    tel: "",
-    zipcode: "",
   },
   stockFreeze: "提交订单",
   delivery_mode: "快递",
+  isInvoice: 0,
+  order_invoice: {
+    invoice_form: 3,
+    invoice_kind: 2,
+  },
+  pay_mode: 0,
 });
 
+const commonElectronEnterpriseBoolean = ref<boolean>(false);
+const commonPaperEnterpriseBoolean = ref<boolean>(false);
+const specialPaperEnterpriseBoolean = ref<boolean>(false);
+const commonPaperPersonalBoolean = ref<boolean>(false);
+const commonElectronPersonalBoolean = ref<boolean>(false);
+const manRadioDisabled = ref<boolean>(false);
 const inputSearchSearch: InputProps["onChange"] = () => {
   userListModalVisible.value = true;
 };
@@ -243,4 +518,41 @@ const userListModalSelect: (
     company_name,
   });
 };
+
+watch(
+  [
+    () => model.order_invoice.invoice_kind,
+    () => model.order_invoice.invoice_form,
+  ],
+  ([invoice_kind, invoice_form]) => {
+    commonPaperPersonalBoolean.value = false;
+    commonPaperEnterpriseBoolean.value = false;
+    commonElectronPersonalBoolean.value = false;
+    commonElectronEnterpriseBoolean.value = false;
+    specialPaperEnterpriseBoolean.value = false;
+    if (invoice_kind == 1 && invoice_form == 1) {
+      commonPaperPersonalBoolean.value = true;
+    } else if (invoice_kind == 2 && invoice_form == 1) {
+      commonPaperEnterpriseBoolean.value = true;
+    } else if (invoice_kind == 1 && invoice_form == 3) {
+      commonElectronPersonalBoolean.value = true;
+    } else if (invoice_kind == 2 && invoice_form == 3) {
+      commonElectronEnterpriseBoolean.value = true;
+    } else if (invoice_kind == 2 && invoice_form == 2) {
+      // 专票纸质
+      specialPaperEnterpriseBoolean.value = true;
+    }
+  }
+);
+watch(
+  () => model.order_invoice.invoice_form,
+  (newValue) => {
+    if (newValue == 1 || newValue == 3) {
+      manRadioDisabled.value = false;
+    } else {
+      manRadioDisabled.value = true;
+      model.order_invoice.invoice_kind = 2;
+    }
+  }
+);
 </script>

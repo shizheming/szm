@@ -2,7 +2,6 @@
   <InputNumber
     :disabled="detailStyleObj.disabled"
     :bordered="detailStyleObj.bordered"
-    :showArrow="detailStyleObj.showArrow"
     :class="detailStyleObj.class"
     v-bind="newSlots"
   >

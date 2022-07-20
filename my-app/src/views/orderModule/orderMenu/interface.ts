@@ -94,27 +94,46 @@ export interface OrderSyncListParamsInterface
 export interface orderCreateFormModelInterface {
   entryMode: string;
   sale_mode: string;
-  out_ono: string;
+  out_ono?: string;
   businessType: string;
   user_id: string;
-  phone: string;
-  wx_nickname: string;
-  user_level_name: string;
-  username: string;
-  name: string;
-  company_name: string;
-  buyer_note: string;
-  merchant_note: string;
+  phone?: string;
+  wx_nickname?: string;
+  user_level_name?: string;
+  username?: string;
+  name?: string;
+  company_name?: string;
+  buyer_note?: string;
+  merchant_note?: string;
   addressInfo: {
     name: string;
     mobile: string;
     addressIds: number[];
     address: string;
-    tel: string;
-    zipcode: string;
+    tel?: string;
+    zipcode?: string;
   };
   stockFreeze: string;
   delivery_mode: string;
+  isInvoice: number;
+  order_invoice: {
+    invoice_form?: number;
+    invoice_kind?: number;
+    content_type?: number;
+    invoice_notice?: string;
+    invoice_title?: string;
+    vat_number?: string;
+    et_address?: string;
+    et_phone_num?: string;
+    et_bank_name?: string;
+    et_bank_account?: string;
+    invoice_username?: string;
+    invoice_phone_num?: string;
+    invoice_email?: string;
+    mArea?: number[];
+    invoice_address?: string;
+  };
+  pay_mode: number;
 }
 
 export interface UserFormModelInterface {

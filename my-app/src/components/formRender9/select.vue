@@ -3,8 +3,12 @@
     allow-clear
     show-search
     :filter-option="filterOption"
+    :placeholder="$props.isDetail ? '' : '请选择'"
+    :disabled="detailStyleObj.disabled"
+    :showArrow="detailStyleObj.showArrow"
+    :bordered="detailStyleObj.bordered"
+    :class="detailStyleObj.class"
     v-bind="newSlots"
-    placeholder="请选择"
   >
     <slot />
   </Select>
@@ -32,7 +36,7 @@ const p = defineProps<{
   //   default: undefined,
   // },
 }>();
-const { newSlots } = core(p);
+const { newSlots, detailStyleObj } = core(p);
 
 // 这个antd还有完善
 function filterOption(value: string, options: any) {
@@ -41,8 +45,11 @@ function filterOption(value: string, options: any) {
 </script>
 
 <style>
-/* .formDetail .ant-select-selection-item {
+.formDetail .ant-select-selector {
+  cursor: context-menu !important;
+}
+.formDetail .ant-select-selection-item {
   color: #000;
   cursor: context-menu;
-} */
+}
 </style>

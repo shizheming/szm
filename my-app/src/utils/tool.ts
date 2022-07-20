@@ -19,14 +19,16 @@ export const encrypt = (encryptText: any) => {
 
 export const optionsEnum = (obj: { [name: string]: any }) => {
   const values = Object.values(obj);
+
   let result = [];
   if (isNumber(last(values))) {
     for (let key in obj) {
       result.push({
-        label: obj[key],
-        value: key,
+        label: key,
+        value: obj[key],
       });
     }
+    result = result.reverse();
     result.length = result.length / 2;
   } else {
     for (let key in obj) {
