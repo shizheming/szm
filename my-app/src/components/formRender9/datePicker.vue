@@ -12,7 +12,7 @@ import { useSlots, useAttrs, inject, Ref } from "vue";
 const p = defineProps<{
   isDetail?: Boolean;
   inner?: Function;
-  trigger?: any[];
+  watch?: any[];
   outer?: Function;
   // togetherhas: {
   //   type: Array,

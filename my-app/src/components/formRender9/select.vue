@@ -21,7 +21,7 @@ import { Select, SelectProps } from "ant-design-vue";
 const p = defineProps<{
   isDetail?: Boolean;
   inner?: Function;
-  trigger?: any[];
+  watch?: any[];
   outer?: Function;
   // togetherhas: {
   //   type: Array,
@@ -38,7 +38,6 @@ const p = defineProps<{
 }>();
 const { newSlots, detailStyleObj } = core(p);
 
-// 这个antd还有完善
 function filterOption(value: string, options: any) {
   return options.label.includes(value);
 }

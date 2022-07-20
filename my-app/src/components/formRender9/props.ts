@@ -1,7 +1,7 @@
 export interface PropsInterface {
   isDetail?: Boolean;
   inner?: Function;
-  trigger?: any[];
+  watch?: any[];
   outer?: Function;
   // togetherhas: {
   //   type: Array,

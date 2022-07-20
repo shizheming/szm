@@ -484,7 +484,7 @@
     <a-row>
       <a-col>
         <a-form-item :wrapper-col="{ offset: 6 }">
-          <a-space style="font-size: 18px" size="large">
+          <a-space size="large">
             <a-button html-type="submit" type="primary">
               <search-outlined />
             </a-button>

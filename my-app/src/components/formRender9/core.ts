@@ -90,18 +90,9 @@ export default function (props: PropsInterface): {
     );
   }
 
-  /* 单个监听 */
-  // 没有多个，多个也是单个
-  /* if (isArray(props.trigger)) {
-    props.trigger.forEach((item) => {
-      watch(
-        isObject(item[0]) ? item[0] : () => item[0],
-        (newValue, oldValue) => {
-          item[1]();
-        }
-      );
-    });
-  } */
+  if (props.watch) {
+    watch(...props.watch);
+  }
 
   /* 监听一次 */
   /*  if (isArray(props["trigger-once"])) {

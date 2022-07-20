@@ -11,7 +11,7 @@ import { PropsInterface } from "./props";
 const p = defineProps<{
   isDetail?: Boolean;
   inner?: Function;
-  trigger?: any[];
+  watch?: any[];
   outer?: Function;
   // togetherhas: {
   //   type: Array,

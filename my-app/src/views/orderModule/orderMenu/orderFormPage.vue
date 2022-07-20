@@ -204,7 +204,13 @@
               message: '请选择',
             }"
           >
-            <a-radio-group v-model:value="model.order_invoice.invoice_kind">
+            <a-radio-group
+              v-model:value="model.order_invoice.invoice_kind"
+              :watch="[
+                () => model.order_invoice.invoice_form,
+                invoiceKindRadioWatch,
+              ]"
+            >
               <a-radio :value="2">企业</a-radio>
               <a-radio :value="1" :disabled="manRadioDisabled">个人</a-radio>
             </a-radio-group>
@@ -436,6 +442,11 @@
         </a-form-item>
       </a-col>
     </a-row>
+    <h1 style="font-weight: 700">商品信息</h1>
+    <a-space>
+      <plus-outlined @click="goodsPlusOutlinedClick" />
+      <delete-outlined @click="goodsDeleteOutlinedClick" />
+    </a-space>
   </a-form>
   <user-list-modal
     v-model:visible="userListModalVisible"
@@ -449,7 +460,7 @@ import {
   orderCreateFormModelInterface,
   UserFormModelInterface,
 } from "./interface";
-import { PlusOutlined } from "@ant-design/icons-vue";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 import AddressCascader from "../../../components/cascader/address.vue";
 import { WHETHER_OPTIONS } from "../../../data/dictionary";
 
@@ -490,6 +501,15 @@ const inputSearchSearch: InputProps["onChange"] = () => {
   userListModalVisible.value = true;
 };
 
+const invoiceKindRadioWatch = (newValue: number) => {
+  if (newValue == 1 || newValue == 3) {
+    manRadioDisabled.value = false;
+  } else {
+    manRadioDisabled.value = true;
+    model.order_invoice.invoice_kind = 2;
+  }
+};
+
 const userListModalSelect: (
   rowKeys: any[],
   rows: UserFormModelInterface[]
@@ -519,6 +539,10 @@ const userListModalSelect: (
   });
 };
 
+const goodsPlusOutlinedClick = () => {};
+
+const goodsDeleteOutlinedClick = () => {};
+
 watch(
   [
     () => model.order_invoice.invoice_kind,
@@ -541,17 +565,6 @@ watch(
     } else if (invoice_kind == 2 && invoice_form == 2) {
       // 专票纸质
       specialPaperEnterpriseBoolean.value = true;
-    }
-  }
-);
-watch(
-  () => model.order_invoice.invoice_form,
-  (newValue) => {
-    if (newValue == 1 || newValue == 3) {
-      manRadioDisabled.value = false;
-    } else {
-      manRadioDisabled.value = true;
-      model.order_invoice.invoice_kind = 2;
     }
   }
 );
