@@ -2,6 +2,7 @@ import {
   YES_NO_ENUM,
   WHETHER_ENUM,
   GOODS_SOURCE_ENUM,
+  IS_SUIT_ENUM,
 } from "../../../data/dictionary";
 import { TableColumn, TableColumnsType } from "ant-design-vue";
 export const columns: TableColumnsType = [
@@ -240,7 +241,7 @@ export const userListModalColumns: TableColumnsType = [
   },
 ];
 
-export const orderFormGoodsColumns = [
+export const orderFormGoodsColumns: TableColumnsType = [
   {
     title: "操作",
     dataIndex: "opration",
@@ -287,6 +288,9 @@ export const orderFormGoodsColumns = [
     title: "商品形式",
     dataIndex: "is_suit",
     key: "is_suit",
+    customRender({ text }) {
+      return text === "b" ? "" : IS_SUIT_ENUM[text];
+    },
   },
   {
     title: "店铺商品编码",
@@ -311,8 +315,9 @@ export const orderFormGoodsColumns = [
   },
   {
     title: "类目",
-    dataIndex: "category_id",
-    key: "category_id",
+    dataIndex: "category_path",
+    key: "category_path",
+    width: 300,
   },
   {
     title: "订购单位",
@@ -351,7 +356,7 @@ export const orderFormGoodsColumns = [
   },
 ];
 
-export const orderFormModalGoodsColumns = [
+export const orderFormModalGoodsColumns: TableColumnsType = [
   {
     title: "商品名称",
     dataIndex: "spu_name",

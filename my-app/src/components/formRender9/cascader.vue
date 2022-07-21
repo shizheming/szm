@@ -1,5 +1,13 @@
 <template>
-  <Cascader allowClear v-bind="newSlots" />
+  <Cascader
+    allowClear
+    :placeholder="$props.isDetail ? '' : '请选择'"
+    :disabled="detailStyleObj.disabled"
+    :showArrow="detailStyleObj.showArrow"
+    :bordered="detailStyleObj.bordered"
+    :class="detailStyleObj.class"
+    v-bind="newSlots"
+  />
 </template>
 <script setup lang="ts">
 import core from "./core";
@@ -24,5 +32,5 @@ const p = defineProps<{
   //   default: undefined,
   // },
 }>();
-const { newSlots } = core(p);
+const { newSlots, detailStyleObj } = core(p);
 </script>

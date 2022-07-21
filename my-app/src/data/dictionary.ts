@@ -179,5 +179,11 @@ enum TYPE_ENUM {
 }
 export const TYPE_OPTIONS = optionsEnum(TYPE_ENUM);
 
+export enum IS_SUIT_ENUM {
+  普通 = 0,
+  组合 = 1,
+  b = "",
+}
+
 // user-info
 export const USER_INFO = JSON.parse(localStorage.getItem("userInfo") as string);

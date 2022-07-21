@@ -451,11 +451,33 @@
       :columns="orderFormGoodsColumns"
       :data-source="dataSource"
       :pagination="false"
+      :scroll="{ x: 3000 }"
       :row-selection="{
         selectedRowKeys,
         onchange: tableChange,
       }"
-    ></a-table>
+      ><template
+        #bodyCell="{
+          column,
+          record,
+        }: {
+          column: TableColumnType,
+          record: SkuListResultInterface,
+        }"
+      >
+        <template v-if="column.key === 'category_path'">
+          <background-category
+            :is-detail="true"
+            :value="record.category_path.map(Number)"
+            style="width: 100%"
+          />
+        </template>
+        <template v-if="column.key === 'qty'">
+          {{ record.qty }}
+          <edit-outlined @click="qtyEditOutlinedClick(record)" />
+        </template>
+      </template>
+    </a-table>
   </a-form>
   <user-list-modal
     v-model:visible="userListModalVisible"
@@ -469,16 +491,27 @@
 </template>
 <script setup lang="ts">
 import { reactive, defineAsyncComponent, ref, watch, computed } from "vue";
-import { FormInstance, InputProps, TableProps } from "ant-design-vue";
+import {
+  FormInstance,
+  InputProps,
+  TableProps,
+  TableColumnType,
+} from "ant-design-vue";
 import {
   orderCreateFormModelInterface,
   UserFormModelInterface,
+  SkuListResultInterface,
 } from "./interface";
-import { PlusOutlined, DeleteOutlined } from "@ant-design/icons-vue";
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  EditOutlined,
+} from "@ant-design/icons-vue";
 import AddressCascader from "../../../components/cascader/address.vue";
 import { WHETHER_OPTIONS } from "../../../data/dictionary";
 import { orderFormGoodsColumns } from "./data";
 import { TableRowSelection } from "ant-design-vue/es/table/interface";
+import BackgroundCategory from "../../../components/cascader/backgroundCategory.vue";
 
 const UserListModal = defineAsyncComponent(
   () => import("./components/userListModal.vue")
@@ -569,6 +602,8 @@ const userListModalSelect: (
 const goodsPlusOutlinedClick = () => {
   goodsListModalVisible.value = true;
 };
+
+const qtyEditOutlinedClick = ({ qty }: { qty: number }) => {};
 
 const goodsDeleteOutlinedClick = () => {};
 
