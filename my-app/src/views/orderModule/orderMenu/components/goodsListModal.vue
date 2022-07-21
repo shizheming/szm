@@ -1,7 +1,7 @@
 <template>
   <a-modal
     :visible="props.visible"
-    title="查看任务"
+    title="商品选择"
     @ok="ok"
     @cancel="cancel"
     :width="1400"
@@ -13,30 +13,7 @@
       @finish="finish"
     >
       <a-row>
-        <a-col :span="8">
-          <a-form-item label="任务编码" :name="['sync_id']">
-            <a-input v-model:value="model.sync_id" />
-          </a-form-item>
-        </a-col>
-        <a-col :span="8">
-          <a-form-item label="任务类" :name="['name']">
-            <a-select :options="TYPE_OPTIONS" v-model:value="model.type" />
-          </a-form-item>
-        </a-col>
-        <a-col :span="8">
-          <a-form-item label="操作人" :name="['name']">
-            <a-input v-model:value="model.user_name" />
-          </a-form-item>
-        </a-col>
-        <a-col :span="8">
-          <a-form-item label="操作时间" :name="['name']">
-            <a-range-picker
-              show-time
-              value-format="YYYY-MM-DD HH:mm:ss"
-              v-model:value="model.time"
-            />
-          </a-form-item>
-        </a-col>
+        <a-col :span="8"> </a-col>
       </a-row>
       <a-row>
         <a-col :span="8">
@@ -52,9 +29,14 @@
       </a-row>
     </a-form>
     <a-table
-      rowKey="id"
+      :rowKey="tableRowKey"
+      :row-selection="{
+        selectedRowKeys,
+        onChange: rowSelectionOnChange,
+        getCheckboxProps,
+      }"
       :dataSource="dataSource?.list"
-      :columns="taskColumns"
+      :columns="orderFormModalGoodsColumns"
       :loading="loading"
       :pagination="pagination"
       @change="tableChange"
@@ -65,27 +47,10 @@
           record,
         }: {
           column: TableColumnType,
-          record: TaskFormModelInterface,
+          record: GoodsFormModelInterface,
         }"
       >
-        <template v-if="column.key === 'operation'">
-          <a-button
-            size="small"
-            v-if="record.log_url"
-            @click="downTxt(record.log_url)"
-            >查看日志</a-button
-          >
-          <a-button size="small">
-            <a :href="record.import_url" target="_blank" v-if="record.type == 1"
-              >下载导入文件</a
-            >
-          </a-button>
-          <a-button size="small">
-            <a :href="record.file_url" target="_blank" v-if="record.type == 2"
-              >导出</a
-            >
-          </a-button>
-        </template>
+        <template v-if="column.key === 'operation'"> </template>
       </template>
     </a-table>
   </a-modal>
@@ -99,25 +64,30 @@ import {
   FormProps,
   TableColumnType,
 } from "ant-design-vue";
-import { TaskFormModelInterface } from "../interface";
-import { orderSyncList_api, getFileByUrl_api } from "../api";
-import { TYPE_OPTIONS } from "../../../../data/dictionary";
-import { taskColumns } from "../data";
+import { GoodsFormModelInterface } from "../interface";
+import { sku_list_api } from "../api";
+import { orderFormModalGoodsColumns } from "../data";
 import { usePagination } from "vue-request";
 import { SearchOutlined, ClearOutlined } from "@ant-design/icons-vue";
 import { TableRowSelection } from "ant-design-vue/es/table/interface";
 
 const props = defineProps<{
   visible: boolean;
+  selectedRowKeys: any[];
 }>();
 const emits = defineEmits<{
   (event: "update:visible", visible: boolean): void;
-  (event: "select"): void;
+  (
+    event: "select",
+    selectedRowKeys: any[],
+    selectedRowsArray: GoodsFormModelInterface[]
+  ): void;
 }>();
 
-const model = reactive<TaskFormModelInterface>({});
+const selectedRowKeys = ref<any>([]);
+const model = reactive<GoodsFormModelInterface>({});
 const formRef = ref<FormInstance>();
-const selectedRowsArray = ref<TaskFormModelInterface[]>([]);
+const selectedRowsArray = ref<GoodsFormModelInterface[]>([]);
 const {
   data: dataSource,
   current,
@@ -125,7 +95,7 @@ const {
   run,
   loading,
   total,
-} = usePagination(orderSyncList_api, {
+} = usePagination(sku_list_api, {
   manual: true,
   formatResult: ({ data }) => {
     return data;
@@ -139,6 +109,11 @@ const {
 
 const finish: FormProps["onFinish"] = async (values) => {
   run({
+    channel_id: 1,
+    is_listing: 1,
+    need_stock: 1,
+    business_id: 1,
+    is_support_local: 0,
     page: 1,
     page_size: 10,
     ...model,
@@ -154,12 +129,35 @@ const pagination = computed(() => {
   };
 });
 
+const rowSelectionOnChange: TableRowSelection["onChange"] = (keys, rows) => {
+  selectedRowKeys.value = keys;
+  selectedRowsArray.value = rows;
+};
+
 const tableChange: TableProps["onChange"] = async (pag) => {
   run({
+    channel_id: 1,
+    is_listing: 1,
+    need_stock: 1,
+    business_id: 1,
+    is_support_local: 0,
     page: pag.current as number,
     page_size: pag.pageSize as number,
     ...model,
   });
+};
+
+const getCheckboxProps: TableRowSelection["getCheckboxProps"] = ({
+  sku_id,
+  spu_id,
+}) => {
+  return {
+    disabled: props.selectedRowKeys.includes(`${spu_id}_${sku_id}`),
+  };
+};
+
+const tableRowKey: GoodsFormModelInterface = ({ sku_id, spu_id }) => {
+  return `${spu_id}_${sku_id}`;
 };
 
 const clearOutlinedClick = () => {
@@ -169,7 +167,7 @@ const clearOutlinedClick = () => {
 const ok: ModalProps["onOk"] = async (e) => {
   formRef.value?.resetFields();
 
-  emits("select");
+  emits("select", selectedRowKeys.value, selectedRowsArray.value);
   emits("update:visible", false);
 };
 const cancel: ModalProps["onCancel"] = (e) => {
@@ -177,35 +175,21 @@ const cancel: ModalProps["onCancel"] = (e) => {
   emits("update:visible", false);
 };
 
-const downTxt = async (url: any) => {
-  let { data } = await getFileByUrl_api({
-    url,
-  });
-  const a = document.createElement("a");
-  const blob = new Blob([data.data]);
-  const blobUrl = window.URL.createObjectURL(blob);
-
-  download(blobUrl);
-};
-
-const download = (blobUrl: any) => {
-  const a = document.createElement("a");
-
-  a.style.display = "none";
-  a.download = `日志${new Date().getTime()}`;
-  a.href = blobUrl;
-  a.click();
-  // document.body.removeChild(a);
-};
-
 watch(
   () => props.visible,
   async (newValue) => {
     if (newValue === true) {
       run({
+        channel_id: 1,
+        is_listing: 1,
+        need_stock: 1,
+        business_id: 1,
+        is_support_local: 0,
         page: 1,
         page_size: 10,
       });
+    } else {
+      selectedRowKeys.value = [];
     }
   }
 );

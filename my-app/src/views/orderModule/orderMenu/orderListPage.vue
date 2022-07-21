@@ -706,12 +706,9 @@
   </a-table>
   <remark-form-modal
     v-model:visible="remarkFormModalVisible"
-    :selectedRowsArray="selectedRowsArray"
+    :selected-rows-array="selectedRowsArray"
   />
-  <task-list-modal
-    v-model:visible="taskListModalVisible"
-    :selectedRowKeys="selectedRowKeys"
-  />
+  <task-list-modal v-model:visible="taskListModalVisible" />
 </template>
 <script setup lang="ts">
 import { ref, watch, reactive, defineAsyncComponent } from "vue";

@@ -7,11 +7,6 @@ import { TableColumn, TableColumnsType } from "ant-design-vue";
 export const columns: TableColumnsType = [
   {
     title: "操作",
-    dataIndex: "key",
-    key: "key",
-  },
-  {
-    title: "操作",
     dataIndex: "operation",
     key: "operation",
   },
@@ -242,5 +237,185 @@ export const userListModalColumns: TableColumnsType = [
     title: "企业名称",
     dataIndex: "company_name",
     key: "company_name",
+  },
+];
+
+export const orderFormGoodsColumns = [
+  {
+    title: "操作",
+    dataIndex: "opration",
+    key: "opration",
+    // fixed: 'right',
+  },
+  {
+    title: "序号",
+    dataIndex: "number",
+    key: "number",
+    customRender(c) {
+      return Number(c) + 1;
+    },
+  },
+  {
+    title: "主图",
+    dataIndex: "imgSrc",
+    key: "imgSrc",
+  },
+  {
+    title: "商品名称",
+    dataIndex: "spu_name",
+    key: "spu_name",
+  },
+  {
+    title: "商品编码",
+    dataIndex: "sku_code",
+    key: "sku_code",
+  },
+  {
+    title: "货号",
+    dataIndex: "sn",
+    key: "sn",
+  },
+  {
+    title: "商品类型",
+    dataIndex: "sku_type_name",
+    key: "sku_type_name",
+    customRender() {
+      return "实物";
+    },
+  },
+  {
+    title: "商品形式",
+    dataIndex: "is_suit",
+    key: "is_suit",
+  },
+  {
+    title: "店铺商品编码",
+    dataIndex: "shop_goods_code",
+    key: "shop_goods_code",
+  },
+  {
+    title: "销售店铺",
+    dataIndex: "shop_name",
+    key: "shop_name",
+  },
+  {
+    title: "规格属性",
+    dataIndex: "sku_specs",
+    key: "sku_specs",
+  },
+
+  {
+    title: "品牌",
+    dataIndex: "brand_name",
+    key: "brand_name",
+  },
+  {
+    title: "类目",
+    dataIndex: "category_id",
+    key: "category_id",
+  },
+  {
+    title: "订购单位",
+    dataIndex: "pack_unit",
+    key: "pack_unit",
+  },
+  {
+    title: "订购数量",
+    dataIndex: "qty",
+    key: "qty",
+  },
+  {
+    title: "定价方式",
+    dataIndex: "member_price",
+    key: "member_price",
+  },
+  {
+    title: "销售单价",
+    dataIndex: "shop_selling_price",
+    key: "shop_selling_price",
+  },
+  {
+    title: "购买单价",
+    dataIndex: "current_selling_price",
+    key: "current_selling_price",
+  },
+  {
+    title: "改价优惠金额",
+    dataIndex: "adjust_mount",
+    key: "adjust_mount",
+  },
+  {
+    title: "购买金额",
+    dataIndex: "purchaseAmount",
+    key: "purchaseAmount",
+  },
+];
+
+export const orderFormModalGoodsColumns = [
+  {
+    title: "商品名称",
+    dataIndex: "spu_name",
+    key: "spu_name",
+  },
+  {
+    title: "商品编码",
+    dataIndex: "sku_code",
+    key: "sku_code",
+  },
+  {
+    title: "店铺商品编码",
+    dataIndex: "shop_goods_code",
+    key: "shop_goods_code",
+  },
+  {
+    title: "货号",
+    dataIndex: "sn",
+    key: "sn",
+  },
+  {
+    title: "销售店铺",
+    dataIndex: "shop_name",
+    key: "shop_name",
+  },
+  {
+    title: "商品类型",
+    dataIndex: "sku_type_name",
+    key: "sku_type_name",
+    customRender() {
+      return "实物";
+    },
+  },
+  {
+    title: "规格属性",
+    dataIndex: "sku_specs",
+    key: "sku_specs",
+  },
+  {
+    title: "品牌类目",
+    dataIndex: "category_id",
+    key: "category_id",
+  },
+  {
+    title: "订购单位",
+    dataIndex: "pack_unit",
+    key: "pack_unit",
+  },
+  {
+    title: "定价方式",
+    dataIndex: "member_price",
+    key: "member_price",
+    customRender({ text }) {
+      return text.length > 0 ? "阶梯价" : "固定价";
+    },
+  },
+  {
+    title: "销售单价",
+    dataIndex: "shop_selling_price",
+    key: "shop_selling_price",
+  },
+  {
+    title: "可售库存",
+    dataIndex: "real_qty",
+    key: "real_qty",
   },
 ];

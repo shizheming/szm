@@ -143,3 +143,9 @@ export interface UserFormModelInterface {
 export interface EpUserSearchParamsInterface
   extends UserFormModelInterface,
     PageInterface {}
+
+export interface GoodsFormModelInterface {}
+
+export interface SkuListResultInterface {
+  list: GoodsFormModelInterface[];
+}

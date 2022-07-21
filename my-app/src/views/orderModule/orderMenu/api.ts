@@ -7,8 +7,10 @@ import type {
   BatchParamsInterface,
   OrderSyncListParamsInterface,
   OrderSyncListResultInterface,
-  userListParamsApiInterface,
+  EpUserSearchParamsInterface,
+  SkuListResultInterface,
 } from "./interface";
+import { listInterface } from "../../../interface";
 // 列表
 export const order_api = (params: OrderParamsInterface) => {
   return axios.get<OrderResultInterface>("/api/order", {
@@ -50,6 +52,11 @@ export const getFileByUrl_api = (params: any) => {
 };
 
 // 用户列表
-export const epUserSearch_api = (params: userListParamsApiInterface) => {
+export const epUserSearch_api = (params: EpUserSearchParamsInterface) => {
   return axios.post("/api/proxy/user/User/UserSearch/epUserSearch", params);
+};
+
+// 商品列表
+export const sku_list_api = (params: listInterface) => {
+  return axios.get<SkuListResultInterface>("/api/goods/sku/list", { params });
 };

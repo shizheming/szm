@@ -177,14 +177,14 @@
       "} from \"ant-design-vue\";",
       "import { FormModelInterface } from \"../interface\";",
       "import { api } from \"../api\";",
-      "import { columns } from \"../listPageData\";",
+      "import { columns } from \"../data\";",
       "import { usePagination } from \"vue-request\";",
       "import { SearchOutlined, ClearOutlined } from \"@ant-design/icons-vue\";",
       "import { TableRowSelection } from \"ant-design-vue/es/table/interface\";",
       "",
       "const props = defineProps<{",
       "  visible: boolean;",
-      "  selectedRowKeys: FormModelInterface[];",
+      "  selectedRowKeys: any[];",
       "}>();",
       "const emits = defineEmits<{",
       "  (event: \"update:visible\", visible: boolean): void;",
@@ -280,8 +280,7 @@
       "    }",
       "  }",
       ");",
-      "</script>",
-      ""
+      "</script>"
     ],
     "description": "列表弹窗"
   },

@@ -447,15 +447,29 @@
       <plus-outlined @click="goodsPlusOutlinedClick" />
       <delete-outlined @click="goodsDeleteOutlinedClick" />
     </a-space>
+    <a-table
+      :columns="orderFormGoodsColumns"
+      :data-source="dataSource"
+      :pagination="false"
+      :row-selection="{
+        selectedRowKeys,
+        onchange: tableChange,
+      }"
+    ></a-table>
   </a-form>
   <user-list-modal
     v-model:visible="userListModalVisible"
     @select="userListModalSelect"
   />
+  <goods-list-modal
+    v-model:visible="goodsListModalVisible"
+    :selected-row-keys="selectedRowKeys"
+    @select="goodsListModalSelect"
+  />
 </template>
 <script setup lang="ts">
 import { reactive, defineAsyncComponent, ref, watch, computed } from "vue";
-import { FormInstance, InputProps } from "ant-design-vue";
+import { FormInstance, InputProps, TableProps } from "ant-design-vue";
 import {
   orderCreateFormModelInterface,
   UserFormModelInterface,
@@ -463,13 +477,21 @@ import {
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 import AddressCascader from "../../../components/cascader/address.vue";
 import { WHETHER_OPTIONS } from "../../../data/dictionary";
+import { orderFormGoodsColumns } from "./data";
+import { TableRowSelection } from "ant-design-vue/es/table/interface";
 
 const UserListModal = defineAsyncComponent(
   () => import("./components/userListModal.vue")
 );
+const GoodsListModal = defineAsyncComponent(
+  () => import("./components/goodsListModal.vue")
+);
 const userListModalVisible = ref<boolean>(false);
+const goodsListModalVisible = ref<boolean>(false);
 const selectedRowKeys = ref<any[]>([]);
+const selectedRows = ref<any[]>([]);
 const userInputSearchStyle = ref<string>("0");
+const dataSource = ref<{}[]>([]);
 const model = reactive<orderCreateFormModelInterface>({
   entryMode: "手工创建订单",
   sale_mode: "名气商城",
@@ -510,6 +532,11 @@ const invoiceKindRadioWatch = (newValue: number) => {
   }
 };
 
+const tableChange: TableRowSelection["onChange"] = (keys, rows) => {
+  selectedRowKeys.value = keys;
+  selectedRows.value = rows;
+};
+
 const userListModalSelect: (
   rowKeys: any[],
   rows: UserFormModelInterface[]
@@ -539,9 +566,16 @@ const userListModalSelect: (
   });
 };
 
-const goodsPlusOutlinedClick = () => {};
+const goodsPlusOutlinedClick = () => {
+  goodsListModalVisible.value = true;
+};
 
 const goodsDeleteOutlinedClick = () => {};
+
+const goodsListModalSelect = (keys: any[], rows: any[]) => {
+  selectedRowKeys.value = keys;
+  dataSource.value = dataSource.value.concat(rows);
+};
 
 watch(
   [
