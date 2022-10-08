@@ -43,6 +43,7 @@
             >（没找到字幕）</span
           ></a-list-item
         >
+
         <a-list-item>环太平洋（1，2）</a-list-item>
         <a-list-item>霍比特人（1，2，3）</a-list-item>
         <a-list-item>寂静岭（1）</a-list-item>
@@ -66,6 +67,11 @@
         <a-list-item>星尘</a-list-item>
         <a-list-item>星河战队（1）</a-list-item>
         <a-list-item>星际穿越</a-list-item>
+        <a-list-item
+          >夜访吸血鬼<span style="color: orange"
+            >（没找到字幕）</span
+          ></a-list-item
+        >
         <a-list-item>异次元骇客</a-list-item>
         <a-list-item>真爱至上</a-list-item>
         <a-list-item>指环王（1，2，3）</a-list-item>
@@ -87,6 +93,9 @@
       <a-list bordered>
         <a-list-item>催眠大师</a-list-item>
         <a-list-item>我不是药神</a-list-item>
+        <a-list-item
+          >爱情神话<span style="color: red">（没有）</span></a-list-item
+        >
       </a-list>
     </a-tab-pane>
     <a-tab-pane key="5" tab="周星驰">

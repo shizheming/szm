@@ -34,6 +34,7 @@
         <a-list-item>冰上恋人</a-list-item>
         <a-list-item>回到十八岁</a-list-item>
         <a-list-item>恋爱世纪</a-list-item>
+        <a-list-item>麻辣教师</a-list-item>
         <a-list-item>美丽人生</a-list-item>
         <a-list-item>密会</a-list-item>
         <a-list-item
@@ -49,7 +50,7 @@
         >
         <a-list-item>我是大哥大</a-list-item>
         <a-list-item>贤者之爱</a-list-item>
-      </a-list>
+        <a-list-item>悠长假期</a-list-item>
     </a-tab-pane>
   </a-tabs>
 </template>
