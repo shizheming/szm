@@ -490,54 +490,54 @@
   />
 </template>
 <script setup lang="ts">
-import { reactive, defineAsyncComponent, ref, watch, computed } from "vue";
+import { reactive, defineAsyncComponent, ref, watch, computed } from 'vue';
 import {
   FormInstance,
   InputProps,
   TableProps,
   TableColumnType,
-} from "ant-design-vue";
+} from 'ant-design-vue';
 import {
   orderCreateFormModelInterface,
   UserFormModelInterface,
   SkuListResultInterface,
-} from "./interface";
+} from './interface';
 import {
   PlusOutlined,
   DeleteOutlined,
   EditOutlined,
-} from "@ant-design/icons-vue";
-import AddressCascader from "../../../components/cascader/address.vue";
-import { WHETHER_OPTIONS } from "../../../data/dictionary";
-import { orderFormGoodsColumns } from "./data";
-import { TableRowSelection } from "ant-design-vue/es/table/interface";
-import BackgroundCategory from "../../../components/cascader/backgroundCategory.vue";
+} from '@ant-design/icons-vue';
+import AddressCascader from '../../../components/cascader/address.vue';
+import { WHETHER_OPTIONS } from '../../../data/dictionary';
+import { orderFormGoodsColumns } from './data';
+import { TableRowSelection } from 'ant-design-vue/es/table/interface';
+import BackgroundCategory from '../../../components/cascader/backgroundCategory.vue';
 
 const UserListModal = defineAsyncComponent(
-  () => import("./components/userListModal.vue")
+  () => import('./components/userListModal.vue')
 );
 const GoodsListModal = defineAsyncComponent(
-  () => import("./components/goodsListModal.vue")
+  () => import('./components/goodsListModal.vue')
 );
 const userListModalVisible = ref<boolean>(false);
 const goodsListModalVisible = ref<boolean>(false);
 const selectedRowKeys = ref<any[]>([]);
 const selectedRows = ref<any[]>([]);
-const userInputSearchStyle = ref<string>("0");
+const userInputSearchStyle = ref<string>('0');
 const dataSource = ref<{}[]>([]);
 const model = reactive<orderCreateFormModelInterface>({
-  entryMode: "手工创建订单",
-  sale_mode: "名气商城",
-  businessType: "名气家/精选",
-  user_id: "",
+  entryMode: '手工创建订单',
+  sale_mode: '名气商城',
+  businessType: '名气家/精选',
+  user_id: '',
   addressInfo: {
-    name: "",
-    mobile: "",
+    name: '',
+    mobile: '',
     addressIds: [],
-    address: "",
+    address: '',
   },
-  stockFreeze: "提交订单",
-  delivery_mode: "快递",
+  stockFreeze: '提交订单',
+  delivery_mode: '快递',
   isInvoice: 0,
   order_invoice: {
     invoice_form: 3,
@@ -552,7 +552,7 @@ const specialPaperEnterpriseBoolean = ref<boolean>(false);
 const commonPaperPersonalBoolean = ref<boolean>(false);
 const commonElectronPersonalBoolean = ref<boolean>(false);
 const manRadioDisabled = ref<boolean>(false);
-const inputSearchSearch: InputProps["onChange"] = () => {
+const inputSearchSearch: InputProps['onChange'] = (a) => {
   userListModalVisible.value = true;
 };
 
@@ -565,7 +565,7 @@ const invoiceKindRadioWatch = (newValue: number) => {
   }
 };
 
-const tableChange: TableRowSelection["onChange"] = (keys, rows) => {
+const tableChange: TableRowSelection['onChange'] = (keys, rows) => {
   selectedRowKeys.value = keys;
   selectedRows.value = rows;
 };
@@ -587,7 +587,7 @@ const userListModalSelect: (
     },
   ]
 ) => {
-  userInputSearchStyle.value = "50%";
+  userInputSearchStyle.value = '50%';
   Object.assign(model, {
     user_id,
     phone,

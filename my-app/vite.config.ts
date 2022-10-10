@@ -1,22 +1,23 @@
-import { defineConfig } from "vite";
-import path from "path";
-import vue from "@vitejs/plugin-vue";
+import { defineConfig } from 'vite';
+import path from 'path';
+import vue from '@vitejs/plugin-vue';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      "@": path.resolve(process.cwd(), "src"),
+      '@': path.resolve(process.cwd(), 'src'),
     },
   },
   server: {
+    port: 4444,
     proxy: {
       // 字符串简写写法
       // "/foo": "http://localhost:4567",
       // 选项写法
-      "^/api/": {
-        target: "http://st2-manage.mingqijia.com/",
+      '^/api/': {
+        target: 'http://st2-manage.mingqijia.com/',
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/api/, ""),
       },

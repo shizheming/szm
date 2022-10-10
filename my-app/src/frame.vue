@@ -63,28 +63,36 @@ import {
   UserOutlined,
   LaptopOutlined,
   NotificationOutlined,
-} from "@ant-design/icons-vue";
-import { ref, watch } from "vue";
-import axios from "./utils/axios";
-import { useRoute, useRouter, onBeforeRouteUpdate } from "vue-router";
-import r from "./router/index";
-import { compact, first } from "lodash";
+} from '@ant-design/icons-vue';
+import { ref, watch } from 'vue';
+import axios from './utils/axios';
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
+import r from './router/index';
+import { compact, first } from 'lodash';
 
 const navigationData = [
   {
-    name: "orderModule",
-    zh_CN: "订单",
+    name: 'orderModule',
+    zh_CN: '订单',
   },
   {
-    name: "goodsModule",
-    zh_CN: "商品",
+    name: 'goodsModule',
+    zh_CN: '商品',
   },
 ];
 const route = useRoute();
 const router = useRouter();
 const allRoute = r.getRoutes();
 const menusData = ref([]);
-const pathData = compact(route.path.split("/"));
+const pathData = compact(route.path.split('/'));
+if (localStorage.userInfo === undefined) {
+  router.push({
+    name: 'index',
+    params: {
+      token: 0,
+    },
+  });
+}
 const userInfoData = JSON.parse(localStorage.userInfo);
 const menuSelectedKeys = ref([pathData[2]]);
 const menuOpenKeys = ref([pathData[1]]);
@@ -92,9 +100,9 @@ const navigationSelectedKeys = ref([first(pathData)]);
 const breadcrumbData = ref([]);
 
 const logoutButtonClick = async () => {
-  await axios.post("/api/manager/logout");
+  await axios.post('/api/manager/logout');
   router.push({
-    name: "index",
+    name: 'index',
     params: {
       token: 0,
     },
@@ -117,7 +125,7 @@ const getBreadcrumbDataFn = (pathData) => {
 
 // 获取侧边栏导航
 const getMenuDataFn = (path) => {
-  path = first(compact(path.split("/")));
+  path = first(compact(path.split('/')));
   menusData.value = allRoute
     .filter((item) => item.meta.type)
     .filter((item) => item.path.includes(path));
@@ -132,8 +140,8 @@ getBreadcrumbDataFn(pathData);
 getMenuDataFn(route.path);
 onBeforeRouteUpdate((updateGuard) => {
   breadcrumbData.value = [];
-  getBreadcrumbDataFn(compact(updateGuard.path.split("/")));
-  const updatePathData = compact(updateGuard.path.split("/"));
+  getBreadcrumbDataFn(compact(updateGuard.path.split('/')));
+  const updatePathData = compact(updateGuard.path.split('/'));
   menuSelectedKeys.value = [updatePathData[2]];
   menuOpenKeys.value = [updatePathData[1]];
 });
