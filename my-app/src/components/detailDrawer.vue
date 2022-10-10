@@ -8,10 +8,10 @@
     </a-descriptions>
   </a-drawer>
 </template>
-<script setup>
-const props = defineProps(["visible"]);
-const emits = defineEmits(["update:visible"]);
+<script setup lang="ts">
+const props = defineProps(['visible']);
+const emits = defineEmits(['update:visible']);
 const close = () => {
-  emits("update:visible", false);
+  emits('update:visible', false);
 };
 </script>

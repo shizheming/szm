@@ -2,19 +2,19 @@
   <a-layout>
     <a-layout-header class="header">
       <a-menu
-        v-model:selectedKeys="navigationSelectedKeys"
+        v-model:selectedKeys="navigationMenuSelectedKeys"
         theme="dark"
         mode="horizontal"
         @select="navigationMenuSelect"
         :style="{ lineHeight: '64px' }"
       >
-        <a-menu-item v-for="item in navigationData" :key="item.name">
+        <a-menu-item v-for="item in navigationArray" :key="item.name">
           <router-link :to="`/${item.name}`">{{ item.zh_CN }}</router-link>
         </a-menu-item>
       </a-menu>
       <a-space style="color: #abadaf; position: absolute; right: 10px; top: 0">
-        <span>{{ userInfoData.username }}</span>
-        <a style="color: #abadaf" @click="logoutButtonClick">退出登录</a>
+        <span>{{ userInfoObject.username }}</span>
+        <a style="color: #abadaf" @click="logoutLinkClick">退出登录</a>
       </a-space>
     </a-layout-header>
     <a-layout>
@@ -26,13 +26,13 @@
           :style="{ height: '100%', borderRight: 0 }"
         >
           <a-sub-menu
-            v-for="item in menusData"
+            v-for="item in menusArray"
             :key="item.name"
             :title="item.meta.title"
           >
             <a-menu-item :key="current.name" v-for="current in item.children">
               <router-link :to="`${item.path}/${current.path}`">{{
-                current.meta.title
+                current.meta?.title
               }}</router-link>
             </a-menu-item>
           </a-sub-menu>
@@ -40,7 +40,7 @@
       </a-layout-sider>
       <a-layout style="padding: 0 24px 24px">
         <a-breadcrumb style="margin: 16px 0">
-          <a-breadcrumb-item v-for="item in breadcrumbData" :key="item.name">
+          <a-breadcrumb-item v-for="item in breadcrumbArray" :key="item.name">
             <router-link :to="item.path">{{ item.meta.title }}</router-link>
           </a-breadcrumb-item>
         </a-breadcrumb>
@@ -66,11 +66,19 @@ import {
 } from '@ant-design/icons-vue';
 import { ref, watch } from 'vue';
 import axios from './utils/axios';
-import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
+import {
+  useRoute,
+  useRouter,
+  onBeforeRouteUpdate,
+  RouteRecord,
+  Router,
+} from 'vue-router';
 import r from './router/index';
+import { UserInfoInterface } from './interface/index';
+import type { MenuProps, MenuItemProps } from 'ant-design-vue';
 import { compact, first } from 'lodash';
 
-const navigationData = [
+const navigationArray = [
   {
     name: 'orderModule',
     zh_CN: '订单',
@@ -80,28 +88,30 @@ const navigationData = [
     zh_CN: '商品',
   },
 ];
-const route = useRoute();
-const router = useRouter();
-const allRoute = r.getRoutes();
-const menusData = ref([]);
-const pathData = compact(route.path.split('/'));
+const routeObject = useRoute();
+const routerObject = useRouter();
+const allRouteArray = r.getRoutes();
+const menusArray = ref<RouteRecord[]>([]);
+const pathArray = compact(routeObject.path.split('/'));
+const userInfoObject: UserInfoInterface = JSON.parse(localStorage.userInfo);
+const breadcrumbArray = ref<RouteRecord[]>([]);
+
 if (localStorage.userInfo === undefined) {
-  router.push({
+  routerObject.push({
     name: 'index',
     params: {
       token: 0,
     },
   });
 }
-const userInfoData = JSON.parse(localStorage.userInfo);
-const menuSelectedKeys = ref([pathData[2]]);
-const menuOpenKeys = ref([pathData[1]]);
-const navigationSelectedKeys = ref([first(pathData)]);
-const breadcrumbData = ref([]);
 
-const logoutButtonClick = async () => {
+const menuSelectedKeys = ref([pathArray[2]]);
+const menuOpenKeys = ref([pathArray[1]]);
+const navigationMenuSelectedKeys = ref([first(pathArray)]);
+
+const logoutLinkClick = async () => {
   await axios.post('/api/manager/logout');
-  router.push({
+  routerObject.push({
     name: 'index',
     params: {
       token: 0,
@@ -110,36 +120,37 @@ const logoutButtonClick = async () => {
 };
 
 // 获取面包屑导航
-const getBreadcrumbDataFn = (pathData) => {
-  const newPathData = [];
-  pathData.forEach((item, index) => {
-    if (index === 0) newPathData.push(`/${item}`);
-    else newPathData.push(`${newPathData[index - 1]}/${item}`);
+const getBreadcrumbDataFn = (pathArray: string[]) => {
+  const newPathArray: string[] = [];
+  pathArray.forEach((item, index) => {
+    if (index === 0) newPathArray.push(`/${item}`);
+    else newPathArray.push(`${newPathArray[index - 1]}/${item}`);
   });
-  newPathData.forEach((item) => {
-    breadcrumbData.value.push(
-      allRoute.find((current) => current.path === item)
+  newPathArray.forEach((item) => {
+    breadcrumbArray.value.push(
+      // ts告诉我会有可能会找到一个undefined的值，不能赋给breadcrumbData
+      allRouteArray.find((current) => current.path === item)
     );
   });
 };
 
 // 获取侧边栏导航
-const getMenuDataFn = (path) => {
-  path = first(compact(path.split('/')));
-  menusData.value = allRoute
+const getMenuDataFn = (path: string) => {
+  let newPathString: string = first(compact(path.split('/'))) as string;
+  menusArray.value = allRouteArray
     .filter((item) => item.meta.type)
-    .filter((item) => item.path.includes(path));
+    .filter((item) => item.path.includes(newPathString));
 };
 
-const navigationMenuSelect = (v) => {
-  getMenuDataFn(v.key);
+const navigationMenuSelect: MenuProps['onClick'] = (v) => {
+  getMenuDataFn(v.key as string);
 };
 
 // 初始化
-getBreadcrumbDataFn(pathData);
-getMenuDataFn(route.path);
+getBreadcrumbDataFn(pathArray);
+getMenuDataFn(routeObject.path);
 onBeforeRouteUpdate((updateGuard) => {
-  breadcrumbData.value = [];
+  breadcrumbArray.value = [];
   getBreadcrumbDataFn(compact(updateGuard.path.split('/')));
   const updatePathData = compact(updateGuard.path.split('/'));
   menuSelectedKeys.value = [updatePathData[2]];

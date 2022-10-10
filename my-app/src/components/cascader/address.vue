@@ -9,12 +9,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import type { CascaderProps } from "ant-design-vue";
-import { address_api } from "../../api/dictionary";
+import { ref } from 'vue';
+import type { CascaderProps } from 'ant-design-vue';
+import { address_api } from '../../api/dictionary';
 
-const options = ref<CascaderProps["options"]>([]);
-const loadData: CascaderProps["loadData"] = async (selectedOptions) => {
+const options = ref<CascaderProps['options']>([]);
+const loadData: CascaderProps['loadData'] = async (selectedOptions) => {
   const targetOption = selectedOptions[selectedOptions.length - 1];
   targetOption.loading = true;
 
@@ -32,7 +32,6 @@ const loadData: CascaderProps["loadData"] = async (selectedOptions) => {
       };
     }
   );
-  // options.value = [...options.value];
 };
 const inner = async () => {
   let { data }: { data: [] } = await address_api({
