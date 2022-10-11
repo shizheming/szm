@@ -64,7 +64,7 @@ import {
   LaptopOutlined,
   NotificationOutlined,
 } from '@ant-design/icons-vue';
-import { ref, watch } from 'vue';
+import { ref, watch, reactive } from 'vue';
 import axios from './utils/axios';
 import {
   useRoute,
@@ -136,7 +136,7 @@ const getBreadcrumbDataFn = (pathArray: string[]) => {
 
 // 获取侧边栏导航
 const getMenuDataFn = (path: string) => {
-  let newPathString: string = first(compact(path.split('/'))) as string;
+  let newPathString = first(compact(path.split('/'))) as string;
   menusArray.value = allRouteArray
     .filter((item) => item.meta.type)
     .filter((item) => item.path.includes(newPathString));
