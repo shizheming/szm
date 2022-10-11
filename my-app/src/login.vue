@@ -68,9 +68,9 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from './utils/axios';
 import { encrypt } from './utils/tool';
-import { LoginFormModelInterface } from './interface/index';
 
-const formModel = reactive<LoginFormModelInterface>({
+// 这种不需要写接口，自己都能类型推断，减少工作量，
+const formModel = reactive({
   sms_code: '',
   cms_phone: '',
   password: '',

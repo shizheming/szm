@@ -26,10 +26,3 @@ export interface UserInfoInterface {
   user_id: number;
   username: string;
 }
-
-export interface LoginFormModelInterface {
-  sms_code: string;
-  cms_phone: string;
-  password: string;
-  username: string;
-}
