@@ -6,6 +6,7 @@
         <a-list-item>宝莲灯</a-list-item>
         <a-list-item>大闹天宫</a-list-item>
         <a-list-item>大鱼海棠</a-list-item>
+        <a-list-item>大鱼海棠</a-list-item>
         <a-list-item>金猴降妖</a-list-item>
         <a-list-item>哪吒闹海</a-list-item>
         <a-list-item>天书奇谭</a-list-item>
