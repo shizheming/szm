@@ -524,7 +524,11 @@
     @change="tableChange"
   >
     <template
-      #expandedRowRender="{ record }: { record: orderFormModelInterface }"
+      #expandedRowRender="{
+        record,
+      }: {
+        record: Api_order_params_part_interface,
+      }"
     >
       <a-tabs v-model:activeKey="activeKey">
         <a-tab-pane key="1" tab="基本信息">
@@ -645,7 +649,7 @@
         record,
       }: {
         column: TableColumnType,
-        record: orderFormModelInterface,
+        record: Api_order_params_part_interface,
       }"
     >
       <template v-if="column.key === 'operation'">
@@ -680,7 +684,7 @@
           <a-popconfirm
             title="请确认用户已经签收，否则可能会引起用户投诉！"
             @confirm="
-              popconfirmConfirm(confirmsign_api, {
+              popconfirmConfirm(api_proxy_order_manage_edit_confirmsign, {
                 user_id: record.user.user_id,
                 osl_seq: record.osl_seq,
                 operator: USER_INFO.user_id,
@@ -693,7 +697,7 @@
             v-if="record.is_pre_subscribe && record.status == 20"
             title="订单确认后，在系统中可以对订单进行发货操作"
             @confirm="
-              popconfirmConfirm(confirmPreOrder_api, {
+              popconfirmConfirm(api_proxy_order_manage_edit_confirmPreOrder, {
                 osl_seq: record.osl_seq,
               })
             "
@@ -711,14 +715,14 @@
   <task-list-modal v-model:visible="taskListModalVisible" />
 </template>
 <script setup lang="ts">
-import { ref, watch, reactive, defineAsyncComponent } from "vue";
+import { ref, watch, reactive, defineAsyncComponent } from 'vue';
 import {
   message,
   FormInstance,
   TableProps,
   TableColumnType,
   FormProps,
-} from "ant-design-vue";
+} from 'ant-design-vue';
 import {
   ORDER_STATUS_OPTIONS,
   PAY_STATUS_OPTIONS,
@@ -741,15 +745,15 @@ import {
   USER_INFO,
   WHETHER_ENUM,
   SPELL_ORDER_STATUS_ENUM,
-} from "../../../data/dictionary";
-import SupplierSelect from "../../../components/select/supplier.vue";
-import BackgroundCategoryCascader from "../../../components/cascader/backgroundCategory.vue";
-import GoodsBrandSelect from "../../../components/select/goodsBrand.vue";
-import SaleModeSelect from "../../../components/select/saleMode.vue";
-import OwnerSiteSelect from "../../../components/select/ownerSite.vue";
-import SubOrgSelect from "../../../components/select/subOrg.vue";
-import AddressCascader from "../../../components/cascader/address.vue";
-import { columns, goodsColumns } from "./data";
+} from '../../../data/dictionary';
+import SupplierSelect from '../../../components/select/supplier.vue';
+import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';
+import GoodsBrandSelect from '../../../components/select/goodsBrand.vue';
+import SaleModeSelect from '../../../components/select/saleMode.vue';
+import OwnerSiteSelect from '../../../components/select/ownerSite.vue';
+import SubOrgSelect from '../../../components/select/subOrg.vue';
+import AddressCascader from '../../../components/cascader/address.vue';
+import { columns, goodsColumns } from './data';
 import {
   DownOutlined,
   UpOutlined,
@@ -758,34 +762,38 @@ import {
   EditOutlined,
   CloseOutlined,
   CheckOutlined,
-} from "@ant-design/icons-vue";
+} from '@ant-design/icons-vue';
 import type {
-  orderFormModelInterface,
+  Api_order_params_part_interface,
   ConfirmsignParamsInterface,
-  ConfirmPreOrderParamsInterface,
-} from "./interface";
-import { order_api, confirmsign_api, confirmPreOrder_api } from "./api";
-import { usePagination } from "vue-request";
-import { computed } from "@vue/reactivity";
-import { TableRowSelection } from "ant-design-vue/es/table/interface";
+  Api_proxy_order_manage_edit_confirmPreOrder_params_interface,
+} from './interface';
+import {
+  api_order,
+  api_proxy_order_manage_edit_confirmsign,
+  api_proxy_order_manage_edit_confirmPreOrder,
+} from './api';
+import { usePagination } from 'vue-request';
+import { computed } from '@vue/reactivity';
+import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 
 // 异步组件
 const RemarkFormModal = defineAsyncComponent(
-  () => import("./components/remarkFormModal.vue")
+  () => import('./components/remarkFormModal.vue')
 );
 const TaskListModal = defineAsyncComponent(
-  () => import("./components/taskListModal.vue")
+  () => import('./components/taskListModal.vue')
 );
 
 // 属性
-const model = reactive<orderFormModelInterface>({
-  order_search_key: "osl_seq",
-  good_search_key: "goods_name",
+const model = reactive<Partial<Api_order_params_part_interface>>({
+  order_search_key: 'osl_seq',
+  good_search_key: 'goods_name',
 });
-const remarkFormModalVisible = ref<boolean>(false);
-const taskListModalVisible = ref<boolean>(false);
+const remarkFormModalVisible = ref(false);
+const taskListModalVisible = ref(false);
 const formRef = ref<FormInstance>();
-const height = ref<string>("220px");
+const height = ref('220px');
 
 const {
   data: dataSource,
@@ -794,14 +802,14 @@ const {
   run,
   loading,
   total,
-} = usePagination(order_api, {
+} = usePagination(api_order, {
   formatResult: ({ data }) => {
     return data;
   },
   pagination: {
-    currentKey: "page",
-    pageSizeKey: "page_size",
-    totalKey: "total",
+    currentKey: 'page',
+    pageSizeKey: 'page_size',
+    totalKey: 'total',
   },
 });
 
@@ -815,14 +823,13 @@ const pagination = computed(() => {
 });
 
 const selectedRowKeys = ref<any[]>([]);
-const selectedRowsArray = ref<orderFormModelInterface[]>([]);
-const rowSelectionOnChange: TableRowSelection["onChange"] = (keys, rows) => {
+const selectedRowsArray = ref<Api_order_params_part_interface[]>([]);
+const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {
   selectedRowKeys.value = keys;
   selectedRowsArray.value = rows;
 };
 
-const finish: FormProps["onFinish"] = async (values) => {
-  console.log(model, 123);
+const finish: FormProps['onFinish'] = async (values) => {
   run({
     page: 1,
     page_size: 10,
@@ -840,11 +847,7 @@ const clearOutlinedClick = () => {
   model.good_search_value = undefined;
 };
 
-const tableChange: TableProps["onChange"] = async (
-  pag,
-  filters: any,
-  sorter: any
-) => {
+const tableChange: TableProps['onChange'] = async (pag, filters, sorter) => {
   let sorterAny: { [name: string]: any } = {};
   if (sorter.order) {
     sorterAny[SORT_KEY_ENUM[sorter.columnKey as keyof typeof SORT_KEY_ENUM]] =
@@ -860,7 +863,7 @@ const tableChange: TableProps["onChange"] = async (
 
 const batchButtonClick = async () => {
   if (selectedRowKeys.value.length === 0) {
-    message.warning("请选择");
+    message.warning('请选择');
     return;
   }
   remarkFormModalVisible.value = true;
@@ -873,10 +876,12 @@ const exporButtonClick = () => {};
 
 const popconfirmConfirm = async (
   api: (p: any) => Promise<any>,
-  params: ConfirmsignParamsInterface | ConfirmPreOrderParamsInterface
+  params:
+    | ConfirmsignParamsInterface
+    | Api_proxy_order_manage_edit_confirmPreOrder_params_interface
 ) => {
   await api(params);
-  message.success("成功");
+  message.success('成功');
   setTimeout(() => {
     run({
       page: 1,
@@ -888,17 +893,17 @@ const popconfirmConfirm = async (
 
 const isExpandArrowBoolean = ref<boolean>(false);
 enum SORT_KEY_ENUM {
-  order_time = "createtime_sort",
-  sub_total_amount = "amount_sort",
+  order_time = 'createtime_sort',
+  sub_total_amount = 'amount_sort',
 }
 
-const activeKey = ref<string>("1");
+const activeKey = ref<string>('1');
 
 watch(isExpandArrowBoolean, (newValue) => {
   if (newValue) {
-    height.value = "auto";
+    height.value = 'auto';
   } else {
-    height.value = "220px";
+    height.value = '220px';
   }
 });
 

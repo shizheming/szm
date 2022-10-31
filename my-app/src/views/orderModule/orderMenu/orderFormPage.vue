@@ -462,7 +462,7 @@
           record,
         }: {
           column: TableColumnType,
-          record: SkuListResultInterface,
+          record: api_goods_sku_list_result_interface,
         }"
       >
         <template v-if="column.key === 'category_path'">
@@ -499,8 +499,9 @@ import {
 } from 'ant-design-vue';
 import {
   orderCreateFormModelInterface,
-  UserFormModelInterface,
-  SkuListResultInterface,
+  Api_proxy_user_User_UserSearch_epUserSearch_params_part_interface,
+  api_goods_sku_list_result_interface,
+  Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface,
 } from './interface';
 import {
   PlusOutlined,
@@ -572,7 +573,7 @@ const tableChange: TableRowSelection['onChange'] = (keys, rows) => {
 
 const userListModalSelect: (
   rowKeys: any[],
-  rows: UserFormModelInterface[]
+  rows: Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface[]
 ) => void = (
   rowKeys,
   [

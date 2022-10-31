@@ -29,13 +29,13 @@
       </a-row>
     </a-form>
     <a-table
-      :rowKey="tableRowKey"
+      :row-key="tableRowKey"
       :row-selection="{
         selectedRowKeys,
         onChange: rowSelectionOnChange,
         getCheckboxProps,
       }"
-      :dataSource="dataSource?.list"
+      :data-source="dataSource?.list"
       :columns="orderFormModalGoodsColumns"
       :loading="loading"
       :pagination="pagination"
@@ -47,7 +47,7 @@
           record,
         }: {
           column: TableColumnType,
-          record: GoodsFormModelInterface,
+          record: Api_goods_sku_list_result_item_interface,
         }"
       >
         <template v-if="column.key === 'operation'"> </template>
@@ -56,38 +56,41 @@
   </a-modal>
 </template>
 <script setup lang="ts">
-import { ref, watch, reactive, computed } from "vue";
+import { ref, watch, reactive, computed } from 'vue';
 import {
   FormInstance,
   ModalProps,
   TableProps,
   FormProps,
   TableColumnType,
-} from "ant-design-vue";
-import { GoodsFormModelInterface } from "../interface";
-import { sku_list_api } from "../api";
-import { orderFormModalGoodsColumns } from "../data";
-import { usePagination } from "vue-request";
-import { SearchOutlined, ClearOutlined } from "@ant-design/icons-vue";
-import { TableRowSelection } from "ant-design-vue/es/table/interface";
+} from 'ant-design-vue';
+import {
+  Api_goods_sku_list_result_item_interface,
+  Api_goods_sku_list_params_interface,
+} from '../interface';
+import { api_goods_sku_list } from '../api';
+import { orderFormModalGoodsColumns } from '../data';
+import { usePagination } from 'vue-request';
+import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
+import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 
 const props = defineProps<{
   visible: boolean;
   selectedRowKeys: any[];
 }>();
 const emits = defineEmits<{
-  (event: "update:visible", visible: boolean): void;
+  (event: 'update:visible', visible: boolean): void;
   (
-    event: "select",
+    event: 'select',
     selectedRowKeys: any[],
-    selectedRowsArray: GoodsFormModelInterface[]
+    selectedRowsArray: Api_goods_sku_list_result_item_interface[]
   ): void;
 }>();
 
 const selectedRowKeys = ref<any>([]);
-const model = reactive<GoodsFormModelInterface>({});
+const model = reactive<Api_goods_sku_list_params_interface>({});
 const formRef = ref<FormInstance>();
-const selectedRowsArray = ref<GoodsFormModelInterface[]>([]);
+const selectedRowsArray = ref<Api_goods_sku_list_result_item_interface[]>([]);
 const {
   data: dataSource,
   current,
@@ -95,19 +98,19 @@ const {
   run,
   loading,
   total,
-} = usePagination(sku_list_api, {
+} = usePagination(api_goods_sku_list, {
   manual: true,
   formatResult: ({ data }) => {
     return data;
   },
   pagination: {
-    currentKey: "page",
-    pageSizeKey: "page_size",
-    totalKey: "total",
+    currentKey: 'page',
+    pageSizeKey: 'page_size',
+    totalKey: 'total',
   },
 });
 
-const finish: FormProps["onFinish"] = async (values) => {
+const finish: FormProps['onFinish'] = async (values) => {
   run({
     channel_id: 1,
     is_listing: 1,
@@ -129,12 +132,12 @@ const pagination = computed(() => {
   };
 });
 
-const rowSelectionOnChange: TableRowSelection["onChange"] = (keys, rows) => {
+const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {
   selectedRowKeys.value = keys;
   selectedRowsArray.value = rows;
 };
 
-const tableChange: TableProps["onChange"] = async (pag) => {
+const tableChange: TableProps['onChange'] = async (pag) => {
   run({
     channel_id: 1,
     is_listing: 1,
@@ -147,7 +150,7 @@ const tableChange: TableProps["onChange"] = async (pag) => {
   });
 };
 
-const getCheckboxProps: TableRowSelection["getCheckboxProps"] = ({
+const getCheckboxProps: TableRowSelection['getCheckboxProps'] = ({
   sku_id,
   spu_id,
 }) => {
@@ -156,7 +159,10 @@ const getCheckboxProps: TableRowSelection["getCheckboxProps"] = ({
   };
 };
 
-const tableRowKey: GoodsFormModelInterface = ({ sku_id, spu_id }) => {
+const tableRowKey: Api_goods_sku_list_result_item_interface = ({
+  sku_id,
+  spu_id,
+}) => {
   return `${spu_id}_${sku_id}`;
 };
 
@@ -164,15 +170,15 @@ const clearOutlinedClick = () => {
   formRef.value?.resetFields();
 };
 
-const ok: ModalProps["onOk"] = async (e) => {
+const ok: ModalProps['onOk'] = async (e) => {
   formRef.value?.resetFields();
 
-  emits("select", selectedRowKeys.value, selectedRowsArray.value);
-  emits("update:visible", false);
+  emits('select', selectedRowKeys.value, selectedRowsArray.value);
+  emits('update:visible', false);
 };
-const cancel: ModalProps["onCancel"] = (e) => {
+const cancel: ModalProps['onCancel'] = (e) => {
   formRef.value?.resetFields();
-  emits("update:visible", false);
+  emits('update:visible', false);
 };
 
 watch(

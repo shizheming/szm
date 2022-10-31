@@ -65,14 +65,14 @@
           record,
         }: {
           column: TableColumnType,
-          record: TaskFormModelInterface,
+          record: Api_order_orderSyncList_result_item_interface,
         }"
       >
         <template v-if="column.key === 'operation'">
           <a-button
             size="small"
             v-if="record.log_url"
-            @click="downTxt(record.log_url)"
+            @click="downTxtButtonClick(record.log_url)"
             >查看日志</a-button
           >
           <a-button size="small">
@@ -91,33 +91,38 @@
   </a-modal>
 </template>
 <script setup lang="ts">
-import { ref, watch, reactive, computed } from "vue";
+import { ref, watch, reactive, computed } from 'vue';
 import {
   FormInstance,
   ModalProps,
   TableProps,
   FormProps,
   TableColumnType,
-} from "ant-design-vue";
-import { TaskFormModelInterface } from "../interface";
-import { orderSyncList_api, getFileByUrl_api } from "../api";
-import { TYPE_OPTIONS } from "../../../../data/dictionary";
-import { taskColumns } from "../data";
-import { usePagination } from "vue-request";
-import { SearchOutlined, ClearOutlined } from "@ant-design/icons-vue";
-import { TableRowSelection } from "ant-design-vue/es/table/interface";
+} from 'ant-design-vue';
+import {
+  Api_order_orderSyncList_params_part_interface,
+  Api_order_orderSyncList_result_item_interface,
+} from '../interface';
+import { api_order_orderSyncList, api_order_getFileByUrl } from '../api';
+import { TYPE_OPTIONS } from '../../../../data/dictionary';
+import { taskColumns } from '../data';
+import { usePagination } from 'vue-request';
+import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
+import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 
 const props = defineProps<{
   visible: boolean;
 }>();
 const emits = defineEmits<{
-  (event: "update:visible", visible: boolean): void;
-  (event: "select"): void;
+  (event: 'update:visible', visible: boolean): void;
+  (event: 'select'): void;
 }>();
 
-const model = reactive<TaskFormModelInterface>({});
+const model = reactive<Api_order_orderSyncList_params_part_interface>({});
 const formRef = ref<FormInstance>();
-const selectedRowsArray = ref<TaskFormModelInterface[]>([]);
+const selectedRowsArray = ref<Api_order_orderSyncList_params_part_interface[]>(
+  []
+);
 const {
   data: dataSource,
   current,
@@ -125,19 +130,19 @@ const {
   run,
   loading,
   total,
-} = usePagination(orderSyncList_api, {
+} = usePagination(api_order_orderSyncList, {
   manual: true,
   formatResult: ({ data }) => {
     return data;
   },
   pagination: {
-    currentKey: "page",
-    pageSizeKey: "page_size",
-    totalKey: "total",
+    currentKey: 'page',
+    pageSizeKey: 'page_size',
+    totalKey: 'total',
   },
 });
 
-const finish: FormProps["onFinish"] = async (values) => {
+const finish: FormProps['onFinish'] = async (values) => {
   run({
     page: 1,
     page_size: 10,
@@ -154,7 +159,7 @@ const pagination = computed(() => {
   };
 });
 
-const tableChange: TableProps["onChange"] = async (pag) => {
+const tableChange: TableProps['onChange'] = async (pag) => {
   run({
     page: pag.current as number,
     page_size: pag.pageSize as number,
@@ -166,22 +171,22 @@ const clearOutlinedClick = () => {
   formRef.value?.resetFields();
 };
 
-const ok: ModalProps["onOk"] = async (e) => {
+const ok: ModalProps['onOk'] = async (e) => {
   formRef.value?.resetFields();
 
-  emits("select");
-  emits("update:visible", false);
+  emits('select');
+  emits('update:visible', false);
 };
-const cancel: ModalProps["onCancel"] = (e) => {
+const cancel: ModalProps['onCancel'] = (e) => {
   formRef.value?.resetFields();
-  emits("update:visible", false);
+  emits('update:visible', false);
 };
 
-const downTxt = async (url: any) => {
-  let { data } = await getFileByUrl_api({
+const downTxtButtonClick = async (url: any) => {
+  let { data } = await api_order_getFileByUrl({
     url,
   });
-  const a = document.createElement("a");
+  const a = document.createElement('a');
   const blob = new Blob([data.data]);
   const blobUrl = window.URL.createObjectURL(blob);
 
@@ -189,9 +194,9 @@ const downTxt = async (url: any) => {
 };
 
 const download = (blobUrl: any) => {
-  const a = document.createElement("a");
+  const a = document.createElement('a');
 
-  a.style.display = "none";
+  a.style.display = 'none';
   a.download = `日志${new Date().getTime()}`;
   a.href = blobUrl;
   a.click();

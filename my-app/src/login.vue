@@ -2,9 +2,8 @@
   <a-form
     ref="formRef"
     :model="formModel"
-    :wrapper-col="{ span: 12 }"
+    :wrapper-col="{ span: 6 }"
     @finish="formFinish"
-    style="margin: 5% auto; width: 50%"
   >
     <a-form-item
       label="账号"

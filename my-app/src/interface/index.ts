@@ -3,11 +3,7 @@ export interface PageInterface {
   page_size: number;
 }
 
-export interface listInterface extends PageInterface {
-  [key: string]: any;
-}
-
-export interface UserInfoInterface {
+export interface Api_manager_me_result_interface {
   bucket: any;
   display_name: string;
   email: string;

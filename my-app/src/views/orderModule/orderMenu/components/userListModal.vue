@@ -51,7 +51,7 @@
           record,
         }: {
           column: TableColumnType,
-          record: UserFormModelInterface,
+          record: Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface,
         }"
       >
         <template v-if="column.key === 'operation'"> </template>
@@ -60,37 +60,45 @@
   </a-modal>
 </template>
 <script setup lang="ts">
-import { ref, watch, reactive, computed } from "vue";
+import { ref, watch, reactive, computed } from 'vue';
 import {
   FormInstance,
   ModalProps,
   TableProps,
   FormProps,
   TableColumnType,
-} from "ant-design-vue";
-import { UserFormModelInterface } from "../interface";
-import { epUserSearch_api } from "../api";
-import { userListModalColumns } from "../data";
-import { usePagination } from "vue-request";
-import { SearchOutlined, ClearOutlined } from "@ant-design/icons-vue";
-import { TableRowSelection } from "ant-design-vue/es/table/interface";
+} from 'ant-design-vue';
+import {
+  Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface,
+  Api_proxy_user_User_UserSearch_epUserSearch_params_part_interface,
+} from '../interface';
+import { Api_proxy_user_User_UserSearch_epUserSearch } from '../api';
+import { userListModalColumns } from '../data';
+import { usePagination } from 'vue-request';
+import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
+import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 
 const props = defineProps<{
   visible: boolean;
 }>();
 const emits = defineEmits<{
-  (event: "update:visible", visible: boolean): void;
+  (event: 'update:visible', visible: boolean): void;
   (
-    event: "select",
+    event: 'select',
     selectedRowKeys: any[],
-    selectedRowsArray: UserFormModelInterface[]
+    selectedRowsArray: Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface[]
   ): void;
 }>();
 
 const selectedRowKeys = ref<any>([]);
-const model = reactive<UserFormModelInterface>({});
+const model =
+  reactive<Api_proxy_user_User_UserSearch_epUserSearch_params_part_interface>(
+    {}
+  );
 const formRef = ref<FormInstance>();
-const selectedRowsArray = ref<UserFormModelInterface[]>([]);
+const selectedRowsArray = ref<
+  Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface[]
+>([]);
 const {
   data: dataSource,
   current,
@@ -98,19 +106,19 @@ const {
   run,
   loading,
   total,
-} = usePagination(epUserSearch_api, {
+} = usePagination(Api_proxy_user_User_UserSearch_epUserSearch, {
   manual: true,
   formatResult: ({ data }) => {
     return data;
   },
   pagination: {
-    currentKey: "page",
-    pageSizeKey: "page_size",
-    totalKey: "total",
+    currentKey: 'page',
+    pageSizeKey: 'page_size',
+    totalKey: 'total',
   },
 });
 
-const finish: FormProps["onFinish"] = async (values) => {
+const finish: FormProps['onFinish'] = async (values) => {
   run({
     page: 1,
     page_size: 10,
@@ -127,12 +135,12 @@ const pagination = computed(() => {
   };
 });
 
-const rowSelectionOnChange: TableRowSelection["onChange"] = (keys, rows) => {
+const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {
   selectedRowKeys.value = keys;
   selectedRowsArray.value = rows;
 };
 
-const tableChange: TableProps["onChange"] = async (pag) => {
+const tableChange: TableProps['onChange'] = async (pag) => {
   run({
     page: pag.current as number,
     page_size: pag.pageSize as number,
@@ -144,15 +152,15 @@ const clearOutlinedClick = () => {
   formRef.value?.resetFields();
 };
 
-const ok: ModalProps["onOk"] = async (e) => {
+const ok: ModalProps['onOk'] = async (e) => {
   formRef.value?.resetFields();
 
-  emits("select", selectedRowKeys.value, selectedRowsArray.value);
-  emits("update:visible", false);
+  emits('select', selectedRowKeys.value, selectedRowsArray.value);
+  emits('update:visible', false);
 };
-const cancel: ModalProps["onCancel"] = (e) => {
+const cancel: ModalProps['onCancel'] = (e) => {
   formRef.value?.resetFields();
-  emits("update:visible", false);
+  emits('update:visible', false);
 };
 
 watch(

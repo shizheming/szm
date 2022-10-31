@@ -21,23 +21,25 @@
   </a-modal>
 </template>
 <script setup lang="ts">
-import { ref, watch, reactive } from "vue";
-import { FormInstance, message, ModalProps } from "ant-design-vue";
+import { ref, watch, reactive } from 'vue';
+import { FormInstance, message, ModalProps } from 'ant-design-vue';
 import {
-  RemarkFormModelInterface,
-  orderFormModelInterface,
-} from "../interface";
-import { batch_api } from "../api";
+  Api_order_merchantRemark_batch_params_item_interface,
+  Api_order_params_part_interface,
+} from '../interface';
+import { api_order_merchantRemark_batch } from '../api';
 
 const props = defineProps<{
   visible: boolean;
-  selectedRowsArray: orderFormModelInterface[];
+  selectedRowsArray: Api_order_params_part_interface[];
 }>();
 const emits = defineEmits<{
-  (event: "update:visible", visible: boolean): void;
-  (event: "submit"): void;
+  (event: 'update:visible', visible: boolean): void;
+  (event: 'submit'): void;
 }>();
-const model = reactive<RemarkFormModelInterface>({ merchant_remark: "" });
+const model = reactive<Api_order_merchantRemark_batch_params_item_interface>({
+  merchant_remark: '',
+});
 const formRef = ref<FormInstance>();
 const confirmLoading = ref<boolean>(false);
 
@@ -50,30 +52,30 @@ watch(
   }
 );
 
-const ok: ModalProps["onOk"] = async (e) => {
+const ok: ModalProps['onOk'] = async (e) => {
   try {
     let data = await formRef.value?.validate();
-    await batch_api({
+    await api_order_merchantRemark_batch({
       ids: props.selectedRowsArray.map(({ osl_seq, user: { user_id } }) => {
         return {
-          ...(data as RemarkFormModelInterface),
+          ...(data as Api_order_merchantRemark_batch_params_item_interface),
           osl_seq,
           user_id,
         };
       }),
     });
-    message.success("成功");
+    message.success('成功');
     confirmLoading.value = true;
-    emits("submit");
+    emits('submit');
     confirmLoading.value = false;
     formRef.value?.resetFields();
-    emits("update:visible", false);
+    emits('update:visible', false);
   } catch (error) {
     confirmLoading.value = false;
   }
 };
-const cancel: ModalProps["onCancel"] = (e) => {
+const cancel: ModalProps['onCancel'] = (e) => {
   formRef.value?.resetFields();
-  emits("update:visible", false);
+  emits('update:visible', false);
 };
 </script>
