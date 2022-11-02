@@ -39,7 +39,7 @@
             @search="inputSearchSearch"
           >
             <template #enterButton>
-              <a-button><plus-outlined /></a-button>
+              <a-button type="text"><plus-outlined /></a-button>
             </template>
           </a-input-search>
         </a-form-item>

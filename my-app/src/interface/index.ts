@@ -3,6 +3,10 @@ export interface PageInterface {
   page_size: number;
 }
 
+export interface ListInterface<T> {
+  list: T[];
+}
+
 export interface Api_manager_me_result_interface {
   bucket: any;
   display_name: string;

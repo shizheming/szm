@@ -1,4 +1,4 @@
-import { PageInterface } from '../../../interface/index';
+import { ListInterface, PageInterface } from '../../../interface/index';
 
 export interface Api_order_params_part_interface {
   order_search_key: string;
@@ -46,31 +46,31 @@ export interface Api_order_params_part_interface {
   address: [];
 }
 
-export interface Api_order_result_interface {
-  list: Api_order_result_item_interface[];
-  total0: number;
-  total5: number;
-  total20: number;
-  total30: number;
-  total40: number;
-  total50: number;
-  total60: number;
-  total110: number;
-  totalAll: number;
-  total: number;
-  page: number;
-  page_size: number;
-}
+export type Api_order_result_interface =
+  ListInterface<Api_order_result_item_interface> & {
+    total0: number;
+    total5: number;
+    total20: number;
+    total30: number;
+    total40: number;
+    total50: number;
+    total60: number;
+    total110: number;
+    totalAll: number;
+    total: number;
+    page: number;
+    page_size: number;
+  };
 
-export interface Api_order_params_interface
-  extends Partial<Api_order_params_part_interface>,
-    PageInterface {}
+export type Api_order_params_interface =
+  Partial<Api_order_params_part_interface> & PageInterface;
 
 export interface Api_order_result_item_interface {
   pay_mode: {
     value: number;
     name: string;
   };
+  spell_order_status: number;
   receipt: number;
   sub_status_name: string;
   status: number;
@@ -351,9 +351,8 @@ export interface Api_order_orderSyncList_result_item_interface {
   import_url: string;
 }
 
-export interface Api_order_orderSyncList_params_interface
-  extends Partial<Api_order_orderSyncList_params_part_interface>,
-    PageInterface {}
+export type Api_order_orderSyncList_params_interface =
+  Partial<Api_order_orderSyncList_params_part_interface> & PageInterface;
 
 export interface orderCreateFormModelInterface {
   entryMode: string;
@@ -404,9 +403,9 @@ export interface Api_proxy_user_User_UserSearch_epUserSearch_params_part_interfa
   user_id: string;
 }
 
-export interface Api_proxy_user_User_UserSearch_epUserSearch_params_interface
-  extends Partial<Api_proxy_user_User_UserSearch_epUserSearch_params_part_interface>,
-    PageInterface {}
+export type Api_proxy_user_User_UserSearch_epUserSearch_params_interface =
+  Partial<Api_proxy_user_User_UserSearch_epUserSearch_params_part_interface> &
+    PageInterface;
 
 export interface Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface {
   user_id: string;

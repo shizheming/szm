@@ -1,8 +1,8 @@
-export interface PropsInterface {
-  isDetail?: Boolean;
-  inner?: Function;
-  watch?: any[];
-  outer?: Function;
+export type PropsInterface = Partial<{
+  isDetail: Boolean;
+  inner: () => void;
+  watch: any[];
+  outer: () => void;
   // togetherhas: {
   //   type: Array,
   //   default: undefined,
@@ -15,4 +15,4 @@ export interface PropsInterface {
   //   type: Boolean,
   //   default: undefined,
   // },
-}
+}>;

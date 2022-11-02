@@ -527,7 +527,7 @@
       #expandedRowRender="{
         record,
       }: {
-        record: Api_order_params_part_interface,
+        record: Api_order_result_item_interface,
       }"
     >
       <a-tabs v-model:activeKey="activeKey">
@@ -555,7 +555,7 @@
               {{ record.pre_delivery_time }}
             </a-descriptions-item>
             <a-descriptions-item label="拼团状态">
-              {{ SPELL_ORDER_STATUS_ENUM[record.spell_order_status as number] }}
+              {{ SPELL_ORDER_STATUS_ENUM[record.spell_order_status] }}
             </a-descriptions-item>
             <a-descriptions-item label="支付时间">
               {{ record.pay_time }}
@@ -629,14 +629,14 @@
             <template
               #bodyCell="{
                 column,
-                record,
+                record: itemRecord,
               }: {
                 column: TableColumnType,
-                record: any,
+                record: Api_order_result_item_interface['item'][number],
               }"
             >
               <template v-if="column.key === 'pic'">
-                <a-image :src="record.pic_url_pic" :width="100" />
+                <a-image :src="itemRecord.pic_url_pic" :width="100" />
               </template>
             </template>
           </a-table>
@@ -649,7 +649,7 @@
         record,
       }: {
         column: TableColumnType,
-        record: Api_order_params_part_interface,
+        record: Api_order_result_item_interface,
       }"
     >
       <template v-if="column.key === 'operation'">
@@ -766,6 +766,7 @@ import {
 import type {
   Api_order_params_part_interface,
   ConfirmsignParamsInterface,
+  Api_order_result_item_interface,
   Api_proxy_order_manage_edit_confirmPreOrder_params_interface,
 } from './interface';
 import {

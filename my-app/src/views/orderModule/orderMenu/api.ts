@@ -1,3 +1,4 @@
+import { ListInterface } from '../../../interface';
 import axios from '../../../utils/axios';
 import type {
   Api_order_params_interface,
@@ -45,12 +46,11 @@ export const api_order_merchantRemark_batch = (params: {
 export const api_order_orderSyncList = (
   params: Api_order_orderSyncList_params_interface
 ) => {
-  return axios.get<{ list: Api_order_orderSyncList_result_item_interface[] }>(
-    '/api/order/orderSyncList',
-    {
-      params,
-    }
-  );
+  return axios.get<
+    ListInterface<Api_order_orderSyncList_result_item_interface>
+  >('/api/order/orderSyncList', {
+    params,
+  });
 };
 
 // 查看日志
@@ -68,16 +68,16 @@ export const api_order_getFileByUrl = (params: { url: string }) => {
 export const Api_proxy_user_User_UserSearch_epUserSearch = (
   params: Api_proxy_user_User_UserSearch_epUserSearch_params_interface
 ) => {
-  return axios.post<{
-    list: Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface[];
-  }>('/api/proxy/user/User/UserSearch/epUserSearch', params);
+  return axios.post<
+    ListInterface<Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface>
+  >('/api/proxy/user/User/UserSearch/epUserSearch', params);
 };
 
 // 商品列表
 export const api_goods_sku_list = (
   params: Api_goods_sku_list_params_interface
 ) => {
-  return axios.get<{ list: Api_goods_sku_list_result_item_interface[] }>(
+  return axios.get<ListInterface<Api_goods_sku_list_result_item_interface>>(
     '/api/goods/sku/list',
     {
       params,

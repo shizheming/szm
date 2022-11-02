@@ -11,9 +11,9 @@
   </InputSearch>
 </template>
 <script setup lang="ts">
-import core from "./core";
-import { InputSearch } from "ant-design-vue";
-import { PropsInterface } from "./props";
+import core from './core';
+import { InputSearch } from 'ant-design-vue';
+import { PropsInterface } from './props';
 
 const p = defineProps<{
   isDetail?: Boolean;
@@ -41,6 +41,10 @@ const { newSlots, detailStyleObj } = core(p);
 }
 .formDetail .ant-input {
   color: #000;
+  background-color: white;
+}
+.formDetail .ant-input-group-addon,
+.formDetail .ant-input-group-addon:hover {
   background-color: white;
 }
 </style>
