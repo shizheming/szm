@@ -4,16 +4,16 @@
   </FormItem>
 </template>
 <script setup lang="ts">
-import { useSlots, useAttrs, ref, provide } from "vue";
-import core from "./core";
-import { FormItem } from "ant-design-vue";
-import { PropsInterface } from "./props";
+import { useSlots, useAttrs, ref, provide } from 'vue';
+import core from './core';
+import { FormItem } from 'ant-design-vue';
+import { PropsInterface } from './props';
 
 const p = defineProps<{
   isDetail?: Boolean;
-  inner?: Function;
+  inner?: () => void;
   watch?: any[];
-  outer?: Function;
+  outer?: () => void;
   // togetherhas: {
   //   type: Array,
   //   default: undefined,
@@ -29,6 +29,6 @@ const p = defineProps<{
 }>();
 const attrs = useAttrs();
 const componentName = ref<string>(attrs.name as string);
-provide("componentName", componentName);
+provide('componentName', componentName);
 const { newSlots } = core(p);
 </script>

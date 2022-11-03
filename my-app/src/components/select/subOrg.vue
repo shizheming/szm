@@ -2,18 +2,18 @@
   <a-select :options="options" :inner="inner" />
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
-import { sub_org_api } from "../../api/dictionary";
-import type { SelectProps } from "ant-design-vue";
-const options = ref<SelectProps["options"]>([]);
+import { ref } from 'vue';
+import { api_sys_org } from '../../api/dictionary';
+import type { SelectProps } from 'ant-design-vue';
+const options = ref<SelectProps['options']>([]);
 const inner = async () => {
   let {
     data: { list },
-  }: { data: { list: [] } } = await sub_org_api({
+  } = await api_sys_org({
     page: 1,
     page_size: 100,
   });
-  options.value = list.map(({ id, name }: { id: number; name: string }) => {
+  options.value = list.map(({ id, name }) => {
     return {
       label: name,
       value: id,

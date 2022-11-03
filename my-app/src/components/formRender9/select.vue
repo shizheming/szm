@@ -5,7 +5,7 @@
     :filter-option="filterOption"
     :placeholder="$props.isDetail ? '' : '请选择'"
     :disabled="detailStyleObj.disabled"
-    :showArrow="detailStyleObj.showArrow"
+    :show-arrow="detailStyleObj.showArrow"
     :bordered="detailStyleObj.bordered"
     :class="detailStyleObj.class"
     v-bind="newSlots"
@@ -14,15 +14,15 @@
   </Select>
 </template>
 <script setup lang="ts">
-import core from "./core";
-import { PropsInterface } from "./props";
-import { Select, SelectProps } from "ant-design-vue";
+import core from './core';
+import { PropsInterface } from './props';
+import { Select, SelectProps } from 'ant-design-vue';
 
 const p = defineProps<{
   isDetail?: Boolean;
-  inner?: Function;
+  inner?: () => void;
   watch?: any[];
-  outer?: Function;
+  outer?: () => void;
   // togetherhas: {
   //   type: Array,
   //   default: undefined,

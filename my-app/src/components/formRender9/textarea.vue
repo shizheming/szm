@@ -1,21 +1,27 @@
 <template>
-  <Textarea allowClear auto-size show-count :maxlength="200" v-bind="newSlots">
+  <Textarea
+    allow-clear
+    auto-size
+    show-count
+    :max-length="200"
+    v-bind="newSlots"
+  >
     <slot />
   </Textarea>
 </template>
 <script setup lang="ts">
-import core from "./core";
-import { Textarea } from "ant-design-vue";
-import { PropsInterface } from "./props";
+import core from './core';
+import { Textarea } from 'ant-design-vue';
+import { PropsInterface } from './props';
 
 // 不删除这个属性会报警告
 delete Textarea.props.prefix;
 
 const p = defineProps<{
   isDetail?: Boolean;
-  inner?: Function;
+  inner?: () => void;
   watch?: any[];
-  outer?: Function;
+  outer?: () => void;
   // togetherhas: {
   //   type: Array,
   //   default: undefined,

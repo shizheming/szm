@@ -1,6 +1,6 @@
 <template>
   <InputSearch
-    allowClear
+    allow-clear
     :placeholder="$props.isDetail ? '' : '请输入'"
     :disabled="detailStyleObj.disabled"
     :bordered="detailStyleObj.bordered"
@@ -17,9 +17,9 @@ import { PropsInterface } from './props';
 
 const p = defineProps<{
   isDetail?: Boolean;
-  inner?: Function;
+  inner?: () => void;
   watch?: any[];
-  outer?: Function;
+  outer?: () => void;
   // togetherhas: {
   //   type: Array,
   //   default: undefined,
