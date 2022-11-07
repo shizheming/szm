@@ -52,9 +52,9 @@
       </a-row>
     </a-form>
     <a-table
-      rowKey="id"
-      :dataSource="dataSource?.list"
-      :columns="taskColumns"
+      row-key="id"
+      :data-source="dataSource?.list"
+      :columns="taskListModalColumns"
       :loading="loading"
       :pagination="pagination"
       @change="tableChange"
@@ -105,7 +105,7 @@ import {
 } from '../interface';
 import { api_order_orderSyncList, api_order_getFileByUrl } from '../api';
 import { TYPE_OPTIONS } from '../../../../data/dictionary';
-import { taskColumns } from '../data';
+import { taskListModalColumns } from '../data';
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
@@ -118,11 +118,10 @@ const emits = defineEmits<{
   (event: 'select'): void;
 }>();
 
-const model = reactive<Api_order_orderSyncList_params_part_interface>({});
-const formRef = ref<FormInstance>();
-const selectedRowsArray = ref<Api_order_orderSyncList_params_part_interface[]>(
-  []
+const model = reactive<Partial<Api_order_orderSyncList_params_part_interface>>(
+  {}
 );
+const formRef = ref<FormInstance>();
 const {
   data: dataSource,
   current,
@@ -142,7 +141,7 @@ const {
   },
 });
 
-const finish: FormProps['onFinish'] = async (values) => {
+const finish = async () => {
   run({
     page: 1,
     page_size: 10,
@@ -161,8 +160,8 @@ const pagination = computed(() => {
 
 const tableChange: TableProps['onChange'] = async (pag) => {
   run({
-    page: pag.current as number,
-    page_size: pag.pageSize as number,
+    page: pag.current!,
+    page_size: pag.pageSize!,
     ...model,
   });
 };

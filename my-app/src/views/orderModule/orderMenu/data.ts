@@ -5,7 +5,7 @@ import {
   IS_SUIT_ENUM,
 } from '../../../data/dictionary';
 import { TableColumn, TableColumnsType } from 'ant-design-vue';
-export const columns: TableColumnsType = [
+export const orderListPageTableColumns: TableColumnsType = [
   {
     title: '操作',
     dataIndex: 'operation',
@@ -89,10 +89,11 @@ export const columns: TableColumnsType = [
     customRender({ text }) {
       return GOODS_SOURCE_ENUM[text];
     },
+    ellipsis: true,
   },
 ];
 
-export const goodsColumns: TableColumnsType = [
+export const orderListPageTableGoodsColumns: TableColumnsType = [
   {
     title: '图片',
     dataIndex: 'pic',
@@ -160,7 +161,12 @@ export const goodsColumns: TableColumnsType = [
   },
 ];
 
-export const taskColumns: TableColumnsType = [
+export const taskListModalColumns: TableColumnsType = [
+  {
+    title: '操作',
+    dataIndex: 'operation',
+    key: 'operation',
+  },
   {
     title: '任务编号',
     dataIndex: 'id',
@@ -195,11 +201,6 @@ export const taskColumns: TableColumnsType = [
     title: '成功记录数',
     dataIndex: 'success_num',
     key: 'success_num',
-  },
-  {
-    title: '操作',
-    dataIndex: 'operation',
-    key: 'operation',
   },
 ];
 

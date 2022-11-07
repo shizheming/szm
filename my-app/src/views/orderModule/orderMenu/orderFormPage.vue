@@ -2,27 +2,27 @@
   <a-form :model="model" :label-col="{ span: 8 }">
     <h1 style="font-weight: 700">基本信息</h1>
     <a-row>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="录入方式" :name="['entryMode']">
           <a-input v-model:value="model.entryMode" :is-detail="true" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="销售渠道" :name="['sale_mode']">
           <a-input v-model:value="model.sale_mode" :is-detail="true" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="外部订单号" :name="['out_ono']">
           <a-input v-model:value="model.out_ono" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="站点/业务类型" :name="['businessType']">
           <a-input v-model:value="model.businessType" :is-detail="true" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="用户ID"
           :name="['user_id']"
@@ -44,37 +44,37 @@
           </a-input-search>
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="关联手机号" :name="['phone']">
           <a-input v-model:value="model.phone" :is-detail="true" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="微信昵称" :name="['wx_nickname']">
           <a-input v-model:value="model.wx_nickname" :is-detail="true" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="用户等级" :name="['user_level_name']">
           <a-input v-model:value="model.user_level_name" :is-detail="true" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="用户名" :name="['username']">
           <a-input v-model:value="model.username" :is-detail="true" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="买家姓名" :name="['name']">
           <a-input v-model:value="model.name" :is-detail="true" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="企业名称" :name="['company_name']">
           <a-input v-model:value="model.company_name" :is-detail="true" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="收货人姓名"
           :name="['addressInfo', 'name']"
@@ -86,7 +86,7 @@
           <a-input v-model:value="model.addressInfo.name" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="收货人手机"
           :name="['addressInfo', 'mobile']"
@@ -98,7 +98,7 @@
           <a-input v-model:value="model.addressInfo.mobile" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="收货地址"
           :name="['addressInfo', 'addressIds']"
@@ -110,7 +110,7 @@
           <address-cascader v-model:value="model.addressInfo.addressIds" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="详细地址"
           :name="['addressInfo', 'address']"
@@ -122,24 +122,24 @@
           <a-input v-model:value="model.addressInfo.address" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="收货人电话" :name="['addressInfo', 'tel']">
           <a-input v-model:value="model.addressInfo.tel" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="邮编" :name="['addressInfo', 'zipcode']">
           <a-input v-model:value="model.addressInfo.zipcode" />
         </a-form-item>
       </a-col>
     </a-row>
     <a-row>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="买家备注" :name="['buyer_note']">
           <a-textarea v-model:value="model.buyer_note" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="商家备注" :name="['merchant_note']">
           <a-textarea v-model:value="model.merchant_note" />
         </a-form-item>
@@ -147,12 +147,12 @@
     </a-row>
     <h1 style="font-weight: 700">发运计划</h1>
     <a-row>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="库存冻结" :name="['stockFreeze']">
           <a-input v-model:value="model.stockFreeze" :is-detail="true" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="配送方式" :name="['delivery_mode']">
           <a-input v-model:value="model.delivery_mode" :is-detail="true" />
         </a-form-item>
@@ -160,7 +160,7 @@
     </a-row>
     <h1 style="font-weight: 700">开票申请</h1>
     <a-row>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="开具发票"
           :name="['isInvoice']"
@@ -178,7 +178,7 @@
     </a-row>
     <div v-if="model.isInvoice">
       <a-row>
-        <a-col>
+        <a-col :span="8">
           <a-form-item
             label="增值税发票类型"
             :name="['order_invoice', 'invoice_form']"
@@ -195,7 +195,7 @@
         </a-col>
       </a-row>
       <a-row>
-        <a-col>
+        <a-col :span="8">
           <a-form-item
             label="发票抬头类型"
             :name="['order_invoice', 'invoice_kind']"
@@ -218,7 +218,7 @@
         </a-col>
       </a-row>
       <a-row>
-        <a-col>
+        <a-col :span="8">
           <a-form-item
             label="发票内容"
             :name="['order_invoice', 'content_type']"
@@ -233,7 +233,7 @@
             </a-radio-group>
           </a-form-item>
         </a-col>
-        <a-col>
+        <a-col :span="8">
           <a-form-item
             label="开票备注"
             :name="['order_invoice', 'invoice_notice']"
@@ -245,7 +245,7 @@
             <a-textarea v-model:value="model.order_invoice.invoice_notice" />
           </a-form-item>
         </a-col>
-        <a-col>
+        <a-col :span="8">
           <a-form-item
             label="发票抬头"
             :name="['order_invoice', 'invoice_title']"
@@ -257,7 +257,7 @@
             <a-input v-model:value="model.order_invoice.invoice_title" />
           </a-form-item>
         </a-col>
-        <a-col>
+        <a-col :span="8">
           <a-form-item
             v-if="
               commonElectronEnterpriseBoolean ||
@@ -274,7 +274,7 @@
             <a-input v-model:value="model.order_invoice.vat_number" />
           </a-form-item>
         </a-col>
-        <a-col>
+        <a-col :span="8">
           <a-form-item
             v-if="
               commonElectronEnterpriseBoolean ||
@@ -291,7 +291,7 @@
             <a-input v-model:value="model.order_invoice.et_address" />
           </a-form-item>
         </a-col>
-        <a-col>
+        <a-col :span="8">
           <a-form-item
             v-if="
               commonElectronEnterpriseBoolean ||
@@ -308,7 +308,7 @@
             <a-input v-model:value="model.order_invoice.et_phone_num" />
           </a-form-item>
         </a-col>
-        <a-col>
+        <a-col :span="8">
           <a-form-item
             v-if="
               commonElectronEnterpriseBoolean ||
@@ -325,7 +325,7 @@
             <a-input v-model:value="model.order_invoice.et_bank_name" />
           </a-form-item>
         </a-col>
-        <a-col>
+        <a-col :span="8">
           <a-form-item
             v-if="
               commonElectronEnterpriseBoolean ||
@@ -342,7 +342,7 @@
             <a-input v-model:value="model.order_invoice.et_bank_account" />
           </a-form-item>
         </a-col>
-        <a-col>
+        <a-col :span="8">
           <a-form-item
             v-if="
               commonPaperPersonalBoolean ||
@@ -362,7 +362,7 @@
             <a-input v-model:value="model.order_invoice.invoice_username" />
           </a-form-item>
         </a-col>
-        <a-col>
+        <a-col :span="8">
           <a-form-item
             label="收票人手机"
             :name="['order_invoice', 'invoice_phone_num']"
@@ -374,7 +374,7 @@
             <a-input v-model:value="model.order_invoice.invoice_phone_num" />
           </a-form-item>
         </a-col>
-        <a-col>
+        <a-col :span="8">
           <a-form-item
             v-if="
               commonElectronPersonalBoolean || commonElectronEnterpriseBoolean
@@ -389,7 +389,7 @@
             <a-input v-model:value="model.order_invoice.invoice_email" />
           </a-form-item>
         </a-col>
-        <a-col>
+        <a-col :span="8">
           <a-form-item
             v-if="
               commonPaperPersonalBoolean ||
@@ -406,7 +406,7 @@
             <address-cascader v-model:value="model.order_invoice.mArea" />
           </a-form-item>
         </a-col>
-        <a-col>
+        <a-col :span="8">
           <a-form-item
             v-if="
               commonPaperPersonalBoolean ||
@@ -427,7 +427,7 @@
     </div>
     <h1 style="font-weight: 700">支付和结算</h1>
     <a-row>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="支付类型" :name="['pay_mode']">
           <a-select
             :options="[

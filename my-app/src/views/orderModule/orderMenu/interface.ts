@@ -420,8 +420,23 @@ export interface Api_proxy_user_User_UserSearch_epUserSearch_result_item_interfa
   user_level_name: string;
 }
 
-export interface Api_goods_sku_list_params_part_interface {}
+export interface Api_goods_sku_list_fixed_params_part_interface {
+  channel_id: number;
+  is_listing: number;
+  need_stock: number;
+  business_id: number;
+  is_support_local: number;
+}
+export interface Api_goods_sku_list_params_part_interface {
+  goods_search_value: string;
+  goods_search_key: string;
+  category_id: number;
+  brand_id: number;
+  sku_qty_start: number;
+  sku_qty_end: number;
+}
 export interface Api_goods_sku_list_params_interface
   extends Partial<Api_goods_sku_list_params_part_interface>,
+    Api_goods_sku_list_fixed_params_part_interface,
     PageInterface {}
 export interface Api_goods_sku_list_result_item_interface {}
