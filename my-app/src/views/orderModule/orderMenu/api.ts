@@ -12,6 +12,7 @@ import type {
   Api_goods_sku_list_result_item_interface,
   Api_goods_sku_list_params_interface,
   Api_order_merchantRemark_batch_params_item_interface,
+  Api_proxy_order_Order_BackEnd_submit_params_interface,
 } from './interface';
 
 // 列表
@@ -83,4 +84,11 @@ export const api_goods_sku_list = (
       params,
     }
   );
+};
+
+// 人工下单
+export const api_proxy_order_Order_BackEnd_submit = (
+  params: Api_proxy_order_Order_BackEnd_submit_params_interface
+) => {
+  return axios.post('/api/proxy/order/Order/BackEnd/submit', params);
 };

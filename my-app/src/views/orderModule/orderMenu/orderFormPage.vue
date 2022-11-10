@@ -34,7 +34,6 @@
           <a-input-search
             :disabled="true"
             :is-detail="true"
-            :style="`width:${userInputSearchStyle}`"
             v-model:value="model.user_id"
             @search="inputSearchSearch"
           >
@@ -129,7 +128,7 @@
       </a-col>
       <a-col :span="8">
         <a-form-item label="邮编" :name="['addressInfo', 'zipcode']">
-          <a-input v-model:value="model.addressInfo.zipcode" />
+          <a-input v-model:value="model.addressInfo!.zipcode" />
         </a-form-item>
       </a-col>
     </a-row>
@@ -154,7 +153,10 @@
       </a-col>
       <a-col :span="8">
         <a-form-item label="配送方式" :name="['delivery_mode']">
-          <a-input v-model:value="model.delivery_mode" :is-detail="true" />
+          <a-select
+            v-model:value="model.delivery_mode"
+            :options="DELIVERY_MODE_OPTIONS"
+          />
         </a-form-item>
       </a-col>
     </a-row>
@@ -237,10 +239,6 @@
           <a-form-item
             label="开票备注"
             :name="['order_invoice', 'invoice_notice']"
-            :rules="{
-              required: true,
-              message: '请填写',
-            }"
           >
             <a-textarea v-model:value="model.order_invoice.invoice_notice" />
           </a-form-item>
@@ -257,13 +255,15 @@
             <a-input v-model:value="model.order_invoice.invoice_title" />
           </a-form-item>
         </a-col>
-        <a-col :span="8">
+        <a-col
+          :span="8"
+          v-if="
+            commonElectronEnterpriseBoolean ||
+            commonPaperEnterpriseBoolean ||
+            specialPaperEnterpriseBoolean
+          "
+        >
           <a-form-item
-            v-if="
-              commonElectronEnterpriseBoolean ||
-              commonPaperEnterpriseBoolean ||
-              specialPaperEnterpriseBoolean
-            "
             label="税号"
             :name="['order_invoice', 'vat_number']"
             :rules="{
@@ -274,13 +274,15 @@
             <a-input v-model:value="model.order_invoice.vat_number" />
           </a-form-item>
         </a-col>
-        <a-col :span="8">
+        <a-col
+          :span="8"
+          v-if="
+            commonElectronEnterpriseBoolean ||
+            commonPaperEnterpriseBoolean ||
+            specialPaperEnterpriseBoolean
+          "
+        >
           <a-form-item
-            v-if="
-              commonElectronEnterpriseBoolean ||
-              commonPaperEnterpriseBoolean ||
-              specialPaperEnterpriseBoolean
-            "
             label="注册地址"
             :name="['order_invoice', 'et_address']"
             :rules="{
@@ -291,13 +293,15 @@
             <a-input v-model:value="model.order_invoice.et_address" />
           </a-form-item>
         </a-col>
-        <a-col :span="8">
+        <a-col
+          :span="8"
+          v-if="
+            commonElectronEnterpriseBoolean ||
+            commonPaperEnterpriseBoolean ||
+            specialPaperEnterpriseBoolean
+          "
+        >
           <a-form-item
-            v-if="
-              commonElectronEnterpriseBoolean ||
-              commonPaperEnterpriseBoolean ||
-              specialPaperEnterpriseBoolean
-            "
             label="注册电话"
             :name="['order_invoice', 'et_phone_num']"
             :rules="{
@@ -308,13 +312,15 @@
             <a-input v-model:value="model.order_invoice.et_phone_num" />
           </a-form-item>
         </a-col>
-        <a-col :span="8">
+        <a-col
+          :span="8"
+          v-if="
+            commonElectronEnterpriseBoolean ||
+            commonPaperEnterpriseBoolean ||
+            specialPaperEnterpriseBoolean
+          "
+        >
           <a-form-item
-            v-if="
-              commonElectronEnterpriseBoolean ||
-              commonPaperEnterpriseBoolean ||
-              specialPaperEnterpriseBoolean
-            "
             label="开户银行"
             :name="['order_invoice', 'et_bank_name']"
             :rules="{
@@ -325,13 +331,15 @@
             <a-input v-model:value="model.order_invoice.et_bank_name" />
           </a-form-item>
         </a-col>
-        <a-col :span="8">
+        <a-col
+          :span="8"
+          v-if="
+            commonElectronEnterpriseBoolean ||
+            commonPaperEnterpriseBoolean ||
+            specialPaperEnterpriseBoolean
+          "
+        >
           <a-form-item
-            v-if="
-              commonElectronEnterpriseBoolean ||
-              commonPaperEnterpriseBoolean ||
-              specialPaperEnterpriseBoolean
-            "
             label="银行账号"
             :name="['order_invoice', 'et_bank_account']"
             :rules="{
@@ -342,13 +350,15 @@
             <a-input v-model:value="model.order_invoice.et_bank_account" />
           </a-form-item>
         </a-col>
-        <a-col :span="8">
+        <a-col
+          :span="8"
+          v-if="
+            commonPaperPersonalBoolean ||
+            commonPaperEnterpriseBoolean ||
+            specialPaperEnterpriseBoolean
+          "
+        >
           <a-form-item
-            v-if="
-              commonPaperPersonalBoolean ||
-              commonPaperEnterpriseBoolean ||
-              specialPaperEnterpriseBoolean
-            "
             label="收票人姓名"
             :name="['order_invoice', 'invoice_username']"
             :rules="{
@@ -374,11 +384,13 @@
             <a-input v-model:value="model.order_invoice.invoice_phone_num" />
           </a-form-item>
         </a-col>
-        <a-col :span="8">
+        <a-col
+          :span="8"
+          v-if="
+            commonElectronPersonalBoolean || commonElectronEnterpriseBoolean
+          "
+        >
           <a-form-item
-            v-if="
-              commonElectronPersonalBoolean || commonElectronEnterpriseBoolean
-            "
             label="收票人邮箱"
             :name="['order_invoice', 'invoice_email']"
             :rules="{
@@ -389,13 +401,15 @@
             <a-input v-model:value="model.order_invoice.invoice_email" />
           </a-form-item>
         </a-col>
-        <a-col :span="8">
+        <a-col
+          :span="8"
+          v-if="
+            commonPaperPersonalBoolean ||
+            commonPaperEnterpriseBoolean ||
+            specialPaperEnterpriseBoolean
+          "
+        >
           <a-form-item
-            v-if="
-              commonPaperPersonalBoolean ||
-              commonPaperEnterpriseBoolean ||
-              specialPaperEnterpriseBoolean
-            "
             label="label"
             :name="['order_invoice', 'mArea']"
             :rules="{
@@ -406,13 +420,15 @@
             <address-cascader v-model:value="model.order_invoice.mArea" />
           </a-form-item>
         </a-col>
-        <a-col :span="8">
+        <a-col
+          :span="8"
+          v-if="
+            commonPaperPersonalBoolean ||
+            commonPaperEnterpriseBoolean ||
+            specialPaperEnterpriseBoolean
+          "
+        >
           <a-form-item
-            v-if="
-              commonPaperPersonalBoolean ||
-              commonPaperEnterpriseBoolean ||
-              specialPaperEnterpriseBoolean
-            "
             label="收票详细地址"
             :name="['order_invoice', 'invoice_address']"
             :rules="{
@@ -448,7 +464,7 @@
       <delete-outlined @click="goodsDeleteOutlinedClick" />
     </a-space>
     <a-table
-      :columns="orderFormGoodsColumns"
+      :columns="orderFormPageGoodsColumns"
       :data-source="dataSource"
       :pagination="false"
       :scroll="{ x: 3000 }"
@@ -462,7 +478,7 @@
           record,
         }: {
           column: TableColumnType,
-          record: api_goods_sku_list_result_interface,
+          record: Api_goods_sku_list_result_item_interface,
         }"
       >
         <template v-if="column.key === 'category_path'">
@@ -498,10 +514,11 @@ import {
   TableColumnType,
 } from 'ant-design-vue';
 import {
-  orderCreateFormModelInterface,
+  Api_proxy_order_Order_BackEnd_submit_params_interface,
   Api_proxy_user_User_UserSearch_epUserSearch_params_part_interface,
-  api_goods_sku_list_result_interface,
+  Api_goods_sku_list_result_item_interface,
   Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface,
+  Api_proxy_order_Order_BackEnd_submit_params_interface2,
 } from './interface';
 import {
   PlusOutlined,
@@ -509,8 +526,11 @@ import {
   EditOutlined,
 } from '@ant-design/icons-vue';
 import AddressCascader from '../../../components/cascader/address.vue';
-import { WHETHER_OPTIONS } from '../../../data/dictionary';
-import { orderFormGoodsColumns } from './data';
+import {
+  WHETHER_OPTIONS,
+  DELIVERY_MODE_OPTIONS,
+} from '../../../data/dictionary';
+import { orderFormPageGoodsColumns } from './data';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import BackgroundCategory from '../../../components/cascader/backgroundCategory.vue';
 
@@ -520,26 +540,19 @@ const UserListModal = defineAsyncComponent(
 const GoodsListModal = defineAsyncComponent(
   () => import('./components/goodsListModal.vue')
 );
-const userListModalVisible = ref<boolean>(false);
-const goodsListModalVisible = ref<boolean>(false);
-const selectedRowKeys = ref<any[]>([]);
-const selectedRows = ref<any[]>([]);
-const userInputSearchStyle = ref<string>('0');
-const dataSource = ref<{}[]>([]);
-const model = reactive<orderCreateFormModelInterface>({
+const userListModalVisible = ref(false);
+const goodsListModalVisible = ref(false);
+const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
+const selectedRows = ref<Api_goods_sku_list_result_item_interface[]>([]);
+const dataSource = ref<Api_goods_sku_list_result_item_interface[]>([]);
+const model = reactive<Api_proxy_order_Order_BackEnd_submit_params_interface2>({
   entryMode: '手工创建订单',
   sale_mode: '名气商城',
   businessType: '名气家/精选',
-  user_id: '',
-  addressInfo: {
-    name: '',
-    mobile: '',
-    addressIds: [],
-    address: '',
-  },
   stockFreeze: '提交订单',
-  delivery_mode: '快递',
+  delivery_mode: 1,
   isInvoice: 0,
+  addressInfo: {},
   order_invoice: {
     invoice_form: 3,
     invoice_kind: 2,
@@ -547,13 +560,13 @@ const model = reactive<orderCreateFormModelInterface>({
   pay_mode: 0,
 });
 
-const commonElectronEnterpriseBoolean = ref<boolean>(false);
-const commonPaperEnterpriseBoolean = ref<boolean>(false);
-const specialPaperEnterpriseBoolean = ref<boolean>(false);
-const commonPaperPersonalBoolean = ref<boolean>(false);
-const commonElectronPersonalBoolean = ref<boolean>(false);
-const manRadioDisabled = ref<boolean>(false);
-const inputSearchSearch: InputProps['onChange'] = (a) => {
+const commonElectronEnterpriseBoolean = ref(false);
+const commonPaperEnterpriseBoolean = ref(false);
+const specialPaperEnterpriseBoolean = ref(false);
+const commonPaperPersonalBoolean = ref(false);
+const commonElectronPersonalBoolean = ref(false);
+const manRadioDisabled = ref(false);
+const inputSearchSearch = () => {
   userListModalVisible.value = true;
 };
 
@@ -562,7 +575,7 @@ const invoiceKindRadioWatch = (newValue: number) => {
     manRadioDisabled.value = false;
   } else {
     manRadioDisabled.value = true;
-    model.order_invoice.invoice_kind = 2;
+    model.order_invoice!.invoice_kind = 2;
   }
 };
 
@@ -572,7 +585,7 @@ const tableChange: TableRowSelection['onChange'] = (keys, rows) => {
 };
 
 const userListModalSelect: (
-  rowKeys: any[],
+  rowKeys: TableRowSelection['selectedRowKeys'],
   rows: Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface[]
 ) => void = (
   rowKeys,
@@ -588,7 +601,6 @@ const userListModalSelect: (
     },
   ]
 ) => {
-  userInputSearchStyle.value = '50%';
   Object.assign(model, {
     user_id,
     phone,
@@ -608,15 +620,18 @@ const qtyEditOutlinedClick = ({ qty }: { qty: number }) => {};
 
 const goodsDeleteOutlinedClick = () => {};
 
-const goodsListModalSelect = (keys: any[], rows: any[]) => {
+const goodsListModalSelect = (
+  keys: TableRowSelection['selectedRowKeys'],
+  rows: Api_goods_sku_list_result_item_interface[]
+) => {
   selectedRowKeys.value = keys;
   dataSource.value = dataSource.value.concat(rows);
 };
 
 watch(
   [
-    () => model.order_invoice.invoice_kind,
-    () => model.order_invoice.invoice_form,
+    () => model.order_invoice!.invoice_kind,
+    () => model.order_invoice!.invoice_form,
   ],
   ([invoice_kind, invoice_form]) => {
     commonPaperPersonalBoolean.value = false;

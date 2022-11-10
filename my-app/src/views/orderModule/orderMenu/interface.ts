@@ -1,4 +1,8 @@
-import { ListInterface, PageInterface } from '../../../interface/index';
+import {
+  ListInterface,
+  PageInterface,
+  partPartial,
+} from '../../../interface/index';
 
 export interface Api_order_params_part_interface {
   order_search_key: string;
@@ -354,31 +358,22 @@ export interface Api_order_orderSyncList_result_item_interface {
 export type Api_order_orderSyncList_params_interface =
   Partial<Api_order_orderSyncList_params_part_interface> & PageInterface;
 
-export interface orderCreateFormModelInterface {
+export interface Api_proxy_order_Order_BackEnd_submit_params_interface {
   entryMode: string;
   sale_mode: string;
+  api_type: number;
   out_ono: string;
   businessType: string;
-  user_id: string;
   phone: string;
   wx_nickname: string;
   user_level_name: string;
   username: string;
   name: string;
   company_name: string;
-  buyer_note: string;
-  merchant_note: string;
-  addressInfo: {
-    name: string;
-    mobile: string;
-    addressIds: number[];
-    address: string;
-    tel: string;
-    zipcode: string;
-  };
   stockFreeze: string;
-  delivery_mode: string;
+  delivery_mode: number;
   isInvoice: number;
+  pay_mode: number;
   order_invoice: {
     invoice_form: number;
     invoice_kind: number;
@@ -396,8 +391,33 @@ export interface orderCreateFormModelInterface {
     mArea: number[];
     invoice_address: string;
   };
-  pay_mode: number;
+  shop_goods_list: Api_goods_sku_list_result_item_interface[];
+  user_id: string;
+  site_id: number;
+  delivery_mode_list: [];
+  addressInfo: {
+    addressIds: number[];
+    name: string;
+    mobile: string;
+    tel: string;
+    email: string;
+    province_id: number;
+    city_id: number;
+    district_id: number;
+    street_id: number;
+    real_name: string;
+    zipcode: string;
+    address: string;
+  };
+  merchant_note: string;
+  buyer_note: string;
 }
+
+export type Api_proxy_order_Order_BackEnd_submit_params_interface2 =
+  partPartial<
+    Api_proxy_order_Order_BackEnd_submit_params_interface,
+    'order_invoice' | 'addressInfo'
+  >;
 
 export interface Api_proxy_user_User_UserSearch_epUserSearch_params_part_interface {
   user_id: string;
@@ -439,4 +459,57 @@ export interface Api_goods_sku_list_params_interface
   extends Partial<Api_goods_sku_list_params_part_interface>,
     Api_goods_sku_list_fixed_params_part_interface,
     PageInterface {}
-export interface Api_goods_sku_list_result_item_interface {}
+export interface Api_goods_sku_list_result_item_interface {
+  qty: number;
+  sku_bar_code: string;
+  sku_channel_relation_id: number;
+  spu_name: string;
+  shop_goods_id: number;
+  sku_specs: string;
+  tms_material_code: string;
+  suits: [];
+  is_support_local: number;
+  category_id: number;
+  suggest_shop_price: number;
+  sn: string;
+  spu_id: number;
+  supplier_name: string;
+  shop_goods_code: string;
+  purchase_category_id: number;
+  shop_selling_price: number;
+  type_id: number;
+  area_code: string;
+  brand_name: string;
+  sku_id: number;
+  shop_name: string;
+  self_delivery: number;
+  shop_org_id: number;
+  brand_id: number;
+  shop_id: number;
+  express_delivery: number;
+  org_id: number;
+  category_path: string[];
+  site_id: number;
+  sku_specs_id: number;
+  supplier_id: number;
+  sku_code: string;
+  business_id: number;
+  pack_unit: string;
+  is_support_oversold: number;
+  input_tax_rate: string;
+  sell_tax_rate: string;
+  gallery: {
+    id: number;
+    goods_id: number;
+    key: string;
+    bucket: string;
+    upload_channel: string;
+  }[];
+  ext_service: [];
+  ext_service_list: [];
+  member_price: [];
+  real_qty: number;
+  real_node_qty: number;
+  stock_qty: number;
+  account_discount_price: number;
+}

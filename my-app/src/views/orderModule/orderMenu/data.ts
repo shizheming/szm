@@ -242,7 +242,7 @@ export const userListModalColumns: TableColumnsType = [
   },
 ];
 
-export const orderFormGoodsColumns: TableColumnsType = [
+export const orderFormPageGoodsColumns: TableColumnsType = [
   {
     title: '操作',
     dataIndex: 'opration',

@@ -65,12 +65,12 @@
             <a-input-group compact>
               <a-input
                 v-model:value="model.sku_qty_start"
-                style="width: 100px; text-align: center"
+                style="width: 40%; text-align: center"
                 placeholder="最大值"
               />
               <a-input
                 style="
-                  width: 60px;
+                  width: 20%;
                   border-left: 0;
                   pointer-events: none;
                   background-color: #fff;
@@ -80,7 +80,7 @@
               />
               <a-input
                 v-model:value="model.sku_qty_end"
-                style="width: 100px; text-align: center; border-left: 0"
+                style="width: 40%; text-align: center; border-left: 0"
                 placeholder="最小值"
               />
             </a-input-group>
@@ -140,7 +140,8 @@ import {
 } from 'ant-design-vue';
 import {
   Api_goods_sku_list_result_item_interface,
-  Api_goods_sku_list_params_interface,
+  Api_goods_sku_list_params_part_interface,
+  Api_goods_sku_list_fixed_params_part_interface,
 } from '../interface';
 import { api_goods_sku_list } from '../api';
 import { orderFormModalGoodsColumns } from '../data';
@@ -150,29 +151,28 @@ import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 
 const props = defineProps<{
   visible: boolean;
-  selectedRowKeys: any[];
+  selectedRowKeys: TableRowSelection['selectedRowKeys'];
 }>();
 const emits = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
   (
     event: 'select',
-    selectedRowKeys: any[],
+    selectedRowKeys: TableRowSelection['selectedRowKeys'],
     selectedRowsArray: Api_goods_sku_list_result_item_interface[]
   ): void;
 }>();
 
-const selectedRowKeys = ref<any>([]);
-const model = reactive<Api_goods_sku_list_params_interface>({
+const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
+const model = reactive<Partial<Api_goods_sku_list_params_part_interface>>({});
+const formRef = ref<FormInstance>();
+const selectedRowsArray = ref<Api_goods_sku_list_result_item_interface[]>([]);
+const paramsObject: Api_goods_sku_list_fixed_params_part_interface = {
   channel_id: 1,
   is_listing: 1,
   need_stock: 1,
   business_id: 1,
   is_support_local: 0,
-  page: 1,
-  page_size: 10,
-});
-const formRef = ref<FormInstance>();
-const selectedRowsArray = ref<Api_goods_sku_list_result_item_interface[]>([]);
+};
 const {
   data: dataSource,
   current,
@@ -192,9 +192,12 @@ const {
   },
 });
 
-const finish: FormProps['onFinish'] = async (values) => {
+const finish = async () => {
   run({
     ...model,
+    ...paramsObject,
+    page: 1,
+    page_size: 10,
   });
 };
 
@@ -215,6 +218,9 @@ const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {
 const tableChange: TableProps['onChange'] = async (pag) => {
   run({
     ...model,
+    ...paramsObject,
+    page: pag.current!,
+    page_size: pag.pageSize!,
   });
 };
 
@@ -223,14 +229,14 @@ const getCheckboxProps: TableRowSelection['getCheckboxProps'] = ({
   spu_id,
 }) => {
   return {
-    disabled: props.selectedRowKeys.includes(`${spu_id}_${sku_id}`),
+    disabled: props.selectedRowKeys!.includes(`${spu_id}_${sku_id}`),
   };
 };
 
-const tableRowKey: Api_goods_sku_list_result_item_interface = ({
+const tableRowKey = ({
   sku_id,
   spu_id,
-}) => {
+}: Api_goods_sku_list_result_item_interface) => {
   return `${spu_id}_${sku_id}`;
 };
 
@@ -238,13 +244,13 @@ const clearOutlinedClick = () => {
   formRef.value?.resetFields();
 };
 
-const ok: ModalProps['onOk'] = async (e) => {
+const ok = async () => {
   formRef.value?.resetFields();
 
   emits('select', selectedRowKeys.value, selectedRowsArray.value);
   emits('update:visible', false);
 };
-const cancel: ModalProps['onCancel'] = (e) => {
+const cancel = () => {
   formRef.value?.resetFields();
   emits('update:visible', false);
 };
@@ -254,11 +260,7 @@ watch(
   async (newValue) => {
     if (newValue === true) {
       run({
-        channel_id: 1,
-        is_listing: 1,
-        need_stock: 1,
-        business_id: 1,
-        is_support_local: 0,
+        ...paramsObject,
         page: 1,
         page_size: 10,
       });
