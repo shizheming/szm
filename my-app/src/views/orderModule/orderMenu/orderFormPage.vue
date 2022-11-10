@@ -1,5 +1,10 @@
 <template>
-  <a-form :model="model" :label-col="{ span: 8 }">
+  <a-form
+    ref="formRef"
+    :model="model"
+    :label-col="{ span: 8 }"
+    @finish="finish"
+  >
     <h1 style="font-weight: 700">基本信息</h1>
     <a-row>
       <a-col :span="8">
@@ -156,6 +161,7 @@
           <a-select
             v-model:value="model.delivery_mode"
             :options="DELIVERY_MODE_OPTIONS"
+            :allow-clear="false"
           />
         </a-form-item>
       </a-col>
@@ -460,7 +466,9 @@
     </a-row>
     <h1 style="font-weight: 700">商品信息</h1>
     <a-space>
-      <plus-outlined @click="goodsPlusOutlinedClick" />
+      <a-button html-type="submit">
+        <plus-outlined />
+      </a-button>
       <delete-outlined @click="goodsDeleteOutlinedClick" />
     </a-space>
     <a-table
@@ -482,7 +490,7 @@
         }"
       >
         <template v-if="column.key === 'category_path'">
-          <background-category
+          <background-category-cascader
             :is-detail="true"
             :value="record.category_path.map(Number)"
             style="width: 100%"
@@ -532,7 +540,7 @@ import {
 } from '../../../data/dictionary';
 import { orderFormPageGoodsColumns } from './data';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
-import BackgroundCategory from '../../../components/cascader/backgroundCategory.vue';
+import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';
 
 const UserListModal = defineAsyncComponent(
   () => import('./components/userListModal.vue')
@@ -569,7 +577,9 @@ const manRadioDisabled = ref(false);
 const inputSearchSearch = () => {
   userListModalVisible.value = true;
 };
-
+const finish: FormInstance['onFinish'] = (values) => {
+  goodsListModalVisible.value = true;
+};
 const invoiceKindRadioWatch = (newValue: number) => {
   if (newValue == 1 || newValue == 3) {
     manRadioDisabled.value = false;
@@ -584,6 +594,7 @@ const tableChange: TableRowSelection['onChange'] = (keys, rows) => {
   selectedRows.value = rows;
 };
 
+const formRef = ref<FormInstance>();
 const userListModalSelect: (
   rowKeys: TableRowSelection['selectedRowKeys'],
   rows: Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface[]
@@ -610,10 +621,7 @@ const userListModalSelect: (
     name,
     company_name,
   });
-};
-
-const goodsPlusOutlinedClick = () => {
-  goodsListModalVisible.value = true;
+  formRef.value!.validate(['user_id']);
 };
 
 const qtyEditOutlinedClick = ({ qty }: { qty: number }) => {};
@@ -625,7 +633,12 @@ const goodsListModalSelect = (
   rows: Api_goods_sku_list_result_item_interface[]
 ) => {
   selectedRowKeys.value = keys;
-  dataSource.value = dataSource.value.concat(rows);
+  dataSource.value = dataSource.value.concat(
+    rows.map((item) => {
+      item.qty = 0;
+      return item;
+    })
+  );
 };
 
 watch(

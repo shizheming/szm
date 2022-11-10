@@ -122,7 +122,27 @@
           record: Api_goods_sku_list_result_item_interface,
         }"
       >
-        <template v-if="column.key === 'operation'"> </template>
+        <template v-if="column.key === 'category_id'">
+          <background-category-cascader
+            :is-detail="true"
+            :value="record.category_path.map(Number)"
+            style="width: 100%"
+          />
+        </template>
+        <template v-if="column.key === 'shop_selling_price'">
+          <a-popover title="阶梯价展示" v-if="record.member_price.length > 0">
+            <template #content>
+              <a-table
+                :data-source="record.member_price"
+                :columns="orderFormModalLadderPriceColumns"
+                :pagination="false"
+                size="small"
+              />
+            </template>
+            <a-button size="small">详情</a-button>
+          </a-popover>
+          <span v-else>{{ record.shop_selling_price }}</span>
+        </template>
       </template>
     </a-table>
   </a-modal>
@@ -144,7 +164,10 @@ import {
   Api_goods_sku_list_fixed_params_part_interface,
 } from '../interface';
 import { api_goods_sku_list } from '../api';
-import { orderFormModalGoodsColumns } from '../data';
+import {
+  orderFormModalGoodsColumns,
+  orderFormModalLadderPriceColumns,
+} from '../data';
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
@@ -227,9 +250,11 @@ const tableChange: TableProps['onChange'] = async (pag) => {
 const getCheckboxProps: TableRowSelection['getCheckboxProps'] = ({
   sku_id,
   spu_id,
+  real_qty,
 }) => {
   return {
-    disabled: props.selectedRowKeys!.includes(`${spu_id}_${sku_id}`),
+    disabled:
+      props.selectedRowKeys!.includes(`${spu_id}_${sku_id}`) || real_qty === 0,
   };
 };
 

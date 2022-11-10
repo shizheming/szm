@@ -425,3 +425,19 @@ export const orderFormModalGoodsColumns: TableColumnsType = [
     key: 'real_qty',
   },
 ];
+
+export const orderFormModalLadderPriceColumns: TableColumnsType = [
+  {
+    title: '订购数量',
+    dataIndex: 'start_num',
+    key: 'start_num',
+    customRender({ text, record }) {
+      return `${text}${record.end_num ? `~${record.end_num}` : '+'}`;
+    },
+  },
+  {
+    title: '销售单价',
+    dataIndex: 'member_price',
+    key: 'member_price',
+  },
+];

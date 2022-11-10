@@ -817,7 +817,7 @@ const pagination = computed(() => {
 });
 
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
-const selectedRowsArray = ref<Api_order_params_part_interface[]>([]);
+const selectedRowsArray = ref<Api_order_result_item_interface[]>([]);
 const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {
   selectedRowKeys.value = keys;
   selectedRowsArray.value = rows;
