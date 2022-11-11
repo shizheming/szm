@@ -9,15 +9,16 @@ export interface Api_order_params_part_interface {
   order_search_value: string;
   good_search_key: string;
   good_search_value: string;
-  pay_status_arr: [];
-  deliver_arr: [];
+  pay_status_arr: number[];
+  deliver_arr: number[];
   shop_name: string;
   supplier_id: number;
   user_level: number;
   category_id: number;
-  brand_name_arr: [];
+  category_id_array: number[];
+  brand_name_arr: number[];
   user_id: number;
-  create_mode_arr: [];
+  create_mode_arr: number[];
   app_platform: string;
   sale_mode: number;
   delivery_mode: number;
@@ -28,12 +29,18 @@ export interface Api_order_params_part_interface {
   goods_source: number;
   distribute_order: number;
   owner_site_id: number;
-  createTime: [];
+  createTime: [string, string];
+  create_time_start: string;
+  create_time_end: string;
   create_user_id: number;
-  paymentTime: [];
-  sub_status_arr: [];
+  paymentTime: [string, string];
+  pay_time_start: string;
+  pay_time_end: string;
+  pre_delivery_start_date: string;
+  pre_delivery_end_date: string;
+  sub_status_arr: string[];
   trade_no: number;
-  deliveryTime: [];
+  deliveryTime: [string, string];
   recommend_staff: string;
   marketing_type: number;
   order_type: number;
@@ -47,7 +54,8 @@ export interface Api_order_params_part_interface {
   source_site_id: number;
   spell_order_status: number;
   is_out_supplier: number;
-  address: [];
+  address: number[];
+  pay_mode: number;
 }
 
 export type Api_order_result_interface =

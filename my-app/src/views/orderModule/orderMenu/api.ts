@@ -15,7 +15,7 @@ import type {
   Api_proxy_order_Order_BackEnd_submit_params_interface,
 } from './interface';
 
-// 列表
+// 订单列表
 export const api_order = (params: Api_order_params_interface) => {
   return axios.get<Api_order_result_interface>('/api/order', {
     params,
@@ -91,4 +91,11 @@ export const api_proxy_order_Order_BackEnd_submit = (
   params: Api_proxy_order_Order_BackEnd_submit_params_interface
 ) => {
   return axios.post('/api/proxy/order/Order/BackEnd/submit', params);
+};
+
+// 导出发货信息|导出订单明细
+export const api_order_orderDetailExport = (
+  params: Api_order_params_interface & { service_type: number }
+) => {
+  return axios.get<{ id: number }>('/api/order/orderDetailExport', { params });
 };

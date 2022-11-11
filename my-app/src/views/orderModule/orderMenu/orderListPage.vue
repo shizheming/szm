@@ -120,10 +120,10 @@
         <a-form-item
           label="后台类目"
           :label-col="{ span: 6 }"
-          :name="['category_id']"
+          :name="['category_id_array']"
         >
           <background-category-cascader
-            v-model:value="model.category_id"
+            v-model:value="model.category_id_array"
             style="width: 100%"
           />
         </a-form-item>
@@ -504,10 +504,10 @@
       <a-button @click="taskButtonClick" type="primary" size="small"
         >查看任务</a-button
       >
-      <a-button @click="exporButtonClick" type="primary" size="small"
+      <a-button @click="exporButtonClick(6)" type="primary" size="small"
         >导出发货信息</a-button
       >
-      <a-button @click="exporButtonClick" type="primary" size="small"
+      <a-button @click="exporButtonClick(2)" type="primary" size="small"
         >导出订单明细</a-button
       >
       <router-link :to="{ name: 'orderFormPage' }">人工下单</router-link>
@@ -516,7 +516,11 @@
   </a-row>
   <a-table
     rowKey="id"
-    :row-selection="{ selectedRowKeys, onChange: rowSelectionOnChange }"
+    :row-selection="{
+      selectedRowKeys,
+      onChange: rowSelectionOnChange,
+      preserveSelectedRowKeys: true,
+    }"
     :dataSource="dataSource?.list"
     :columns="orderListPageTableColumns"
     :loading="loading"
@@ -698,11 +702,12 @@
   <remark-form-modal
     v-model:visible="remarkFormModalVisible"
     :selected-rows-array="selectedRowsArray"
+    @submit="remarkFormModalSubmit"
   />
   <task-list-modal v-model:visible="taskListModalVisible" />
 </template>
 <script setup lang="ts">
-import { ref, watch, reactive, defineAsyncComponent } from 'vue';
+import { ref, watch, reactive, defineAsyncComponent, h } from 'vue';
 import {
   message,
   FormInstance,
@@ -710,6 +715,7 @@ import {
   TableColumnType,
   FormProps,
   PopconfirmProps,
+  Modal,
 } from 'ant-design-vue';
 import {
   ORDER_STATUS_OPTIONS,
@@ -754,15 +760,18 @@ import {
   CloseOutlined,
   CheckOutlined,
 } from '@ant-design/icons-vue';
+import { last, compact, values } from 'lodash';
 import type {
   Api_order_params_part_interface,
   Api_order_result_item_interface,
+  Api_order_params_interface,
   Api_proxy_order_manage_edit_confirmPreOrder_params_interface,
 } from './interface';
 import {
   api_order,
   api_proxy_order_manage_edit_confirmsign,
   api_proxy_order_manage_edit_confirmPreOrder,
+  api_order_orderDetailExport,
 } from './api';
 import { usePagination } from 'vue-request';
 import { computed } from '@vue/reactivity';
@@ -770,8 +779,8 @@ import {
   TableRowSelection,
   SorterResult,
 } from 'ant-design-vue/es/table/interface';
+import { PageInterface } from '../../../interface';
 
-// 异步组件
 const RemarkFormModal = defineAsyncComponent(
   () => import('./components/remarkFormModal.vue')
 );
@@ -779,7 +788,6 @@ const TaskListModal = defineAsyncComponent(
   () => import('./components/taskListModal.vue')
 );
 
-// 属性
 const model = reactive<Partial<Api_order_params_part_interface>>({
   order_search_key: 'osl_seq',
   good_search_key: 'goods_name',
@@ -819,15 +827,73 @@ const pagination = computed(() => {
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 const selectedRowsArray = ref<Api_order_result_item_interface[]>([]);
 const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {
+  console.log(keys, rows, 999);
+
   selectedRowKeys.value = keys;
   selectedRowsArray.value = rows;
 };
 
-const finish = async () => {
-  run({
-    page: 1,
-    page_size: 10,
+const getSearchDataObject = (
+  params: Api_order_params_interface = {
+    page: current.value,
+    page_size: pageSize.value,
+  }
+) => {
+  model.category_id = last(model.category_id_array);
+  [model.create_time_start, model.create_time_end] = model.createTime || [];
+  [model.pay_time_start, model.pay_time_end] = model.paymentTime || [];
+  [model.pre_delivery_start_date, model.pre_delivery_end_date] =
+    model.deliveryTime || [];
+  model.pay_mode = model.payment_type;
+  return {
+    ...params,
     ...model,
+    order_search_key: model.order_search_value
+      ? model.order_search_key
+      : undefined,
+    order_search_value: model.order_search_value || undefined,
+    good_search_key: model.good_search_value
+      ? model.good_search_key
+      : undefined,
+    good_search_value: model.good_search_value || undefined,
+  };
+};
+
+const finish = async () => {
+  run(
+    getSearchDataObject({
+      page: 1,
+      page_size: 10,
+    })
+  );
+};
+
+const exporButtonClick = async (service_type: number) => {
+  if (compact(values(model)).length <= 2) {
+    message.warning(
+      '为避免导出数据量过大，目前仅支持导出有大于等于两个查询条件的结果数据！'
+    );
+    return;
+  }
+  await finish();
+  let { data } = await api_order_orderDetailExport({
+    ...getSearchDataObject({
+      page: 1,
+      page_size: 10,
+    }),
+    service_type,
+  });
+  Modal.info({
+    title: '导出提示',
+    content: h('div', {}, [
+      h(
+        'p',
+        `导出任务创建成功，任务编码：${data.id}，请在查看任务中查看日志！`
+      ),
+    ]),
+    onOk() {
+      taskListModalVisible.value = true;
+    },
   });
 };
 
@@ -847,12 +913,13 @@ const tableChange: TableProps['onChange'] = async (pag, filters, sorter) => {
     sorterAny[SORT_KEY_ENUM[sorter.columnKey as keyof typeof SORT_KEY_ENUM]] =
       SORT_ENUM[sorter.order];
   }
-  run({
-    page: pag.current!,
-    page_size: pag.pageSize!,
-    ...model,
-    ...sorterAny,
-  });
+  run(
+    getSearchDataObject({
+      page: pag.current!,
+      page_size: pag.pageSize!,
+      ...sorterAny,
+    })
+  );
 };
 
 const batchButtonClick = async () => {
@@ -863,10 +930,15 @@ const batchButtonClick = async () => {
   remarkFormModalVisible.value = true;
 };
 
+const remarkFormModalSubmit = () => {
+  setTimeout(() => {
+    run(getSearchDataObject());
+  }, 500);
+};
+
 const taskButtonClick = () => {
   taskListModalVisible.value = true;
 };
-const exporButtonClick = () => {};
 const confirmSigningPopconfirmConfirm = async (
   record: Api_order_result_item_interface
 ) => {
@@ -877,11 +949,7 @@ const confirmSigningPopconfirmConfirm = async (
   });
   message.success('成功');
   setTimeout(() => {
-    run({
-      page: 1,
-      page_size: 10,
-      ...model,
-    });
+    run(getSearchDataObject());
   }, 500);
 };
 
@@ -893,11 +961,7 @@ const bookingConfirmationPopconfirmConfirm = async (
   });
   message.success('成功');
   setTimeout(() => {
-    run({
-      page: 1,
-      page_size: 10,
-      ...model,
-    });
+    run(getSearchDataObject());
   }, 500);
 };
 
@@ -916,6 +980,4 @@ watch(isExpandArrowBoolean, (newValue) => {
     height.value = '220px';
   }
 });
-
-// 初始化
 </script>
