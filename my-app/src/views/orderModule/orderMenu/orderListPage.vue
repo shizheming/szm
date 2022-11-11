@@ -1,7 +1,7 @@
 <template>
   <a-form ref="formRef" :model="model" @finish="finish">
     <a-row :style="`height:${height};overflow:hidden`">
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="订单搜索" :label-col="{ span: 6 }">
           <a-input-group compact>
             <a-select
@@ -25,7 +25,7 @@
           </a-input-group>
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item label="商品搜索" :label-col="{ span: 6 }">
           <a-input-group compact>
             <a-select
@@ -47,7 +47,7 @@
           </a-input-group>
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="订单状态"
           :label-col="{ span: 6 }"
@@ -60,7 +60,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="支付状态"
           :label-col="{ span: 6 }"
@@ -73,7 +73,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="发货状态"
           :label-col="{ span: 6 }"
@@ -86,7 +86,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="店铺名称"
           :label-col="{ span: 6 }"
@@ -95,7 +95,7 @@
           <a-input v-model:value="model.shop_name" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="供应商"
           :label-col="{ span: 6 }"
@@ -104,7 +104,7 @@
           <supplier-select v-model:value="model.supplier_id" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="用户等级"
           :label-col="{ span: 6 }"
@@ -116,19 +116,19 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="后台类目"
           :label-col="{ span: 6 }"
-          :name="['category_id']"
+          :name="['category_id_array']"
         >
           <background-category-cascader
-            v-model:value="model.category_id"
+            v-model:value="model.category_id_array"
             style="width: 100%"
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="商品品牌"
           :label-col="{ span: 6 }"
@@ -140,7 +140,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="用户ID"
           :label-col="{ span: 6 }"
@@ -149,7 +149,7 @@
           <a-input v-model:value="model.user_id" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="录入方式"
           :label-col="{ span: 6 }"
@@ -162,7 +162,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="来源终端"
           :label-col="{ span: 6 }"
@@ -174,7 +174,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="销售渠道"
           :label-col="{ span: 6 }"
@@ -183,7 +183,7 @@
           <sale-mode-select v-model:value="model.sale_mode" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="配送方式"
           :label-col="{ span: 6 }"
@@ -195,7 +195,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="支付方式"
           :label-col="{ span: 6 }"
@@ -207,7 +207,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="支付类型"
           :label-col="{ span: 6 }"
@@ -219,7 +219,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="发票"
           :label-col="{ span: 6 }"
@@ -231,7 +231,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="本地服务"
           :label-col="{ span: 6 }"
@@ -243,7 +243,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="订单商品来源"
           :label-col="{ span: 6 }"
@@ -255,7 +255,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="分销订单"
           :label-col="{ span: 6 }"
@@ -267,7 +267,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="销售站点"
           :label-col="{ span: 6 }"
@@ -276,7 +276,7 @@
           <owner-site-select v-model:value="model.owner_site_id" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="订单创建"
           :label-col="{ span: 6 }"
@@ -289,7 +289,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="创建人ID"
           :label-col="{ span: 6 }"
@@ -298,7 +298,7 @@
           <a-input v-model:value="model.create_user_id" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="订单支付"
           :label-col="{ span: 6 }"
@@ -311,7 +311,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="支付流水号"
           :label-col="{ span: 6 }"
@@ -320,7 +320,7 @@
           <a-input v-model:value="model.trade_no" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="要求送货"
           :label-col="{ span: 6 }"
@@ -333,7 +333,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="推荐人"
           :label-col="{ span: 6 }"
@@ -342,7 +342,7 @@
           <a-input v-model:value="model.recommend_staff" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="营销活动明细"
           :label-col="{ span: 6 }"
@@ -354,7 +354,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="订单类型"
           :label-col="{ span: 6 }"
@@ -366,7 +366,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="售后"
           :label-col="{ span: 6 }"
@@ -375,7 +375,7 @@
           <a-select v-model:value="model.is_return" :options="YES_NO_OPTIONS" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="运单号"
           :label-col="{ span: 6 }"
@@ -384,7 +384,7 @@
           <a-input v-model:value="model.package_no" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="买家备注"
           :label-col="{ span: 6 }"
@@ -396,7 +396,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="订单销售组织"
           :label-col="{ span: 6 }"
@@ -405,7 +405,7 @@
           <sub-org-select v-model:value="model.sub_org_id" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="燃气用户"
           :label-col="{ span: 6 }"
@@ -414,7 +414,7 @@
           <a-input v-model:value="model.gas_account" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="业务模式"
           :label-col="{ span: 6 }"
@@ -426,7 +426,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="预订购"
           :label-col="{ span: 6 }"
@@ -438,7 +438,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="订单销售组织"
           :label-col="{ span: 6 }"
@@ -447,7 +447,7 @@
           <owner-site-select v-model:value="model.source_site_id" />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="拼单状态"
           :label-col="{ span: 6 }"
@@ -459,7 +459,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="对接外部系统"
           :label-col="{ span: 6 }"
@@ -471,7 +471,7 @@
           />
         </a-form-item>
       </a-col>
-      <a-col>
+      <a-col :span="8">
         <a-form-item
           label="收货地址"
           :label-col="{ span: 6 }"
@@ -482,7 +482,7 @@
       </a-col>
     </a-row>
     <a-row>
-      <a-col>
+      <a-col :span="8">
         <a-form-item :wrapper-col="{ offset: 6 }">
           <a-space size="large">
             <a-button html-type="submit" type="primary">
@@ -504,10 +504,10 @@
       <a-button @click="taskButtonClick" type="primary" size="small"
         >查看任务</a-button
       >
-      <a-button @click="exporButtonClick" type="primary" size="small"
+      <a-button @click="exporButtonClick(6)" type="primary" size="small"
         >导出发货信息</a-button
       >
-      <a-button @click="exporButtonClick" type="primary" size="small"
+      <a-button @click="exporButtonClick(2)" type="primary" size="small"
         >导出订单明细</a-button
       >
       <router-link :to="{ name: 'orderFormPage' }">人工下单</router-link>
@@ -516,15 +516,23 @@
   </a-row>
   <a-table
     rowKey="id"
-    :row-selection="{ selectedRowKeys, onChange: rowSelectionOnChange }"
+    :row-selection="{
+      selectedRowKeys,
+      onChange: rowSelectionOnChange,
+      preserveSelectedRowKeys: true,
+    }"
     :dataSource="dataSource?.list"
-    :columns="columns"
+    :columns="orderListPageTableColumns"
     :loading="loading"
     :pagination="pagination"
     @change="tableChange"
   >
     <template
-      #expandedRowRender="{ record }: { record: orderFormModelInterface }"
+      #expandedRowRender="{
+        record,
+      }: {
+        record: Api_order_result_item_interface,
+      }"
     >
       <a-tabs v-model:activeKey="activeKey">
         <a-tab-pane key="1" tab="基本信息">
@@ -551,7 +559,7 @@
               {{ record.pre_delivery_time }}
             </a-descriptions-item>
             <a-descriptions-item label="拼团状态">
-              {{ SPELL_ORDER_STATUS_ENUM[record.spell_order_status as number] }}
+              {{ SPELL_ORDER_STATUS_ENUM[record.spell_order_status] }}
             </a-descriptions-item>
             <a-descriptions-item label="支付时间">
               {{ record.pay_time }}
@@ -618,21 +626,21 @@
         <a-tab-pane key="2" tab="商品信息" force-render>
           <a-table
             size="small"
-            :columns="goodsColumns"
+            :columns="orderListPageTableGoodsColumns"
             :pagination="false"
             :data-source="record.item"
           >
             <template
               #bodyCell="{
                 column,
-                record,
+                record: itemRecord,
               }: {
                 column: TableColumnType,
-                record: any,
+                record: Api_order_result_item_interface['item'][number],
               }"
             >
               <template v-if="column.key === 'pic'">
-                <a-image :src="record.pic_url_pic" :width="100" />
+                <a-image :src="itemRecord.pic_url_pic" :width="100" />
               </template>
             </template>
           </a-table>
@@ -645,80 +653,70 @@
         record,
       }: {
         column: TableColumnType,
-        record: orderFormModelInterface,
+        record: Api_order_result_item_interface,
       }"
     >
       <template v-if="column.key === 'operation'">
-        <a-space>
-          <router-link to="/">
-            <a-button type="link" size="small">查看</a-button>
-          </router-link>
-          <router-link
-            to="/"
-            v-if="
-              record.distribute_order != 1 &&
-              record.sub_status.value == 30 &&
-              record.is_electron === 1 &&
-              record.out_delivery_tag === 0 &&
-              record.delivery_mode.value == 1
-            "
-          >
-            <a-button type="link" size="small">京东快递发货</a-button>
-          </router-link>
-
-          <router-link
-            v-if="
-              record.external_system_code != 'JINGDONG' &&
-              record.distribute_order != 1 &&
-              record.sub_status.value == 30 &&
-              record.delivery_mode.value == 1
-            "
-            to="/"
-          >
-            <a-button type="link" size="small">发货</a-button>
-          </router-link>
-          <a-popconfirm
-            title="请确认用户已经签收，否则可能会引起用户投诉！"
-            @confirm="
-              popconfirmConfirm(confirmsign_api, {
-                user_id: record.user.user_id,
-                osl_seq: record.osl_seq,
-                operator: USER_INFO.user_id,
-              })
-            "
-          >
-            <a-button size="small">确认签收</a-button>
-          </a-popconfirm>
-          <a-popconfirm
-            v-if="record.is_pre_subscribe && record.status == 20"
-            title="订单确认后，在系统中可以对订单进行发货操作"
-            @confirm="
-              popconfirmConfirm(confirmPreOrder_api, {
-                osl_seq: record.osl_seq,
-              })
-            "
-          >
-            <a-button size="small">预订购确认</a-button>
-          </a-popconfirm>
-        </a-space>
+        <router-link to="/">
+          <a-button type="link" size="small">查看</a-button>
+        </router-link>
+        <router-link
+          to="/"
+          v-if="
+            record.distribute_order != 1 &&
+            record.sub_status.value == 30 &&
+            record.is_electron === 1 &&
+            record.out_delivery_tag === 0 &&
+            record.delivery_mode.value == 1
+          "
+        >
+          <a-button type="link" size="small">京东快递发货</a-button>
+        </router-link>
+        <router-link
+          v-if="
+            record.external_system_code != 'JINGDONG' &&
+            record.distribute_order != 1 &&
+            record.sub_status.value == 30 &&
+            record.delivery_mode.value == 1
+          "
+          to="/"
+        >
+          <a-button type="link" size="small">发货</a-button>
+        </router-link>
+        <a-popconfirm
+          title="请确认用户已经签收，否则可能会引起用户投诉！"
+          @confirm="confirmSigningPopconfirmConfirm(record)"
+        >
+          <a-button size="small">确认签收</a-button>
+        </a-popconfirm>
+        <a-popconfirm
+          v-if="record.is_pre_subscribe && record.status == 20"
+          title="订单确认后，在系统中可以对订单进行发货操作"
+          @confirm="bookingConfirmationPopconfirmConfirm(record)"
+        >
+          <a-button size="small">预订购确认</a-button>
+        </a-popconfirm>
       </template>
     </template>
   </a-table>
   <remark-form-modal
     v-model:visible="remarkFormModalVisible"
     :selected-rows-array="selectedRowsArray"
+    @submit="remarkFormModalSubmit"
   />
   <task-list-modal v-model:visible="taskListModalVisible" />
 </template>
 <script setup lang="ts">
-import { ref, watch, reactive, defineAsyncComponent } from "vue";
+import { ref, watch, reactive, defineAsyncComponent, h } from 'vue';
 import {
   message,
   FormInstance,
   TableProps,
   TableColumnType,
   FormProps,
-} from "ant-design-vue";
+  PopconfirmProps,
+  Modal,
+} from 'ant-design-vue';
 import {
   ORDER_STATUS_OPTIONS,
   PAY_STATUS_OPTIONS,
@@ -741,15 +739,18 @@ import {
   USER_INFO,
   WHETHER_ENUM,
   SPELL_ORDER_STATUS_ENUM,
-} from "../../../data/dictionary";
-import SupplierSelect from "../../../components/select/supplier.vue";
-import BackgroundCategoryCascader from "../../../components/cascader/backgroundCategory.vue";
-import GoodsBrandSelect from "../../../components/select/goodsBrand.vue";
-import SaleModeSelect from "../../../components/select/saleMode.vue";
-import OwnerSiteSelect from "../../../components/select/ownerSite.vue";
-import SubOrgSelect from "../../../components/select/subOrg.vue";
-import AddressCascader from "../../../components/cascader/address.vue";
-import { columns, goodsColumns } from "./data";
+} from '../../../data/dictionary';
+import SupplierSelect from '../../../components/select/supplier.vue';
+import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';
+import GoodsBrandSelect from '../../../components/select/goodsBrand.vue';
+import SaleModeSelect from '../../../components/select/saleMode.vue';
+import OwnerSiteSelect from '../../../components/select/ownerSite.vue';
+import SubOrgSelect from '../../../components/select/subOrg.vue';
+import AddressCascader from '../../../components/cascader/address.vue';
+import {
+  orderListPageTableColumns,
+  orderListPageTableGoodsColumns,
+} from './data';
 import {
   DownOutlined,
   UpOutlined,
@@ -758,34 +759,43 @@ import {
   EditOutlined,
   CloseOutlined,
   CheckOutlined,
-} from "@ant-design/icons-vue";
+} from '@ant-design/icons-vue';
+import { last, compact, values } from 'lodash';
 import type {
-  orderFormModelInterface,
-  ConfirmsignParamsInterface,
-  ConfirmPreOrderParamsInterface,
-} from "./interface";
-import { order_api, confirmsign_api, confirmPreOrder_api } from "./api";
-import { usePagination } from "vue-request";
-import { computed } from "@vue/reactivity";
-import { TableRowSelection } from "ant-design-vue/es/table/interface";
+  Api_order_params_part_interface,
+  Api_order_result_item_interface,
+  Api_order_params_interface,
+  Api_proxy_order_manage_edit_confirmPreOrder_params_interface,
+} from './interface';
+import {
+  api_order,
+  api_proxy_order_manage_edit_confirmsign,
+  api_proxy_order_manage_edit_confirmPreOrder,
+  api_order_orderDetailExport,
+} from './api';
+import { usePagination } from 'vue-request';
+import { computed } from '@vue/reactivity';
+import {
+  TableRowSelection,
+  SorterResult,
+} from 'ant-design-vue/es/table/interface';
+import { PageInterface } from '../../../interface';
 
-// 异步组件
 const RemarkFormModal = defineAsyncComponent(
-  () => import("./components/remarkFormModal.vue")
+  () => import('./components/remarkFormModal.vue')
 );
 const TaskListModal = defineAsyncComponent(
-  () => import("./components/taskListModal.vue")
+  () => import('./components/taskListModal.vue')
 );
 
-// 属性
-const model = reactive<orderFormModelInterface>({
-  order_search_key: "osl_seq",
-  good_search_key: "goods_name",
+const model = reactive<Partial<Api_order_params_part_interface>>({
+  order_search_key: 'osl_seq',
+  good_search_key: 'goods_name',
 });
-const remarkFormModalVisible = ref<boolean>(false);
-const taskListModalVisible = ref<boolean>(false);
+const remarkFormModalVisible = ref(false);
+const taskListModalVisible = ref(false);
 const formRef = ref<FormInstance>();
-const height = ref<string>("220px");
+const height = ref('220px');
 
 const {
   data: dataSource,
@@ -794,14 +804,14 @@ const {
   run,
   loading,
   total,
-} = usePagination(order_api, {
+} = usePagination(api_order, {
   formatResult: ({ data }) => {
     return data;
   },
   pagination: {
-    currentKey: "page",
-    pageSizeKey: "page_size",
-    totalKey: "total",
+    currentKey: 'page',
+    pageSizeKey: 'page_size',
+    totalKey: 'total',
   },
 });
 
@@ -814,93 +824,160 @@ const pagination = computed(() => {
   };
 });
 
-const selectedRowKeys = ref<any[]>([]);
-const selectedRowsArray = ref<orderFormModelInterface[]>([]);
-const rowSelectionOnChange: TableRowSelection["onChange"] = (keys, rows) => {
+const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
+const selectedRowsArray = ref<Api_order_result_item_interface[]>([]);
+const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {
+  console.log(keys, rows, 999);
+
   selectedRowKeys.value = keys;
   selectedRowsArray.value = rows;
 };
 
-const finish: FormProps["onFinish"] = async (values) => {
-  console.log(model, 123);
-  run({
-    page: 1,
-    page_size: 10,
+const getSearchDataObject = (
+  params: Api_order_params_interface = {
+    page: current.value,
+    page_size: pageSize.value,
+  }
+) => {
+  model.category_id = last(model.category_id_array);
+  [model.create_time_start, model.create_time_end] = model.createTime || [];
+  [model.pay_time_start, model.pay_time_end] = model.paymentTime || [];
+  [model.pre_delivery_start_date, model.pre_delivery_end_date] =
+    model.deliveryTime || [];
+  model.pay_mode = model.payment_type;
+  return {
+    ...params,
     ...model,
+    order_search_key: model.order_search_value
+      ? model.order_search_key
+      : undefined,
+    order_search_value: model.order_search_value || undefined,
+    good_search_key: model.good_search_value
+      ? model.good_search_key
+      : undefined,
+    good_search_value: model.good_search_value || undefined,
+  };
+};
+
+const finish = async () => {
+  run(
+    getSearchDataObject({
+      page: 1,
+      page_size: 10,
+    })
+  );
+};
+
+const exporButtonClick = async (service_type: number) => {
+  if (compact(values(model)).length <= 2) {
+    message.warning(
+      '为避免导出数据量过大，目前仅支持导出有大于等于两个查询条件的结果数据！'
+    );
+    return;
+  }
+  await finish();
+  let { data } = await api_order_orderDetailExport({
+    ...getSearchDataObject({
+      page: 1,
+      page_size: 10,
+    }),
+    service_type,
+  });
+  Modal.info({
+    title: '导出提示',
+    content: h('div', {}, [
+      h(
+        'p',
+        `导出任务创建成功，任务编码：${data.id}，请在查看任务中查看日志！`
+      ),
+    ]),
+    onOk() {
+      taskListModalVisible.value = true;
+    },
   });
 };
 
 const arrowClick = () => {
   isExpandArrowBoolean.value = !isExpandArrowBoolean.value;
 };
-
 const clearOutlinedClick = () => {
   formRef.value?.resetFields();
   model.order_search_value = undefined;
   model.good_search_value = undefined;
 };
 
-const tableChange: TableProps["onChange"] = async (
-  pag,
-  filters: any,
-  sorter: any
-) => {
+const tableChange: TableProps['onChange'] = async (pag, filters, sorter) => {
   let sorterAny: { [name: string]: any } = {};
+  sorter = sorter as SorterResult;
   if (sorter.order) {
     sorterAny[SORT_KEY_ENUM[sorter.columnKey as keyof typeof SORT_KEY_ENUM]] =
       SORT_ENUM[sorter.order];
   }
-  run({
-    page: pag.current as number,
-    page_size: pag.pageSize as number,
-    ...model,
-    ...sorterAny,
-  });
+  run(
+    getSearchDataObject({
+      page: pag.current!,
+      page_size: pag.pageSize!,
+      ...sorterAny,
+    })
+  );
 };
 
 const batchButtonClick = async () => {
-  if (selectedRowKeys.value.length === 0) {
-    message.warning("请选择");
+  if (selectedRowKeys.value!.length === 0) {
+    message.warning('请选择');
     return;
   }
   remarkFormModalVisible.value = true;
 };
 
-const taskButtonClick = () => {
-  taskListModalVisible.value = true;
-};
-const exporButtonClick = () => {};
-
-const popconfirmConfirm = async (
-  api: (p: any) => Promise<any>,
-  params: ConfirmsignParamsInterface | ConfirmPreOrderParamsInterface
-) => {
-  await api(params);
-  message.success("成功");
+const remarkFormModalSubmit = () => {
   setTimeout(() => {
-    run({
-      page: 1,
-      page_size: 10,
-      ...model,
-    });
+    run(getSearchDataObject());
   }, 500);
 };
 
-const isExpandArrowBoolean = ref<boolean>(false);
+const taskButtonClick = () => {
+  taskListModalVisible.value = true;
+};
+const confirmSigningPopconfirmConfirm = async (
+  record: Api_order_result_item_interface
+) => {
+  await api_proxy_order_manage_edit_confirmsign({
+    user_id: String(record.user.user_id),
+    osl_seq: record.osl_seq,
+    operator: USER_INFO.user_id,
+  });
+  message.success('成功');
+  setTimeout(() => {
+    run(getSearchDataObject());
+  }, 500);
+};
+
+const bookingConfirmationPopconfirmConfirm = async (
+  record: Api_order_result_item_interface
+) => {
+  await api_proxy_order_manage_edit_confirmPreOrder({
+    osl_seq: record.osl_seq,
+  });
+  message.success('成功');
+  setTimeout(() => {
+    run(getSearchDataObject());
+  }, 500);
+};
+
+const isExpandArrowBoolean = ref(false);
 enum SORT_KEY_ENUM {
-  order_time = "createtime_sort",
-  sub_total_amount = "amount_sort",
+  order_time = 'createtime_sort',
+  sub_total_amount = 'amount_sort',
 }
 
-const activeKey = ref<string>("1");
+const activeKey = ref('1');
 
 watch(isExpandArrowBoolean, (newValue) => {
   if (newValue) {
-    height.value = "auto";
+    height.value = 'auto';
   } else {
-    height.value = "220px";
+    height.value = '220px';
   }
 });
-
-// 初始化
 </script>

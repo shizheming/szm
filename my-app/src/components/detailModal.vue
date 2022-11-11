@@ -11,13 +11,13 @@
     </a-descriptions>
   </a-modal>
 </template>
-<script setup>
-const props = defineProps(["visible"]);
-const emits = defineEmits(["update:visible"]);
+<script setup lang="ts">
+const props = defineProps(['visible']);
+const emits = defineEmits(['update:visible']);
 const ok = () => {
-  emits("update:visible", false);
+  emits('update:visible', false);
 };
 const cancel = () => {
-  emits("update:visible", false);
+  emits('update:visible', false);
 };
 </script>

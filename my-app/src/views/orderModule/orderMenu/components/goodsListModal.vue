@@ -2,9 +2,10 @@
   <a-modal
     :visible="props.visible"
     title="商品选择"
+    width="100%"
+    wrap-class-name="full-modal"
     @ok="ok"
     @cancel="cancel"
-    :width="1400"
   >
     <a-form
       ref="formRef"
@@ -13,7 +14,78 @@
       @finish="finish"
     >
       <a-row>
-        <a-col :span="8"> </a-col>
+        <a-col :span="8">
+          <a-form-item label="商品搜索" :label-col="{ span: 6 }">
+            <a-input-group compact>
+              <a-select
+                style="width: 50%"
+                :allow-clear="false"
+                v-model:value="model.goods_search_key"
+              >
+                <a-select-option value="name">商品名称</a-select-option>
+                <a-select-option value="sku_code">商品编码</a-select-option>
+                <a-select-option value="shop_goods_code"
+                  >店铺商品编码</a-select-option
+                >
+                <a-select-option value="sn">货号</a-select-option>
+              </a-select>
+              <a-input
+                style="width: 50%"
+                v-model:value="model.goods_search_value"
+              />
+            </a-input-group>
+          </a-form-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-item
+            label="商品品牌"
+            :label-col="{ span: 6 }"
+            :name="['brand_id']"
+          >
+            <goods-brand-select
+              v-model:value="model.brand_id"
+              mode="multiple"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-item
+            label="后台类目"
+            :label-col="{ span: 6 }"
+            :name="['category_id']"
+          >
+            <background-category-cascader
+              v-model:value="model.category_id"
+              style="width: 100%"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-item label="订单金额" :label-col="{ span: 6 }">
+            <a-input-group compact>
+              <a-input
+                v-model:value="model.sku_qty_start"
+                style="width: 40%; text-align: center"
+                placeholder="最大值"
+              />
+              <a-input
+                style="
+                  width: 20%;
+                  border-left: 0;
+                  pointer-events: none;
+                  background-color: #fff;
+                "
+                placeholder="~"
+                disabled
+              />
+              <a-input
+                v-model:value="model.sku_qty_end"
+                style="width: 40%; text-align: center; border-left: 0"
+                placeholder="最小值"
+              />
+            </a-input-group>
+          </a-form-item>
+        </a-col>
       </a-row>
       <a-row>
         <a-col :span="8">
@@ -29,13 +101,13 @@
       </a-row>
     </a-form>
     <a-table
-      :rowKey="tableRowKey"
+      :row-key="tableRowKey"
       :row-selection="{
         selectedRowKeys,
         onChange: rowSelectionOnChange,
         getCheckboxProps,
       }"
-      :dataSource="dataSource?.list"
+      :data-source="dataSource?.list"
       :columns="orderFormModalGoodsColumns"
       :loading="loading"
       :pagination="pagination"
@@ -47,47 +119,83 @@
           record,
         }: {
           column: TableColumnType,
-          record: GoodsFormModelInterface,
+          record: Api_goods_sku_list_result_item_interface,
         }"
       >
-        <template v-if="column.key === 'operation'"> </template>
+        <template v-if="column.key === 'category_id'">
+          <background-category-cascader
+            :is-detail="true"
+            :value="record.category_path.map(Number)"
+            style="width: 100%"
+          />
+        </template>
+        <template v-if="column.key === 'shop_selling_price'">
+          <a-popover title="阶梯价展示" v-if="record.member_price.length > 0">
+            <template #content>
+              <a-table
+                :data-source="record.member_price"
+                :columns="orderFormModalLadderPriceColumns"
+                :pagination="false"
+                size="small"
+              />
+            </template>
+            <a-button size="small">详情</a-button>
+          </a-popover>
+          <span v-else>{{ record.shop_selling_price }}</span>
+        </template>
       </template>
     </a-table>
   </a-modal>
 </template>
 <script setup lang="ts">
-import { ref, watch, reactive, computed } from "vue";
+import { ref, watch, reactive, computed } from 'vue';
+import GoodsBrandSelect from '../../../../components/select/goodsBrand.vue';
+import BackgroundCategoryCascader from '../../../../components/cascader/backgroundCategory.vue';
 import {
   FormInstance,
   ModalProps,
   TableProps,
   FormProps,
   TableColumnType,
-} from "ant-design-vue";
-import { GoodsFormModelInterface } from "../interface";
-import { sku_list_api } from "../api";
-import { orderFormModalGoodsColumns } from "../data";
-import { usePagination } from "vue-request";
-import { SearchOutlined, ClearOutlined } from "@ant-design/icons-vue";
-import { TableRowSelection } from "ant-design-vue/es/table/interface";
+} from 'ant-design-vue';
+import {
+  Api_goods_sku_list_result_item_interface,
+  Api_goods_sku_list_params_part_interface,
+  Api_goods_sku_list_fixed_params_part_interface,
+} from '../interface';
+import { api_goods_sku_list } from '../api';
+import {
+  orderFormModalGoodsColumns,
+  orderFormModalLadderPriceColumns,
+} from '../data';
+import { usePagination } from 'vue-request';
+import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
+import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 
 const props = defineProps<{
   visible: boolean;
-  selectedRowKeys: any[];
+  selectedRowKeys: TableRowSelection['selectedRowKeys'];
 }>();
 const emits = defineEmits<{
-  (event: "update:visible", visible: boolean): void;
+  (event: 'update:visible', visible: boolean): void;
   (
-    event: "select",
-    selectedRowKeys: any[],
-    selectedRowsArray: GoodsFormModelInterface[]
+    event: 'select',
+    selectedRowKeys: TableRowSelection['selectedRowKeys'],
+    selectedRowsArray: Api_goods_sku_list_result_item_interface[]
   ): void;
 }>();
 
-const selectedRowKeys = ref<any>([]);
-const model = reactive<GoodsFormModelInterface>({});
+const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
+const model = reactive<Partial<Api_goods_sku_list_params_part_interface>>({});
 const formRef = ref<FormInstance>();
-const selectedRowsArray = ref<GoodsFormModelInterface[]>([]);
+const selectedRowsArray = ref<Api_goods_sku_list_result_item_interface[]>([]);
+const paramsObject: Api_goods_sku_list_fixed_params_part_interface = {
+  channel_id: 1,
+  is_listing: 1,
+  need_stock: 1,
+  business_id: 1,
+  is_support_local: 0,
+};
 const {
   data: dataSource,
   current,
@@ -95,28 +203,24 @@ const {
   run,
   loading,
   total,
-} = usePagination(sku_list_api, {
+} = usePagination(api_goods_sku_list, {
   manual: true,
   formatResult: ({ data }) => {
     return data;
   },
   pagination: {
-    currentKey: "page",
-    pageSizeKey: "page_size",
-    totalKey: "total",
+    currentKey: 'page',
+    pageSizeKey: 'page_size',
+    totalKey: 'total',
   },
 });
 
-const finish: FormProps["onFinish"] = async (values) => {
+const finish = async () => {
   run({
-    channel_id: 1,
-    is_listing: 1,
-    need_stock: 1,
-    business_id: 1,
-    is_support_local: 0,
+    ...model,
+    ...paramsObject,
     page: 1,
     page_size: 10,
-    ...model,
   });
 };
 
@@ -129,34 +233,35 @@ const pagination = computed(() => {
   };
 });
 
-const rowSelectionOnChange: TableRowSelection["onChange"] = (keys, rows) => {
+const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {
   selectedRowKeys.value = keys;
   selectedRowsArray.value = rows;
 };
 
-const tableChange: TableProps["onChange"] = async (pag) => {
+const tableChange: TableProps['onChange'] = async (pag) => {
   run({
-    channel_id: 1,
-    is_listing: 1,
-    need_stock: 1,
-    business_id: 1,
-    is_support_local: 0,
-    page: pag.current as number,
-    page_size: pag.pageSize as number,
     ...model,
+    ...paramsObject,
+    page: pag.current!,
+    page_size: pag.pageSize!,
   });
 };
 
-const getCheckboxProps: TableRowSelection["getCheckboxProps"] = ({
+const getCheckboxProps: TableRowSelection['getCheckboxProps'] = ({
   sku_id,
   spu_id,
+  real_qty,
 }) => {
   return {
-    disabled: props.selectedRowKeys.includes(`${spu_id}_${sku_id}`),
+    disabled:
+      props.selectedRowKeys!.includes(`${spu_id}_${sku_id}`) || real_qty === 0,
   };
 };
 
-const tableRowKey: GoodsFormModelInterface = ({ sku_id, spu_id }) => {
+const tableRowKey = ({
+  sku_id,
+  spu_id,
+}: Api_goods_sku_list_result_item_interface) => {
   return `${spu_id}_${sku_id}`;
 };
 
@@ -164,15 +269,15 @@ const clearOutlinedClick = () => {
   formRef.value?.resetFields();
 };
 
-const ok: ModalProps["onOk"] = async (e) => {
+const ok = async () => {
   formRef.value?.resetFields();
 
-  emits("select", selectedRowKeys.value, selectedRowsArray.value);
-  emits("update:visible", false);
+  emits('select', selectedRowKeys.value, selectedRowsArray.value);
+  emits('update:visible', false);
 };
-const cancel: ModalProps["onCancel"] = (e) => {
+const cancel = () => {
   formRef.value?.resetFields();
-  emits("update:visible", false);
+  emits('update:visible', false);
 };
 
 watch(
@@ -180,11 +285,7 @@ watch(
   async (newValue) => {
     if (newValue === true) {
       run({
-        channel_id: 1,
-        is_listing: 1,
-        need_stock: 1,
-        business_id: 1,
-        is_support_local: 0,
+        ...paramsObject,
         page: 1,
         page_size: 10,
       });
@@ -194,3 +295,18 @@ watch(
   }
 );
 </script>
+<style>
+.full-modal .ant-modal {
+  max-width: 100%;
+  top: 0;
+  padding-bottom: 0;
+  margin: 0;
+}
+.full-modal .ant-modal-content {
+  display: flex;
+  flex-direction: column;
+}
+.full-modal .ant-modal-body {
+  flex: 1;
+}
+</style>

@@ -4,16 +4,16 @@
   </DatePicker>
 </template>
 <script setup lang="ts">
-import core from "./core";
-import { DatePicker } from "ant-design-vue";
-import { PropsInterface } from "./props";
-import { useSlots, useAttrs, inject, Ref } from "vue";
+import core from './core';
+import { DatePicker } from 'ant-design-vue';
+import { PropsInterface } from './props';
+import { useSlots, useAttrs, inject, Ref } from 'vue';
 
 const p = defineProps<{
   isDetail?: Boolean;
-  inner?: Function;
+  inner?: () => void;
   watch?: any[];
-  outer?: Function;
+  outer?: () => void;
   // togetherhas: {
   //   type: Array,
   //   default: undefined,

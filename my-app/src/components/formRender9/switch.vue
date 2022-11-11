@@ -4,15 +4,15 @@
   </Switch>
 </template>
 <script setup lang="ts">
-import core from "./core";
-import { Switch } from "ant-design-vue";
-import { PropsInterface } from "./props";
+import core from './core';
+import { Switch } from 'ant-design-vue';
+import { PropsInterface } from './props';
 
 const p = defineProps<{
   isDetail?: Boolean;
-  inner?: Function;
+  inner?: () => void;
   watch?: any[];
-  outer?: Function;
+  outer?: () => void;
   // togetherhas: {
   //   type: Array,
   //   default: undefined,

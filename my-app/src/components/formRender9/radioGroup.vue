@@ -1,18 +1,18 @@
 <template>
-  <RadioGroup v-bind="newSlots" allowClear>
+  <RadioGroup v-bind="newSlots" allow-clear>
     <slot />
   </RadioGroup>
 </template>
 <script setup lang="ts">
-import core from "./core";
-import { RadioGroup } from "ant-design-vue";
-import { PropsInterface } from "./props";
+import core from './core';
+import { RadioGroup } from 'ant-design-vue';
+import { PropsInterface } from './props';
 
 const p = defineProps<{
   isDetail?: Boolean;
-  inner?: Function;
+  inner?: () => void;
   watch?: any[];
-  outer?: Function;
+  outer?: () => void;
   // togetherhas: {
   //   type: Array,
   //   default: undefined,

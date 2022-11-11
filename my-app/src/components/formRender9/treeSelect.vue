@@ -1,18 +1,18 @@
 <template>
-  <TreeSelect allowClear show-search v-bind="newSlots">
+  <TreeSelect allow-clear show-search v-bind="newSlots">
     <slot />
   </TreeSelect>
 </template>
 <script setup lang="ts">
-import core from "./core";
-import { TreeSelect } from "ant-design-vue";
-import { PropsInterface } from "./props";
+import core from './core';
+import { TreeSelect } from 'ant-design-vue';
+import { PropsInterface } from './props';
 
 const p = defineProps<{
   isDetail?: Boolean;
-  inner?: Function;
+  inner?: () => void;
   watch?: any[];
-  outer?: Function;
+  outer?: () => void;
   // togetherhas: {
   //   type: Array,
   //   default: undefined,

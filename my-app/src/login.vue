@@ -2,9 +2,8 @@
   <a-form
     ref="formRef"
     :model="formModel"
-    :wrapper-col="{ span: 12 }"
+    :wrapper-col="{ span: 6 }"
     @finish="formFinish"
-    style="margin: 5% auto; width: 50%"
   >
     <a-form-item
       label="账号"
@@ -62,43 +61,48 @@
   </a-form>
 </template>
 <script setup lang="ts">
-import { ref, watch, reactive } from "vue";
-import { DownOutlined, UpOutlined } from "@ant-design/icons-vue";
-import { message } from "ant-design-vue";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons-vue";
-import { useRoute, useRouter } from "vue-router";
-import axios from "./utils/axios";
-import { encrypt } from "./utils/tool";
+import { ref, watch, reactive } from 'vue';
+import { message, FormProps, FormInstance } from 'ant-design-vue';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons-vue';
+import { useRoute, useRouter } from 'vue-router';
+import axios from './utils/axios';
+import { encrypt } from './utils/tool';
 
-const formModel = reactive({});
-const formRef = ref();
-const router = useRouter();
+// 这种不需要写接口，自己都能类型推断，减少工作量，
+const formModel = reactive({
+  sms_code: '',
+  cms_phone: '',
+  password: '',
+  username: '',
+});
+const formRef = ref<FormInstance>();
+const routerObject = useRouter();
 const buttonLoading = ref(false);
 
-const formFinish = async (values) => {
+const formFinish: FormProps['onFinish'] = async (values) => {
   buttonLoading.value = true;
   try {
     let {
       data: { token_type, access_token },
-    } = await axios.post("/api/manager/login", {
+    } = await axios.post('/api/manager/login', {
       ...values,
       password: encrypt(values.password),
     });
     let token = `${token_type} ${access_token}`;
     let { data: d2 } = await axios({
-      method: "GET",
+      method: 'GET',
       headers: { Authorization: token },
-      url: "/api/manager/permissions",
+      url: '/api/manager/permissions',
     });
     let { data: d3 } = await axios({
-      method: "GET",
+      method: 'GET',
       headers: { Authorization: token },
-      url: "/api/manager/me",
+      url: '/api/manager/me',
     });
     buttonLoading.value = false;
 
-    router.push({
-      name: "index",
+    routerObject.push({
+      name: 'index',
       params: {
         token,
         permissions: JSON.stringify(d2),

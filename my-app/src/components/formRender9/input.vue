@@ -11,15 +11,15 @@
   </Input>
 </template>
 <script setup lang="ts">
-import core from "./core";
-import { PropsInterface } from "./props";
-import { Input } from "ant-design-vue";
+import core from './core';
+import { PropsInterface } from './props';
+import { Input } from 'ant-design-vue';
 
 const p = defineProps<{
   isDetail?: Boolean;
-  inner?: Function;
+  inner?: () => void;
   watch?: any[];
-  outer?: Function;
+  outer?: () => void;
   // togetherhas: {
   //   type: Array,
   //   default: undefined,

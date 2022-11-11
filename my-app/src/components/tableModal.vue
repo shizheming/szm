@@ -25,33 +25,33 @@
     </a-table>
   </a-modal>
 </template>
-<script setup>
-import { ref, watch } from "vue";
+<script setup lang="ts">
+import { ref, watch } from 'vue';
 
-const props = defineProps(["visible"]);
-const emits = defineEmits(["update:visible"]);
+const props = defineProps(['visible']);
+const emits = defineEmits(['update:visible']);
 const dataSource = ref();
 const loading = ref();
 const columns = ref([
   {
-    title: "title",
-    dataIndex: "name1",
-    key: "name1",
+    title: 'title',
+    dataIndex: 'name1',
+    key: 'name1',
   },
   {
-    title: "title",
-    dataIndex: "name2",
-    key: "name2",
+    title: 'title',
+    dataIndex: 'name2',
+    key: 'name2',
   },
   {
-    title: "title",
-    dataIndex: "name3",
-    key: "name3",
+    title: 'title',
+    dataIndex: 'name3',
+    key: 'name3',
   },
   {
-    title: "title",
-    dataIndex: "name4",
-    key: "name4",
+    title: 'title',
+    dataIndex: 'name4',
+    key: 'name4',
   },
 ]);
 
@@ -69,9 +69,9 @@ watch(
 );
 
 const ok = () => {
-  emits("update:visible", false);
+  emits('update:visible', false);
 };
 const cancel = () => {
-  emits("update:visible", false);
+  emits('update:visible', false);
 };
 </script>

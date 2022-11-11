@@ -205,38 +205,38 @@
     <a-button type="primary" html-type="submit">提交</a-button>
   </a-form>
 </template>
-<script setup>
-import { ref, watch, reactive } from "vue";
-import { DownOutlined, UpOutlined } from "@ant-design/icons-vue";
-import { message } from "ant-design-vue";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons-vue";
-import Tx from "./t.vue";
+<script setup lang="ts">
+import { ref, watch, reactive } from 'vue';
+import { DownOutlined, UpOutlined } from '@ant-design/icons-vue';
+import { message } from 'ant-design-vue';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons-vue';
+import Tx from './t.vue';
 
 const columns = [
   {
-    title: "操作",
-    dataIndex: "operation",
-    key: "operation",
+    title: '操作',
+    dataIndex: 'operation',
+    key: 'operation',
   },
   {
-    title: "title",
-    dataIndex: "is_listing",
-    key: "is_listing",
+    title: 'title',
+    dataIndex: 'is_listing',
+    key: 'is_listing',
   },
   {
-    title: "title",
-    dataIndex: "stock",
-    key: "stock",
+    title: 'title',
+    dataIndex: 'stock',
+    key: 'stock',
   },
   {
-    title: "title",
-    dataIndex: "name3",
-    key: "name3",
+    title: 'title',
+    dataIndex: 'name3',
+    key: 'name3',
   },
   {
-    title: "title",
-    dataIndex: "name4",
-    key: "name4",
+    title: 'title',
+    dataIndex: 'name4',
+    key: 'name4',
   },
 ];
 const formModel = reactive({
@@ -254,14 +254,14 @@ const removeButtonclick = (item) => {
 
 const addButtonClick = () => {
   formModel.domains.push({
-    value: "",
+    value: '',
     key: Date.now(),
   });
 };
 
 const textareaValidator = async (_rule, value) => {
-  if (value === "") {
-    return Promise.reject("请输入");
+  if (value === '') {
+    return Promise.reject('请输入');
   } else {
     return Promise.resolve();
   }

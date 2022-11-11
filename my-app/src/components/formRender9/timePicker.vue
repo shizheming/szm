@@ -1,20 +1,20 @@
 <template>
-  <TimePicker v-bind="newSlots" allowClear>
+  <TimePicker v-bind="newSlots" allow-clear>
     <slot />
   </TimePicker>
 </template>
 <script setup lang="ts">
-import core from "./core";
-import { TimePicker } from "ant-design-vue";
-import { PropsInterface } from "./props";
-import { useSlots, inject, useAttrs } from "vue";
+import core from './core';
+import { TimePicker } from 'ant-design-vue';
+import { PropsInterface } from './props';
+import { useSlots, inject, useAttrs } from 'vue';
 
-let outer = inject("outer");
+let outer = inject('outer');
 const p = defineProps<{
   isDetail?: Boolean;
-  inner?: Function;
+  inner?: () => void;
   watch?: any[];
-  outer?: Function;
+  outer?: () => void;
   // togetherhas: {
   //   type: Array,
   //   default: undefined,

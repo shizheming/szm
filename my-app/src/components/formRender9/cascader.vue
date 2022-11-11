@@ -1,24 +1,24 @@
 <template>
   <Cascader
-    allowClear
+    allow-clear
     :placeholder="$props.isDetail ? '' : '请选择'"
     :disabled="detailStyleObj.disabled"
-    :showArrow="detailStyleObj.showArrow"
+    :show-arrow="detailStyleObj.showArrow"
     :bordered="detailStyleObj.bordered"
     :class="detailStyleObj.class"
     v-bind="newSlots"
   />
 </template>
 <script setup lang="ts">
-import core from "./core";
-import { Cascader } from "ant-design-vue";
-import { PropsInterface } from "./props";
+import core from './core';
+import { Cascader } from 'ant-design-vue';
+import { PropsInterface } from './props';
 
 const p = defineProps<{
   isDetail?: Boolean;
-  inner?: Function;
+  inner?: () => void;
   watch?: any[];
-  outer?: Function;
+  outer?: () => void;
   // togetherhas: {
   //   type: Array,
   //   default: undefined,
