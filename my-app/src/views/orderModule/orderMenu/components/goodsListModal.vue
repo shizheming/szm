@@ -206,6 +206,16 @@ const {
 } = usePagination(api_goods_sku_list, {
   manual: true,
   formatResult: ({ data }) => {
+    data.list.forEach((current) => {
+      current.sku_type_name = '实物';
+      current.member_price_name =
+        current.member_price.length > 0 ? '阶梯价' : '固定价';
+      current.member_price.forEach((item) => {
+        item.start_num = `${item.start_num}${
+          item.end_num ? `~${item.end_num}` : '+'
+        }`;
+      });
+    });
     return data;
   },
   pagination: {

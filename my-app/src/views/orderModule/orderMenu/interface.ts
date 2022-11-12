@@ -472,11 +472,13 @@ export interface Api_goods_sku_list_params_interface
     Api_goods_sku_list_fixed_params_part_interface,
     PageInterface {}
 export interface Api_goods_sku_list_result_item_interface {
+  number: number;
   qty: number;
   sku_bar_code: string;
   sku_channel_relation_id: number;
   spu_name: string;
   shop_goods_id: number;
+  is_suit: string | number;
   sku_specs: string;
   tms_material_code: string;
   suits: [];
@@ -487,6 +489,8 @@ export interface Api_goods_sku_list_result_item_interface {
   spu_id: number;
   supplier_name: string;
   shop_goods_code: string;
+  sku_type_name: string;
+  member_price_name: string;
   purchase_category_id: number;
   shop_selling_price: number;
   type_id: number;
@@ -519,7 +523,11 @@ export interface Api_goods_sku_list_result_item_interface {
   }[];
   ext_service: [];
   ext_service_list: [];
-  member_price: [];
+  member_price: {
+    start_num: number | string;
+    end_num: number;
+    member_price: string;
+  }[];
   real_qty: number;
   real_node_qty: number;
   stock_qty: number;

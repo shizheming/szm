@@ -537,6 +537,7 @@ import AddressCascader from '../../../components/cascader/address.vue';
 import {
   WHETHER_OPTIONS,
   DELIVERY_MODE_OPTIONS,
+  IS_SUIT_ENUM,
 } from '../../../data/dictionary';
 import { orderFormPageGoodsColumns } from './data';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
@@ -634,8 +635,12 @@ const goodsListModalSelect = (
 ) => {
   selectedRowKeys.value = keys;
   dataSource.value = dataSource.value.concat(
-    rows.map((item) => {
+    rows.map((item, index) => {
       item.qty = 0;
+      item.number = index + 1;
+      item.sku_type_name = '实物';
+      item.is_suit =
+        item.is_suit === 'b' ? '' : IS_SUIT_ENUM[item.is_suit as number];
       return item;
     })
   );

@@ -235,9 +235,6 @@ export const orderFormPageGoodsColumns: TableColumnsType = [
     title: '序号',
     dataIndex: 'number',
     key: 'number',
-    customRender(c) {
-      return Number(c) + 1;
-    },
   },
   {
     title: '主图',
@@ -263,17 +260,11 @@ export const orderFormPageGoodsColumns: TableColumnsType = [
     title: '商品类型',
     dataIndex: 'sku_type_name',
     key: 'sku_type_name',
-    customRender() {
-      return '实物';
-    },
   },
   {
     title: '商品形式',
-    dataIndex: 'is_suit',
-    key: 'is_suit',
-    customRender({ text }) {
-      return text === 'b' ? '' : IS_SUIT_ENUM[text];
-    },
+    dataIndex: 'is_suit_name',
+    key: 'is_suit_name',
   },
   {
     title: '店铺商品编码',
@@ -369,9 +360,6 @@ export const orderFormModalGoodsColumns: TableColumnsType = [
     title: '商品类型',
     dataIndex: 'sku_type_name',
     key: 'sku_type_name',
-    customRender() {
-      return '实物';
-    },
   },
   {
     title: '规格属性',
@@ -390,11 +378,8 @@ export const orderFormModalGoodsColumns: TableColumnsType = [
   },
   {
     title: '定价方式',
-    dataIndex: 'member_price',
-    key: 'member_price',
-    customRender({ text }) {
-      return text.length > 0 ? '阶梯价' : '固定价';
-    },
+    dataIndex: 'member_price_name',
+    key: 'member_price_name',
   },
   {
     title: '销售单价',
@@ -413,9 +398,6 @@ export const orderFormModalLadderPriceColumns: TableColumnsType = [
     title: '订购数量',
     dataIndex: 'start_num',
     key: 'start_num',
-    customRender({ text, record }) {
-      return `${text}${record.end_num ? `~${record.end_num}` : '+'}`;
-    },
   },
   {
     title: '销售单价',
