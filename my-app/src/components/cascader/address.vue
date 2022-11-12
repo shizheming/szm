@@ -12,6 +12,7 @@
 import { ref } from 'vue';
 import type { CascaderProps } from 'ant-design-vue';
 import { api_common_area } from '../../api/dictionary';
+import { apiDictCacheObject } from '../../utils/global';
 
 const options = ref<CascaderProps['options']>([]);
 const loadData: CascaderProps['loadData'] = async (selectedOptions) => {
@@ -32,15 +33,20 @@ const loadData: CascaderProps['loadData'] = async (selectedOptions) => {
   });
 };
 const inner = async () => {
-  let { data } = await api_common_area({
-    parent_id: 1,
-  });
-  options.value = data.map(({ id, name }) => {
-    return {
-      label: name,
-      value: id,
-      isLeaf: false,
-    };
-  });
+  if (apiDictCacheObject.address) {
+    options.value = apiDictCacheObject.address;
+  } else {
+    let { data } = await api_common_area({
+      parent_id: 1,
+    });
+    options.value = data.map(({ id, name }) => {
+      return {
+        label: name,
+        value: id,
+        isLeaf: false,
+      };
+    });
+    apiDictCacheObject.address = options.value;
+  }
 };
 </script>

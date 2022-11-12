@@ -753,6 +753,9 @@ import {
   USER_INFO,
   WHETHER_ENUM,
   SPELL_ORDER_STATUS_ENUM,
+  YES_NO_ENUM,
+  GOODS_SOURCE_ENUM,
+  IS_SUIT_ENUM,
 } from '../../../data/dictionary';
 import SupplierSelect from '../../../components/select/supplier.vue';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';
@@ -823,6 +826,12 @@ const {
 } = usePagination(api_order, {
   formatResult: ({ data }) => {
     data.list.forEach((current) => {
+      current.sub_total_amount = isInteger(current.sub_total_amount)
+        ? (current.sub_total_amount as number).toFixed(2)
+        : current.sub_total_amount;
+      current.is_support_local_name = YES_NO_ENUM[current.is_support_local];
+      current.distribute_order_name = WHETHER_ENUM[current.distribute_order];
+      current.is_pre_subscribe_name = WHETHER_ENUM[current.is_pre_subscribe];
       current.item.forEach((item) => {
         let priceNumberString: number | string;
         if (current.create_mode.value == 15) {
@@ -838,9 +847,7 @@ const {
         item.real_price = isInteger(item.real_price)
           ? (item.real_price as number).toFixed(2)
           : item.real_price;
-        item.sub_total_amount = isInteger(item.sub_total_amount)
-          ? (item.sub_total_amount as number).toFixed(2)
-          : item.sub_total_amount;
+
         item.category_name = findCategory(Number(item.category_id)).join('/');
       });
     });

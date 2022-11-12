@@ -1,9 +1,3 @@
-import {
-  YES_NO_ENUM,
-  WHETHER_ENUM,
-  GOODS_SOURCE_ENUM,
-  IS_SUIT_ENUM,
-} from '../../../data/dictionary';
 import { TableColumn, TableColumnsType } from 'ant-design-vue';
 export const orderListPageTableColumns: TableColumnsType = [
   {
@@ -28,19 +22,13 @@ export const orderListPageTableColumns: TableColumnsType = [
   },
   {
     title: '本地服务',
-    dataIndex: 'is_support_local',
-    key: 'is_support_local',
-    customRender({ text }) {
-      return YES_NO_ENUM[text];
-    },
+    dataIndex: 'is_support_local_name',
+    key: 'is_support_local_name',
   },
   {
     title: '是否分销订单',
-    dataIndex: 'distribute_order',
-    key: 'distribute_order',
-    customRender({ text }) {
-      return WHETHER_ENUM[text];
-    },
+    dataIndex: 'distribute_order_name',
+    key: 'distribute_order_name',
   },
   {
     title: '订单金额合计',
@@ -76,19 +64,13 @@ export const orderListPageTableColumns: TableColumnsType = [
   },
   {
     title: '预订购',
-    dataIndex: 'is_pre_subscribe',
-    key: 'is_pre_subscribe',
-    customRender({ text }) {
-      return WHETHER_ENUM[text];
-    },
+    dataIndex: 'is_pre_subscribe_name',
+    key: 'is_pre_subscribe_name',
   },
   {
     title: '订单商品来源',
-    dataIndex: 'goods_source',
-    key: 'goods_source',
-    customRender({ text }) {
-      return GOODS_SOURCE_ENUM[text];
-    },
+    dataIndex: 'goods_source_name',
+    key: 'goods_source_name',
     ellipsis: true,
   },
 ];

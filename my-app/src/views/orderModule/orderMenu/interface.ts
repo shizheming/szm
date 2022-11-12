@@ -196,7 +196,7 @@ export interface Api_order_result_item_interface {
   is_delivery: number;
   sub_purchase_amount: number;
   sub_extra_fee: number;
-  sub_total_amount: number;
+  sub_total_amount: number | string;
   sub_total_pay: number;
   sub_total_freight: string;
   sub_total_price: number;
@@ -213,7 +213,9 @@ export interface Api_order_result_item_interface {
   supplier_invoice_type: number;
   out_delivery_tag: number;
   distribute_order: number;
+  distribute_order_name: string;
   is_support_local: number;
+  is_support_local_name: string;
   shop_account_id: number;
   salesman_node_id: number;
   salesman_node_name: string;
@@ -221,6 +223,7 @@ export interface Api_order_result_item_interface {
   stock_node_id: number;
   return_amount: number;
   is_pre_subscribe: number;
+  is_pre_subscribe_name: string;
   service_no: string;
   sale_method: number;
   sale_type: number;
