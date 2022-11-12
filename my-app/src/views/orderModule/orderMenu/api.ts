@@ -99,3 +99,10 @@ export const api_order_orderDetailExport = (
 ) => {
   return axios.get<{ id: number }>('/api/order/orderDetailExport', { params });
 };
+
+// 生成销售出库单
+export const api_proxy_order_Order_Purchase_saleOutstock = (params: {
+  osl_seq: string;
+}) => {
+  return axios.post('/proxy/order/Order/Purchase/saleOutstock', params);
+};

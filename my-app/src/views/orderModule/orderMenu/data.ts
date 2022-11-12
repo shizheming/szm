@@ -131,8 +131,8 @@ export const orderListPageTableGoodsColumns: TableColumnsType = [
   },
   {
     title: '类目',
-    dataIndex: 'category_id',
-    key: 'category_id',
+    dataIndex: 'category_name',
+    key: 'category_name',
   },
   {
     title: '销售单价',

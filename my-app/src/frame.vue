@@ -74,7 +74,7 @@ import {
   Router,
 } from 'vue-router';
 import r from './router/index';
-import { UserInfoInterface } from './interface/index';
+import { Api_manager_me_result_interface } from './interface/index';
 import type { MenuProps, MenuItemProps } from 'ant-design-vue';
 import { compact, first } from 'lodash';
 
@@ -93,9 +93,6 @@ const routerObject = useRouter();
 const allRouteArray = r.getRoutes();
 const menusArray = ref<RouteRecord[]>([]);
 const pathArray = compact(routeObject.path.split('/'));
-const userInfoObject: UserInfoInterface = JSON.parse(localStorage.userInfo);
-const breadcrumbArray = ref<RouteRecord[]>([]);
-
 if (localStorage.userInfo === undefined) {
   routerObject.push({
     name: 'index',
@@ -104,6 +101,10 @@ if (localStorage.userInfo === undefined) {
     },
   });
 }
+const userInfoObject: Api_manager_me_result_interface = JSON.parse(
+  localStorage.userInfo
+);
+const breadcrumbArray = ref<RouteRecord[]>([]);
 
 const menuSelectedKeys = ref([pathArray[2]]);
 const menuOpenKeys = ref([pathArray[1]]);

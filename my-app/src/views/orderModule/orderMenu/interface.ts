@@ -78,6 +78,7 @@ export type Api_order_params_interface =
   Partial<Api_order_params_part_interface> & PageInterface;
 
 export interface Api_order_result_item_interface {
+  activeKey: string;
   pay_mode: {
     value: number;
     name: string;
@@ -265,8 +266,8 @@ export interface Api_order_result_item_interface {
     first_category_name: string;
     second_category_name: string;
     third_category_name: string;
-    price: number;
-    real_price: number;
+    price: number | string;
+    real_price: number | string;
     purchase_amount: number;
     oi_use_gift_card_fee: number;
     freight: number;

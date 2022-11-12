@@ -1,7 +1,8 @@
-import CryptoJS from "crypto-js";
-import { isNumber, isString, last } from "lodash";
-
-const keyHex = CryptoJS.enc.Utf8.parse("70682896");
+import CryptoJS from 'crypto-js';
+import { isNumber, isString, last } from 'lodash';
+import { api_goods_category } from '../api/dictionary';
+import { Api_goods_category_result_item_interface } from '../api/interface';
+const keyHex = CryptoJS.enc.Utf8.parse('70682896');
 
 /**
  * 加密方法
@@ -40,3 +41,30 @@ export const optionsEnum = (obj: { [name: string]: any }) => {
   }
   return result;
 };
+
+// 获取类目
+let categoryArray: Api_goods_category_result_item_interface[];
+api_goods_category().then(({ data }) => {
+  categoryArray = data;
+});
+
+export function findCategory(
+  n: number,
+  data: Api_goods_category_result_item_interface[] = categoryArray
+) {
+  var result: string[] = [];
+
+  data.forEach((current) => {
+    if (current.id == n) {
+      result.unshift(current.name);
+      if (current.pid) {
+        result = findCategory(current.pid, categoryArray).concat(result);
+      }
+    } else {
+      if (current.child) {
+        result = findCategory(n, current.child).concat(result);
+      }
+    }
+  });
+  return result;
+}

@@ -10,6 +10,7 @@
 import { ref } from 'vue';
 import { api_goods_category } from '../../api/dictionary';
 import type { CascaderProps } from 'ant-design-vue';
+import { apiDictCacheObject } from '../../utils/global';
 
 const options = ref<CascaderProps['options']>([]);
 const formatOptions = (category: CascaderProps['options']) => {
@@ -22,8 +23,14 @@ const formatOptions = (category: CascaderProps['options']) => {
     return item;
   });
 };
+
 const inner = async () => {
-  let { data } = await api_goods_category();
-  options.value = formatOptions(data);
+  if (apiDictCacheObject.backgroundCategoryOptions) {
+    options.value = apiDictCacheObject.backgroundCategoryOptions;
+  } else {
+    let { data } = await api_goods_category();
+    options.value = formatOptions(data);
+    apiDictCacheObject.backgroundCategoryOptions = options.value;
+  }
 };
 </script>

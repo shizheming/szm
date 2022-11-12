@@ -534,7 +534,7 @@
         record: Api_order_result_item_interface,
       }"
     >
-      <a-tabs v-model:activeKey="activeKey">
+      <a-tabs v-model:activeKey="record.activeKey">
         <a-tab-pane key="1" tab="基本信息">
           <a-descriptions>
             <a-descriptions-item label="主单编号">
@@ -696,6 +696,19 @@
         >
           <a-button size="small">预订购确认</a-button>
         </a-popconfirm>
+        <a-popconfirm
+          v-if="
+            record.external_system_code != 'JINGDONG' &&
+            record.distribute_order != 1 &&
+            record.sub_status.value == 30 &&
+            record.delivery_mode.value == 1 &&
+            record.is_allow_create_outstock == true
+          "
+          title="订单确认后，在系统中可以对订单进行发货操作"
+          @confirm="generateSalesIssueDocumentPopconfirmConfirm(record)"
+        >
+          <a-button size="small">生成销售出库单</a-button>
+        </a-popconfirm>
       </template>
     </template>
   </a-table>
@@ -717,6 +730,7 @@ import {
   PopconfirmProps,
   Modal,
 } from 'ant-design-vue';
+import { findCategory } from '../../../utils/tool';
 import {
   ORDER_STATUS_OPTIONS,
   PAY_STATUS_OPTIONS,
@@ -760,7 +774,7 @@ import {
   CloseOutlined,
   CheckOutlined,
 } from '@ant-design/icons-vue';
-import { last, compact, values } from 'lodash';
+import { last, compact, values, isInteger } from 'lodash';
 import type {
   Api_order_params_part_interface,
   Api_order_result_item_interface,
@@ -772,6 +786,7 @@ import {
   api_proxy_order_manage_edit_confirmsign,
   api_proxy_order_manage_edit_confirmPreOrder,
   api_order_orderDetailExport,
+  api_proxy_order_Order_Purchase_saleOutstock,
 } from './api';
 import { usePagination } from 'vue-request';
 import { computed } from '@vue/reactivity';
@@ -780,6 +795,7 @@ import {
   SorterResult,
 } from 'ant-design-vue/es/table/interface';
 import { PageInterface } from '../../../interface';
+import { Item } from 'ant-design-vue/lib/menu';
 
 const RemarkFormModal = defineAsyncComponent(
   () => import('./components/remarkFormModal.vue')
@@ -806,6 +822,28 @@ const {
   total,
 } = usePagination(api_order, {
   formatResult: ({ data }) => {
+    data.list.forEach((current) => {
+      current.item.forEach((item) => {
+        let priceNumberString: number | string;
+        if (current.create_mode.value == 15) {
+          priceNumberString = isInteger(item.shop_retail_price / 100)
+            ? (item.shop_retail_price / 100).toFixed(2)
+            : item.shop_retail_price / 100;
+        } else {
+          priceNumberString = isInteger(item.price)
+            ? (item.price as number).toFixed(2)
+            : item.price;
+        }
+        item.price = priceNumberString;
+        item.real_price = isInteger(item.real_price)
+          ? (item.real_price as number).toFixed(2)
+          : item.real_price;
+        item.sub_total_amount = isInteger(item.sub_total_amount)
+          ? (item.sub_total_amount as number).toFixed(2)
+          : item.sub_total_amount;
+        item.category_name = findCategory(Number(item.category_id)).join('/');
+      });
+    });
     return data;
   },
   pagination: {
@@ -965,13 +1003,23 @@ const bookingConfirmationPopconfirmConfirm = async (
   }, 500);
 };
 
+const generateSalesIssueDocumentPopconfirmConfirm = async (
+  record: Api_order_result_item_interface
+) => {
+  await api_proxy_order_Order_Purchase_saleOutstock({
+    osl_seq: record.osl_seq,
+  });
+  message.success('成功');
+  setTimeout(() => {
+    run(getSearchDataObject());
+  }, 500);
+};
+
 const isExpandArrowBoolean = ref(false);
 enum SORT_KEY_ENUM {
   order_time = 'createtime_sort',
   sub_total_amount = 'amount_sort',
 }
-
-const activeKey = ref('1');
 
 watch(isExpandArrowBoolean, (newValue) => {
   if (newValue) {
