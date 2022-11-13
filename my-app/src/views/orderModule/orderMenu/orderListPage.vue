@@ -522,7 +522,7 @@
       preserveSelectedRowKeys: true,
     }"
     :dataSource="dataSource?.list"
-    :columns="orderListPageTableColumns"
+    :columns="columns"
     :loading="loading"
     :pagination="pagination"
     @change="tableChange"
@@ -730,7 +730,7 @@ import {
   PopconfirmProps,
   Modal,
 } from 'ant-design-vue';
-import { findCategory } from '../../../utils/tool';
+import { findCategory } from '../../../utils/z';
 import {
   ORDER_STATUS_OPTIONS,
   PAY_STATUS_OPTIONS,
@@ -872,8 +872,6 @@ const pagination = computed(() => {
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 const selectedRowsArray = ref<Api_order_result_item_interface[]>([]);
 const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {
-  console.log(keys, rows, 999);
-
   selectedRowKeys.value = keys;
   selectedRowsArray.value = rows;
 };
@@ -903,8 +901,20 @@ const getSearchDataObject = (
     good_search_value: model.good_search_value || undefined,
   };
 };
-
+const sortedInfoObject = ref<SorterResult>();
+const columns = computed(() => {
+  return orderListPageTableColumns.map((item) => {
+    if (item.sorter) {
+      item.sortOrder =
+        sortedInfoObject.value?.columnKey === item.key
+          ? sortedInfoObject.value?.order
+          : undefined;
+    }
+    return item;
+  });
+});
 const finish = async () => {
+  sortedInfoObject.value = undefined;
   run(
     getSearchDataObject({
       page: 1,
@@ -954,6 +964,7 @@ const clearOutlinedClick = () => {
 const tableChange: TableProps['onChange'] = async (pag, filters, sorter) => {
   let sorterAny: { [name: string]: any } = {};
   sorter = sorter as SorterResult;
+  sortedInfoObject.value = sorter;
   if (sorter.order) {
     sorterAny[SORT_KEY_ENUM[sorter.columnKey as keyof typeof SORT_KEY_ENUM]] =
       SORT_ENUM[sorter.order];

@@ -1,9 +1,9 @@
-import { optionsEnum } from "../utils/tool";
+import { optionsEnum } from '../utils/tool';
 
 // 排序
 export enum SORT_ENUM {
-  ascend,
   descend,
+  ascend,
 }
 
 // 是否
@@ -22,15 +22,15 @@ export const YES_NO_OPTIONS = optionsEnum(YES_NO_ENUM);
 
 // 订单状态
 enum ORDER_STATUS_ENUM {
-  待支付 = "0",
-  定金支付 = "10",
-  待审核 = "25",
-  待转单 = "26",
-  待发货 = "30",
-  已发货 = "40",
-  已完成 = "50",
-  售后中 = "60,80",
-  已关闭 = "105,106,107,110",
+  待支付 = '0',
+  定金支付 = '10',
+  待审核 = '25',
+  待转单 = '26',
+  待发货 = '30',
+  已发货 = '40',
+  已完成 = '50',
+  售后中 = '60,80',
+  已关闭 = '105,106,107,110',
 }
 export const ORDER_STATUS_OPTIONS = optionsEnum(ORDER_STATUS_ENUM);
 
@@ -61,11 +61,11 @@ export const USER_LEVEL_OPTIONS = optionsEnum(USER_LEVEL_ENUM);
 
 // 来源终端
 enum APP_PLATFORM_ENUM {
-  PC = "p",
-  IOS = "i",
-  Android = "a",
-  H5 = "h5",
-  小程序 = "mp",
+  PC = 'p',
+  IOS = 'i',
+  Android = 'a',
+  H5 = 'h5',
+  小程序 = 'mp',
 }
 export const APP_PLATFORM_OPTIONS = optionsEnum(APP_PLATFORM_ENUM);
 
@@ -110,8 +110,8 @@ export const PAY_TYPE_OPTIONS = optionsEnum(PAY_TYPE_ENUM);
 
 // 支付类型
 enum PAYMENT_TYPE_ENUM {
-  "预付款-线上",
-  "预付款-线下",
+  '预付款-线上',
+  '预付款-线下',
   现结,
   月结 = 4,
 }
@@ -133,19 +133,19 @@ export const GOODS_SOURCE_OPTIONS = optionsEnum(GOODS_SOURCE_ENUM);
 
 // 营销活动明细
 enum MARTING_TYPE_ENUM {
-  普通 = "",
-  拼团 = "pintuan001",
-  秒杀 = "miaosha001",
-  抽奖 = "choujiang001",
-  满N元减 = "manyuanjian001",
-  满N元折 = "manyuanzhe001",
-  满N件减 = "manjianjian001",
-  以旧换新 = "jiuhuanxin001",
-  满N件折 = "manjianzhe001",
-  积分兑换 = "jifen001",
-  满赠 = "manyuanzeng001",
-  新人特价 = "xinrentejia001",
-  拼单预售 = "pindanyushou",
+  普通 = '',
+  拼团 = 'pintuan001',
+  秒杀 = 'miaosha001',
+  抽奖 = 'choujiang001',
+  满N元减 = 'manyuanjian001',
+  满N元折 = 'manyuanzhe001',
+  满N件减 = 'manjianjian001',
+  以旧换新 = 'jiuhuanxin001',
+  满N件折 = 'manjianzhe001',
+  积分兑换 = 'jifen001',
+  满赠 = 'manyuanzeng001',
+  新人特价 = 'xinrentejia001',
+  拼单预售 = 'pindanyushou',
 }
 export const MARTING_TYPE_OPTIONS = optionsEnum(MARTING_TYPE_ENUM);
 
@@ -182,8 +182,8 @@ export const TYPE_OPTIONS = optionsEnum(TYPE_ENUM);
 export enum IS_SUIT_ENUM {
   普通 = 0,
   组合 = 1,
-  b = "",
+  b = '',
 }
 
 // user-info
-export const USER_INFO = JSON.parse(localStorage.getItem("userInfo") as string);
+export const USER_INFO = JSON.parse(localStorage.getItem('userInfo') as string);
