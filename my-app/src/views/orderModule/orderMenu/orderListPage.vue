@@ -684,18 +684,28 @@
           <a-button type="link" size="small">发货</a-button>
         </router-link>
         <a-popconfirm
+          v-if="record.sub_status.value == 40 && record.business_id == 2"
           title="请确认用户已经签收，否则可能会引起用户投诉！"
           @confirm="confirmSigningPopconfirmConfirm(record)"
         >
           <a-button size="small">确认签收</a-button>
         </a-popconfirm>
-        <a-popconfirm
-          v-if="record.is_pre_subscribe && record.status == 20"
-          title="订单确认后，在系统中可以对订单进行发货操作"
-          @confirm="bookingConfirmationPopconfirmConfirm(record)"
-        >
-          <a-button size="small">预订购确认</a-button>
-        </a-popconfirm>
+        <template v-if="record.is_pre_subscribe && record.status == 20">
+          <a-button
+            size="small"
+            v-if="record.is_support_local"
+            @click="bookingConfirmationPopconfirmConfirm1"
+          >
+            预订购确认
+          </a-button>
+          <a-popconfirm
+            v-else
+            title="订单确认后，在系统中可以对订单进行发货操作"
+            @confirm="bookingConfirmationPopconfirmConfirm2(record)"
+          >
+            <a-button size="small">预订购确认</a-button>
+          </a-popconfirm>
+        </template>
         <a-popconfirm
           v-if="
             record.external_system_code != 'JINGDONG' &&
@@ -704,7 +714,7 @@
             record.delivery_mode.value == 1 &&
             record.is_allow_create_outstock == true
           "
-          title="订单确认后，在系统中可以对订单进行发货操作"
+          title="确认要生成销售出库单吗？"
           @confirm="generateSalesIssueDocumentPopconfirmConfirm(record)"
         >
           <a-button size="small">生成销售出库单</a-button>
@@ -1010,7 +1020,8 @@ const confirmSigningPopconfirmConfirm = async (
   }, 500);
 };
 
-const bookingConfirmationPopconfirmConfirm = async (
+const bookingConfirmationPopconfirmConfirm1 = () => {};
+const bookingConfirmationPopconfirmConfirm2 = async (
   record: Api_order_result_item_interface
 ) => {
   await api_proxy_order_manage_edit_confirmPreOrder({

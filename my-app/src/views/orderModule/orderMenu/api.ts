@@ -104,5 +104,5 @@ export const api_order_orderDetailExport = (
 export const api_proxy_order_Order_Purchase_saleOutstock = (params: {
   osl_seq: string;
 }) => {
-  return axios.post('/proxy/order/Order/Purchase/saleOutstock', params);
+  return axios.post('/api/proxy/order/Order/Purchase/saleOutstock', params);
 };
