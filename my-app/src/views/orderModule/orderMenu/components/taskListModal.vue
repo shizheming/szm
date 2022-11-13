@@ -102,6 +102,7 @@ import {
 import {
   Api_order_orderSyncList_params_part_interface,
   Api_order_orderSyncList_result_item_interface,
+  Api_order_orderSyncList_params_interface,
 } from '../interface';
 import { api_order_orderSyncList, api_order_getFileByUrl } from '../api';
 import { TYPE_OPTIONS } from '../../../../data/dictionary';
@@ -140,13 +141,28 @@ const {
     totalKey: 'total',
   },
 });
+const getSearchDataObject = (
+  params: Api_order_orderSyncList_params_interface = {
+    page: current.value,
+    page_size: pageSize.value,
+  }
+) => {
+  [model.operate_time_begin, model.operate_time_end] = model.time || [];
+  // 不管选哪个type都是2？？？？
+  model.type = model.type ? 2 : undefined;
+  return {
+    ...params,
+    ...model,
+  };
+};
 
 const finish = async () => {
-  run({
-    page: 1,
-    page_size: 10,
-    ...model,
-  });
+  run(
+    getSearchDataObject({
+      page: 1,
+      page_size: 10,
+    })
+  );
 };
 
 const pagination = computed(() => {
@@ -159,11 +175,12 @@ const pagination = computed(() => {
 });
 
 const tableChange: TableProps['onChange'] = async (pag) => {
-  run({
-    page: pag.current!,
-    page_size: pag.pageSize!,
-    ...model,
-  });
+  run(
+    getSearchDataObject({
+      page: pag.current!,
+      page_size: pag.pageSize!,
+    })
+  );
 };
 
 const clearOutlinedClick = () => {
@@ -206,10 +223,7 @@ watch(
   () => props.visible,
   async (newValue) => {
     if (newValue === true) {
-      run({
-        page: 1,
-        page_size: 10,
-      });
+      run(getSearchDataObject());
     }
   }
 );

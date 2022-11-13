@@ -888,13 +888,14 @@ const getSearchDataObject = (
   [model.pre_delivery_start_date, model.pre_delivery_end_date] =
     model.deliveryTime || [];
   model.pay_mode = model.payment_type;
+
   return {
     ...params,
     ...model,
     order_search_key: model.order_search_value
       ? model.order_search_key
       : undefined,
-    order_search_value: model.order_search_value || undefined,
+    order_search_value: model.order_search_value || undefined, //为了排除空字符串
     good_search_key: model.good_search_value
       ? model.good_search_key
       : undefined,

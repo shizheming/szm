@@ -347,7 +347,9 @@ export interface Api_order_orderSyncList_params_part_interface {
   sync_id: number;
   type: number;
   user_name: number;
-  time: [];
+  time: [string, string];
+  operate_time_begin: string;
+  operate_time_end: string;
 }
 
 export interface Api_order_orderSyncList_result_item_interface {
