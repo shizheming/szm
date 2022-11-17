@@ -40,7 +40,7 @@
         type: 'radio',
       }"
       :data-source="dataSource?.list"
-      :columns="userListModalColumns"
+      :columns="userListModalTableColumns"
       :loading="loading"
       :pagination="pagination"
       @change="tableChange"
@@ -73,7 +73,7 @@ import {
   Api_proxy_user_User_UserSearch_epUserSearch_params_part_interface,
 } from '../interface';
 import { Api_proxy_user_User_UserSearch_epUserSearch } from '../api';
-import { userListModalColumns } from '../data';
+import { userListModalTableColumns } from '../data';
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';

@@ -108,7 +108,7 @@
         getCheckboxProps,
       }"
       :data-source="dataSource?.list"
-      :columns="orderFormModalGoodsColumns"
+      :columns="goodsListModalGoodsTableColumns"
       :loading="loading"
       :pagination="pagination"
       @change="tableChange"
@@ -134,7 +134,7 @@
             <template #content>
               <a-table
                 :data-source="record.member_price"
-                :columns="orderFormModalLadderPriceColumns"
+                :columns="goodsListModalLadderPriceTableColumns"
                 :pagination="false"
                 size="small"
               />
@@ -165,8 +165,8 @@ import {
 } from '../interface';
 import { api_goods_sku_list } from '../api';
 import {
-  orderFormModalGoodsColumns,
-  orderFormModalLadderPriceColumns,
+  goodsListModalGoodsTableColumns,
+  goodsListModalLadderPriceTableColumns,
 } from '../data';
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';

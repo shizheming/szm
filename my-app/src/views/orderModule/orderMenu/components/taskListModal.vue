@@ -54,7 +54,7 @@
     <a-table
       row-key="id"
       :data-source="dataSource?.list"
-      :columns="taskListModalColumns"
+      :columns="taskListModalTableColumns"
       :loading="loading"
       :pagination="pagination"
       @change="tableChange"
@@ -106,7 +106,7 @@ import {
 } from '../interface';
 import { api_order_orderSyncList, api_order_getFileByUrl } from '../api';
 import { TYPE_OPTIONS } from '../../../../data/dictionary';
-import { taskListModalColumns } from '../data';
+import { taskListModalTableColumns } from '../data';
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';

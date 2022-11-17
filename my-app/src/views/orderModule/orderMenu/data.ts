@@ -75,7 +75,7 @@ export const orderListPageTableColumns: TableColumnsType = [
   },
 ];
 
-export const orderListPageTableGoodsColumns: TableColumnsType = [
+export const orderListPageGoodsTableColumns: TableColumnsType = [
   {
     title: '图片',
     dataIndex: 'pic',
@@ -143,7 +143,7 @@ export const orderListPageTableGoodsColumns: TableColumnsType = [
   },
 ];
 
-export const taskListModalColumns: TableColumnsType = [
+export const taskListModalTableColumns: TableColumnsType = [
   {
     title: '操作',
     dataIndex: 'operation',
@@ -186,7 +186,7 @@ export const taskListModalColumns: TableColumnsType = [
   },
 ];
 
-export const userListModalColumns: TableColumnsType = [
+export const userListModalTableColumns: TableColumnsType = [
   {
     title: '用户名',
     dataIndex: 'username',
@@ -224,7 +224,7 @@ export const userListModalColumns: TableColumnsType = [
   },
 ];
 
-export const orderFormPageGoodsColumns: TableColumnsType = [
+export const orderFormPageGoodsTableColumns: TableColumnsType = [
   {
     title: '操作',
     dataIndex: 'opration',
@@ -330,7 +330,7 @@ export const orderFormPageGoodsColumns: TableColumnsType = [
   },
 ];
 
-export const orderFormModalGoodsColumns: TableColumnsType = [
+export const goodsListModalGoodsTableColumns: TableColumnsType = [
   {
     title: '商品名称',
     dataIndex: 'spu_name',
@@ -393,7 +393,7 @@ export const orderFormModalGoodsColumns: TableColumnsType = [
   },
 ];
 
-export const orderFormModalLadderPriceColumns: TableColumnsType = [
+export const goodsListModalLadderPriceTableColumns: TableColumnsType = [
   {
     title: '订购数量',
     dataIndex: 'start_num',
@@ -403,5 +403,18 @@ export const orderFormModalLadderPriceColumns: TableColumnsType = [
     title: '销售单价',
     dataIndex: 'member_price',
     key: 'member_price',
+  },
+];
+
+export const deliveryInstallationTimeModalTableColumns: TableColumnsType = [
+  {
+    title: '服务名称',
+    dataIndex: 'goods_name',
+    key: 'goods_name',
+  },
+  {
+    title: '选择时间',
+    dataIndex: 'apply_server_time',
+    key: 'apply_server_time',
   },
 ];

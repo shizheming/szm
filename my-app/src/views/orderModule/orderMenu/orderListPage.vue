@@ -626,7 +626,7 @@
         <a-tab-pane key="2" tab="商品信息" force-render>
           <a-table
             size="small"
-            :columns="orderListPageTableGoodsColumns"
+            :columns="orderListPageGoodsTableColumns"
             :pagination="false"
             :data-source="record.item"
           >
@@ -694,7 +694,7 @@
           <a-button
             size="small"
             v-if="record.is_support_local"
-            @click="bookingConfirmationPopconfirmConfirm1"
+            @click="bookingConfirmationPopconfirmConfirm1(record)"
           >
             预订购确认
           </a-button>
@@ -728,6 +728,10 @@
     @submit="remarkFormModalSubmit"
   />
   <task-list-modal v-model:visible="taskListModalVisible" />
+  <delivery-installation-time-modal
+    v-model:visible="deliveryInstallationTimeModalVisible"
+    :record="recordObject!"
+  />
 </template>
 <script setup lang="ts">
 import { ref, watch, reactive, defineAsyncComponent, h } from 'vue';
@@ -776,7 +780,7 @@ import SubOrgSelect from '../../../components/select/subOrg.vue';
 import AddressCascader from '../../../components/cascader/address.vue';
 import {
   orderListPageTableColumns,
-  orderListPageTableGoodsColumns,
+  orderListPageGoodsTableColumns,
 } from './data';
 import {
   DownOutlined,
@@ -816,13 +820,16 @@ const RemarkFormModal = defineAsyncComponent(
 const TaskListModal = defineAsyncComponent(
   () => import('./components/taskListModal.vue')
 );
-
+const DeliveryInstallationTimeModal = defineAsyncComponent(
+  () => import('./components/deliveryInstallationTimeModal.vue')
+);
 const model = reactive<Partial<Api_order_params_part_interface>>({
   order_search_key: 'osl_seq',
   good_search_key: 'goods_name',
 });
 const remarkFormModalVisible = ref(false);
 const taskListModalVisible = ref(false);
+const deliveryInstallationTimeModalVisible = ref(false);
 const formRef = ref<FormInstance>();
 const height = ref('220px');
 
@@ -1020,7 +1027,12 @@ const confirmSigningPopconfirmConfirm = async (
   }, 500);
 };
 
-const bookingConfirmationPopconfirmConfirm1 = () => {};
+const recordObject = ref<Api_order_result_item_interface>();
+const bookingConfirmationPopconfirmConfirm1 = (
+  record: Api_order_result_item_interface
+) => {
+  recordObject.value = record;
+};
 const bookingConfirmationPopconfirmConfirm2 = async (
   record: Api_order_result_item_interface
 ) => {

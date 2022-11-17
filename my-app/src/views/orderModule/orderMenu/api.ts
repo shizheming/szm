@@ -13,6 +13,8 @@ import type {
   Api_goods_sku_list_params_interface,
   Api_order_merchantRemark_batch_params_item_interface,
   Api_proxy_order_Order_BackEnd_submit_params_interface,
+  Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_item_interface,
+  Api_proxy_order_manage_query_getServerInfo_item_interface,
 } from './interface';
 
 // 订单列表
@@ -106,3 +108,20 @@ export const api_proxy_order_Order_Purchase_saleOutstock = (params: {
 }) => {
   return axios.post('/api/proxy/order/Order/Purchase/saleOutstock', params);
 };
+
+// 配送安装时间列表
+export const api_proxy_order_manage_query_getServerInfo = (params: {
+  osl_seq: string;
+}) => {
+  return axios.post<{
+    data: Api_proxy_order_manage_query_getServerInfo_item_interface[];
+  }>('/api/proxy/order/manage/query/getServerInfo', params);
+};
+
+// 配送安装选择时间列表
+export const api_proxy_order_Order_assistant_queryOrderPlansByOslSeq =
+  (params: { osl_seq: string }) => {
+    return axios.post<{
+      data: Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_item_interface[];
+    }>('/api/proxy/order/Order/assistant/queryOrderPlansByOslSeq', params);
+  };

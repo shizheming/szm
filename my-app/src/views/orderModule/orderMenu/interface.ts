@@ -535,3 +535,37 @@ export interface Api_goods_sku_list_result_item_interface {
   stock_qty: number;
   account_discount_price: number;
 }
+
+export interface Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_item_interface {
+  org_code: string;
+  orderPlans: {
+    service_code: string;
+    orderPlans: {
+      planDate: string;
+      planTime: number;
+      planId: string;
+    }[];
+  }[];
+}
+
+export interface Api_proxy_order_manage_query_getServerInfo_item_interface {
+  sku_code: string;
+  goods_name: string;
+  apply_server_time: number;
+  goods_list: {
+    oi_seq: string;
+    sku_code: string;
+    goods_name: string;
+    pic_url: string;
+    sn: number;
+    snapshot: number;
+    sku_spec: {
+      spec_id: number;
+      spec_name: string;
+      spec_value: string;
+      spec_group_id: number;
+      spec_value_id: number;
+      spec_group_name: string;
+    }[];
+  }[];
+}

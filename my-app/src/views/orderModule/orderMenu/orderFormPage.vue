@@ -472,7 +472,7 @@
       <delete-outlined @click="goodsDeleteOutlinedClick" />
     </a-space>
     <a-table
-      :columns="orderFormPageGoodsColumns"
+      :columns="orderFormPageGoodsTableColumns"
       :data-source="dataSource"
       :pagination="false"
       :scroll="{ x: 3000 }"
@@ -539,7 +539,7 @@ import {
   DELIVERY_MODE_OPTIONS,
   IS_SUIT_ENUM,
 } from '../../../data/dictionary';
-import { orderFormPageGoodsColumns } from './data';
+import { orderFormPageGoodsTableColumns } from './data';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';
 
