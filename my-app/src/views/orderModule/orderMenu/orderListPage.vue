@@ -690,10 +690,10 @@
         >
           <a-button size="small">确认签收</a-button>
         </a-popconfirm>
-        <template v-if="record.is_pre_subscribe && record.status == 20">
+        <template v-if="'record.is_pre_subscribe && record.status == 20'">
           <a-button
             size="small"
-            v-if="record.is_support_local"
+            v-if="'record.is_support_local'"
             @click="bookingConfirmationPopconfirmConfirm1(record)"
           >
             预订购确认
@@ -1032,6 +1032,7 @@ const bookingConfirmationPopconfirmConfirm1 = (
   record: Api_order_result_item_interface
 ) => {
   recordObject.value = record;
+  deliveryInstallationTimeModalVisible.value = true;
 };
 const bookingConfirmationPopconfirmConfirm2 = async (
   record: Api_order_result_item_interface

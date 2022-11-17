@@ -1,3 +1,4 @@
+import { SelectProps } from 'ant-design-vue';
 import {
   ListInterface,
   PageInterface,
@@ -333,10 +334,6 @@ export interface Api_proxy_order_manage_edit_confirmsign_params_interface {
   operator: string;
 }
 
-export interface Api_proxy_order_manage_edit_confirmPreOrder_params_interface {
-  osl_seq: string;
-}
-
 export interface Api_order_merchantRemark_batch_params_item_interface {
   merchant_remark: string;
   osl_seq: string;
@@ -432,14 +429,6 @@ export type Api_proxy_order_Order_BackEnd_submit_params_interface2 =
     Api_proxy_order_Order_BackEnd_submit_params_interface,
     'order_invoice' | 'addressInfo'
   >;
-
-export interface Api_proxy_user_User_UserSearch_epUserSearch_params_part_interface {
-  user_id: string;
-}
-
-export type Api_proxy_user_User_UserSearch_epUserSearch_params_interface =
-  Partial<Api_proxy_user_User_UserSearch_epUserSearch_params_part_interface> &
-    PageInterface;
 
 export interface Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface {
   user_id: string;

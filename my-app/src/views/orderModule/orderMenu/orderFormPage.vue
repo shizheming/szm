@@ -523,7 +523,6 @@ import {
 } from 'ant-design-vue';
 import {
   Api_proxy_order_Order_BackEnd_submit_params_interface,
-  Api_proxy_user_User_UserSearch_epUserSearch_params_part_interface,
   Api_goods_sku_list_result_item_interface,
   Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface,
   Api_proxy_order_Order_BackEnd_submit_params_interface2,

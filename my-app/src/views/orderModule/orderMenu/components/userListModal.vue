@@ -68,10 +68,7 @@ import {
   FormProps,
   TableColumnType,
 } from 'ant-design-vue';
-import {
-  Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface,
-  Api_proxy_user_User_UserSearch_epUserSearch_params_part_interface,
-} from '../interface';
+import { Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface } from '../interface';
 import { Api_proxy_user_User_UserSearch_epUserSearch } from '../api';
 import { userListModalTableColumns } from '../data';
 import { usePagination } from 'vue-request';
@@ -92,7 +89,9 @@ const emits = defineEmits<{
 
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 const model = reactive<
-  Partial<Api_proxy_user_User_UserSearch_epUserSearch_params_part_interface>
+  Partial<{
+    user_id: string;
+  }>
 >({});
 const formRef = ref<FormInstance>();
 const selectedRowsArray = ref<

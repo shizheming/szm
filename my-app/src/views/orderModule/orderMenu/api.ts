@@ -1,14 +1,12 @@
-import { ListInterface } from '../../../interface';
+import { ListInterface, PageInterface } from '../../../interface';
 import axios from '../../../utils/axios';
 import type {
   Api_order_params_interface,
   Api_order_result_interface,
   Api_proxy_order_manage_edit_confirmsign_params_interface,
-  Api_proxy_order_manage_edit_confirmPreOrder_params_interface,
   Api_order_orderSyncList_params_interface,
   Api_order_orderSyncList_result_item_interface,
   Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface,
-  Api_proxy_user_User_UserSearch_epUserSearch_params_interface,
   Api_goods_sku_list_result_item_interface,
   Api_goods_sku_list_params_interface,
   Api_order_merchantRemark_batch_params_item_interface,
@@ -33,7 +31,14 @@ export const api_proxy_order_manage_edit_confirmsign = (
 
 // 预订购确认
 export const api_proxy_order_manage_edit_confirmPreOrder = (
-  params: Api_proxy_order_manage_edit_confirmPreOrder_params_interface
+  params:
+    | {
+        osl_seq: string;
+      }
+    | {
+        osl_seq: string;
+        server_list: { apply_server_time: number | string }[];
+      }
 ) => {
   return axios.post('/api/proxy/order/manage/edit/confirmPreOrder', params);
 };
@@ -69,7 +74,7 @@ export const api_order_getFileByUrl = (params: { url: string }) => {
 
 // 用户列表
 export const Api_proxy_user_User_UserSearch_epUserSearch = (
-  params: Api_proxy_user_User_UserSearch_epUserSearch_params_interface
+  params: { user_id: string } & PageInterface
 ) => {
   return axios.post<
     ListInterface<Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface>
@@ -121,7 +126,7 @@ export const api_proxy_order_manage_query_getServerInfo = (params: {
 // 配送安装选择时间列表
 export const api_proxy_order_Order_assistant_queryOrderPlansByOslSeq =
   (params: { osl_seq: string }) => {
-    return axios.post<{
-      data: Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_item_interface[];
-    }>('/api/proxy/order/Order/assistant/queryOrderPlansByOslSeq', params);
+    return axios.post<
+      Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_item_interface[]
+    >('/api/proxy/order/Order/assistant/queryOrderPlansByOslSeq', params);
   };

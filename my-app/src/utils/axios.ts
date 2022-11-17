@@ -5,6 +5,7 @@ import vueCookie from 'vue-cookies';
 export function setAxiosHeader(data: { token: string }) {
   axios.defaults.headers.token = data.token;
   axios.defaults.headers.authorization = data.token;
+  axios.defaults.headers.branchname = 'feature_purchase2.0_20220715';
 }
 
 let baseURL = '';
