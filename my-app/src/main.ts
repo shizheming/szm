@@ -5,7 +5,9 @@ import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import './main.css';
 import { mountFormRender9 } from './components/formRender9';
-
+import dayjs from 'dayjs';
+import 'dayjs/locale/zh';
 let vueApp = createApp(App);
 vueApp.use(Antd).use(Router).mount('#app');
 mountFormRender9(vueApp);
+dayjs.locale('zh-cn');

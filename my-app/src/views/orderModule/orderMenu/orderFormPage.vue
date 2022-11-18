@@ -502,6 +502,9 @@
         </template>
       </template>
     </a-table>
+    <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+      <a-button type="primary" html-type="submit">提交</a-button>
+    </a-form-item>
   </a-form>
   <user-list-modal
     v-model:visible="userListModalVisible"

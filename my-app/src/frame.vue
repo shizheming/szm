@@ -130,17 +130,17 @@ const getBreadcrumbDataFn = (pathArray: string[]) => {
   newPathArray.forEach((item) => {
     breadcrumbArray.value.push(
       // ts告诉我会有可能会找到一个undefined的值，不能赋给breadcrumbData
-      allRouteArray.find((current) => current.path === item)
+      allRouteArray.find((current) => current.path === item)!
     );
   });
 };
 
 // 获取侧边栏导航
 const getMenuDataFn = (path: string) => {
-  let newPathString = first(compact(path.split('/'))) as string;
+  let newPathString = first(compact(path.split('/')));
   menusArray.value = allRouteArray
     .filter((item) => item.meta.type)
-    .filter((item) => item.path.includes(newPathString));
+    .filter((item) => item.path.includes(newPathString!));
 };
 
 const navigationMenuSelect: MenuProps['onClick'] = (v) => {

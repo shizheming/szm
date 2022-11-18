@@ -540,7 +540,8 @@ export interface Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_
 export interface Api_proxy_order_manage_query_getServerInfo_item_interface {
   sku_code: string;
   goods_name: string;
-  apply_server_time: number;
+  apply_server_time?: string;
+  isTime: boolean;
   goods_list: {
     oi_seq: string;
     sku_code: string;

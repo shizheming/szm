@@ -118,14 +118,62 @@ export const api_proxy_order_Order_Purchase_saleOutstock = (params: {
 export const api_proxy_order_manage_query_getServerInfo = (params: {
   osl_seq: string;
 }) => {
-  return axios.post<{
-    data: Api_proxy_order_manage_query_getServerInfo_item_interface[];
-  }>('/api/proxy/order/manage/query/getServerInfo', params);
+  /* return Promise.resolve({
+    data: [
+      {
+        sku_code: 'qahFfE1pt0uNBMm',
+        goods_name: '附件服务4',
+        apply_server_time: 0,
+        goods_list: [
+          {
+            oi_seq: 'OI20110462184000001055',
+            sku_code: 'qahFfE1pt0uNBMm',
+            goods_name: '5/7测试商品创建51',
+            pic_url: '',
+            sn: 1,
+            snapshot: 1227,
+            sku_spec: [
+              {
+                spec_id: 27,
+                spec_name: '重量',
+                spec_value: '250g',
+                spec_group_id: 11,
+                spec_value_id: 297,
+                spec_group_name: '品味紫荆-粮油米面类',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  }); */
+  return axios.post<
+    Api_proxy_order_manage_query_getServerInfo_item_interface[]
+  >('/api/proxy/order/manage/query/getServerInfo', params);
 };
 
 // 配送安装选择时间列表
 export const api_proxy_order_Order_assistant_queryOrderPlansByOslSeq =
   (params: { osl_seq: string }) => {
+    /* return Promise.resolve({
+      data: [
+        {
+          org_code: '',
+          orderPlans: [
+            {
+              service_code: '服务编码',
+              orderPlans: [
+                {
+                  planDate: '2021-02-28',
+                  planTime: 1614441600,
+                  planId: '2c90e5cf65b85e740165c134d6200004',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    }); */
     return axios.post<
       Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_item_interface[]
     >('/api/proxy/order/Order/assistant/queryOrderPlansByOslSeq', params);

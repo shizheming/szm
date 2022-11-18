@@ -725,12 +725,13 @@
   <remark-form-modal
     v-model:visible="remarkFormModalVisible"
     :selected-rows-array="selectedRowsArray"
-    @submit="remarkFormModalSubmit"
+    @submit="modalSubmit"
   />
   <task-list-modal v-model:visible="taskListModalVisible" />
   <delivery-installation-time-modal
     v-model:visible="deliveryInstallationTimeModalVisible"
     :record="recordObject!"
+    @submit="modalSubmit"
   />
 </template>
 <script setup lang="ts">
@@ -1004,7 +1005,7 @@ const batchButtonClick = async () => {
   remarkFormModalVisible.value = true;
 };
 
-const remarkFormModalSubmit = () => {
+const modalSubmit = () => {
   setTimeout(() => {
     run(getSearchDataObject());
   }, 500);

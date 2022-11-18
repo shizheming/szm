@@ -418,3 +418,32 @@ export const deliveryInstallationTimeModalTableColumns: TableColumnsType = [
     key: 'apply_server_time',
   },
 ];
+
+export const deliveryInstallationTimeModalTableGoodsTableColumns: TableColumnsType =
+  [
+    {
+      title: '主图',
+      dataIndex: 'pic_url',
+      key: 'pic_url',
+    },
+    {
+      title: '商品名称',
+      dataIndex: 'goods_name',
+      key: 'goods_name',
+    },
+    {
+      title: '商品编码',
+      dataIndex: 'sku_code',
+      key: 'sku_code',
+    },
+    {
+      title: '货号',
+      dataIndex: 'sn',
+      key: 'sn',
+    },
+    {
+      title: '规格属性',
+      dataIndex: 'sku_spec',
+      key: 'sku_spec',
+    },
+  ];
