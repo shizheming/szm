@@ -1,39 +1,53 @@
 export default [
   {
-    path: "orderMenu",
-    name: "orderMenu",
+    path: 'orderMenu',
+    name: 'orderMenu',
     meta: {
-      title: "订单",
-      type: "menu",
+      title: '订单',
+      type: 'menu',
     },
-    component: () => import("../views/menu.vue"),
+    component: () => import('../views/menu.vue'),
     children: [
       {
-        path: "orderListPage",
-        name: "orderListPage",
+        path: 'orderListPage',
+        name: 'orderListPage',
         meta: {
-          title: "订单列表",
+          title: '订单列表',
         },
         component: () =>
-          import("../views/orderModule/orderMenu/orderListPage.vue"),
+          import('../views/orderModule/orderMenu/orderListPage.vue'),
+        children: [
+          {
+            path: 'orderDetailPage',
+            name: 'orderDetailPage',
+            meta: {
+              title: '订单详情',
+            },
+            component: () =>
+              import('../views/orderModule/orderMenu/orderDetailPage.vue'),
+          },
+        ],
       },
       {
-        path: "orderFormPage",
-        name: "orderFormPage",
+        path: 'orderFormPage',
+        name: 'orderFormPage',
         meta: {
-          title: "人工下单",
+          title: '人工下单',
         },
         component: () =>
-          import("../views/orderModule/orderMenu/orderFormPage.vue"),
+          import('../views/orderModule/orderMenu/orderFormPage.vue'),
       },
+
       {
-        path: "orderDetailPage",
-        name: "orderDetailPage",
+        path: 'supplementaryInvoiceFormPage',
+        name: 'supplementaryInvoiceFormPage',
         meta: {
-          title: "订单详情",
+          title: '补开发票',
         },
         component: () =>
-          import("../views/orderModule/orderMenu/orderDetailPage.vue"),
+          import(
+            '../views/orderModule/orderMenu/supplementaryInvoiceFormPage.vue'
+          ),
       },
     ],
   },

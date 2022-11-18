@@ -1,5 +1,6 @@
 import CryptoJS from 'crypto-js';
 import { isNumber, isString, last } from 'lodash';
+import { RouteRecordRaw } from 'vue-router';
 
 const keyHex = CryptoJS.enc.Utf8.parse('70682896');
 
@@ -17,6 +18,7 @@ export const encrypt = (encryptText: any) => {
   return encrypted.toString();
 };
 
+// 把枚举变成options
 export const optionsEnum = (obj: { [name: string]: any }) => {
   const values = Object.values(obj);
 
@@ -39,4 +41,21 @@ export const optionsEnum = (obj: { [name: string]: any }) => {
     }
   }
   return result;
+};
+
+// 重新组合路由层级，配的时候其实是假的嵌套路由
+export const flatRouter = (router: RouteRecordRaw[]) => {
+  router.forEach((current) => {
+    let resultArray: RouteRecordRaw[] = [];
+    current.children?.forEach((item) => {
+      item.children?.forEach((the) => {
+        the.path = `${item.path}/${the.path}`;
+      });
+      if (item.children) {
+        resultArray = resultArray.concat(item.children!);
+        delete item.children;
+      }
+    });
+    current.children = current.children?.concat(resultArray);
+  });
 };

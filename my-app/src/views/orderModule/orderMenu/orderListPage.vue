@@ -511,7 +511,9 @@
         >导出订单明细</a-button
       >
       <router-link :to="{ name: 'orderFormPage' }">人工下单</router-link>
-      <router-link to="/">补开发票</router-link>
+      <router-link :to="{ name: 'supplementaryInvoiceFormPage' }"
+        >补开发票</router-link
+      >
     </a-space>
   </a-row>
   <a-table
@@ -657,7 +659,7 @@
       }"
     >
       <template v-if="column.key === 'operation'">
-        <router-link to="/">
+        <router-link :to="{ name: 'orderDetailPage' }">
           <a-button type="link" size="small">查看</a-button>
         </router-link>
         <router-link
@@ -690,10 +692,10 @@
         >
           <a-button size="small">确认签收</a-button>
         </a-popconfirm>
-        <template v-if="'record.is_pre_subscribe && record.status == 20'">
+        <template v-if="record.is_pre_subscribe && record.status == 20">
           <a-button
             size="small"
-            v-if="'record.is_support_local'"
+            v-if="record.is_support_local"
             @click="bookingConfirmationPopconfirmConfirm1(record)"
           >
             预订购确认
@@ -797,7 +799,6 @@ import type {
   Api_order_params_part_interface,
   Api_order_result_item_interface,
   Api_order_params_interface,
-  Api_proxy_order_manage_edit_confirmPreOrder_params_interface,
 } from './interface';
 import {
   api_order,

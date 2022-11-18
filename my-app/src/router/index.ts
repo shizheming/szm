@@ -11,6 +11,10 @@ import vueCookie from 'vue-cookies';
 import { setAxiosHeader } from '../utils/axios';
 import order from './order';
 import goods from './goods';
+import { flatRouter } from '../utils/tool';
+
+flatRouter(order);
+console.log(order, 39);
 
 const routes = [
   {
