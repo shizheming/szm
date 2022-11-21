@@ -825,10 +825,7 @@ const TaskListModal = defineAsyncComponent(
 const DeliveryInstallationTimeModal = defineAsyncComponent(
   () => import('./components/deliveryInstallationTimeModal.vue')
 );
-const model = reactive<Partial<Api_order_params_part_interface>>({
-  order_search_key: 'osl_seq',
-  good_search_key: 'goods_name',
-});
+
 const remarkFormModalVisible = ref(false);
 const taskListModalVisible = ref(false);
 const deliveryInstallationTimeModalVisible = ref(false);
@@ -887,7 +884,12 @@ const pagination = computed(() => {
     hideOnSinglePage: true,
   };
 });
-
+const model = reactive<Api_order_params_interface>({
+  order_search_key: 'osl_seq',
+  good_search_key: 'goods_name',
+  page:current.value,
+  page_size:pageSize.value
+});
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 const selectedRowsArray = ref<Api_order_result_item_interface[]>([]);
 const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {

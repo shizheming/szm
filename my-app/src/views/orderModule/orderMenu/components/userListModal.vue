@@ -74,6 +74,7 @@ import { userListModalTableColumns } from '../data';
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
+import { PageInterface } from '../../../../interface';
 
 const props = defineProps<{
   visible: boolean;
@@ -88,11 +89,7 @@ const emits = defineEmits<{
 }>();
 
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
-const model = reactive<
-  Partial<{
-    user_id: string;
-  }>
->({});
+
 const formRef = ref<FormInstance>();
 const selectedRowsArray = ref<
   Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface[]
@@ -115,13 +112,12 @@ const {
     totalKey: 'total',
   },
 });
-
+const model = reactive<{ user_id?: string } & PageInterface>({
+  page: current.value,
+  page_size: pageSize.value,
+});
 const finish = async () => {
-  run({
-    page: 1,
-    page_size: 10,
-    ...model,
-  });
+  run(model);
 };
 
 const pagination = computed(() => {
@@ -140,9 +136,9 @@ const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {
 
 const tableChange: TableProps['onChange'] = async (pag) => {
   run({
+    ...model,
     page: pag.current!,
     page_size: pag.pageSize!,
-    ...model,
   });
 };
 
@@ -164,10 +160,7 @@ watch(
   () => props.visible,
   async (newValue) => {
     if (newValue === true) {
-      run({
-        page: 1,
-        page_size: 10,
-      });
+      run(model);
     }
   }
 );

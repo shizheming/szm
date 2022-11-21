@@ -74,7 +74,7 @@ export const api_order_getFileByUrl = (params: { url: string }) => {
 
 // 用户列表
 export const Api_proxy_user_User_UserSearch_epUserSearch = (
-  params: { user_id: string } & PageInterface
+  params: { user_id?: string } & PageInterface
 ) => {
   return axios.post<
     ListInterface<Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface>

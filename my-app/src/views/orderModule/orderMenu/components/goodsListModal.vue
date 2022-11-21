@@ -162,6 +162,7 @@ import {
   Api_goods_sku_list_result_item_interface,
   Api_goods_sku_list_params_part_interface,
   Api_goods_sku_list_fixed_params_part_interface,
+  Api_goods_sku_list_params_interface,
 } from '../interface';
 import { api_goods_sku_list } from '../api';
 import {
@@ -186,16 +187,9 @@ const emits = defineEmits<{
 }>();
 
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
-const model = reactive<Partial<Api_goods_sku_list_params_part_interface>>({});
+
 const formRef = ref<FormInstance>();
 const selectedRowsArray = ref<Api_goods_sku_list_result_item_interface[]>([]);
-const paramsObject: Api_goods_sku_list_fixed_params_part_interface = {
-  channel_id: 1,
-  is_listing: 1,
-  need_stock: 1,
-  business_id: 1,
-  is_support_local: 0,
-};
 const {
   data: dataSource,
   current,
@@ -224,14 +218,17 @@ const {
     totalKey: 'total',
   },
 });
-
+const model = reactive<Api_goods_sku_list_params_interface>({
+  channel_id: 1,
+  is_listing: 1,
+  need_stock: 1,
+  business_id: 1,
+  is_support_local: 0,
+  page: current.value,
+  page_size: pageSize.value,
+});
 const finish = async () => {
-  run({
-    ...model,
-    ...paramsObject,
-    page: 1,
-    page_size: 10,
-  });
+  run(model);
 };
 
 const pagination = computed(() => {
@@ -251,7 +248,6 @@ const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {
 const tableChange: TableProps['onChange'] = async (pag) => {
   run({
     ...model,
-    ...paramsObject,
     page: pag.current!,
     page_size: pag.pageSize!,
   });
@@ -294,11 +290,7 @@ watch(
   () => props.visible,
   async (newValue) => {
     if (newValue === true) {
-      run({
-        ...paramsObject,
-        page: 1,
-        page_size: 10,
-      });
+      run(model);
     } else {
       selectedRowKeys.value = [];
     }

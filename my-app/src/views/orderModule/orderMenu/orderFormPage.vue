@@ -108,7 +108,7 @@
           :name="['addressInfo', 'addressIds']"
           :rules="{
             required: true,
-            message: '请选择',
+            validator: addressIdsFormItemRulesValidator,
           }"
         >
           <address-cascader v-model:value="model.addressInfo.addressIds" />
@@ -195,14 +195,13 @@
               message: '请选择',
             }"
           >
-            <a-radio-group v-model:value="model.order_invoice.invoice_form">
-              <a-radio :value="3">电子普通发票</a-radio>
-              <a-radio :value="2">专用发票</a-radio>
+            <a-radio-group
+              v-model:value="model.order_invoice.invoice_form"
+              :options="VAT_INVOICE_TYPE_ENMU"
+            >
             </a-radio-group>
           </a-form-item>
         </a-col>
-      </a-row>
-      <a-row>
         <a-col :span="8">
           <a-form-item
             label="发票抬头类型"
@@ -216,7 +215,7 @@
               v-model:value="model.order_invoice.invoice_kind"
               :watch="[
                 () => model.order_invoice.invoice_form,
-                invoiceKindRadioWatch,
+                invoiceKindRadioGroupWatch,
               ]"
             >
               <a-radio :value="2">企业</a-radio>
@@ -368,10 +367,7 @@
             label="收票人姓名"
             :name="['order_invoice', 'invoice_username']"
             :rules="{
-              required:
-                commonPaperPersonalBoolean ||
-                commonPaperEnterpriseBoolean ||
-                specialPaperEnterpriseBoolean,
+              required: true,
               message: '请填写',
             }"
           >
@@ -540,11 +536,12 @@ import {
   WHETHER_OPTIONS,
   DELIVERY_MODE_OPTIONS,
   IS_SUIT_ENUM,
+  VAT_INVOICE_TYPE_ENMU,
 } from '../../../data/dictionary';
 import { orderFormPageGoodsTableColumns } from './data';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';
-
+import type { Rule } from 'ant-design-vue/es/form';
 const UserListModal = defineAsyncComponent(
   () => import('./components/userListModal.vue')
 );
@@ -583,12 +580,25 @@ const inputSearchSearch = () => {
 const finish: FormInstance['onFinish'] = (values) => {
   goodsListModalVisible.value = true;
 };
-const invoiceKindRadioWatch = (newValue: number) => {
+const invoiceKindRadioGroupWatch = (newValue: number) => {
   if (newValue == 1 || newValue == 3) {
     manRadioDisabled.value = false;
   } else {
     manRadioDisabled.value = true;
     model.order_invoice!.invoice_kind = 2;
+  }
+};
+
+const addressIdsFormItemRulesValidator = async (
+  _rule: Rule,
+  value: number[]
+) => {
+  if (!value) {
+    return Promise.reject('请选择');
+  } else if (value.length < 3) {
+    return Promise.reject('请选择省市区');
+  } else {
+    return Promise.resolve();
   }
 };
 

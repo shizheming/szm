@@ -119,9 +119,6 @@ const emits = defineEmits<{
   (event: 'select'): void;
 }>();
 
-const model = reactive<Partial<Api_order_orderSyncList_params_part_interface>>(
-  {}
-);
 const formRef = ref<FormInstance>();
 const {
   data: dataSource,
@@ -141,6 +138,10 @@ const {
     totalKey: 'total',
   },
 });
+const model = reactive<Api_order_orderSyncList_params_interface>({
+  page: current.value,
+  page_size: pageSize.value,
+});
 const getSearchDataObject = (
   params: Api_order_orderSyncList_params_interface = {
     page: current.value,
@@ -150,9 +151,10 @@ const getSearchDataObject = (
   [model.operate_time_begin, model.operate_time_end] = model.time || [];
   // 不管选哪个type都是2？？？？
   model.type = model.type ? 2 : undefined;
+
   return {
-    ...params,
     ...model,
+    ...params,
   };
 };
 
