@@ -732,7 +732,7 @@
   <task-list-modal v-model:visible="taskListModalVisible" />
   <delivery-installation-time-modal
     v-model:visible="deliveryInstallationTimeModalVisible"
-    :record="recordObject!"
+    :record="recordObject"
     @submit="modalSubmit"
   />
 </template>
@@ -887,8 +887,8 @@ const pagination = computed(() => {
 const model = reactive<Api_order_params_interface>({
   order_search_key: 'osl_seq',
   good_search_key: 'goods_name',
-  page:current.value,
-  page_size:pageSize.value
+  page: current.value,
+  page_size: pageSize.value,
 });
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 const selectedRowsArray = ref<Api_order_result_item_interface[]>([]);
@@ -1031,7 +1031,7 @@ const confirmSigningPopconfirmConfirm = async (
   }, 500);
 };
 
-const recordObject = ref<Api_order_result_item_interface>();
+const recordObject = ref<Api_order_result_item_interface>({});
 const bookingConfirmationPopconfirmConfirm1 = (
   record: Api_order_result_item_interface
 ) => {

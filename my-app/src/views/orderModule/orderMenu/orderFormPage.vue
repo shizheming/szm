@@ -524,7 +524,6 @@ import {
   Api_proxy_order_Order_BackEnd_submit_params_interface,
   Api_goods_sku_list_result_item_interface,
   Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface,
-  Api_proxy_order_Order_BackEnd_submit_params_interface2,
 } from './interface';
 import {
   PlusOutlined,
@@ -553,7 +552,7 @@ const goodsListModalVisible = ref(false);
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 const selectedRows = ref<Api_goods_sku_list_result_item_interface[]>([]);
 const dataSource = ref<Api_goods_sku_list_result_item_interface[]>([]);
-const model = reactive<Api_proxy_order_Order_BackEnd_submit_params_interface2>({
+const model = reactive<Api_proxy_order_Order_BackEnd_submit_params_interface>({
   entryMode: '手工创建订单',
   sale_mode: '名气商城',
   businessType: '名气家/精选',

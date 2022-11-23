@@ -43,15 +43,6 @@ const model = reactive({
 const formRef = ref<FormInstance>();
 const confirmLoading = ref(false);
 
-watch(
-  () => props.visible,
-  async (newValue) => {
-    if (newValue === true) {
-      console.log();
-    }
-  }
-);
-
 const ok = async () => {
   try {
     await formRef.value?.validate();

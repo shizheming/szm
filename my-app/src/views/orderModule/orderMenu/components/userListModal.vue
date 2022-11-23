@@ -112,7 +112,7 @@ const {
     totalKey: 'total',
   },
 });
-const model = reactive<{ user_id?: string } & PageInterface>({
+const model = reactive<{ user_id: string } & PageInterface>({
   page: current.value,
   page_size: pageSize.value,
 });

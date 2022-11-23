@@ -424,11 +424,11 @@ export interface Api_proxy_order_Order_BackEnd_submit_params_interface {
   buyer_note: string;
 }
 
-export type Api_proxy_order_Order_BackEnd_submit_params_interface2 =
+/* export type Api_proxy_order_Order_BackEnd_submit_params_interface2 =
   partPartial<
     Api_proxy_order_Order_BackEnd_submit_params_interface,
     'order_invoice' | 'addressInfo'
-  >;
+  >; */
 
 export interface Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface {
   user_id: string;
