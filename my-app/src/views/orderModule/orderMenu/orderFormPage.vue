@@ -108,7 +108,7 @@
           :name="['addressInfo', 'addressIds']"
           :rules="{
             required: true,
-            message: '请选择',
+            validator: addressIdsFormItemRulesValidator,
           }"
         >
           <address-cascader v-model:value="model.addressInfo.addressIds" />
@@ -195,14 +195,13 @@
               message: '请选择',
             }"
           >
-            <a-radio-group v-model:value="model.order_invoice.invoice_form">
-              <a-radio :value="3">电子普通发票</a-radio>
-              <a-radio :value="2">专用发票</a-radio>
+            <a-radio-group
+              v-model:value="model.order_invoice.invoice_form"
+              :options="VAT_INVOICE_TYPE_ENMU"
+            >
             </a-radio-group>
           </a-form-item>
         </a-col>
-      </a-row>
-      <a-row>
         <a-col :span="8">
           <a-form-item
             label="发票抬头类型"
@@ -216,7 +215,7 @@
               v-model:value="model.order_invoice.invoice_kind"
               :watch="[
                 () => model.order_invoice.invoice_form,
-                invoiceKindRadioWatch,
+                invoiceKindRadioGroupWatch,
               ]"
             >
               <a-radio :value="2">企业</a-radio>
@@ -368,10 +367,7 @@
             label="收票人姓名"
             :name="['order_invoice', 'invoice_username']"
             :rules="{
-              required:
-                commonPaperPersonalBoolean ||
-                commonPaperEnterpriseBoolean ||
-                specialPaperEnterpriseBoolean,
+              required: true,
               message: '请填写',
             }"
           >
@@ -473,7 +469,7 @@
     </a-space>
     <a-table
       :columns="orderFormPageGoodsTableColumns"
-      :data-source="dataSource"
+      :data-source="model.dataSource"
       :pagination="false"
       :scroll="{ x: 3000 }"
       :row-selection="{
@@ -502,7 +498,7 @@
         </template>
       </template>
     </a-table>
-    <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+    <a-form-item :wrapper-col="{ offset: 1, span: 8 }">
       <a-button type="primary" html-type="submit">提交</a-button>
     </a-form-item>
   </a-form>
@@ -517,18 +513,25 @@
   />
 </template>
 <script setup lang="ts">
-import { reactive, defineAsyncComponent, ref, watch, computed } from 'vue';
+import {
+  reactive,
+  defineAsyncComponent,
+  ref,
+  watch,
+  computed,
+  createVNode,
+} from 'vue';
 import {
   FormInstance,
   InputProps,
   TableProps,
   TableColumnType,
+  Modal,
 } from 'ant-design-vue';
 import {
   Api_proxy_order_Order_BackEnd_submit_params_interface,
   Api_goods_sku_list_result_item_interface,
   Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface,
-  Api_proxy_order_Order_BackEnd_submit_params_interface2,
 } from './interface';
 import {
   PlusOutlined,
@@ -540,11 +543,14 @@ import {
   WHETHER_OPTIONS,
   DELIVERY_MODE_OPTIONS,
   IS_SUIT_ENUM,
+  VAT_INVOICE_TYPE_ENMU,
 } from '../../../data/dictionary';
 import { orderFormPageGoodsTableColumns } from './data';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';
-
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import type { Rule } from 'ant-design-vue/es/form';
+import { forEach } from 'lodash';
 const UserListModal = defineAsyncComponent(
   () => import('./components/userListModal.vue')
 );
@@ -555,8 +561,7 @@ const userListModalVisible = ref(false);
 const goodsListModalVisible = ref(false);
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 const selectedRows = ref<Api_goods_sku_list_result_item_interface[]>([]);
-const dataSource = ref<Api_goods_sku_list_result_item_interface[]>([]);
-const model = reactive<Api_proxy_order_Order_BackEnd_submit_params_interface2>({
+const modelObejct = {
   entryMode: '手工创建订单',
   sale_mode: '名气商城',
   businessType: '名气家/精选',
@@ -569,6 +574,9 @@ const model = reactive<Api_proxy_order_Order_BackEnd_submit_params_interface2>({
     invoice_kind: 2,
   },
   pay_mode: 0,
+};
+const model = reactive<Api_proxy_order_Order_BackEnd_submit_params_interface>({
+  ...modelObejct,
 });
 
 const commonElectronEnterpriseBoolean = ref(false);
@@ -578,17 +586,52 @@ const commonPaperPersonalBoolean = ref(false);
 const commonElectronPersonalBoolean = ref(false);
 const manRadioDisabled = ref(false);
 const inputSearchSearch = () => {
-  userListModalVisible.value = true;
+  if (model.user_id) {
+    Modal.confirm({
+      title: 'Do you Want to delete these items?',
+      icon: createVNode(ExclamationCircleOutlined),
+      content: createVNode(
+        'div',
+        { style: 'color:red;' },
+        '修改买家信息后以下部分信息将需要重新设置，是否继续？（收货地址、开票申请、商品信息等）'
+      ),
+      onOk() {
+        forEach(model, (value, key) => {
+          model[
+            key as keyof Api_proxy_order_Order_BackEnd_submit_params_interface
+          ] = undefined;
+        });
+        Object.assign(model, modelObejct);
+        userListModalVisible.value = true;
+      },
+    });
+  } else {
+    userListModalVisible.value = true;
+  }
 };
+
 const finish: FormInstance['onFinish'] = (values) => {
-  goodsListModalVisible.value = true;
+  // goodsListModalVisible.value = true;
 };
-const invoiceKindRadioWatch = (newValue: number) => {
+const invoiceKindRadioGroupWatch = (newValue: number) => {
   if (newValue == 1 || newValue == 3) {
     manRadioDisabled.value = false;
   } else {
     manRadioDisabled.value = true;
     model.order_invoice!.invoice_kind = 2;
+  }
+};
+
+const addressIdsFormItemRulesValidator = async (
+  _rule: Rule,
+  value: number[]
+) => {
+  if (!value) {
+    return Promise.reject('请选择');
+  } else if (value.length < 3) {
+    return Promise.reject('请选择省市区');
+  } else {
+    return Promise.resolve();
   }
 };
 
@@ -636,7 +679,7 @@ const goodsListModalSelect = (
   rows: Api_goods_sku_list_result_item_interface[]
 ) => {
   selectedRowKeys.value = keys;
-  dataSource.value = dataSource.value.concat(
+  model.dataSource = model.dataSource.concat(
     rows.map((item, index) => {
       item.qty = 0;
       item.number = index + 1;

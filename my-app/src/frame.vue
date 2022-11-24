@@ -1,27 +1,35 @@
 <template>
   <a-layout>
     <a-layout-header class="header">
+      <div class="site-title">
+        <img
+          src="./assets/logo-mqj.png"
+          height="30"
+          style="margin-right: 10px"
+        />名气商城后台运营管理系统
+      </div>
       <a-menu
         v-model:selectedKeys="navigationMenuSelectedKeys"
         theme="dark"
         mode="horizontal"
         @select="navigationMenuSelect"
-        :style="{ lineHeight: '64px' }"
+        :style="{ lineHeight: '64px', display: 'inline-block' }"
       >
         <a-menu-item v-for="item in navigationArray" :key="item.name">
           <router-link :to="`/${item.name}`">{{ item.zh_CN }}</router-link>
         </a-menu-item>
       </a-menu>
-      <a-space style="color: #abadaf; position: absolute; right: 10px; top: 0">
+      <a-space style="color: #abadaf; float: right">
         <span>{{ userInfoObject.username }}</span>
         <a style="color: #abadaf" @click="logoutLinkClick">退出登录</a>
       </a-space>
     </a-layout-header>
     <a-layout>
-      <a-layout-sider width="200" style="background: #fff">
+      <a-layout-sider width="200">
         <a-menu
           v-model:selectedKeys="menuSelectedKeys"
           v-model:openKeys="menuOpenKeys"
+          theme="dark"
           mode="inline"
           :style="{ height: '100%', borderRight: 0 }"
         >
@@ -49,10 +57,11 @@
             background: '#fff',
             padding: '24px',
             margin: 0,
-            minHeight: '280px',
+            height: 'calc(100vh - 142px)',
+            overflow: 'auto',
           }"
         >
-          <router-view> </router-view>
+          <router-view />
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -175,5 +184,17 @@ onBeforeRouteUpdate((updateGuard) => {
 
 .site-layout-background {
   background: #fff;
+}
+
+.site-title {
+  font-size: 16px;
+  margin-right: 30px;
+  line-height: 46px;
+  color: rgba(255, 255, 255, 0.65);
+  display: inline-block;
+}
+
+body {
+  overflow: hidden;
 }
 </style>

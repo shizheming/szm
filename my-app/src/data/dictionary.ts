@@ -21,7 +21,7 @@ export enum YES_NO_ENUM {
 export const YES_NO_OPTIONS = optionsEnum(YES_NO_ENUM);
 
 // 订单状态
-enum ORDER_STATUS_ENUM {
+export enum ORDER_STATUS_ENUM {
   待支付 = '0',
   定金支付 = '10',
   待审核 = '25',
@@ -35,15 +35,15 @@ enum ORDER_STATUS_ENUM {
 export const ORDER_STATUS_OPTIONS = optionsEnum(ORDER_STATUS_ENUM);
 
 // 支付状态
-enum PAY_STATUS_ENUM {
-  未 = 1,
-  已 = 3,
+export enum PAY_STATUS_ENUM {
+  未支付 = 1,
+  已支付 = 3,
 }
 
 export const PAY_STATUS_OPTIONS = optionsEnum(PAY_STATUS_ENUM);
 
 // 发货状态
-enum DELIVERY_STATUS_ENUM {
+export enum DELIVERY_STATUS_ENUM {
   未发货 = 1,
   已发货,
   已签收,
@@ -51,7 +51,7 @@ enum DELIVERY_STATUS_ENUM {
 export const DELIVERY_STATUS_OPTIONS = optionsEnum(DELIVERY_STATUS_ENUM);
 
 // 用户等级
-enum USER_LEVEL_ENUM {
+export enum USER_LEVEL_ENUM {
   银牌会员,
   黄金会员 = 299,
   铂金会员 = 599,
@@ -60,7 +60,7 @@ enum USER_LEVEL_ENUM {
 export const USER_LEVEL_OPTIONS = optionsEnum(USER_LEVEL_ENUM);
 
 // 来源终端
-enum APP_PLATFORM_ENUM {
+export enum APP_PLATFORM_ENUM {
   PC = 'p',
   IOS = 'i',
   Android = 'a',
@@ -70,7 +70,7 @@ enum APP_PLATFORM_ENUM {
 export const APP_PLATFORM_OPTIONS = optionsEnum(APP_PLATFORM_ENUM);
 
 // 配送方式
-enum DELIVERY_MODE_ENUM {
+export enum DELIVERY_MODE_ENUM {
   无需,
   快递,
   自提,
@@ -78,7 +78,7 @@ enum DELIVERY_MODE_ENUM {
 export const DELIVERY_MODE_OPTIONS = optionsEnum(DELIVERY_MODE_ENUM);
 
 // 录入方式
-enum CREATE_MODE_EUNM {
+export enum CREATE_MODE_EUNM {
   外部接口表 = 1,
   批量导入 = 2,
   自建电商平台 = 6,
@@ -92,7 +92,7 @@ enum CREATE_MODE_EUNM {
 export const CREATE_MODE_OPTIONS = optionsEnum(CREATE_MODE_EUNM);
 
 // 支付方式
-enum PAY_TYPE_ENUM {
+export enum PAY_TYPE_ENUM {
   无现金 = 0,
   积分 = 12,
   微信 = 13,
@@ -109,7 +109,7 @@ enum PAY_TYPE_ENUM {
 export const PAY_TYPE_OPTIONS = optionsEnum(PAY_TYPE_ENUM);
 
 // 支付类型
-enum PAYMENT_TYPE_ENUM {
+export enum PAYMENT_TYPE_ENUM {
   '预付款-线上',
   '预付款-线下',
   现结,
@@ -118,7 +118,7 @@ enum PAYMENT_TYPE_ENUM {
 export const PAYMENT_TYPE_OPTIONS = optionsEnum(PAYMENT_TYPE_ENUM);
 
 // 发票
-enum IS_INVOICE_ENUM {
+export enum IS_INVOICE_ENUM {
   开,
   不开,
 }
@@ -132,7 +132,7 @@ export enum GOODS_SOURCE_ENUM {
 export const GOODS_SOURCE_OPTIONS = optionsEnum(GOODS_SOURCE_ENUM);
 
 // 营销活动明细
-enum MARTING_TYPE_ENUM {
+export enum MARTING_TYPE_ENUM {
   普通 = '',
   拼团 = 'pintuan001',
   秒杀 = 'miaosha001',
@@ -150,7 +150,7 @@ enum MARTING_TYPE_ENUM {
 export const MARTING_TYPE_OPTIONS = optionsEnum(MARTING_TYPE_ENUM);
 
 // 订单类型
-enum ORDER_TYPE_ENUM {
+export enum ORDER_TYPE_ENUM {
   普通 = 1,
   供应商直送 = 5,
   自提 = 6,
@@ -158,7 +158,7 @@ enum ORDER_TYPE_ENUM {
 export const ORDER_TYPE_OPTIONS = optionsEnum(ORDER_TYPE_ENUM);
 
 // 业务模式
-enum BUSINESS_ENUM {
+export enum BUSINESS_ENUM {
   精选 = 1,
   紫荆,
 }
@@ -173,7 +173,7 @@ export enum SPELL_ORDER_STATUS_ENUM {
 export const SPELL_ORDER_STATUS_OPTIONS = optionsEnum(SPELL_ORDER_STATUS_ENUM);
 
 // 任务类
-enum TYPE_ENUM {
+export enum TYPE_ENUM {
   导出订单明细 = 2,
   导出发货信息 = 6,
 }
@@ -187,3 +187,10 @@ export enum IS_SUIT_ENUM {
 
 // user-info
 export const USER_INFO = JSON.parse(localStorage.getItem('userInfo') as string);
+
+// 增值税发票类型
+export enum VAT_INVOICE_TYPE_ENMU {
+  专用发票 = 2,
+  电子普通发票,
+}
+export const VAT_INVOICE_TYPE_OPTIONS = optionsEnum(VAT_INVOICE_TYPE_ENMU);

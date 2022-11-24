@@ -15,6 +15,7 @@
       "dom"
     ],
     "skipLibCheck": true,
+    "strictNullChecks": false,
     "suppressExcessPropertyErrors": true
   },
   "include": [
