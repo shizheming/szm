@@ -93,14 +93,7 @@ const routerObject = useRouter();
 const allRouteArray = r.getRoutes();
 const menusArray = ref<RouteRecord[]>([]);
 const pathArray = compact(routeObject.path.split('/'));
-if (localStorage.userInfo === undefined) {
-  routerObject.push({
-    name: 'index',
-    params: {
-      token: 0,
-    },
-  });
-}
+
 const userInfoObject: Api_manager_me_result_interface = JSON.parse(
   localStorage.userInfo
 );
@@ -129,7 +122,6 @@ const getBreadcrumbDataFn = (pathArray: string[]) => {
   });
   newPathArray.forEach((item) => {
     breadcrumbArray.value.push(
-      // ts告诉我会有可能会找到一个undefined的值，不能赋给breadcrumbData
       allRouteArray.find((current) => current.path === item)!
     );
   });
@@ -138,9 +130,17 @@ const getBreadcrumbDataFn = (pathArray: string[]) => {
 // 获取侧边栏导航
 const getMenuDataFn = (path: string) => {
   let newPathString = first(compact(path.split('/')));
+
   menusArray.value = allRouteArray
-    .filter((item) => item.meta.type)
-    .filter((item) => item.path.includes(newPathString!));
+    .filter((item) => item.meta.type) //获取是菜单的
+    .filter((item) => item.path.includes(newPathString!)) //获取当前模块路由
+    .map((item) => {
+      // 过滤类似详情页不需要展示在侧边栏的菜单
+      item.children = item.children.filter(
+        (current) => !current.meta!.menuIsHidden
+      );
+      return item;
+    });
 };
 
 const navigationMenuSelect: MenuProps['onClick'] = (v) => {

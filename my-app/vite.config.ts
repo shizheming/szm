@@ -17,7 +17,7 @@ export default defineConfig({
       // "/foo": "http://localhost:4567",
       // 选项写法
       '^/api/': {
-        target: 'http://st1-manage.mingqijia.com/',
+        target: 'http://st3-manage.mingqijia.com/',
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/api/, ""),
       },

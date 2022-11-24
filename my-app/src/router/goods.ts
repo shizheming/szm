@@ -1,30 +1,29 @@
 export default [
   {
-    path: "categoryMenu",
-    name: "categoryMenu",
+    path: 'categoryMenu',
+    name: 'categoryMenu',
     meta: {
-      title: "类目",
-      type: "menu",
+      title: '类目',
     },
-    component: () => import("../views/menu.vue"),
+    component: () => import('../views/menu.vue'),
     children: [
       {
-        path: "frontendCategoryPage",
-        name: "frontendCategoryPage",
+        path: 'frontendCategoryPage',
+        name: 'frontendCategoryPage',
         meta: {
-          title: "前台类目",
+          title: '前台类目',
         },
         component: () =>
-          import("../views/goodsModule/categoryMenu/frontendCategoryPage.vue"),
+          import('../views/goodsModule/categoryMenu/frontendCategoryPage.vue'),
       },
       {
-        path: "backstageCategoryPage",
-        name: "backstageCategoryPage",
+        path: 'backstageCategoryPage',
+        name: 'backstageCategoryPage',
         meta: {
-          title: "后台类目",
+          title: '后台类目',
         },
         component: () =>
-          import("../views/goodsModule/categoryMenu/backstageCategoryPage.vue"),
+          import('../views/goodsModule/categoryMenu/backstageCategoryPage.vue'),
       },
     ],
   },

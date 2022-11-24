@@ -43,13 +43,15 @@ export const optionsEnum = (obj: { [name: string]: any }) => {
   return result;
 };
 
-// 重新组合路由层级，配的时候其实是假的嵌套路由
+// 重新组合路由层级，配的时候其实是假的嵌套路由，把路由打平
 export const flatRouter = (router: RouteRecordRaw[]) => {
   router.forEach((current) => {
+    current.meta!.type = 'menu';
     let resultArray: RouteRecordRaw[] = [];
     current.children?.forEach((item) => {
       item.children?.forEach((the) => {
         the.path = `${item.path}/${the.path}`;
+        the.meta!.menuIsHidden = true;
       });
       if (item.children) {
         resultArray = resultArray.concat(item.children!);

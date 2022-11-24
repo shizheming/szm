@@ -4,7 +4,6 @@ export default [
     name: 'orderMenu',
     meta: {
       title: '订单',
-      type: 'menu',
     },
     component: () => import('../views/menu.vue'),
     children: [

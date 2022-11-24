@@ -5,7 +5,6 @@ import vueCookie from 'vue-cookies';
 export function setAxiosHeader(data: { token: string }) {
   axios.defaults.headers.Token = data.token;
   axios.defaults.headers.Authorization = data.token;
-  axios.defaults.headers.branchname = 'feature_purchase2.0_20220715';
   axios.defaults.headers['X-ACCOUNT-TYPE'] = 'M';
 }
 
