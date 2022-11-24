@@ -469,7 +469,7 @@
     </a-space>
     <a-table
       :columns="orderFormPageGoodsTableColumns"
-      :data-source="dataSource"
+      :data-source="model.dataSource"
       :pagination="false"
       :scroll="{ x: 3000 }"
       :row-selection="{
@@ -498,7 +498,7 @@
         </template>
       </template>
     </a-table>
-    <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+    <a-form-item :wrapper-col="{ offset: 1, span: 8 }">
       <a-button type="primary" html-type="submit">提交</a-button>
     </a-form-item>
   </a-form>
@@ -513,12 +513,20 @@
   />
 </template>
 <script setup lang="ts">
-import { reactive, defineAsyncComponent, ref, watch, computed } from 'vue';
+import {
+  reactive,
+  defineAsyncComponent,
+  ref,
+  watch,
+  computed,
+  createVNode,
+} from 'vue';
 import {
   FormInstance,
   InputProps,
   TableProps,
   TableColumnType,
+  Modal,
 } from 'ant-design-vue';
 import {
   Api_proxy_order_Order_BackEnd_submit_params_interface,
@@ -540,7 +548,9 @@ import {
 import { orderFormPageGoodsTableColumns } from './data';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
+import { forEach } from 'lodash';
 const UserListModal = defineAsyncComponent(
   () => import('./components/userListModal.vue')
 );
@@ -551,8 +561,7 @@ const userListModalVisible = ref(false);
 const goodsListModalVisible = ref(false);
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 const selectedRows = ref<Api_goods_sku_list_result_item_interface[]>([]);
-const dataSource = ref<Api_goods_sku_list_result_item_interface[]>([]);
-const model = reactive<Api_proxy_order_Order_BackEnd_submit_params_interface>({
+const modelObejct = {
   entryMode: '手工创建订单',
   sale_mode: '名气商城',
   businessType: '名气家/精选',
@@ -565,6 +574,9 @@ const model = reactive<Api_proxy_order_Order_BackEnd_submit_params_interface>({
     invoice_kind: 2,
   },
   pay_mode: 0,
+};
+const model = reactive<Api_proxy_order_Order_BackEnd_submit_params_interface>({
+  ...modelObejct,
 });
 
 const commonElectronEnterpriseBoolean = ref(false);
@@ -574,10 +586,32 @@ const commonPaperPersonalBoolean = ref(false);
 const commonElectronPersonalBoolean = ref(false);
 const manRadioDisabled = ref(false);
 const inputSearchSearch = () => {
-  userListModalVisible.value = true;
+  if (model.user_id) {
+    Modal.confirm({
+      title: 'Do you Want to delete these items?',
+      icon: createVNode(ExclamationCircleOutlined),
+      content: createVNode(
+        'div',
+        { style: 'color:red;' },
+        '修改买家信息后以下部分信息将需要重新设置，是否继续？（收货地址、开票申请、商品信息等）'
+      ),
+      onOk() {
+        forEach(model, (value, key) => {
+          model[
+            key as keyof Api_proxy_order_Order_BackEnd_submit_params_interface
+          ] = undefined;
+        });
+        Object.assign(model, modelObejct);
+        userListModalVisible.value = true;
+      },
+    });
+  } else {
+    userListModalVisible.value = true;
+  }
 };
+
 const finish: FormInstance['onFinish'] = (values) => {
-  goodsListModalVisible.value = true;
+  // goodsListModalVisible.value = true;
 };
 const invoiceKindRadioGroupWatch = (newValue: number) => {
   if (newValue == 1 || newValue == 3) {
@@ -645,7 +679,7 @@ const goodsListModalSelect = (
   rows: Api_goods_sku_list_result_item_interface[]
 ) => {
   selectedRowKeys.value = keys;
-  dataSource.value = dataSource.value.concat(
+  model.dataSource = model.dataSource.concat(
     rows.map((item, index) => {
       item.qty = 0;
       item.number = index + 1;

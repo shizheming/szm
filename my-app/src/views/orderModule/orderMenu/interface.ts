@@ -370,6 +370,7 @@ export type Api_order_orderSyncList_params_interface =
   Partial<Api_order_orderSyncList_params_part_interface> & PageInterface;
 
 export interface Api_proxy_order_Order_BackEnd_submit_params_interface {
+  dataSource: Api_goods_sku_list_result_item_interface[];
   entryMode: string;
   sale_mode: string;
   api_type: number;

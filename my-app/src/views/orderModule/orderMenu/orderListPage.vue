@@ -510,10 +510,6 @@
       <a-button @click="exporButtonClick(2)" type="primary" size="small"
         >导出订单明细</a-button
       >
-      <router-link :to="{ name: 'orderFormPage' }">人工下单</router-link>
-      <router-link :to="{ name: 'supplementaryInvoiceFormPage' }"
-        >补开发票</router-link
-      >
     </a-space>
   </a-row>
   <a-table
