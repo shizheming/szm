@@ -498,6 +498,9 @@
           {{ record.qty }}
           <edit-outlined @click="qtyEditOutlinedClick(record)" />
         </template>
+        <template v-if="column.key === 'imgSrc'">
+          <a-image :src="record.imgSrc" :width="50" />
+        </template>
       </template>
     </a-table>
     <a-form-item :wrapper-col="{ offset: 1, span: 8 }">
@@ -553,6 +556,7 @@ import BackgroundCategoryCascader from '../../../components/cascader/backgroundC
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 import { forEach } from 'lodash';
+import { api_upload_getUrl } from './api';
 const UserListModal = defineAsyncComponent(
   () => import('./components/userListModal.vue')
 );
@@ -591,7 +595,7 @@ const manRadioDisabled = ref(false);
 const inputSearchSearch = () => {
   if (model.user_id) {
     Modal.confirm({
-      title: 'Do you Want to delete these items?',
+      title: '确定要修改吗？',
       icon: createVNode(ExclamationCircleOutlined),
       content: createVNode(
         'div',
@@ -690,6 +694,19 @@ const goodsListModalSelect = (
       return item;
     })
   );
+  model.dataSource.forEach((item) => {
+    if (item.gallery.length) {
+      const [{ key, upload_channel, bucket }] = item.gallery;
+
+      api_upload_getUrl({
+        key,
+        upload_channel,
+        bucket,
+      }).then(({ data }) => {
+        item.imgSrc = data;
+      });
+    }
+  });
 };
 
 const tableRowKey = ({

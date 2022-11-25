@@ -140,3 +140,12 @@ export const api_goods_sku_getSkuAreaBySkuIds = (params: {
 }) => {
   return axios.post<[]>('/api/goods/sku/getSkuAreaBySkuIds', params);
 };
+
+// 请求图片
+export const api_upload_getUrl = (params: {
+  key: string;
+  bucket: string;
+  upload_channel: string;
+}) => {
+  return axios.post<string>('/api/upload/get-url', params);
+};
