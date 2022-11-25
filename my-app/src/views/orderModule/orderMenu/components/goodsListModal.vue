@@ -1,6 +1,7 @@
 <template>
   <a-modal
     :visible="props.visible"
+    :ok-button-props="{ disabled: !selectedRowKeys.length }"
     title="商品选择"
     width="100%"
     wrap-class-name="full-modal"
@@ -52,7 +53,7 @@
           <a-form-item
             label="后台类目"
             :label-col="{ span: 6 }"
-            :name="['category_id']"
+            :name="['category_id_array']"
           >
             <background-category-cascader
               v-model:value="model.category_id"
@@ -106,6 +107,7 @@
         selectedRowKeys,
         onChange: rowSelectionOnChange,
         getCheckboxProps,
+        preserveSelectedRowKeys: true,
       }"
       :data-source="dataSource?.list"
       :columns="goodsListModalGoodsTableColumns"
@@ -157,14 +159,15 @@ import {
   TableProps,
   FormProps,
   TableColumnType,
+  message,
 } from 'ant-design-vue';
 import {
   Api_goods_sku_list_result_item_interface,
   Api_goods_sku_list_params_part_interface,
-  Api_goods_sku_list_fixed_params_part_interface,
   Api_goods_sku_list_params_interface,
+  Api_proxy_order_Order_BackEnd_submit_params_interface,
 } from '../interface';
-import { api_goods_sku_list } from '../api';
+import { api_goods_sku_list, api_goods_sku_getSkuAreaBySkuIds } from '../api';
 import {
   goodsListModalGoodsTableColumns,
   goodsListModalLadderPriceTableColumns,
@@ -172,22 +175,23 @@ import {
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
+import { difference, last } from 'lodash';
+import { PageInterface } from '../../../../interface';
 
 const props = defineProps<{
   visible: boolean;
-  selectedRowKeys: TableRowSelection['selectedRowKeys'];
+  model: Api_proxy_order_Order_BackEnd_submit_params_interface;
 }>();
 const emits = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
   (
     event: 'select',
-    selectedRowKeys: TableRowSelection['selectedRowKeys'],
     selectedRowsArray: Api_goods_sku_list_result_item_interface[]
   ): void;
 }>();
 
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
-
+let noSelectedRowKeysArray: string[] = [];
 const formRef = ref<FormInstance>();
 const selectedRowsArray = ref<Api_goods_sku_list_result_item_interface[]>([]);
 const {
@@ -224,13 +228,30 @@ const model = reactive<Api_goods_sku_list_params_interface>({
   need_stock: 1,
   business_id: 1,
   is_support_local: 0,
+  is_suit: 0,
   page: current.value,
   page_size: pageSize.value,
 });
 const finish = async () => {
-  run(model);
+  run(getSearchDataObject({ page: 1, page_size: 10 }));
 };
+const getSearchDataObject = (
+  params: PageInterface = {
+    page: current.value,
+    page_size: pageSize.value,
+  }
+) => {
+  model.category_id = last(model.category_id_array);
 
+  return {
+    ...model,
+    ...params,
+    good_search_key: model.goods_search_value
+      ? model.goods_search_key
+      : undefined,
+    good_search_value: model.goods_search_value || undefined,
+  };
+};
 const pagination = computed(() => {
   return {
     total: total.value,
@@ -241,17 +262,21 @@ const pagination = computed(() => {
 });
 
 const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {
+  console.log(keys, 304);
+
   selectedRowKeys.value = keys;
   selectedRowsArray.value = rows;
 };
 
 const tableChange: TableProps['onChange'] = async (pag) => {
-  run({
-    ...model,
-    page: pag.current!,
-    page_size: pag.pageSize!,
-  });
+  run(
+    getSearchDataObject({
+      page: pag.current!,
+      page_size: pag.pageSize!,
+    })
+  );
 };
+console.log(noSelectedRowKeysArray, 2000);
 
 const getCheckboxProps: TableRowSelection['getCheckboxProps'] = ({
   sku_id,
@@ -260,7 +285,7 @@ const getCheckboxProps: TableRowSelection['getCheckboxProps'] = ({
 }) => {
   return {
     disabled:
-      props.selectedRowKeys!.includes(`${spu_id}_${sku_id}`) || real_qty === 0,
+      noSelectedRowKeysArray.includes(`${spu_id}/${sku_id}`) || real_qty === 0,
   };
 };
 
@@ -268,7 +293,7 @@ const tableRowKey = ({
   sku_id,
   spu_id,
 }: Api_goods_sku_list_result_item_interface) => {
-  return `${spu_id}_${sku_id}`;
+  return `${spu_id}/${sku_id}`;
 };
 
 const clearOutlinedClick = () => {
@@ -276,13 +301,36 @@ const clearOutlinedClick = () => {
 };
 
 const ok = async () => {
-  formRef.value?.resetFields();
-
-  emits('select', selectedRowKeys.value, selectedRowsArray.value);
+  // 验证选择得商品是否在可配送的范围内
+  let { data } = await api_goods_sku_getSkuAreaBySkuIds({
+    shop_goods_ids: selectedRowsArray.value.map(
+      ({ shop_goods_id }) => shop_goods_id
+    ),
+    province: props.model.addressInfo.addressIds[0],
+    district: props.model.addressInfo.addressIds[2],
+    channel_id: 1,
+  });
+  if (data.length) {
+    message.warning(
+      `所选择的商品中有${data.length}个商品不支持该收货地址，系统已自动删除！`
+    );
+    let spuSkuArray: string[] = [];
+    data.forEach((item) => {
+      selectedRowsArray.value = selectedRowsArray.value.filter((current) => {
+        if (current.shop_goods_id !== item) {
+          return true;
+        } else {
+          spuSkuArray.push(`${current.spu_id}/${current.sku_id}`);
+          return false;
+        }
+      });
+    });
+    selectedRowKeys.value = difference(selectedRowKeys.value, spuSkuArray);
+  }
+  emits('select', selectedRowsArray.value);
   emits('update:visible', false);
 };
 const cancel = () => {
-  formRef.value?.resetFields();
   emits('update:visible', false);
 };
 
@@ -290,9 +338,16 @@ watch(
   () => props.visible,
   async (newValue) => {
     if (newValue === true) {
-      run(model);
+      noSelectedRowKeysArray = props.model.dataSource.map(
+        ({ spu_id, sku_id }) => {
+          return `${spu_id}/${sku_id}`;
+        }
+      );
+      run(getSearchDataObject());
     } else {
+      formRef.value?.resetFields();
       selectedRowKeys.value = [];
+      selectedRowsArray.value = [];
     }
   }
 );

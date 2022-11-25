@@ -4,6 +4,7 @@
     :model="model"
     :label-col="{ span: 8 }"
     @finish="finish"
+    @finishFailed="finish"
   >
     <h1 style="font-weight: 700">基本信息</h1>
     <a-row>
@@ -197,7 +198,7 @@
           >
             <a-radio-group
               v-model:value="model.order_invoice.invoice_form"
-              :options="VAT_INVOICE_TYPE_ENMU"
+              :options="VAT_INVOICE_TYPE_OPTIONS"
             >
             </a-radio-group>
           </a-form-item>
@@ -468,15 +469,17 @@
       <delete-outlined @click="goodsDeleteOutlinedClick" />
     </a-space>
     <a-table
+      :row-key="tableRowKey"
       :columns="orderFormPageGoodsTableColumns"
       :data-source="model.dataSource"
       :pagination="false"
       :scroll="{ x: 3000 }"
       :row-selection="{
         selectedRowKeys,
-        onchange: tableChange,
+        onChange: tableChange,
       }"
-      ><template
+    >
+      <template
         #bodyCell="{
           column,
           record,
@@ -508,7 +511,7 @@
   />
   <goods-list-modal
     v-model:visible="goodsListModalVisible"
-    :selected-row-keys="selectedRowKeys"
+    :model="model"
     @select="goodsListModalSelect"
   />
 </template>
@@ -543,7 +546,7 @@ import {
   WHETHER_OPTIONS,
   DELIVERY_MODE_OPTIONS,
   IS_SUIT_ENUM,
-  VAT_INVOICE_TYPE_ENMU,
+  VAT_INVOICE_TYPE_OPTIONS,
 } from '../../../data/dictionary';
 import { orderFormPageGoodsTableColumns } from './data';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
@@ -574,6 +577,7 @@ const modelObejct = {
     invoice_kind: 2,
   },
   pay_mode: 0,
+  dataSource: [],
 };
 const model = reactive<Api_proxy_order_Order_BackEnd_submit_params_interface>({
   ...modelObejct,
@@ -611,7 +615,7 @@ const inputSearchSearch = () => {
 };
 
 const finish: FormInstance['onFinish'] = (values) => {
-  // goodsListModalVisible.value = true;
+  goodsListModalVisible.value = true;
 };
 const invoiceKindRadioGroupWatch = (newValue: number) => {
   if (newValue == 1 || newValue == 3) {
@@ -675,10 +679,8 @@ const qtyEditOutlinedClick = ({ qty }: { qty: number }) => {};
 const goodsDeleteOutlinedClick = () => {};
 
 const goodsListModalSelect = (
-  keys: TableRowSelection['selectedRowKeys'],
   rows: Api_goods_sku_list_result_item_interface[]
 ) => {
-  selectedRowKeys.value = keys;
   model.dataSource = model.dataSource.concat(
     rows.map((item, index) => {
       item.qty = 0;
@@ -689,6 +691,13 @@ const goodsListModalSelect = (
       return item;
     })
   );
+};
+
+const tableRowKey = ({
+  sku_id,
+  spu_id,
+}: Api_goods_sku_list_result_item_interface) => {
+  return `${spu_id}/${sku_id}`;
 };
 
 watch(

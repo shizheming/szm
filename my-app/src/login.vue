@@ -2,12 +2,13 @@
   <a-form
     ref="formRef"
     :model="formModel"
-    :wrapper-col="{ span: 6 }"
+    :wrapper-col="{ span: 5 }"
+    style="margin-top: 200px"
     @finish="formFinish"
   >
     <a-form-item
       label="账号"
-      :label-col="{ span: 6 }"
+      :label-col="{ span: 9 }"
       :name="['username']"
       :rules="{
         required: true,
@@ -18,7 +19,7 @@
     </a-form-item>
     <a-form-item
       label="密码"
-      :label-col="{ span: 6 }"
+      :label-col="{ span: 9 }"
       type="password"
       :name="['password']"
       :rules="{
@@ -33,7 +34,7 @@
     </a-form-item>
     <a-form-item
       label="手机号"
-      :label-col="{ span: 6 }"
+      :label-col="{ span: 9 }"
       :name="['cms_phone']"
       :rules="{
         required: true,
@@ -44,7 +45,7 @@
     </a-form-item>
     <a-form-item
       label="验证码"
-      :label-col="{ span: 6 }"
+      :label-col="{ span: 9 }"
       :name="['sms_code']"
       :rules="{
         required: true,
@@ -53,7 +54,7 @@
     >
       <a-input v-model:value="formModel.sms_code" placeholder="请输入" />
     </a-form-item>
-    <a-form-item :wrapper-col="{ offset: 6 }">
+    <a-form-item :wrapper-col="{ offset: 9 }">
       <a-button type="primary" html-type="submit" :loading="buttonLoading"
         >登录</a-button
       >

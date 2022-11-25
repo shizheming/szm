@@ -894,7 +894,7 @@ const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {
 };
 
 const getSearchDataObject = (
-  params: Api_order_params_interface = {
+  params: PageInterface = {
     page: current.value,
     page_size: pageSize.value,
   }
@@ -907,8 +907,8 @@ const getSearchDataObject = (
   model.pay_mode = model.payment_type;
 
   return {
-    ...params,
     ...model,
+    ...params,
     order_search_key: model.order_search_value
       ? model.order_search_key
       : undefined,
