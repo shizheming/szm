@@ -4,7 +4,6 @@
     :model="model"
     :label-col="{ span: 8 }"
     @finish="finish"
-    @finishFailed="finish"
   >
     <h1 style="font-weight: 700">基本信息</h1>
     <a-row>

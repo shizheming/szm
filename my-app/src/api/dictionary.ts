@@ -18,8 +18,11 @@ export const api_stock_supplier_get__all_list = () =>
   >('/api/stock/supplier/get-all/list');
 
 // 后台类目
+export const api_goods_category_controller = new AbortController();
 export const api_goods_category = () =>
-  axios.get<Api_goods_category_result_item_interface[]>('/api/goods/category');
+  axios.get<Api_goods_category_result_item_interface[]>('/api/goods/category', {
+    signal: api_goods_category_controller.signal,
+  });
 
 // 商品品牌
 export const api_goods_brand_list = () =>

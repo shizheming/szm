@@ -8,7 +8,10 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import { api_goods_category } from '../../api/dictionary';
+import {
+  api_goods_category,
+  api_goods_category_controller,
+} from '../../api/dictionary';
 import type { CascaderProps } from 'ant-design-vue';
 import { apiDictCacheObject } from '../../utils/global';
 
@@ -29,6 +32,7 @@ const inner = async () => {
     options.value = apiDictCacheObject.backgroundCategoryOptions;
   } else {
     let { data } = await api_goods_category();
+    api_goods_category_controller.abort();
     options.value = formatOptions(data);
     apiDictCacheObject.backgroundCategoryOptions = options.value;
   }
