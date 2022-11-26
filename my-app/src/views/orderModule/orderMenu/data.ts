@@ -263,8 +263,8 @@ export const orderFormPageGoodsTableColumns: TableColumnsType = [
   },
   {
     title: '商品形式',
-    dataIndex: 'is_suit_name',
-    key: 'is_suit_name',
+    dataIndex: 'is_suit',
+    key: 'is_suit',
   },
   {
     title: '店铺商品编码',
@@ -305,8 +305,8 @@ export const orderFormPageGoodsTableColumns: TableColumnsType = [
   },
   {
     title: '定价方式',
-    dataIndex: 'member_price',
-    key: 'member_price',
+    dataIndex: 'member_price_name',
+    key: 'member_price_name',
   },
   {
     title: '销售单价',

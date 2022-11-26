@@ -13,7 +13,7 @@ import {
   api_goods_category_controller,
 } from '../../api/dictionary';
 import type { CascaderProps } from 'ant-design-vue';
-import { apiDictCacheObject } from '../../utils/global';
+import { getApiDictCacheFunction } from '../../utils/global';
 
 const options = ref<CascaderProps['options']>([]);
 const formatOptions = (category: CascaderProps['options']) => {
@@ -27,6 +27,7 @@ const formatOptions = (category: CascaderProps['options']) => {
   });
 };
 
+const apiDictCacheObject = getApiDictCacheFunction();
 const inner = async () => {
   if (apiDictCacheObject.backgroundCategoryOptions) {
     options.value = apiDictCacheObject.backgroundCategoryOptions;

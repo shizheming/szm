@@ -11,8 +11,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import type { CascaderProps } from 'ant-design-vue';
-import { api_common_area } from '../../api/dictionary';
-import { apiDictCacheObject } from '../../utils/global';
+import {
+  api_common_area,
+  api_common_area_controller,
+} from '../../api/dictionary';
+import { getApiDictCacheFunction } from '../../utils/global';
 
 const options = ref<CascaderProps['options']>([]);
 const loadData: CascaderProps['loadData'] = async (selectedOptions) => {
@@ -32,13 +35,15 @@ const loadData: CascaderProps['loadData'] = async (selectedOptions) => {
     };
   });
 };
+const apiDictCacheObject = getApiDictCacheFunction();
 const inner = async () => {
-  if (apiDictCacheObject.address) {
-    options.value = apiDictCacheObject.address;
+  if (apiDictCacheObject.addressOptions) {
+    options.value = apiDictCacheObject.addressOptions;
   } else {
     let { data } = await api_common_area({
       parent_id: 1,
     });
+    api_common_area_controller.abort();
     options.value = data.map(({ id, name }) => {
       return {
         label: name,
@@ -46,7 +51,7 @@ const inner = async () => {
         isLeaf: false,
       };
     });
-    apiDictCacheObject.address = options.value;
+    apiDictCacheObject.addressOptions = options.value;
   }
 };
 </script>

@@ -141,7 +141,7 @@
                 size="small"
               />
             </template>
-            <a-button size="small">详情</a-button>
+            <info-circle-outlined />
           </a-popover>
           <span v-else>{{ record.shop_selling_price }}</span>
         </template>
@@ -173,7 +173,11 @@ import {
   goodsListModalLadderPriceTableColumns,
 } from '../data';
 import { usePagination } from 'vue-request';
-import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
+import {
+  SearchOutlined,
+  ClearOutlined,
+  InfoCircleOutlined,
+} from '@ant-design/icons-vue';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import { difference, last } from 'lodash';
 import { PageInterface } from '../../../../interface';

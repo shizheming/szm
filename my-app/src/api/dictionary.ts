@@ -97,6 +97,7 @@ export const api_sys_org = (params: PageInterface) =>
   });
 
 // 地址
+export const api_common_area_controller = new AbortController();
 export const api_common_area = (params: { parent_id: number }) =>
   axios.get<
     {
@@ -107,4 +108,7 @@ export const api_common_area = (params: { parent_id: number }) =>
       ad_code: number;
       real_name: string;
     }[]
-  >('/api/common/area', { params });
+  >('/api/common/area', {
+    signal: api_goods_category_controller.signal,
+    params,
+  });

@@ -473,6 +473,7 @@
       :data-source="model.dataSource"
       :pagination="false"
       :scroll="{ x: 3000 }"
+      style="margin: 15px 0"
       :row-selection="{
         selectedRowKeys,
         onChange: tableChange,
@@ -487,6 +488,24 @@
           record: Api_goods_sku_list_result_item_interface,
         }"
       >
+        <template v-if="column.key === 'opration'">
+          <delete-outlined @click="goodsItemDeleteOutlinedClick" />
+        </template>
+        <template v-if="column.key === 'member_price_name'">
+          {{ record.member_price_name }}
+          <a-popover title="阶梯价展示" v-if="record.member_price.length > 0">
+            <template #content>
+              <a-table
+                :data-source="record.member_price"
+                :columns="goodsListModalLadderPriceTableColumns"
+                :pagination="false"
+                size="small"
+              />
+            </template>
+            <info-circle-outlined />
+          </a-popover>
+          <span v-else>{{ record.shop_selling_price }}</span>
+        </template>
         <template v-if="column.key === 'category_path'">
           <background-category-cascader
             :is-detail="true"
@@ -496,13 +515,47 @@
         </template>
         <template v-if="column.key === 'qty'">
           {{ record.qty }}
-          <edit-outlined @click="qtyEditOutlinedClick(record)" />
+          <edit-outlined
+            @click="qtyEditOutlinedClick(record)"
+            style="float: right"
+          />
         </template>
+        <template v-if="column.key === 'current_selling_price'">
+          {{ record.current_selling_price }}
+          <edit-outlined
+            @click="currentSellingPriceEditOutlinedClick(record)"
+            style="float: right"
+          />
+        </template>
+
         <template v-if="column.key === 'imgSrc'">
           <a-image :src="record.imgSrc" :width="50" />
         </template>
       </template>
     </a-table>
+    <h1 style="font-weight: 700">订单合计</h1>
+    <a-row>
+      <a-col :span="8">
+        <a-form-item label="商品数量合计" :name="['qty']">
+          <a-input :is-detail="true" v-model:value="model.qty" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="商品金额合计" :name="['total_price']">
+          <a-input :is-detail="true" v-model:value="model.total_price" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="运费" :name="['total_freight']">
+          <a-input v-model:value="model.total_freight" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="订单金额合计" :name="['total_real_price']">
+          <a-input :is-detail="true" v-model:value="model.total_real_price" />
+        </a-form-item>
+      </a-col>
+    </a-row>
     <a-form-item :wrapper-col="{ offset: 1, span: 8 }">
       <a-button type="primary" html-type="submit">提交</a-button>
     </a-form-item>
@@ -542,6 +595,7 @@ import {
   PlusOutlined,
   DeleteOutlined,
   EditOutlined,
+  InfoCircleOutlined,
 } from '@ant-design/icons-vue';
 import AddressCascader from '../../../components/cascader/address.vue';
 import {
@@ -550,13 +604,17 @@ import {
   IS_SUIT_ENUM,
   VAT_INVOICE_TYPE_OPTIONS,
 } from '../../../data/dictionary';
-import { orderFormPageGoodsTableColumns } from './data';
+import {
+  orderFormPageGoodsTableColumns,
+  goodsListModalLadderPriceTableColumns,
+} from './data';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 import { forEach } from 'lodash';
 import { api_upload_getUrl } from './api';
+import { getApiDictCacheFunction } from '../../../utils/global';
 const UserListModal = defineAsyncComponent(
   () => import('./components/userListModal.vue')
 );
@@ -567,7 +625,9 @@ const userListModalVisible = ref(false);
 const goodsListModalVisible = ref(false);
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 const selectedRows = ref<Api_goods_sku_list_result_item_interface[]>([]);
+const apiDictCacheObject = getApiDictCacheFunction();
 const modelObejct = {
+  site_id: 1,
   entryMode: '手工创建订单',
   sale_mode: '名气商城',
   businessType: '名气家/精选',
@@ -677,9 +737,22 @@ const userListModalSelect: (
   formRef.value!.validate(['user_id']);
 };
 
-const qtyEditOutlinedClick = ({ qty }: { qty: number }) => {};
+const qtyEditOutlinedClick = (
+  record: Api_goods_sku_list_result_item_interface
+) => {};
+const currentSellingPriceEditOutlinedClick = (
+  record: Api_goods_sku_list_result_item_interface
+) => {};
 
-const goodsDeleteOutlinedClick = () => {};
+const goodsDeleteOutlinedClick = () => {
+  if (selectedRowKeys.value.length) {
+    model.dataSource = model.dataSource.filter(({ sku_id, spu_id }) => {
+      return !selectedRowKeys.value.includes(`${spu_id}/${sku_id}`);
+    });
+    selectedRowKeys.value = [];
+  }
+};
+const goodsItemDeleteOutlinedClick = () => {};
 
 const goodsListModalSelect = (
   rows: Api_goods_sku_list_result_item_interface[]
@@ -687,27 +760,49 @@ const goodsListModalSelect = (
   model.dataSource = model.dataSource.concat(
     rows.map((item, index) => {
       item.qty = 0;
-      item.number = index + 1;
       item.sku_type_name = '实物';
       item.is_suit =
-        item.is_suit === 'b' ? '' : IS_SUIT_ENUM[item.is_suit as number];
+        item.is_suit === 'b'
+          ? ''
+          : IS_SUIT_ENUM[item.is_suit as number] || '普通';
       return item;
     })
   );
-  model.dataSource.forEach((item) => {
+  model.dataSource.forEach(async (item) => {
     if (item.gallery.length) {
       const [{ key, upload_channel, bucket }] = item.gallery;
 
-      api_upload_getUrl({
+      let { data } = await api_upload_getUrl({
         key,
         upload_channel,
         bucket,
-      }).then(({ data }) => {
-        item.imgSrc = data;
       });
+      item.imgSrc = data;
     }
   });
 };
+
+const getSubmitDataFunction = () => {
+  [
+    model.addressInfo.province_id,
+    model.addressInfo.city_id,
+    model.addressInfo.district_id,
+    model.addressInfo.street_id,
+  ] = model.addressInfo.addressIds;
+  apiDictCacheObject.addressOptions;
+  return {
+    ...model,
+  };
+};
+
+watch(
+  () => model.dataSource.length,
+  () => {
+    model.dataSource.forEach((item, index) => {
+      item.number = index + 1;
+    });
+  }
+);
 
 const tableRowKey = ({
   sku_id,

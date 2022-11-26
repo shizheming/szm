@@ -1,6 +1,7 @@
 <template>
   <a-modal
     :visible="props.visible"
+    :ok-button-props="{ disabled: !selectedRowKeys.length }"
     title="用户选择"
     @ok="ok"
     @cancel="cancel"
