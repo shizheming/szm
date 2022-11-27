@@ -372,7 +372,7 @@ export type Api_order_orderSyncList_params_interface =
 export interface Api_proxy_order_Order_BackEnd_submit_params_interface {
   qty: number;
   total_price: number;
-  total_freight: number;
+  freight: number;
   total_real_price: number;
   dataSource: Api_goods_sku_list_result_item_interface[];
   entryMode: string;
@@ -395,6 +395,7 @@ export interface Api_proxy_order_Order_BackEnd_submit_params_interface {
     invoice_kind: number;
     content_type: number;
     invoice_notice: string;
+    invoice_type: number;
     invoice_title: string;
     vat_number: string;
     et_address: string;
@@ -405,12 +406,26 @@ export interface Api_proxy_order_Order_BackEnd_submit_params_interface {
     invoice_phone_num: string;
     invoice_email: string;
     mArea: number[];
+    province_id: number;
+    province_name: string;
+    city_id: number;
+    city_name: string;
+    district_id: number;
+    district_name: string;
+    street_id: number;
+    street_name: string;
     invoice_address: string;
+    apply_scene: number;
   };
-  shop_goods_list: Api_goods_sku_list_result_item_interface[];
+  shop_goods_list: {
+    qty: number;
+    shop_goods_id: number;
+    adjust_mount: number;
+  }[];
   user_id: string;
   site_id: number;
   delivery_mode_list: [];
+  validator: { total_pay: number };
   addressInfo: {
     addressIds: number[];
     name: string;
@@ -418,9 +433,13 @@ export interface Api_proxy_order_Order_BackEnd_submit_params_interface {
     tel: string;
     email: string;
     province_id: number;
+    province_name: string;
     city_id: number;
+    city_name: string;
     district_id: number;
+    district_name: string;
     street_id: number;
+    street_name: string;
     real_name: string;
     zipcode: string;
     address: string;
@@ -461,6 +480,8 @@ export interface Api_goods_sku_list_params_interface
   extends Partial<Api_goods_sku_list_params_part_interface>,
     PageInterface {}
 export interface Api_goods_sku_list_result_item_interface {
+  purchaseAmount: number;
+  adjust_mount: number;
   imgSrc: string;
   number: number;
   qty: number;
@@ -477,7 +498,7 @@ export interface Api_goods_sku_list_result_item_interface {
   suggest_shop_price: number;
   sn: string;
   spu_id: number;
-  current_selling_price: nubmer;
+  current_selling_price: number;
   supplier_name: string;
   shop_goods_code: string;
   sku_type_name: string;
@@ -517,7 +538,7 @@ export interface Api_goods_sku_list_result_item_interface {
   member_price: {
     start_num: number | string;
     end_num: number;
-    member_price: string;
+    member_price: number;
   }[];
   real_qty: number;
   real_node_qty: number;

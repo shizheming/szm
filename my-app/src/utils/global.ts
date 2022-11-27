@@ -1,7 +1,7 @@
 import type { CascaderProps, SelectProps } from 'ant-design-vue';
 import { cloneDeep } from 'lodash';
 
-const apiDictCacheObject: Partial<{
+export const apiDictCacheObject: Partial<{
   backgroundCategoryOptions: CascaderProps['options'];
   addressOptions: CascaderProps['options'];
   goodsBrandOptions: SelectProps['options'];
@@ -10,7 +10,3 @@ const apiDictCacheObject: Partial<{
   subOrgOptions: SelectProps['options'];
   supplierOptions: SelectProps['options'];
 }> = {};
-
-export const getApiDictCacheFunction = () => {
-  return cloneDeep(apiDictCacheObject);
-};

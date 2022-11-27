@@ -111,7 +111,10 @@
             validator: addressIdsFormItemRulesValidator,
           }"
         >
-          <address-cascader v-model:value="model.addressInfo.addressIds" />
+          <address-cascader
+            v-model:value="model.addressInfo.addressIds"
+            @change="addressIdsAddressCascaderChange"
+          />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -412,7 +415,7 @@
           "
         >
           <a-form-item
-            label="label"
+            label="收票人地址"
             :name="['order_invoice', 'mArea']"
             :rules="{
               required: true,
@@ -546,13 +549,16 @@
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="运费" :name="['total_freight']">
-          <a-input v-model:value="model.total_freight" />
+        <a-form-item label="运费" :name="['freight']">
+          <a-input v-model:value="model.freight" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
-        <a-form-item label="订单金额合计" :name="['total_real_price']">
-          <a-input :is-detail="true" v-model:value="model.total_real_price" />
+        <a-form-item label="订单金额合计" :name="['validator', 'total_pay']">
+          <a-input
+            :is-detail="true"
+            v-model:value="model.validator.total_pay"
+          />
         </a-form-item>
       </a-col>
     </a-row>
@@ -612,9 +618,10 @@ import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
-import { forEach } from 'lodash';
+import { forEach, multiply, subtract } from 'lodash';
 import { api_upload_getUrl } from './api';
-import { getApiDictCacheFunction } from '../../../utils/global';
+import { apiDictCacheObject } from '../../../utils/global';
+import { SelectProps } from 'ant-design-vue/lib/vc-select';
 const UserListModal = defineAsyncComponent(
   () => import('./components/userListModal.vue')
 );
@@ -625,9 +632,9 @@ const userListModalVisible = ref(false);
 const goodsListModalVisible = ref(false);
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 const selectedRows = ref<Api_goods_sku_list_result_item_interface[]>([]);
-const apiDictCacheObject = getApiDictCacheFunction();
 const modelObejct = {
   site_id: 1,
+  api_type: 3,
   entryMode: '手工创建订单',
   sale_mode: '名气商城',
   businessType: '名气家/精选',
@@ -638,9 +645,11 @@ const modelObejct = {
   order_invoice: {
     invoice_form: 3,
     invoice_kind: 2,
+    apply_scene: 1,
   },
   pay_mode: 0,
   dataSource: [],
+  validator: {},
 };
 const model = reactive<Api_proxy_order_Order_BackEnd_submit_params_interface>({
   ...modelObejct,
@@ -689,6 +698,14 @@ const invoiceKindRadioGroupWatch = (newValue: number) => {
   }
 };
 
+let addressNameArray: string[] = [];
+const addressIdsAddressCascaderChange: SelectProps['onChange'] = (
+  value,
+  options
+) => {
+  addressNameArray = options.map(({ label }: { label: string }) => label);
+};
+
 const addressIdsFormItemRulesValidator = async (
   _rule: Rule,
   value: number[]
@@ -722,11 +739,13 @@ const userListModalSelect: (
       user_level_name,
       username,
       company_name,
+      third_user_id,
     },
   ]
 ) => {
   Object.assign(model, {
     user_id,
+    third_user_id,
     phone,
     wx_nickname,
     user_level_name,
@@ -782,17 +801,77 @@ const goodsListModalSelect = (
   });
 };
 
-const getSubmitDataFunction = () => {
+const goodsItemCalculatedFunction = (
+  record: Api_goods_sku_list_result_item_interface,
+  qty: number,
+  unitPrice: number
+) => {
+  record.qty = qty;
+  record.current_selling_price = unitPrice;
+  record.purchaseAmount = multiply(unitPrice, qty);
+  // 需要判断下是否是阶梯价，阶梯价的单价会随着数量而变化
+  if (record.member_price.length > 0) {
+    let [{ member_price }] = record.member_price.filter(
+      ({ start_num, end_num }) => {
+        return qty >= start_num && (end_num ? qty < end_num : true);
+      }
+    );
+    record.shop_selling_price = member_price;
+    record.adjust_mount = multiply(subtract(member_price, unitPrice), qty);
+  } else {
+    record.adjust_mount = multiply(
+      subtract(record.shop_selling_price, unitPrice),
+      qty
+    );
+  }
+};
+
+const handleSubmitDataFunction = (
+  value: Api_proxy_order_Order_BackEnd_submit_params_interface
+) => {
   [
-    model.addressInfo.province_id,
-    model.addressInfo.city_id,
-    model.addressInfo.district_id,
-    model.addressInfo.street_id,
-  ] = model.addressInfo.addressIds;
-  apiDictCacheObject.addressOptions;
-  return {
-    ...model,
-  };
+    value.addressInfo.province_id,
+    value.addressInfo.city_id,
+    value.addressInfo.district_id,
+    value.addressInfo.street_id,
+  ] = value.addressInfo.addressIds;
+  [
+    value.addressInfo.province_name,
+    value.addressInfo.city_name,
+    value.addressInfo.district_name,
+    value.addressInfo.street_name,
+  ] = addressNameArray;
+  value.shop_goods_list = value.dataSource.map(
+    ({ qty, adjust_mount, shop_goods_id }) => {
+      return {
+        qty,
+        shop_goods_id,
+        adjust_mount: multiply(adjust_mount, 100),
+      };
+    }
+  );
+  value.freight = multiply(value.freight, 100);
+  value.validator.total_pay = multiply(model.validator.total_pay, 100);
+  if (value.isInvoice) {
+    if (value.order_invoice.mArea) {
+      [
+        value.order_invoice.province_id,
+        value.order_invoice.city_id,
+        value.order_invoice.district_id,
+        value.order_invoice.street_id,
+      ] = value.order_invoice.mArea;
+    }
+    // 去掉了开票形式，所以要改动一下数据，后端逻辑
+    if (value.order_invoice.invoice_form != 2) {
+      value.order_invoice.invoice_type = 1;
+      if (value.order_invoice.invoice_form == 3) {
+        value.order_invoice.invoice_form = 2;
+      }
+    } else {
+      value.order_invoice.invoice_type = 2;
+      value.order_invoice.invoice_form = 1;
+    }
+  }
 };
 
 watch(

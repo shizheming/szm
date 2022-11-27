@@ -15,7 +15,7 @@ import {
   api_common_area,
   api_common_area_controller,
 } from '../../api/dictionary';
-import { getApiDictCacheFunction } from '../../utils/global';
+import { apiDictCacheObject } from '../../utils/global';
 
 const options = ref<CascaderProps['options']>([]);
 const loadData: CascaderProps['loadData'] = async (selectedOptions) => {
@@ -35,7 +35,6 @@ const loadData: CascaderProps['loadData'] = async (selectedOptions) => {
     };
   });
 };
-const apiDictCacheObject = getApiDictCacheFunction();
 const inner = async () => {
   if (apiDictCacheObject.addressOptions) {
     options.value = apiDictCacheObject.addressOptions;
@@ -52,6 +51,9 @@ const inner = async () => {
       };
     });
     apiDictCacheObject.addressOptions = options.value;
+    Object.defineProperty(apiDictCacheObject, 'addressOptions', {
+      writable: false,
+    });
   }
 };
 </script>

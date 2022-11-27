@@ -13,7 +13,7 @@ import {
   api_goods_category_controller,
 } from '../../api/dictionary';
 import type { CascaderProps } from 'ant-design-vue';
-import { getApiDictCacheFunction } from '../../utils/global';
+import { apiDictCacheObject } from '../../utils/global';
 
 const options = ref<CascaderProps['options']>([]);
 const formatOptions = (category: CascaderProps['options']) => {
@@ -27,7 +27,6 @@ const formatOptions = (category: CascaderProps['options']) => {
   });
 };
 
-const apiDictCacheObject = getApiDictCacheFunction();
 const inner = async () => {
   if (apiDictCacheObject.backgroundCategoryOptions) {
     options.value = apiDictCacheObject.backgroundCategoryOptions;
@@ -36,6 +35,9 @@ const inner = async () => {
     api_goods_category_controller.abort();
     options.value = formatOptions(data);
     apiDictCacheObject.backgroundCategoryOptions = options.value;
+    Object.defineProperty(apiDictCacheObject, 'backgroundCategoryOptions', {
+      writable: false,
+    });
   }
 };
 </script>
