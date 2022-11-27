@@ -618,8 +618,11 @@ import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
-import { forEach, multiply, subtract } from 'lodash';
-import { api_upload_getUrl } from './api';
+import { cloneDeep, forEach, multiply, subtract } from 'lodash';
+import {
+  api_upload_getUrl,
+  api_proxy_order_Order_BackEnd_confirm,
+} from './api';
 import { apiDictCacheObject } from '../../../utils/global';
 import { SelectProps } from 'ant-design-vue/lib/vc-select';
 const UserListModal = defineAsyncComponent(
@@ -773,12 +776,15 @@ const goodsDeleteOutlinedClick = () => {
 };
 const goodsItemDeleteOutlinedClick = () => {};
 
-const goodsListModalSelect = (
+const goodsListModalSelect = async (
   rows: Api_goods_sku_list_result_item_interface[]
 ) => {
   model.dataSource = model.dataSource.concat(
     rows.map((item, index) => {
-      item.qty = 0;
+      item.qty = 1;
+      item.current_selling_price = item.shop_selling_price;
+      item.adjust_mount = 0;
+      item.purchaseAmount = item.shop_selling_price;
       item.sku_type_name = '实物';
       item.is_suit =
         item.is_suit === 'b'
@@ -799,6 +805,13 @@ const goodsListModalSelect = (
       item.imgSrc = data;
     }
   });
+  let { data } = await api_proxy_order_Order_BackEnd_confirm(
+    handleSubmitDataFunction(cloneDeep(model))
+  );
+  model.freight = data.total_freight;
+  model.qty = data.qty;
+  model.total_price = data.total_price;
+  model.total_real_price = data.total_real_price;
 };
 
 const goodsItemCalculatedFunction = (
@@ -872,6 +885,7 @@ const handleSubmitDataFunction = (
       value.order_invoice.invoice_form = 1;
     }
   }
+  return value;
 };
 
 watch(

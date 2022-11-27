@@ -396,8 +396,8 @@ export const goodsListModalGoodsTableColumns: TableColumnsType = [
 export const goodsListModalLadderPriceTableColumns: TableColumnsType = [
   {
     title: '订购数量',
-    dataIndex: 'start_num',
-    key: 'start_num',
+    dataIndex: 'start_num_name',
+    key: 'start_num_name',
   },
   {
     title: '销售单价',

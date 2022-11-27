@@ -16,11 +16,11 @@ import {
   useSlots,
   watchEffect,
   useAttrs,
-} from "vue";
-import { Form } from "ant-design-vue";
-import { cloneDeep, forEach, last, isArray } from "lodash";
-import { setLevelValue, getLevelValue } from "./tool";
-import { FormInstance } from "ant-design-vue";
+} from 'vue';
+import { Form } from 'ant-design-vue';
+import { cloneDeep, forEach, last, isArray } from 'lodash';
+import { setLevelValue, getLevelValue } from './tool';
+import { FormInstance } from 'ant-design-vue';
 const attrs = useAttrs();
 const p = defineProps({
   isDetail: {
@@ -39,13 +39,13 @@ forEach(slots, (value, key) => {
   newSlots[key] = (value as () => {})();
 });
 // 判断是不是编辑页
-provide("isEdit", p.isEdit);
+provide('isEdit', p.isEdit);
 // 判断是不是详情页
-provide("isDetail", p.isDetail);
+provide('isDetail', p.isDetail);
 
 // 收集表单里面的组件的outer函数
 const outer = reactive<{ [narme: string]: (v: any) => {} }>({});
-provide("outer", outer);
+provide('outer', outer);
 
 const outerModel = reactive<{ [narme: string]: any }>({});
 /* 设置外面的fromRender */

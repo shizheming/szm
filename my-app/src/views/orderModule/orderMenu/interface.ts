@@ -536,7 +536,8 @@ export interface Api_goods_sku_list_result_item_interface {
   ext_service: [];
   ext_service_list: [];
   member_price: {
-    start_num: number | string;
+    start_num: number;
+    start_num_name: string;
     end_num: number;
     member_price: number;
   }[];

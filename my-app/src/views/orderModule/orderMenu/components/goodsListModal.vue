@@ -213,7 +213,7 @@ const {
       current.member_price_name =
         current.member_price.length > 0 ? '阶梯价' : '固定价';
       current.member_price.forEach((item) => {
-        item.start_num = `${item.start_num}${
+        item.start_num_name = `${item.start_num}${
           item.end_num ? `~${item.end_num}` : '+'
         }`;
       });

@@ -149,3 +149,15 @@ export const api_upload_getUrl = (params: {
 }) => {
   return axios.post<string>('/api/upload/get-url', params);
 };
+
+// 人工下单确认
+export const api_proxy_order_Order_BackEnd_confirm = (
+  params: Api_proxy_order_Order_BackEnd_submit_params_interface
+) => {
+  return axios.post<{
+    qty: number;
+    total_price: number;
+    total_freight: number;
+    total_real_price: number;
+  }>('/api/proxy/order/Order/BackEnd/confirm', params);
+};
