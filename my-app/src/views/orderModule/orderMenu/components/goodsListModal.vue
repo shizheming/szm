@@ -5,6 +5,7 @@
     title="商品选择"
     width="100%"
     wrap-class-name="full-modal"
+    :confirmLoading="confirmLoading"
     @ok="ok"
     @cancel="cancel"
   >
@@ -193,7 +194,7 @@ const emits = defineEmits<{
     selectedRowsArray: Api_goods_sku_list_result_item_interface[]
   ): void;
 }>();
-
+const confirmLoading = ref(false);
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 let noSelectedRowKeysArray: string[] = [];
 const formRef = ref<FormInstance>();
@@ -305,34 +306,40 @@ const clearOutlinedClick = () => {
 };
 
 const ok = async () => {
-  // 验证选择得商品是否在可配送的范围内
-  let { data } = await api_goods_sku_getSkuAreaBySkuIds({
-    shop_goods_ids: selectedRowsArray.value.map(
-      ({ shop_goods_id }) => shop_goods_id
-    ),
-    province: props.model.addressInfo.addressIds[0],
-    district: props.model.addressInfo.addressIds[2],
-    channel_id: 1,
-  });
-  if (data.length) {
-    message.warning(
-      `所选择的商品中有${data.length}个商品不支持该收货地址，系统已自动删除！`
-    );
-    let spuSkuArray: string[] = [];
-    data.forEach((item) => {
-      selectedRowsArray.value = selectedRowsArray.value.filter((current) => {
-        if (current.shop_goods_id !== item) {
-          return true;
-        } else {
-          spuSkuArray.push(`${current.spu_id}/${current.sku_id}`);
-          return false;
-        }
-      });
+  confirmLoading.value = true;
+  try {
+    // 验证选择得商品是否在可配送的范围内
+    let { data } = await api_goods_sku_getSkuAreaBySkuIds({
+      shop_goods_ids: selectedRowsArray.value.map(
+        ({ shop_goods_id }) => shop_goods_id
+      ),
+      province: props.model.addressInfo.addressIds[0],
+      district: props.model.addressInfo.addressIds[2],
+      channel_id: 1,
     });
-    selectedRowKeys.value = difference(selectedRowKeys.value, spuSkuArray);
+    if (data.length) {
+      message.warning(
+        `所选择的商品中有${data.length}个商品不支持该收货地址，系统已自动删除！`
+      );
+      let spuSkuArray: string[] = [];
+      data.forEach((item) => {
+        selectedRowsArray.value = selectedRowsArray.value.filter((current) => {
+          if (current.shop_goods_id !== item) {
+            return true;
+          } else {
+            spuSkuArray.push(`${current.spu_id}/${current.sku_id}`);
+            return false;
+          }
+        });
+      });
+      selectedRowKeys.value = difference(selectedRowKeys.value, spuSkuArray);
+    }
+    emits('select', selectedRowsArray.value);
+    emits('update:visible', false);
+    confirmLoading.value = false;
+  } catch (e) {
+    confirmLoading.value = false;
   }
-  emits('select', selectedRowsArray.value);
-  emits('update:visible', false);
 };
 const cancel = () => {
   emits('update:visible', false);

@@ -373,7 +373,6 @@ export interface Api_proxy_order_Order_BackEnd_submit_params_interface {
   qty: number;
   total_price: number;
   freight: number;
-  total_real_price: number;
   dataSource: Api_goods_sku_list_result_item_interface[];
   entryMode: string;
   sale_mode: string;

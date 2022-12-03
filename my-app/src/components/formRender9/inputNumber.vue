@@ -1,5 +1,6 @@
 <template>
   <InputNumber
+    style="width: 100%"
     :disabled="detailStyleObj.disabled"
     :bordered="detailStyleObj.bordered"
     :class="detailStyleObj.class"

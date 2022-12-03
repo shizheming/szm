@@ -727,7 +727,7 @@
   />
   <task-list-modal v-model:visible="taskListModalVisible" />
   <delivery-installation-time-modal
-    v-model:visible="deliveryInstallationTimeModalVisible"
+    v-model:visible="deliveryInstallationTimeTableModalVisible"
     :record="recordObject"
     @submit="modalSubmit"
   />
@@ -818,13 +818,13 @@ const RemarkFormModal = defineAsyncComponent(
 const TaskListModal = defineAsyncComponent(
   () => import('./components/taskListModal.vue')
 );
-const DeliveryInstallationTimeModal = defineAsyncComponent(
-  () => import('./components/deliveryInstallationTimeModal.vue')
+const DeliveryInstallationTimeTableModal = defineAsyncComponent(
+  () => import('./components/deliveryInstallationTimeTableModal.vue')
 );
 
 const remarkFormModalVisible = ref(false);
 const taskListModalVisible = ref(false);
-const deliveryInstallationTimeModalVisible = ref(false);
+const deliveryInstallationTimeTableModalVisible = ref(false);
 const formRef = ref<FormInstance>();
 const height = ref('220px');
 
@@ -1032,7 +1032,7 @@ const bookingConfirmationPopconfirmConfirm1 = (
   record: Api_order_result_item_interface
 ) => {
   recordObject.value = record;
-  deliveryInstallationTimeModalVisible.value = true;
+  deliveryInstallationTimeTableModalVisible.value = true;
 };
 const bookingConfirmationPopconfirmConfirm2 = async (
   record: Api_order_result_item_interface

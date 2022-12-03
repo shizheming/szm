@@ -1,21 +1,29 @@
 <template>
   <a-modal
     :visible="props.visible"
-    title="卖家备注"
+    title="修改价格"
     @ok="ok"
     @cancel="cancel"
     :confirmLoading="confirmLoading"
   >
     <a-form ref="formRef" :model="model" layout="vertical">
+      <a-form-item label="销售单价" :name="['shop_selling_price']">
+        <a-input-number
+          v-model:value="model.shop_selling_price"
+          :is-detail="true"
+        />
+      </a-form-item>
       <a-form-item
-        label="卖家备注"
-        :name="['merchant_remark']"
+        label="销售单价"
+        :name="['adjust_mount']"
         :rules="{
           required: true,
           message: '请填写',
         }"
       >
-        <a-textarea v-model:value="model.merchant_remark" />
+        <a-input-number v-model:value="model.adjust_mount">
+          <template #addonAfter>元</template>
+        </a-input-number>
       </a-form-item>
     </a-form>
   </a-modal>

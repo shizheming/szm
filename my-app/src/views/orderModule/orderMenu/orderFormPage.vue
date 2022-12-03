@@ -486,13 +486,15 @@
         #bodyCell="{
           column,
           record,
+          index,
         }: {
           column: TableColumnType,
           record: Api_goods_sku_list_result_item_interface,
+          index: number,
         }"
       >
         <template v-if="column.key === 'opration'">
-          <delete-outlined @click="goodsItemDeleteOutlinedClick" />
+          <delete-outlined @click="goodsItemDeleteOutlinedClick(index)" />
         </template>
         <template v-if="column.key === 'member_price_name'">
           {{ record.member_price_name }}
@@ -507,7 +509,6 @@
             </template>
             <info-circle-outlined />
           </a-popover>
-          <span v-else>{{ record.shop_selling_price }}</span>
         </template>
         <template v-if="column.key === 'category_path'">
           <background-category-cascader
@@ -530,7 +531,6 @@
             style="float: right"
           />
         </template>
-
         <template v-if="column.key === 'imgSrc'">
           <a-image :src="record.imgSrc" :width="50" />
         </template>
@@ -550,7 +550,9 @@
       </a-col>
       <a-col :span="8">
         <a-form-item label="运费" :name="['freight']">
-          <a-input v-model:value="model.freight" />
+          <a-input-number v-model:value="model.freight">
+            <template #addonAfter>元</template>
+          </a-input-number>
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -623,7 +625,6 @@ import {
   api_upload_getUrl,
   api_proxy_order_Order_BackEnd_confirm,
 } from './api';
-import { apiDictCacheObject } from '../../../utils/global';
 import { SelectProps } from 'ant-design-vue/lib/vc-select';
 const UserListModal = defineAsyncComponent(
   () => import('./components/userListModal.vue')
@@ -774,44 +775,34 @@ const goodsDeleteOutlinedClick = () => {
     selectedRowKeys.value = [];
   }
 };
-const goodsItemDeleteOutlinedClick = () => {};
+const goodsItemDeleteOutlinedClick = (index: number) => {
+  model.dataSource.splice(index, 1);
+};
 
 const goodsListModalSelect = async (
   rows: Api_goods_sku_list_result_item_interface[]
 ) => {
   model.dataSource = model.dataSource.concat(
     rows.map((item, index) => {
-      item.qty = 1;
-      item.current_selling_price = item.shop_selling_price;
-      item.adjust_mount = 0;
-      item.purchaseAmount = item.shop_selling_price;
+      goodsItemCalculatedFunction(item, 1, item.shop_selling_price);
       item.sku_type_name = '实物';
       item.is_suit =
         item.is_suit === 'b'
           ? ''
           : IS_SUIT_ENUM[item.is_suit as number] || '普通';
+      if (item.gallery.length) {
+        const [{ key, upload_channel, bucket }] = item.gallery;
+        api_upload_getUrl({
+          key,
+          upload_channel,
+          bucket,
+        }).then(({ data }) => {
+          item.imgSrc = data;
+        });
+      }
       return item;
     })
   );
-  model.dataSource.forEach(async (item) => {
-    if (item.gallery.length) {
-      const [{ key, upload_channel, bucket }] = item.gallery;
-
-      let { data } = await api_upload_getUrl({
-        key,
-        upload_channel,
-        bucket,
-      });
-      item.imgSrc = data;
-    }
-  });
-  let { data } = await api_proxy_order_Order_BackEnd_confirm(
-    handleSubmitDataFunction(cloneDeep(model))
-  );
-  model.freight = data.total_freight;
-  model.qty = data.qty;
-  model.total_price = data.total_price;
-  model.total_real_price = data.total_real_price;
 };
 
 const goodsItemCalculatedFunction = (
@@ -840,8 +831,9 @@ const goodsItemCalculatedFunction = (
 };
 
 const handleSubmitDataFunction = (
-  value: Api_proxy_order_Order_BackEnd_submit_params_interface
+  model: Api_proxy_order_Order_BackEnd_submit_params_interface
 ) => {
+  const value = cloneDeep(model);
   [
     value.addressInfo.province_id,
     value.addressInfo.city_id,
@@ -876,24 +868,46 @@ const handleSubmitDataFunction = (
     }
     // 去掉了开票形式，所以要改动一下数据，后端逻辑
     if (value.order_invoice.invoice_form != 2) {
+      console.log(1);
+
       value.order_invoice.invoice_type = 1;
       if (value.order_invoice.invoice_form == 3) {
+        console.log(2);
+
         value.order_invoice.invoice_form = 2;
       }
     } else {
       value.order_invoice.invoice_type = 2;
       value.order_invoice.invoice_form = 1;
     }
+  } else {
+    delete value.order_invoice;
   }
+  console.log(value, 23);
+
   return value;
 };
 
 watch(
   () => model.dataSource.length,
-  () => {
-    model.dataSource.forEach((item, index) => {
-      item.number = index + 1;
-    });
+  async (newValue) => {
+    if (newValue === 0) {
+      model.freight = undefined;
+      model.qty = undefined;
+      model.total_price = undefined;
+      model.validator.total_pay = undefined;
+    } else {
+      model.dataSource.forEach((item, index) => {
+        item.number = index + 1;
+      });
+      let { data } = await api_proxy_order_Order_BackEnd_confirm(
+        handleSubmitDataFunction(model)
+      );
+      model.freight = data.total_freight / 100;
+      model.qty = data.qty;
+      model.total_price = data.total_price / 100;
+      model.validator.total_pay = data.total_real_price / 100;
+    }
   }
 );
 
