@@ -299,6 +299,11 @@ export const orderFormPageGoodsTableColumns: TableColumnsType = [
     key: 'pack_unit',
   },
   {
+    title: '可售库存',
+    dataIndex: 'real_qty',
+    key: 'real_qty',
+  },
+  {
     title: '订购数量',
     dataIndex: 'qty',
     key: 'qty',

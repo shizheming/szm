@@ -281,7 +281,6 @@ const tableChange: TableProps['onChange'] = async (pag) => {
     })
   );
 };
-console.log(noSelectedRowKeysArray, 2000);
 
 const getCheckboxProps: TableRowSelection['getCheckboxProps'] = ({
   sku_id,

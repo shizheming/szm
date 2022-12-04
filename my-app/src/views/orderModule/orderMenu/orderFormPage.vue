@@ -518,17 +518,17 @@
           />
         </template>
         <template v-if="column.key === 'qty'">
-          {{ record.qty }}
-          <edit-outlined
-            @click="qtyEditOutlinedClick(record)"
-            style="float: right"
+          <a-input-number
+            v-model:value="record.qty"
+            :max="record.real_qty"
+            :min="1"
           />
         </template>
         <template v-if="column.key === 'current_selling_price'">
-          {{ record.current_selling_price }}
-          <edit-outlined
-            @click="currentSellingPriceEditOutlinedClick(record)"
-            style="float: right"
+          <a-input-number
+            v-model:value="record.current_selling_price"
+            :max="record.shop_selling_price"
+            :min="0"
           />
         </template>
         <template v-if="column.key === 'imgSrc'">
@@ -584,6 +584,7 @@ import {
   defineAsyncComponent,
   ref,
   watch,
+  watchEffect,
   computed,
   createVNode,
 } from 'vue';
@@ -760,13 +761,6 @@ const userListModalSelect: (
   formRef.value!.validate(['user_id']);
 };
 
-const qtyEditOutlinedClick = (
-  record: Api_goods_sku_list_result_item_interface
-) => {};
-const currentSellingPriceEditOutlinedClick = (
-  record: Api_goods_sku_list_result_item_interface
-) => {};
-
 const goodsDeleteOutlinedClick = () => {
   if (selectedRowKeys.value.length) {
     model.dataSource = model.dataSource.filter(({ sku_id, spu_id }) => {
@@ -888,28 +882,26 @@ const handleSubmitDataFunction = (
   return value;
 };
 
-watch(
-  () => model.dataSource.length,
-  async (newValue) => {
-    if (newValue === 0) {
-      model.freight = undefined;
-      model.qty = undefined;
-      model.total_price = undefined;
-      model.validator.total_pay = undefined;
-    } else {
-      model.dataSource.forEach((item, index) => {
-        item.number = index + 1;
-      });
-      let { data } = await api_proxy_order_Order_BackEnd_confirm(
-        handleSubmitDataFunction(model)
-      );
-      model.freight = data.total_freight / 100;
-      model.qty = data.qty;
-      model.total_price = data.total_price / 100;
-      model.validator.total_pay = data.total_real_price / 100;
-    }
+watchEffect(async () => {
+  if (model.dataSource.length === 0) {
+    model.freight = undefined;
+    model.qty = undefined;
+    model.total_price = undefined;
+    model.validator.total_pay = undefined;
+  } else {
+    model.dataSource.forEach((item, index) => {
+      goodsItemCalculatedFunction(item, item.qty, item.current_selling_price);
+      item.number = index + 1;
+    });
+    let { data } = await api_proxy_order_Order_BackEnd_confirm(
+      handleSubmitDataFunction(model)
+    );
+    model.freight = data.total_freight / 100;
+    model.qty = data.qty;
+    model.total_price = data.total_price / 100;
+    model.validator.total_pay = data.total_real_price / 100;
   }
-);
+});
 
 const tableRowKey = ({
   sku_id,
