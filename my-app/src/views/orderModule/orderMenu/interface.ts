@@ -479,6 +479,7 @@ export interface Api_goods_sku_list_params_interface
   extends Partial<Api_goods_sku_list_params_part_interface>,
     PageInterface {}
 export interface Api_goods_sku_list_result_item_interface {
+  min_qty: number;
   purchaseAmount: number;
   adjust_mount: number;
   imgSrc: string;

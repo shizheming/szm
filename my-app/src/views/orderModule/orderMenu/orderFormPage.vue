@@ -521,7 +521,7 @@
           <a-input-number
             v-model:value="record.qty"
             :max="record.real_qty"
-            :min="1"
+            :min="record.min_qty"
           />
         </template>
         <template v-if="column.key === 'current_selling_price'">
@@ -778,7 +778,8 @@ const goodsListModalSelect = async (
 ) => {
   model.dataSource = model.dataSource.concat(
     rows.map((item, index) => {
-      goodsItemCalculatedFunction(item, 1, item.shop_selling_price);
+      item.min_qty = item.real_qty && 1;
+      goodsItemCalculatedFunction(item, item.min_qty, item.shop_selling_price);
       item.sku_type_name = '实物';
       item.is_suit =
         item.is_suit === 'b'
