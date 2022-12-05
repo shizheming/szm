@@ -522,6 +522,7 @@
             v-model:value="record.qty"
             :max="record.real_qty"
             :min="record.min_qty"
+            @change="inputNumberChange(record)"
           />
         </template>
         <template v-if="column.key === 'current_selling_price'">
@@ -529,6 +530,7 @@
             v-model:value="record.current_selling_price"
             :max="record.shop_selling_price"
             :min="0"
+            @change="inputNumberChange(record)"
           />
         </template>
         <template v-if="column.key === 'imgSrc'">
@@ -550,7 +552,10 @@
       </a-col>
       <a-col :span="8">
         <a-form-item label="运费" :name="['freight']">
-          <a-input-number v-model:value="model.freight">
+          <a-input-number
+            v-model:value="model.freight"
+            @change="freightInputNumberChange"
+          >
             <template #addonAfter>元</template>
           </a-input-number>
         </a-form-item>
@@ -627,6 +632,7 @@ import {
   api_proxy_order_Order_BackEnd_confirm,
 } from './api';
 import { SelectProps } from 'ant-design-vue/lib/vc-select';
+import { Api_goods_category_result_item_interface } from '../../../api/interface';
 const UserListModal = defineAsyncComponent(
   () => import('./components/userListModal.vue')
 );
@@ -883,26 +889,43 @@ const handleSubmitDataFunction = (
   return value;
 };
 
-watchEffect(async () => {
-  if (model.dataSource.length === 0) {
-    model.freight = undefined;
-    model.qty = undefined;
-    model.total_price = undefined;
-    model.validator.total_pay = undefined;
-  } else {
-    model.dataSource.forEach((item, index) => {
-      goodsItemCalculatedFunction(item, item.qty, item.current_selling_price);
-      item.number = index + 1;
-    });
-    let { data } = await api_proxy_order_Order_BackEnd_confirm(
-      handleSubmitDataFunction(model)
-    );
-    model.freight = data.total_freight / 100;
-    model.qty = data.qty;
-    model.total_price = data.total_price / 100;
-    model.validator.total_pay = data.total_real_price / 100;
+const inputNumberChange = async (
+  record: Api_goods_sku_list_result_item_interface
+) => {
+  goodsItemCalculatedFunction(record, record.qty, record.current_selling_price);
+  setPriceFunction();
+};
+
+// change是头，watch是尾
+// change是自己的，如果写别人，一定是命令式的下达很多，如果写成watch那就不是实体和实体之间的关系了，变成了实体和事情的关系了，监听某个实体然后干一些事情
+// watch是别人的，不可能watch自己，自己是change的，如果多个实体监听同一个实体，那么可以变成change
+watch(
+  () => model.dataSource,
+  async (newValue) => {
+    if (newValue.length === 0) {
+      model.freight = undefined;
+      model.qty = undefined;
+      model.total_price = undefined;
+      model.validator.total_pay = undefined;
+    } else {
+      newValue.forEach((item, index) => {
+        item.number = index + 1;
+      });
+      setPriceFunction();
+    }
   }
-});
+);
+
+const setPriceFunction = async () => {
+  let { data } = await api_proxy_order_Order_BackEnd_confirm(
+    handleSubmitDataFunction(model)
+  );
+  model.freight = data.total_freight / 100;
+  model.qty = data.qty;
+  model.total_price = data.total_price / 100;
+  model.validator.total_pay = data.total_real_price / 100;
+};
+const freightInputNumberChange = setPriceFunction;
 
 const tableRowKey = ({
   sku_id,
