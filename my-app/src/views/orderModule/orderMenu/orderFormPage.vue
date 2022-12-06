@@ -626,7 +626,7 @@ import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
-import { cloneDeep, forEach, multiply, subtract } from 'lodash';
+import { cloneDeep, debounce, forEach, multiply, subtract } from 'lodash';
 import {
   api_upload_getUrl,
   api_proxy_order_Order_BackEnd_confirm,
@@ -921,7 +921,7 @@ watch(
   }
 );
 
-const setPriceFunction = async () => {
+const setPriceFunction = debounce(async () => {
   let { data } = await api_proxy_order_Order_BackEnd_confirm(
     handleSubmitDataFunction(model)
   );
@@ -929,7 +929,7 @@ const setPriceFunction = async () => {
   model.qty = data.qty;
   model.total_price = data.total_price / 100;
   model.validator.total_pay = data.total_real_price / 100;
-};
+}, 500);
 const freightInputNumberChange = setPriceFunction;
 
 const tableRowKey = ({
