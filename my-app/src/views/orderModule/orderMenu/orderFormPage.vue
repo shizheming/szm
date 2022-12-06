@@ -895,10 +895,15 @@ const inputNumberChange = async (
   goodsItemCalculatedFunction(record, record.qty, record.current_selling_price);
   setPriceFunction();
 };
-// change是自己触发得，watch是别人触发的
+
 // 从实体的出发
-// 实体change是自己触发的，然后干一些事情，是一对一或是一对多，可以对实体自己，也可以是对别的实体，对别的实体是一种命令式的下发的写法，现在一般是跟自己有关的用change，如果是多个实体的change干的是同一件事情，那我可以用监听，监听多个值，这个多个值就代表监听的实体，去触发干的那同一件事情，这是一种change的变体，这里的watch从概念上来看就不能当watch来看的，而是还是一种change，只是写法不同而已，因为从逻辑上来讲这里的watch没有主语，谁监听，没有，所以概念上还是change
+// 实体的change是自己触发的，然后干一些事情，是一对一或是一对多，可以对实体自己做一些事情，也可以是对别的实体做一些事情，对别的实体是一种命令式的下发的写法，现在一般是跟自己有关的用change，如果是多个实体的change干的是同一件事情，那我可以用监听，监听多个值，这个多个值就代表监听的实体，去触发干的那同一件事情，这是一种change的变体，这里的watch从概念上来看就不能当watch来看的，而是还是一种change，只是写法不同而已，因为从逻辑上来讲这里的watch没有主语，谁监听，没有，所以概念上还是change
 // 谁在watch，是页面，没有当前input，select组件之类的watch，没有独立的watch，只有页面级别的watch
+// 事实是这样，没有所谓的组件watch主语，但是我从逻辑上可以给他一个watch主语，没毛病的，我可以这样理解
+// 实体的watch是别人触发的，然后干一些事情，是一对一或是一对多，可以对实体自己做一些事情，也可以是对别的实体做一些事情，监听别人，然后对别人干一些事情，watch主语的概念就变了，就已经是change的概念了，所以要首先明确watch的主语，有了实体主语后才知道是watch好点还是change好点
+// watch里面只有自己的事情，才能在概念上叫实体的watch，如果干了别人的事情，那概念上就是别人的change了，跟当前实体就已经没有关系了
+
+// 这个watch概念上就是table的chang事件
 watch(
   () => model.dataSource,
   async (newValue) => {
@@ -934,6 +939,7 @@ const tableRowKey = ({
   return `${spu_id}/${sku_id}`;
 };
 
+// 这里的watch也是change，而且是2个实体的chagne
 watch(
   [
     () => model.order_invoice!.invoice_kind,
