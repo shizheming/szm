@@ -171,7 +171,7 @@
         <a-form-item label="配送方式" :name="['delivery_mode']">
           <a-select
             v-model:value="model.delivery_mode"
-            :options="DELIVERY_MODE_OPTIONS"
+            :options="DELIVERY_METHOD_OPTIONS"
             :allow-clear="false"
           />
         </a-form-item>
@@ -642,8 +642,8 @@ import {
 import AddressCascader from '../../../components/cascader/address.vue';
 import {
   WHETHER_OPTIONS,
-  DELIVERY_MODE_OPTIONS,
-  IS_SUIT_ENUM,
+  DELIVERY_METHOD_OPTIONS,
+  GOODS_FORM_ENUM,
   VAT_INVOICE_TYPE_OPTIONS,
 } from '../../../data/dictionary';
 import {
@@ -818,7 +818,7 @@ const goodsListModalSelect = async (
       item.is_suit =
         item.is_suit === 'b'
           ? ''
-          : IS_SUIT_ENUM[item.is_suit as number] || '普通';
+          : GOODS_FORM_ENUM[item.is_suit as number] || '普通';
       if (item.gallery.length) {
         const [{ key, upload_channel, bucket }] = item.gallery;
         api_upload_getUrl({

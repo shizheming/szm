@@ -20,7 +20,10 @@
         </a-col>
         <a-col :span="8">
           <a-form-item label="任务类" :name="['name']">
-            <a-select :options="TYPE_OPTIONS" v-model:value="model.type" />
+            <a-select
+              :options="TASK_CLASS_OPTIONS"
+              v-model:value="model.type"
+            />
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -105,7 +108,7 @@ import {
   Api_order_orderSyncList_params_interface,
 } from '../interface';
 import { api_order_orderSyncList, api_order_getFileByUrl } from '../api';
-import { TYPE_OPTIONS } from '../../../../data/dictionary';
+import { TASK_CLASS_OPTIONS } from '../../../../data/dictionary';
 import { taskListModalTableColumns } from '../data';
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';

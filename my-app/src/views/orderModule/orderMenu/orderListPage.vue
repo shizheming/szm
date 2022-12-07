@@ -158,7 +158,7 @@
           <a-select
             v-model:value="model.create_mode_arr"
             mode="multiple"
-            :options="CREATE_MODE_OPTIONS"
+            :options="ENTRY_METHOD_OPTIONS"
           />
         </a-form-item>
       </a-col>
@@ -170,7 +170,7 @@
         >
           <a-select
             v-model:value="model.app_platform"
-            :options="APP_PLATFORM_OPTIONS"
+            :options="SOURCE_TERMINAL_OPTIONS"
           />
         </a-form-item>
       </a-col>
@@ -191,7 +191,7 @@
         >
           <a-select
             v-model:value="model.delivery_mode"
-            :options="DELIVERY_MODE_OPTIONS"
+            :options="DELIVERY_METHOD_OPTIONS"
           />
         </a-form-item>
       </a-col>
@@ -203,7 +203,7 @@
         >
           <a-select
             v-model:value="model.pay_type"
-            :options="PAY_TYPE_OPTIONS"
+            :options="PAYMENT_METHOD_OPTIONS"
           />
         </a-form-item>
       </a-col>
@@ -251,7 +251,7 @@
         >
           <a-select
             v-model:value="model.goods_source"
-            :options="GOODS_SOURCE_OPTIONS"
+            :options="ORDER_GOODS_SOURCE_OPTIONS"
           />
         </a-form-item>
       </a-col>
@@ -350,7 +350,7 @@
         >
           <a-select
             v-model:value="model.marketing_type"
-            :options="MARTING_TYPE_OPTIONS"
+            :options="DETAIL_OF_MARKETING_ACTIVITIES_OPTIONS"
           />
         </a-form-item>
       </a-col>
@@ -422,7 +422,7 @@
         >
           <a-select
             v-model:value="model.business_id"
-            :options="BUSINESS_OPTIONS"
+            :options="BUSINESS_MODEL_OPTIONS"
           />
         </a-form-item>
       </a-col>
@@ -455,7 +455,7 @@
         >
           <a-select
             v-model:value="model.spell_order_status"
-            :options="SPELL_ORDER_STATUS_OPTIONS"
+            :options="GROUPING_STATUS_OPTIONS"
           />
         </a-form-item>
       </a-col>
@@ -557,7 +557,7 @@
               {{ record.pre_delivery_time }}
             </a-descriptions-item>
             <a-descriptions-item label="拼团状态">
-              {{ SPELL_ORDER_STATUS_ENUM[record.spell_order_status] }}
+              {{ GROUPING_STATUS_ENUM[record.spell_order_status] }}
             </a-descriptions-item>
             <a-descriptions-item label="支付时间">
               {{ record.pay_time }}
@@ -749,26 +749,26 @@ import {
   PAY_STATUS_OPTIONS,
   DELIVERY_STATUS_OPTIONS,
   USER_LEVEL_OPTIONS,
-  APP_PLATFORM_OPTIONS,
-  DELIVERY_MODE_OPTIONS,
-  CREATE_MODE_OPTIONS,
-  PAY_TYPE_OPTIONS,
+  SOURCE_TERMINAL_OPTIONS,
+  DELIVERY_METHOD_OPTIONS,
+  ENTRY_METHOD_OPTIONS,
+  PAYMENT_METHOD_OPTIONS,
   PAYMENT_TYPE_OPTIONS,
-  GOODS_SOURCE_OPTIONS,
+  ORDER_GOODS_SOURCE_OPTIONS,
   IS_INVOICE_OPTIONS,
   WHETHER_OPTIONS,
-  MARTING_TYPE_OPTIONS,
+  DETAIL_OF_MARKETING_ACTIVITIES_OPTIONS,
   ORDER_TYPE_OPTIONS,
   YES_NO_OPTIONS,
-  BUSINESS_OPTIONS,
-  SPELL_ORDER_STATUS_OPTIONS,
+  BUSINESS_MODEL_OPTIONS,
+  GROUPING_STATUS_OPTIONS,
   SORT_ENUM,
   USER_INFO,
   WHETHER_ENUM,
-  SPELL_ORDER_STATUS_ENUM,
+  GROUPING_STATUS_ENUM,
   YES_NO_ENUM,
-  GOODS_SOURCE_ENUM,
-  IS_SUIT_ENUM,
+  ORDER_GOODS_SOURCE_ENUM,
+  GOODS_FORM_ENUM,
 } from '../../../data/dictionary';
 import SupplierSelect from '../../../components/select/supplier.vue';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';

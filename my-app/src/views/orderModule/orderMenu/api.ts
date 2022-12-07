@@ -13,6 +13,7 @@ import type {
   Api_proxy_order_Order_BackEnd_submit_params_interface,
   Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_item_interface,
   Api_proxy_order_manage_query_getServerInfo_item_interface,
+  Api_proxy_order_Manage_Invoice_repairInvoice_params_interface,
 } from './interface';
 
 // 订单列表
@@ -160,4 +161,11 @@ export const api_proxy_order_Order_BackEnd_confirm = (
     total_freight: number;
     total_real_price: number;
   }>('/api/proxy/order/Order/BackEnd/confirm', params);
+};
+
+// 补开发票申请
+export const api_proxy_order_Manage_Invoice_repairInvoice = (
+  params: Api_proxy_order_Manage_Invoice_repairInvoice_params_interface
+) => {
+  return axios.post('/api/proxy/order/Manage/Invoice/repairInvoice', params);
 };
