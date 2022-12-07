@@ -10,7 +10,7 @@ import {
   ref,
   ExtractPropTypes,
   InjectionKey,
-} from "vue";
+} from 'vue';
 import {
   forEach,
   tail,
@@ -21,8 +21,8 @@ import {
   isPlainObject,
   get,
   isObject,
-} from "lodash";
-import { PropsInterface } from "./props";
+} from 'lodash';
+import { PropsInterface } from './props';
 
 export default function (props: PropsInterface): {
   newSlots: {};
@@ -35,21 +35,15 @@ export default function (props: PropsInterface): {
   }>;
 } {
   /********************** 接受form给的数据 **********************/
-  const outer = inject<Ref>("outer", ref());
-  const componentName = inject<Ref>("componentName", ref());
-  let componentNameStr: string = "";
-  let detailStyleObj = ref<{
-    disabled: boolean;
-    bordered: boolean;
-    showArrow: boolean;
-    class: string;
-    style: string;
-  }>({
+  const outer = inject<Ref>('outer', ref());
+  const componentName = inject<Ref>('componentName', ref());
+  let componentNameStr: string = '';
+  let detailStyleObj = ref({
     disabled: false,
     bordered: true,
     showArrow: true,
-    class: "",
-    style: "",
+    class: '',
+    style: '',
   });
   const slots = useSlots();
 
@@ -59,7 +53,7 @@ export default function (props: PropsInterface): {
   });
 
   if (isArray(componentName.value)) {
-    componentNameStr = componentName.value.join(".");
+    componentNameStr = componentName.value.join('.');
   } else if (isString(componentName.value)) {
     componentNameStr = componentName.value;
   }
@@ -76,14 +70,14 @@ export default function (props: PropsInterface): {
           detailStyleObj.value.disabled = true;
           detailStyleObj.value.bordered = false;
           detailStyleObj.value.showArrow = false;
-          detailStyleObj.value.class = "formDetail";
-          detailStyleObj.value.style = "";
+          detailStyleObj.value.class = 'formDetail';
+          detailStyleObj.value.style = '';
         } else {
           detailStyleObj.value.disabled = false;
           detailStyleObj.value.bordered = true;
           detailStyleObj.value.showArrow = true;
-          detailStyleObj.value.class = "";
-          detailStyleObj.value.style = "margin:auto";
+          detailStyleObj.value.class = '';
+          detailStyleObj.value.style = 'margin:auto';
         }
       },
       { immediate: true }
@@ -93,19 +87,6 @@ export default function (props: PropsInterface): {
   if (props.watch) {
     watch(...props.watch);
   }
-
-  /* 监听一次 */
-  /*  if (isArray(props["trigger-once"])) {
-    props["trigger-once"].forEach((item) => {
-      const unwatch = watch(
-        isObject(item[0]) ? item[0] : () => item[0],
-        (newValue, oldValue) => {
-          item[1]();
-          unwatch();
-        }
-      );
-    });
-  } */
 
   /* outer函数 */
   if (props.outer && outer) {

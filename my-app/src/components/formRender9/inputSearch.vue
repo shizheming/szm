@@ -20,18 +20,6 @@ const p = defineProps<{
   inner?: () => void;
   watch?: any[];
   outer?: () => void;
-  // togetherhas: {
-  //   type: Array,
-  //   default: undefined,
-  // },
-  // togethernohas: {
-  //   type: Array,
-  //   default: undefined,
-  // },
-  // clear: {
-  //   type: Boolean,
-  //   default: undefined,
-  // },
 }>();
 const { newSlots, detailStyleObj } = core(p);
 </script>
