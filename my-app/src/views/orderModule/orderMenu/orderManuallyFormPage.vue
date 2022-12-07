@@ -5,7 +5,11 @@
     :label-col="{ span: 8 }"
     @finish="finish"
   >
-    <h1 style="font-weight: 700">基本信息</h1>
+    <a-row>
+      <a-col :span="8">
+        <a-form-item label="基本信息" :colon="false" style="font-weight: 700" />
+      </a-col>
+    </a-row>
     <a-row>
       <a-col :span="8">
         <a-form-item label="录入方式" :name="['entryMode']">
@@ -152,7 +156,11 @@
         </a-form-item>
       </a-col>
     </a-row>
-    <h1 style="font-weight: 700">发运计划</h1>
+    <a-row>
+      <a-col :span="8">
+        <a-form-item label="发运计划" :colon="false" style="font-weight: 700" />
+      </a-col>
+    </a-row>
     <a-row>
       <a-col :span="8">
         <a-form-item label="库存冻结" :name="['stockFreeze']">
@@ -163,13 +171,17 @@
         <a-form-item label="配送方式" :name="['delivery_mode']">
           <a-select
             v-model:value="model.delivery_mode"
-            :options="DELIVERY_MODE_OPTIONS"
+            :options="DELIVERY_METHOD_OPTIONS"
             :allow-clear="false"
           />
         </a-form-item>
       </a-col>
     </a-row>
-    <h1 style="font-weight: 700">开票申请</h1>
+    <a-row>
+      <a-col :span="8">
+        <a-form-item label="开票申请" :colon="false" style="font-weight: 700" />
+      </a-col>
+    </a-row>
     <a-row>
       <a-col :span="8">
         <a-form-item
@@ -446,7 +458,15 @@
         </a-col>
       </a-row>
     </div>
-    <h1 style="font-weight: 700">支付和结算</h1>
+    <a-row>
+      <a-col :span="8">
+        <a-form-item
+          label="支付和结算"
+          :colon="false"
+          style="font-weight: 700"
+        />
+      </a-col>
+    </a-row>
     <a-row>
       <a-col :span="8">
         <a-form-item label="支付类型" :name="['pay_mode']">
@@ -463,7 +483,11 @@
         </a-form-item>
       </a-col>
     </a-row>
-    <h1 style="font-weight: 700">商品信息</h1>
+    <a-row>
+      <a-col :span="8">
+        <a-form-item label="商品信息" :colon="false" style="font-weight: 700" />
+      </a-col>
+    </a-row>
     <a-space>
       <a-button html-type="submit">
         <plus-outlined />
@@ -538,7 +562,11 @@
         </template>
       </template>
     </a-table>
-    <h1 style="font-weight: 700">订单合计</h1>
+    <a-row>
+      <a-col :span="8">
+        <a-form-item label="订单合计" :colon="false" style="font-weight: 700" />
+      </a-col>
+    </a-row>
     <a-row>
       <a-col :span="8">
         <a-form-item label="商品数量合计" :name="['qty']">
@@ -614,8 +642,8 @@ import {
 import AddressCascader from '../../../components/cascader/address.vue';
 import {
   WHETHER_OPTIONS,
-  DELIVERY_MODE_OPTIONS,
-  IS_SUIT_ENUM,
+  DELIVERY_METHOD_OPTIONS,
+  GOODS_FORM_ENUM,
   VAT_INVOICE_TYPE_OPTIONS,
 } from '../../../data/dictionary';
 import {
@@ -790,7 +818,7 @@ const goodsListModalSelect = async (
       item.is_suit =
         item.is_suit === 'b'
           ? ''
-          : IS_SUIT_ENUM[item.is_suit as number] || '普通';
+          : GOODS_FORM_ENUM[item.is_suit as number] || '普通';
       if (item.gallery.length) {
         const [{ key, upload_channel, bucket }] = item.gallery;
         api_upload_getUrl({

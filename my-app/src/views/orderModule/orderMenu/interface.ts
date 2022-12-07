@@ -581,3 +581,8 @@ export interface Api_proxy_order_manage_query_getServerInfo_item_interface {
     }[];
   }[];
 }
+
+export interface Api_proxy_order_Manage_Invoice_repairInvoice_params_interface {
+  invoice_type: number;
+  invoice_kind: number;
+}

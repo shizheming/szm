@@ -28,13 +28,13 @@ export default [
         ],
       },
       {
-        path: 'orderFormPage',
-        name: 'orderFormPage',
+        path: 'orderManuallyFormPage',
+        name: 'orderManuallyFormPage',
         meta: {
           title: '人工下单',
         },
         component: () =>
-          import('../views/orderModule/orderMenu/orderFormPage.vue'),
+          import('../views/orderModule/orderMenu/orderManuallyFormPage.vue'),
       },
 
       {
