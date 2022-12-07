@@ -249,10 +249,10 @@
               message: '请选择',
             }"
           >
-            <a-radio-group v-model:value="model.order_invoice.content_type">
-              <a-radio :value="0">商品明细</a-radio>
-              <a-radio :value="1">商品类别</a-radio>
-            </a-radio-group>
+            <a-radio-group
+              v-model:value="model.order_invoice.content_type"
+              :options="INVOICE_CONTENT_OPTIONS"
+            />
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -645,6 +645,7 @@ import {
   DELIVERY_METHOD_OPTIONS,
   GOODS_FORM_ENUM,
   VAT_INVOICE_TYPE_OPTIONS,
+  INVOICE_CONTENT_OPTIONS,
 } from '../../../data/dictionary';
 import {
   orderFormPageGoodsTableColumns,

@@ -27,7 +27,7 @@
           </a-radio-group>
         </a-form-item>
       </a-col>
-      <a-col :span="8">
+      <a-col :span="8" v-if="model.invoice_type === 3">
         <a-form-item
           label="发票抬头类型"
           :name="['invoice_kind']"
@@ -38,7 +38,6 @@
         >
           <a-radio-group
             v-model:value="model.invoice_kind"
-            :watch="[() => model.invoice_form, invoiceKindRadioGroupWatch]"
             :options="INVOICE_HEADER_TYPE_OPTIONS"
           >
           </a-radio-group>
@@ -49,100 +48,43 @@
       <a-col :span="8">
         <a-form-item
           label="发票内容"
-          :name="['content_type']"
+          :name="['invoiceContent']"
           :rules="{
             required: true,
             message: '请选择',
           }"
         >
-          <a-radio-group v-model:value="model.order_invoice.content_type">
-            <a-radio :value="0">商品明细</a-radio>
-            <a-radio :value="1">商品类别</a-radio>
-          </a-radio-group>
-        </a-form-item>
-      </a-col>
-      <a-col :span="8">
-        <a-form-item label="开票备注" :name="['invoice_notice']">
-          <a-textarea v-model:value="model.order_invoice.invoice_notice" />
+          <a-radio-group
+            v-model:value="model.invoiceContent"
+            :options="INVOICE_CONTENT_OPTIONS"
+          />
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item
-          label="发票抬头"
+          label="xxxxxxxxxxxxxxxxxxxxxxxxxxx"
           :name="['invoice_title']"
           :rules="{
             required: true,
             message: '请填写',
           }"
         >
-          <a-input v-model:value="model.order_invoice.invoice_title" />
+          <a-input v-model:value="model.invoice_title" />
         </a-form-item>
       </a-col>
-      <a-col
-        :span="8"
-        v-if="
-          commonElectronEnterpriseBoolean ||
-          commonPaperEnterpriseBoolean ||
-          specialPaperEnterpriseBoolean
-        "
-      >
+      <a-col :span="8">
         <a-form-item
-          label="税号"
+          label="纳税人识别号"
           :name="['vat_number']"
           :rules="{
             required: true,
             message: '请填写',
           }"
         >
-          <a-input v-model:value="model.order_invoice.vat_number" />
+          <a-input v-model:value="model.vat_number" />
         </a-form-item>
       </a-col>
-      <a-col
-        :span="8"
-        v-if="
-          commonElectronEnterpriseBoolean ||
-          commonPaperEnterpriseBoolean ||
-          specialPaperEnterpriseBoolean
-        "
-      >
-        <a-form-item
-          label="注册地址"
-          :name="['et_address']"
-          :rules="{
-            required: specialPaperEnterpriseBoolean,
-            message: '请填写',
-          }"
-        >
-          <a-input v-model:value="model.order_invoice.et_address" />
-        </a-form-item>
-      </a-col>
-      <a-col
-        :span="8"
-        v-if="
-          commonElectronEnterpriseBoolean ||
-          commonPaperEnterpriseBoolean ||
-          specialPaperEnterpriseBoolean
-        "
-      >
-        <a-form-item
-          label="注册电话"
-          :name="['et_phone_num']"
-          :rules="{
-            required: specialPaperEnterpriseBoolean,
-            message: '请填写',
-          }"
-        >
-          <a-input v-model:value="model.order_invoice.et_phone_num" />
-        </a-form-item>
-      </a-col>
-      <a-col
-        :span="8"
-        v-if="
-          commonElectronEnterpriseBoolean ||
-          commonPaperEnterpriseBoolean ||
-          specialPaperEnterpriseBoolean
-        "
-      >
+      <a-col :span="8">
         <a-form-item
           label="开户银行"
           :name="['et_bank_name']"
@@ -151,17 +93,10 @@
             message: '请填写',
           }"
         >
-          <a-input v-model:value="model.order_invoice.et_bank_name" />
+          <a-input v-model:value="model.et_bank_name" />
         </a-form-item>
       </a-col>
-      <a-col
-        :span="8"
-        v-if="
-          commonElectronEnterpriseBoolean ||
-          commonPaperEnterpriseBoolean ||
-          specialPaperEnterpriseBoolean
-        "
-      >
+      <a-col :span="8">
         <a-form-item
           label="银行账号"
           :name="['et_bank_account']"
@@ -170,17 +105,34 @@
             message: '请填写',
           }"
         >
-          <a-input v-model:value="model.order_invoice.et_bank_account" />
+          <a-input v-model:value="model.et_bank_account" />
         </a-form-item>
       </a-col>
-      <a-col
-        :span="8"
-        v-if="
-          commonPaperPersonalBoolean ||
-          commonPaperEnterpriseBoolean ||
-          specialPaperEnterpriseBoolean
-        "
-      >
+      <a-col :span="8">
+        <a-form-item
+          label="注册地址"
+          :name="['et_address']"
+          :rules="{
+            required: specialPaperEnterpriseBoolean,
+            message: '请填写',
+          }"
+        >
+          <a-input v-model:value="model.et_address" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item
+          label="注册电话"
+          :name="['et_phone_num']"
+          :rules="{
+            required: specialPaperEnterpriseBoolean,
+            message: '请填写',
+          }"
+        >
+          <a-input v-model:value="model.et_phone_num" />
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
         <a-form-item
           label="收票人姓名"
           :name="['invoice_username']"
@@ -189,7 +141,7 @@
             message: '请填写',
           }"
         >
-          <a-input v-model:value="model.order_invoice.invoice_username" />
+          <a-input v-model:value="model.invoice_username" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -201,13 +153,10 @@
             message: '请填写',
           }"
         >
-          <a-input v-model:value="model.order_invoice.invoice_phone_num" />
+          <a-input v-model:value="model.invoice_phone_num" />
         </a-form-item>
       </a-col>
-      <a-col
-        :span="8"
-        v-if="commonElectronPersonalBoolean || commonElectronEnterpriseBoolean"
-      >
+      <a-col :span="8">
         <a-form-item
           label="收票人邮箱"
           :name="['invoice_email']"
@@ -216,36 +165,22 @@
             message: '请填写',
           }"
         >
-          <a-input v-model:value="model.order_invoice.invoice_email" />
+          <a-input v-model:value="model.invoice_email" />
         </a-form-item>
       </a-col>
-      <a-col
-        :span="8"
-        v-if="
-          commonPaperPersonalBoolean ||
-          commonPaperEnterpriseBoolean ||
-          specialPaperEnterpriseBoolean
-        "
-      >
+      <a-col :span="8">
         <a-form-item
-          label="收票人地址"
+          label="收票地址"
           :name="['mArea']"
           :rules="{
             required: true,
             message: '请选择',
           }"
         >
-          <address-cascader v-model:value="model.order_invoice.mArea" />
+          <address-cascader v-model:value="model.mArea" />
         </a-form-item>
       </a-col>
-      <a-col
-        :span="8"
-        v-if="
-          commonPaperPersonalBoolean ||
-          commonPaperEnterpriseBoolean ||
-          specialPaperEnterpriseBoolean
-        "
-      >
+      <a-col :span="8">
         <a-form-item
           label="收票详细地址"
           :name="['invoice_address']"
@@ -254,7 +189,7 @@
             message: '请填写',
           }"
         >
-          <a-input v-model:value="model.order_invoice.invoice_address" />
+          <a-input v-model:value="model.invoice_address" />
         </a-form-item>
       </a-col>
     </a-row>
@@ -365,6 +300,7 @@ import {
   GOODS_FORM_ENUM,
   INVOICE_HEADER_TYPE_OPTIONS,
   VAT_INVOICE_TYPE_OPTIONS,
+  INVOICE_CONTENT_OPTIONS,
 } from '../../../data/dictionary';
 import {
   orderFormPageGoodsTableColumns,
@@ -392,25 +328,18 @@ const goodsListModalVisible = ref(false);
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 const selectedRows = ref<Api_goods_sku_list_result_item_interface[]>([]);
 const model =
-  reactive<Api_proxy_order_Manage_Invoice_repairInvoice_params_interface>({});
+  reactive<Api_proxy_order_Manage_Invoice_repairInvoice_params_interface>({
+    invoice_type: 3,
+    invoice_kind: 1,
+    invoiceContent: 1,
+  });
 
-const commonElectronEnterpriseBoolean = ref(false);
-const commonPaperEnterpriseBoolean = ref(false);
-const specialPaperEnterpriseBoolean = ref(false);
-const commonPaperPersonalBoolean = ref(false);
-const commonElectronPersonalBoolean = ref(false);
-const manRadioDisabled = ref(false);
+const electronicCommonInvoiceUnitBoolean = ref(false);
+const electronicCommonInvoiceIndividualBoolean = ref(false);
+const specialInvoiceBoolean = ref(false);
 
 const finish: FormInstance['onFinish'] = (values) => {
   goodsListModalVisible.value = true;
-};
-const invoiceKindRadioGroupWatch = (newValue: number) => {
-  if (newValue == 1 || newValue == 3) {
-    manRadioDisabled.value = false;
-  } else {
-    manRadioDisabled.value = true;
-    model.order_invoice!.invoice_kind = 2;
-  }
 };
 
 const tableChange: TableRowSelection['onChange'] = (keys, rows) => {
@@ -459,27 +388,15 @@ const tableRowKey = ({
 
 // 这里的watch也是change，而且是2个实体的chagne
 watch(
-  [
-    () => model.order_invoice!.invoice_kind,
-    () => model.order_invoice!.invoice_form,
-  ],
-  ([invoice_kind, invoice_form]) => {
-    commonPaperPersonalBoolean.value = false;
-    commonPaperEnterpriseBoolean.value = false;
-    commonElectronPersonalBoolean.value = false;
-    commonElectronEnterpriseBoolean.value = false;
-    specialPaperEnterpriseBoolean.value = false;
-    if (invoice_kind == 1 && invoice_form == 1) {
-      commonPaperPersonalBoolean.value = true;
-    } else if (invoice_kind == 2 && invoice_form == 1) {
-      commonPaperEnterpriseBoolean.value = true;
-    } else if (invoice_kind == 1 && invoice_form == 3) {
-      commonElectronPersonalBoolean.value = true;
-    } else if (invoice_kind == 2 && invoice_form == 3) {
-      commonElectronEnterpriseBoolean.value = true;
-    } else if (invoice_kind == 2 && invoice_form == 2) {
+  [() => model.invoice_type, () => model.invoice_kind],
+  ([invoice_type, invoice_kind]) => {
+    electronicCommonInvoiceUnitBoolean.value = false;
+    electronicCommonInvoiceIndividualBoolean.value = false;
+    specialInvoiceBoolean.value = false;
+    if (invoice_type === 3 && invoice_kind == 1) {
+    } else if (invoice_type === 3 && invoice_kind == 2) {
+    } else if (invoice_type === 2) {
       // 专票纸质
-      specialPaperEnterpriseBoolean.value = true;
     }
   }
 );

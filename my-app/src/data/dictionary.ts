@@ -206,3 +206,10 @@ export enum INVOICE_HEADER_TYPE_ENMU {
 export const INVOICE_HEADER_TYPE_OPTIONS = optionsEnum(
   INVOICE_HEADER_TYPE_ENMU
 );
+
+// 发票内容
+export enum INVOICE_CONTENT_ENMU {
+  商品明细,
+  商品类别,
+}
+export const INVOICE_CONTENT_OPTIONS = optionsEnum(INVOICE_CONTENT_ENMU);

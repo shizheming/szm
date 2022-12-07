@@ -585,4 +585,16 @@ export interface Api_proxy_order_manage_query_getServerInfo_item_interface {
 export interface Api_proxy_order_Manage_Invoice_repairInvoice_params_interface {
   invoice_type: number;
   invoice_kind: number;
+  invoiceContent: number;
+  et_address: string;
+  et_phone_num: string;
+  et_bank_name: string;
+  et_bank_account: string;
+  invoice_username: string;
+  invoice_phone_num: string;
+  invoice_email: string;
+  invoice_address: string;
+  invoice_title: string;
+  vat_number: string;
+  mArea: number[];
 }
