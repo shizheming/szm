@@ -1,7 +1,7 @@
 <template>
   <Cascader
     allow-clear
-    :placeholder="$props.isDetail ? '' : '请选择'"
+    :placeholder="p.isDetail ? '' : '请选择'"
     :disabled="detailStyleObj.disabled"
     :show-arrow="detailStyleObj.showArrow"
     :bordered="detailStyleObj.bordered"

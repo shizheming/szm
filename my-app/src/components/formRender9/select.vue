@@ -3,7 +3,7 @@
     allow-clear
     show-search
     :filter-option="filterOption"
-    :placeholder="$props.isDetail ? '' : '请选择'"
+    :placeholder="p.isDetail ? '' : '请选择'"
     :disabled="detailStyleObj.disabled"
     :show-arrow="detailStyleObj.showArrow"
     :bordered="detailStyleObj.bordered"
@@ -17,6 +17,7 @@
 import core from './core';
 import { PropsInterface } from './props';
 import { Select, SelectProps } from 'ant-design-vue';
+import { getCurrentInstance } from 'vue';
 
 const p = defineProps<{
   isDetail?: Boolean;
