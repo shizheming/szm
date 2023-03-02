@@ -1,9 +1,10 @@
 <template>
+  <!-- 订单销售组织 -->
   <a-select :options="options" :inner="inner" />
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import { api_sys_org } from '../../api/dictionary';
+import { orgRequest } from '../../api/dictionary';
 import type { SelectProps } from 'ant-design-vue';
 import { apiDictCacheObject } from '../../utils/global';
 const options = ref<SelectProps['options']>([]);
@@ -13,7 +14,7 @@ const inner = async () => {
   } else {
     let {
       data: { list },
-    } = await api_sys_org({
+    } = await orgRequest({
       page: 1,
       page_size: 100,
     });

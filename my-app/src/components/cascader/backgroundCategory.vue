@@ -8,10 +8,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import {
-  api_goods_category,
-  api_goods_category_controller,
-} from '../../api/dictionary';
+import { categoryRequest } from '../../api/dictionary';
 import type { CascaderProps } from 'ant-design-vue';
 import { apiDictCacheObject } from '../../utils/global';
 
@@ -31,8 +28,7 @@ const inner = async () => {
   if (apiDictCacheObject.backgroundCategoryOptions) {
     options.value = apiDictCacheObject.backgroundCategoryOptions;
   } else {
-    let { data } = await api_goods_category();
-    api_goods_category_controller.abort();
+    let { data } = await categoryRequest();
     options.value = formatOptions(data);
     apiDictCacheObject.backgroundCategoryOptions = options.value;
     Object.defineProperty(apiDictCacheObject, 'backgroundCategoryOptions', {

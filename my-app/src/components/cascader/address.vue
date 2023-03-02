@@ -11,10 +11,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import type { CascaderProps } from 'ant-design-vue';
-import {
-  api_common_area,
-  api_common_area_controller,
-} from '../../api/dictionary';
+import { areaRequest } from '../../api/dictionary';
 import { apiDictCacheObject } from '../../utils/global';
 
 const options = ref<CascaderProps['options']>([]);
@@ -23,7 +20,7 @@ const loadData: CascaderProps['loadData'] = async (selectedOptions) => {
   targetOption.loading = true;
 
   // load options lazily
-  let { data } = await api_common_area({
+  let { data } = await areaRequest({
     parent_id: selectedOptions[selectedOptions.length - 1].value as number,
   });
   targetOption.loading = false;
@@ -39,10 +36,9 @@ const inner = async () => {
   if (apiDictCacheObject.addressOptions) {
     options.value = apiDictCacheObject.addressOptions;
   } else {
-    let { data } = await api_common_area({
+    let { data } = await areaRequest({
       parent_id: 1,
     });
-    api_common_area_controller.abort();
     options.value = data.map(({ id, name }) => {
       return {
         label: name,

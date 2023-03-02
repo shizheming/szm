@@ -1,9 +1,10 @@
 <template>
+  <!-- 销售站点 -->
   <a-select :options="options" :inner="inner" />
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import { api_sys_site } from '../../api/dictionary';
+import { siteRequest } from '../../api/dictionary';
 import type { SelectProps } from 'ant-design-vue';
 import { apiDictCacheObject } from '../../utils/global';
 
@@ -14,7 +15,7 @@ const inner = async () => {
   } else {
     let {
       data: { list },
-    } = await api_sys_site({
+    } = await siteRequest({
       page: 1,
       page_size: 100,
     });

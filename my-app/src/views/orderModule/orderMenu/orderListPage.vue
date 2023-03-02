@@ -878,6 +878,7 @@ const pagination = computed(() => {
     current: current.value,
     pageSize: pageSize.value,
     hideOnSinglePage: true,
+    showQuickJumper: true,
   };
 });
 const model = reactive<Api_order_params_interface>({

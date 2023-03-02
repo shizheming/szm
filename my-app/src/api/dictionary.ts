@@ -1,10 +1,19 @@
 import { ListInterface, PageInterface } from '../interface';
 import axios from '../utils/axios';
 import { Api_goods_category_result_item_interface } from './interface';
+import {
+  SUPPLIER_API,
+  CATEGORY_API,
+  BRAND_API,
+  DICT_API,
+  SITE_API,
+  ORG_API,
+  AREA_API,
+} from './api';
 
 // 供应商
-export const api_stock_supplier_get__all_list = () =>
-  axios.get<
+export const supplierRequest = () => {
+  return axios.get<
     {
       id: number;
       name: string;
@@ -15,21 +24,19 @@ export const api_stock_supplier_get__all_list = () =>
       finance_code: string;
       identity_type: number;
     }[]
-  >('/api/stock/supplier/get-all/list');
+  >(SUPPLIER_API);
+};
 
 // 后台类目
-export const api_goods_category_controller = new AbortController();
-export const api_goods_category = () =>
-  axios.get<Api_goods_category_result_item_interface[]>('/api/goods/category', {
-    signal: api_goods_category_controller.signal,
-  });
+export const categoryRequest = () =>
+  axios.get<Api_goods_category_result_item_interface[]>(CATEGORY_API);
 
 // 商品品牌
-export const api_goods_brand_list = () =>
-  axios.get<{ id: number; name: string }[]>('/api/goods/brand/list');
+export const brandRequest = () =>
+  axios.get<{ id: number; name: string }[]>(BRAND_API);
 
 // 通用字典
-export const api_order_dict = (params: { type: string }) =>
+export const dictRequest = (params: { type: string }) =>
   axios.get<{
     [key: string]: {
       type: string;
@@ -40,10 +47,10 @@ export const api_order_dict = (params: { type: string }) =>
       rank: number;
       enterprise_id: number;
     }[];
-  }>('/api/order/dict', { params });
+  }>(DICT_API, { params });
 
 // 销售站点
-export const api_sys_site = (params: PageInterface) =>
+export const siteRequest = (params: PageInterface) =>
   axios.get<
     ListInterface<{
       id: number;
@@ -61,10 +68,10 @@ export const api_sys_site = (params: PageInterface) =>
       status_name: string;
       org_name: string;
     }>
-  >('/api/sys/site', { params });
+  >(SITE_API, { params });
 
 // 订单销售组织
-export const api_sys_org = (params: PageInterface) =>
+export const orgRequest = (params: PageInterface) =>
   axios.get<
     ListInterface<{
       id: number;
@@ -92,13 +99,12 @@ export const api_sys_org = (params: PageInterface) =>
       operations_type_name: string;
       status_name: string;
     }>
-  >('/api/sys/org', {
+  >(ORG_API, {
     params,
   });
 
 // 地址
-export const api_common_area_controller = new AbortController();
-export const api_common_area = (params: { parent_id: number }) =>
+export const areaRequest = (params: { parent_id: number }) =>
   axios.get<
     {
       id: number;
@@ -108,7 +114,4 @@ export const api_common_area = (params: { parent_id: number }) =>
       ad_code: number;
       real_name: string;
     }[]
-  >('/api/common/area', {
-    signal: api_goods_category_controller.signal,
-    params,
-  });
+  >(AREA_API);

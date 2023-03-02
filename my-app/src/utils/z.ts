@@ -1,8 +1,8 @@
-import { api_goods_category } from '../api/dictionary';
+import { categoryRequest } from '../api/dictionary';
 import { Api_goods_category_result_item_interface } from '../api/interface';
 // 获取类目
 let categoryArray: Api_goods_category_result_item_interface[];
-api_goods_category().then(({ data }) => {
+categoryRequest().then(({ data }) => {
   categoryArray = data;
 });
 
