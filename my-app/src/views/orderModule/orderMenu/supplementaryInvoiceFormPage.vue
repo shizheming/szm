@@ -293,7 +293,7 @@ import {
   EditOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons-vue';
-import AddressCascader from '../../../components/cascader/address.vue';
+import AddressCascader from '../../../components/cascader/addressCascader.vue';
 import {
   WHETHER_OPTIONS,
   DELIVERY_METHOD_OPTIONS,
@@ -307,7 +307,7 @@ import {
   goodsListModalLadderPriceTableColumns,
 } from './data';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
-import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';
+import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategoryCascader.vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 import { cloneDeep, forEach, multiply, subtract } from 'lodash';
@@ -332,6 +332,17 @@ const model =
     invoice_type: 3,
     invoice_kind: 1,
     invoiceContent: 1,
+    et_address: '',
+    et_phone_num: '',
+    et_bank_name: '',
+    et_bank_account: '',
+    invoice_username: '',
+    invoice_phone_num: '',
+    invoice_email: '',
+    invoice_address: '',
+    invoice_title: '',
+    vat_number: '',
+    mArea: [],
   });
 // 电子普通单位
 const electronicCommonInvoiceUnitBoolean = ref(false);

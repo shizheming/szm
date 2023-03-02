@@ -639,7 +639,7 @@ import {
   EditOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons-vue';
-import AddressCascader from '../../../components/cascader/address.vue';
+import AddressCascader from '../../../components/cascader/addressCascader.vue';
 import {
   WHETHER_OPTIONS,
   DELIVERY_METHOD_OPTIONS,
@@ -652,7 +652,7 @@ import {
   goodsListModalLadderPriceTableColumns,
 } from './data';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
-import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';
+import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategoryCascader.vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 import { cloneDeep, debounce, forEach, multiply, subtract } from 'lodash';

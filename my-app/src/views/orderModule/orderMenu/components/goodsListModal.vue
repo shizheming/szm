@@ -152,8 +152,8 @@
 </template>
 <script setup lang="ts">
 import { ref, watch, reactive, computed } from 'vue';
-import GoodsBrandSelect from '../../../../components/select/goodsBrand.vue';
-import BackgroundCategoryCascader from '../../../../components/cascader/backgroundCategory.vue';
+import GoodsBrandSelect from '../../../../components/select/goodsBrandSelect.vue';
+import BackgroundCategoryCascader from '../../../../components/cascader/backgroundCategoryCascader.vue';
 import {
   FormInstance,
   ModalProps,
@@ -167,6 +167,7 @@ import {
   Api_goods_sku_list_params_part_interface,
   Api_goods_sku_list_params_interface,
   Api_proxy_order_Order_BackEnd_submit_params_interface,
+  Api_proxy_order_Manage_Invoice_repairInvoice_params_interface,
 } from '../interface';
 import { api_goods_sku_list, api_goods_sku_getSkuAreaBySkuIds } from '../api';
 import {

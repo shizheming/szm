@@ -726,7 +726,7 @@
     @submit="modalSubmit"
   />
   <task-list-modal v-model:visible="taskListModalVisible" />
-  <delivery-installation-time-modal
+  <delivery-installation-time-table-modal
     v-model:visible="deliveryInstallationTimeTableModalVisible"
     :record="recordObject"
     @submit="modalSubmit"
@@ -770,13 +770,13 @@ import {
   ORDER_GOODS_SOURCE_ENUM,
   GOODS_FORM_ENUM,
 } from '../../../data/dictionary';
-import SupplierSelect from '../../../components/select/supplier.vue';
-import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategory.vue';
-import GoodsBrandSelect from '../../../components/select/goodsBrand.vue';
-import SaleModeSelect from '../../../components/select/saleMode.vue';
-import OwnerSiteSelect from '../../../components/select/ownerSite.vue';
-import SubOrgSelect from '../../../components/select/subOrg.vue';
-import AddressCascader from '../../../components/cascader/address.vue';
+import SupplierSelect from '../../../components/select/supplierSelect.vue';
+import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategoryCascader.vue';
+import GoodsBrandSelect from '../../../components/select/goodsBrandSelect.vue';
+import SaleModeSelect from '../../../components/select/saleModeSelect.vue';
+import OwnerSiteSelect from '../../../components/select/ownerSiteSelect.vue';
+import SubOrgSelect from '../../../components/select/subOrgSelect.vue';
+import AddressCascader from '../../../components/cascader/addressCascader.vue';
 import {
   orderListPageTableColumns,
   orderListPageGoodsTableColumns,
