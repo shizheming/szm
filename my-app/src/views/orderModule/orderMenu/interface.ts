@@ -369,11 +369,13 @@ export interface Api_order_orderSyncList_result_item_interface {
 export type Api_order_orderSyncList_params_interface =
   Partial<Api_order_orderSyncList_params_part_interface> & PageInterface;
 
-export interface Api_proxy_order_Order_BackEnd_submit_params_interface {
+export interface aaa {
+  dataSource: Api_goods_sku_list_result_item_interface[];
+}
+export type Api_proxy_order_Order_BackEnd_submit_params_interface = Partial<{
   qty: number;
   total_price: number;
   freight: number;
-  dataSource: Api_goods_sku_list_result_item_interface[];
   entryMode: string;
   sale_mode: string;
   api_type: number;
@@ -389,7 +391,19 @@ export interface Api_proxy_order_Order_BackEnd_submit_params_interface {
   delivery_mode: number;
   isInvoice: number;
   pay_mode: number;
-  order_invoice: {
+  user_id: string;
+  site_id: number;
+  merchant_note: string;
+  note: string;
+  delivery_mode_list: [];
+  buyer_shop_goods_list: {
+    qty: number;
+    shop_goods_id: number;
+    adjust_mount: number;
+  }[];
+}> & {
+  dataSource: Api_goods_sku_list_result_item_interface[];
+  order_invoice: Partial<{
     invoice_form: number;
     invoice_kind: number;
     content_type: number;
@@ -404,7 +418,6 @@ export interface Api_proxy_order_Order_BackEnd_submit_params_interface {
     invoice_username: string;
     invoice_phone_num: string;
     invoice_email: string;
-    mArea: number[];
     province_id: number;
     province_name: string;
     city_id: number;
@@ -415,18 +428,11 @@ export interface Api_proxy_order_Order_BackEnd_submit_params_interface {
     street_name: string;
     invoice_address: string;
     apply_scene: number;
+  }> & {
+    mArea: number[];
   };
-  shop_goods_list: {
-    qty: number;
-    shop_goods_id: number;
-    adjust_mount: number;
-  }[];
-  user_id: string;
-  site_id: number;
-  delivery_mode_list: [];
-  validator: { total_pay: number };
-  addressInfo: {
-    addressIds: number[];
+  validator: { total_pay?: number };
+  addressInfo: Partial<{
     name: string;
     mobile: string;
     tel: string;
@@ -442,10 +448,8 @@ export interface Api_proxy_order_Order_BackEnd_submit_params_interface {
     real_name: string;
     zipcode: string;
     address: string;
-  };
-  merchant_note: string;
-  buyer_note: string;
-}
+  }> & { addressIds: number[] };
+};
 
 /* export type Api_proxy_order_Order_BackEnd_submit_params_interface2 =
   partPartial<

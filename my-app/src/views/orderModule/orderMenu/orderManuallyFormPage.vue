@@ -7,7 +7,7 @@
   >
     <a-row>
       <a-col :span="8">
-        <a-form-item label="基本信息" :colon="false" style="font-weight: 700" />
+        <a-typography-title :level="4">基本信息</a-typography-title>
       </a-col>
     </a-row>
     <a-row>
@@ -158,7 +158,7 @@
     </a-row>
     <a-row>
       <a-col :span="8">
-        <a-form-item label="发运计划" :colon="false" style="font-weight: 700" />
+        <a-typography-title :level="4">发运计划</a-typography-title>
       </a-col>
     </a-row>
     <a-row>
@@ -179,7 +179,7 @@
     </a-row>
     <a-row>
       <a-col :span="8">
-        <a-form-item label="开票申请" :colon="false" style="font-weight: 700" />
+        <a-typography-title :level="4">开票申请</a-typography-title>
       </a-col>
     </a-row>
     <a-row>
@@ -460,11 +460,7 @@
     </div>
     <a-row>
       <a-col :span="8">
-        <a-form-item
-          label="支付和结算"
-          :colon="false"
-          style="font-weight: 700"
-        />
+        <a-typography-title :level="4">支付和结算</a-typography-title>
       </a-col>
     </a-row>
     <a-row>
@@ -485,7 +481,7 @@
     </a-row>
     <a-row>
       <a-col :span="8">
-        <a-form-item label="商品信息" :colon="false" style="font-weight: 700" />
+        <a-typography-title :level="4">商品信息</a-typography-title>
       </a-col>
     </a-row>
     <a-space>
@@ -564,7 +560,7 @@
     </a-table>
     <a-row>
       <a-col :span="8">
-        <a-form-item label="订单合计" :colon="false" style="font-weight: 700" />
+        <a-typography-title :level="4">订单合计</a-typography-title>
       </a-col>
     </a-row>
     <a-row>
@@ -632,6 +628,7 @@ import {
   Api_proxy_order_Order_BackEnd_submit_params_interface,
   Api_goods_sku_list_result_item_interface,
   Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface,
+  aaa,
 } from './interface';
 import {
   PlusOutlined,
@@ -672,7 +669,7 @@ const userListModalVisible = ref(false);
 const goodsListModalVisible = ref(false);
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 const selectedRows = ref<Api_goods_sku_list_result_item_interface[]>([]);
-const modelObejct = {
+const modelObejct: Api_proxy_order_Order_BackEnd_submit_params_interface = {
   site_id: 1,
   api_type: 3,
   entryMode: '手工创建订单',
@@ -681,8 +678,11 @@ const modelObejct = {
   stockFreeze: '提交订单',
   delivery_mode: 1,
   isInvoice: 0,
-  addressInfo: {},
+  addressInfo: {
+    addressIds: [],
+  },
   order_invoice: {
+    mArea: [],
     invoice_form: 3,
     invoice_kind: 2,
     apply_scene: 1,
@@ -691,10 +691,11 @@ const modelObejct = {
   dataSource: [],
   validator: {},
 };
-const model = reactive<Api_proxy_order_Order_BackEnd_submit_params_interface>({
-  ...modelObejct,
-});
 
+const model = reactive<Api_proxy_order_Order_BackEnd_submit_params_interface>(
+  cloneDeep(modelObejct)
+);
+model.addressInfo.addressIds.forEach((item) => {});
 const commonElectronEnterpriseBoolean = ref(false);
 const commonPaperEnterpriseBoolean = ref(false);
 const specialPaperEnterpriseBoolean = ref(false);
