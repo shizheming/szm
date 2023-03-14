@@ -114,4 +114,4 @@ export const areaRequest = (params: { parent_id: number }) =>
       ad_code: number;
       real_name: string;
     }[]
-  >(AREA_API);
+  >(AREA_API, { params });

@@ -378,9 +378,11 @@ export type Api_proxy_order_Order_BackEnd_submit_params_interface = Partial<{
   freight: number;
   entryMode: string;
   sale_mode: string;
+  buyer_note: string;
   api_type: number;
   out_ono: string;
   businessType: string;
+  pay_mode_name: string;
   phone: string;
   wx_nickname: string;
   user_level_name: string;
@@ -431,6 +433,11 @@ export type Api_proxy_order_Order_BackEnd_submit_params_interface = Partial<{
   }> & {
     mArea: number[];
   };
+  shop_goods_list: {
+    qty: number;
+    shop_goods_id: number;
+    adjust_mount: number;
+  }[];
   validator: { total_pay?: number };
   addressInfo: Partial<{
     name: string;

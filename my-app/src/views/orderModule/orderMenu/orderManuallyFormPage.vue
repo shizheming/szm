@@ -1,9 +1,9 @@
 <template>
   <a-form
     ref="formRef"
-    :model="model"
+    :model="formModelObject"
     :label-col="{ span: 8 }"
-    @finish="finish"
+    @finish="formFinishFunction"
   >
     <a-row>
       <a-col :span="8">
@@ -13,22 +13,22 @@
     <a-row>
       <a-col :span="8">
         <a-form-item label="录入方式" :name="['entryMode']">
-          <a-input v-model:value="model.entryMode" :is-detail="true" />
+          {{ formModelObject.entryMode }}
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="销售渠道" :name="['sale_mode']">
-          <a-input v-model:value="model.sale_mode" :is-detail="true" />
+          {{ formModelObject.sale_mode }}
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="外部订单号" :name="['out_ono']">
-          <a-input v-model:value="model.out_ono" />
+          <a-input v-model:value="formModelObject.out_ono" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="站点/业务类型" :name="['businessType']">
-          <a-input v-model:value="model.businessType" :is-detail="true" />
+          {{ formModelObject.businessType }}
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -40,46 +40,40 @@
             message: '请选择',
           }"
         >
-          <a-input-search
-            :disabled="true"
-            :is-detail="true"
-            v-model:value="model.user_id"
-            @search="inputSearchSearch"
-          >
-            <template #enterButton>
-              <a-button type="text"><plus-outlined /></a-button>
-            </template>
-          </a-input-search>
+          <a-space>
+            <span>{{ formModelObject.user_id }}</span>
+            <plus-outlined @click="plusOutlinedClickFunction" />
+          </a-space>
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="关联手机号" :name="['phone']">
-          <a-input v-model:value="model.phone" :is-detail="true" />
+          {{ formModelObject.phone }}
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="微信昵称" :name="['wx_nickname']">
-          <a-input v-model:value="model.wx_nickname" :is-detail="true" />
+          {{ formModelObject.wx_nickname }}
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="用户等级" :name="['user_level_name']">
-          <a-input v-model:value="model.user_level_name" :is-detail="true" />
+          {{ formModelObject.user_level_name }}
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="用户名" :name="['username']">
-          <a-input v-model:value="model.username" :is-detail="true" />
+          {{ formModelObject.username }}
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="买家姓名" :name="['name']">
-          <a-input v-model:value="model.name" :is-detail="true" />
+          {{ formModelObject.name }}
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="企业名称" :name="['company_name']">
-          <a-input v-model:value="model.company_name" :is-detail="true" />
+          {{ formModelObject.company_name }}
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -91,7 +85,7 @@
             message: '请填写',
           }"
         >
-          <a-input v-model:value="model.addressInfo.name" />
+          <a-input v-model:value="formModelObject.addressInfo.name" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -103,7 +97,7 @@
             message: '请填写',
           }"
         >
-          <a-input v-model:value="model.addressInfo.mobile" />
+          <a-input v-model:value="formModelObject.addressInfo.mobile" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -112,12 +106,12 @@
           :name="['addressInfo', 'addressIds']"
           :rules="{
             required: true,
-            validator: addressIdsFormItemRulesValidator,
+            validator: formItemRulesValidator,
           }"
         >
           <address-cascader
-            v-model:value="model.addressInfo.addressIds"
-            @change="addressIdsAddressCascaderChange"
+            v-model:value="formModelObject.addressInfo.addressIds"
+            @change="addressCascaderChangeFunction"
           />
         </a-form-item>
       </a-col>
@@ -130,29 +124,29 @@
             message: '请填写',
           }"
         >
-          <a-input v-model:value="model.addressInfo.address" />
+          <a-input v-model:value="formModelObject.addressInfo.address" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="收货人电话" :name="['addressInfo', 'tel']">
-          <a-input v-model:value="model.addressInfo.tel" />
+          <a-input v-model:value="formModelObject.addressInfo.tel" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="邮编" :name="['addressInfo', 'zipcode']">
-          <a-input v-model:value="model.addressInfo!.zipcode" />
+          <a-input v-model:value="formModelObject.addressInfo!.zipcode" />
         </a-form-item>
       </a-col>
     </a-row>
     <a-row>
       <a-col :span="8">
         <a-form-item label="买家备注" :name="['buyer_note']">
-          <a-textarea v-model:value="model.buyer_note" />
+          <a-textarea v-model:value="formModelObject.buyer_note" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="商家备注" :name="['merchant_note']">
-          <a-textarea v-model:value="model.merchant_note" />
+          <a-textarea v-model:value="formModelObject.merchant_note" />
         </a-form-item>
       </a-col>
     </a-row>
@@ -164,15 +158,14 @@
     <a-row>
       <a-col :span="8">
         <a-form-item label="库存冻结" :name="['stockFreeze']">
-          <a-input v-model:value="model.stockFreeze" :is-detail="true" />
+          {{ formModelObject.stockFreeze }}
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="配送方式" :name="['delivery_mode']">
-          <a-select
-            v-model:value="model.delivery_mode"
+          <a-radio-group
+            v-model:value="formModelObject.delivery_mode"
             :options="DELIVERY_METHOD_OPTIONS"
-            :allow-clear="false"
           />
         </a-form-item>
       </a-col>
@@ -193,13 +186,13 @@
           }"
         >
           <a-radio-group
-            v-model:value="model.isInvoice"
+            v-model:value="formModelObject.isInvoice"
             :options="WHETHER_OPTIONS"
           />
         </a-form-item>
       </a-col>
     </a-row>
-    <div v-if="model.isInvoice">
+    <div v-if="formModelObject.isInvoice">
       <a-row>
         <a-col :span="8">
           <a-form-item
@@ -211,7 +204,7 @@
             }"
           >
             <a-radio-group
-              v-model:value="model.order_invoice.invoice_form"
+              v-model:value="formModelObject.order_invoice.invoice_form"
               :options="VAT_INVOICE_TYPE_OPTIONS"
             >
             </a-radio-group>
@@ -227,14 +220,16 @@
             }"
           >
             <a-radio-group
-              v-model:value="model.order_invoice.invoice_kind"
+              v-model:value="formModelObject.order_invoice.invoice_kind"
               :watch="[
-                () => model.order_invoice.invoice_form,
-                invoiceKindRadioGroupWatch,
+                () => formModelObject.order_invoice.invoice_form,
+                radioGroupWatchFunction,
               ]"
             >
               <a-radio :value="2">企业</a-radio>
-              <a-radio :value="1" :disabled="manRadioDisabled">个人</a-radio>
+              <a-radio :value="1" :disabled="manRadioDisabledBoolean"
+                >个人</a-radio
+              >
             </a-radio-group>
           </a-form-item>
         </a-col>
@@ -250,7 +245,7 @@
             }"
           >
             <a-radio-group
-              v-model:value="model.order_invoice.content_type"
+              v-model:value="formModelObject.order_invoice.content_type"
               :options="INVOICE_CONTENT_OPTIONS"
             />
           </a-form-item>
@@ -260,7 +255,9 @@
             label="开票备注"
             :name="['order_invoice', 'invoice_notice']"
           >
-            <a-textarea v-model:value="model.order_invoice.invoice_notice" />
+            <a-textarea
+              v-model:value="formModelObject.order_invoice.invoice_notice"
+            />
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -272,7 +269,9 @@
               message: '请填写',
             }"
           >
-            <a-input v-model:value="model.order_invoice.invoice_title" />
+            <a-input
+              v-model:value="formModelObject.order_invoice.invoice_title"
+            />
           </a-form-item>
         </a-col>
         <a-col
@@ -291,7 +290,7 @@
               message: '请填写',
             }"
           >
-            <a-input v-model:value="model.order_invoice.vat_number" />
+            <a-input v-model:value="formModelObject.order_invoice.vat_number" />
           </a-form-item>
         </a-col>
         <a-col
@@ -310,7 +309,7 @@
               message: '请填写',
             }"
           >
-            <a-input v-model:value="model.order_invoice.et_address" />
+            <a-input v-model:value="formModelObject.order_invoice.et_address" />
           </a-form-item>
         </a-col>
         <a-col
@@ -329,7 +328,9 @@
               message: '请填写',
             }"
           >
-            <a-input v-model:value="model.order_invoice.et_phone_num" />
+            <a-input
+              v-model:value="formModelObject.order_invoice.et_phone_num"
+            />
           </a-form-item>
         </a-col>
         <a-col
@@ -348,7 +349,9 @@
               message: '请填写',
             }"
           >
-            <a-input v-model:value="model.order_invoice.et_bank_name" />
+            <a-input
+              v-model:value="formModelObject.order_invoice.et_bank_name"
+            />
           </a-form-item>
         </a-col>
         <a-col
@@ -367,7 +370,9 @@
               message: '请填写',
             }"
           >
-            <a-input v-model:value="model.order_invoice.et_bank_account" />
+            <a-input
+              v-model:value="formModelObject.order_invoice.et_bank_account"
+            />
           </a-form-item>
         </a-col>
         <a-col
@@ -386,7 +391,9 @@
               message: '请填写',
             }"
           >
-            <a-input v-model:value="model.order_invoice.invoice_username" />
+            <a-input
+              v-model:value="formModelObject.order_invoice.invoice_username"
+            />
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -398,7 +405,9 @@
               message: '请填写',
             }"
           >
-            <a-input v-model:value="model.order_invoice.invoice_phone_num" />
+            <a-input
+              v-model:value="formModelObject.order_invoice.invoice_phone_num"
+            />
           </a-form-item>
         </a-col>
         <a-col
@@ -415,7 +424,9 @@
               message: '请填写',
             }"
           >
-            <a-input v-model:value="model.order_invoice.invoice_email" />
+            <a-input
+              v-model:value="formModelObject.order_invoice.invoice_email"
+            />
           </a-form-item>
         </a-col>
         <a-col
@@ -434,7 +445,9 @@
               message: '请选择',
             }"
           >
-            <address-cascader v-model:value="model.order_invoice.mArea" />
+            <address-cascader
+              v-model:value="formModelObject.order_invoice.mArea"
+            />
           </a-form-item>
         </a-col>
         <a-col
@@ -453,7 +466,9 @@
               message: '请填写',
             }"
           >
-            <a-input v-model:value="model.order_invoice.invoice_address" />
+            <a-input
+              v-model:value="formModelObject.order_invoice.invoice_address"
+            />
           </a-form-item>
         </a-col>
       </a-row>
@@ -466,16 +481,7 @@
     <a-row>
       <a-col :span="8">
         <a-form-item label="支付类型" :name="['pay_mode']">
-          <a-select
-            :options="[
-              {
-                label: '货到付款',
-                value: 0,
-              },
-            ]"
-            :is-detail="true"
-            v-model:value="model.pay_mode"
-          />
+          {{ formModelObject.pay_mode_name }}
         </a-form-item>
       </a-col>
     </a-row>
@@ -488,18 +494,18 @@
       <a-button html-type="submit">
         <plus-outlined />
       </a-button>
-      <delete-outlined @click="goodsDeleteOutlinedClick" />
+      <delete-outlined @click="deleteOutlinedClickFunction" />
     </a-space>
     <a-table
       :row-key="tableRowKey"
       :columns="orderFormPageGoodsTableColumns"
-      :data-source="model.dataSource"
+      :data-source="formModelObject.dataSource"
       :pagination="false"
       :scroll="{ x: 3000 }"
       style="margin: 15px 0"
       :row-selection="{
-        selectedRowKeys,
-        onChange: tableChange,
+        selectedRowKeys: tableRowSelectionSelectedRowKeysArray,
+        onChange: tableRowSelectionOnChangeFunction,
       }"
     >
       <template
@@ -514,7 +520,7 @@
         }"
       >
         <template v-if="column.key === 'opration'">
-          <delete-outlined @click="goodsItemDeleteOutlinedClick(index)" />
+          <delete-outlined @click="tableDeleteOutlinedClickFunction(index)" />
         </template>
         <template v-if="column.key === 'member_price_name'">
           {{ record.member_price_name }}
@@ -566,18 +572,18 @@
     <a-row>
       <a-col :span="8">
         <a-form-item label="商品数量合计" :name="['qty']">
-          <a-input :is-detail="true" v-model:value="model.qty" />
+          {{ formModelObject.qty }}
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="商品金额合计" :name="['total_price']">
-          <a-input :is-detail="true" v-model:value="model.total_price" />
+          {{ formModelObject.total_price }}
         </a-form-item>
       </a-col>
       <a-col :span="8">
         <a-form-item label="运费" :name="['freight']">
           <a-input-number
-            v-model:value="model.freight"
+            v-model:value="formModelObject.freight"
             @change="freightInputNumberChange"
           >
             <template #addonAfter>元</template>
@@ -586,27 +592,25 @@
       </a-col>
       <a-col :span="8">
         <a-form-item label="订单金额合计" :name="['validator', 'total_pay']">
-          <a-input
-            :is-detail="true"
-            v-model:value="model.validator.total_pay"
-          />
+          {{ formModelObject.validator.total_pay }}
         </a-form-item>
       </a-col>
     </a-row>
     <a-form-item :wrapper-col="{ offset: 1, span: 8 }">
-      <a-button type="primary" html-type="submit">提交</a-button>
+      <a-button type="primary" html-type="submit"><save-outlined /></a-button>
     </a-form-item>
   </a-form>
   <user-list-modal
-    v-model:visible="userListModalVisible"
-    @select="userListModalSelect"
+    v-model:visible="userListModalVisibleBoolean"
+    @select="userListModalSelectFunction"
   />
   <goods-list-modal
-    v-model:visible="goodsListModalVisible"
-    :model="model"
-    @select="goodsListModalSelect"
+    v-model:visible="goodsListModalVisibleBoolean"
+    :model="formModelObject"
+    @select="goodsListModalSelectFunction"
   />
 </template>
+
 <script setup lang="ts">
 import {
   reactive,
@@ -635,6 +639,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   InfoCircleOutlined,
+  SaveOutlined,
 } from '@ant-design/icons-vue';
 import AddressCascader from '../../../components/cascader/addressCascader.vue';
 import {
@@ -659,16 +664,28 @@ import {
 } from './api';
 import { SelectProps } from 'ant-design-vue/lib/vc-select';
 import { Api_goods_category_result_item_interface } from '../../../api/interface';
+
 const UserListModal = defineAsyncComponent(
   () => import('./components/userListModal.vue')
 );
 const GoodsListModal = defineAsyncComponent(
   () => import('./components/goodsListModal.vue')
 );
-const userListModalVisible = ref(false);
-const goodsListModalVisible = ref(false);
-const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
-const selectedRows = ref<Api_goods_sku_list_result_item_interface[]>([]);
+
+const userListModalVisibleBoolean = ref(false);
+const goodsListModalVisibleBoolean = ref(false);
+const manRadioDisabledBoolean = ref(false);
+const commonElectronEnterpriseBoolean = ref(false);
+const commonPaperEnterpriseBoolean = ref(false);
+const specialPaperEnterpriseBoolean = ref(false);
+const commonPaperPersonalBoolean = ref(false);
+const commonElectronPersonalBoolean = ref(false);
+let addressNameArray: string[] = [];
+const formRef = ref<FormInstance>();
+const tableRowSelectionSelectedRowKeysArray = ref<
+  TableRowSelection['selectedRowKeys']
+>([]);
+const selectedRowsArray = ref<Api_goods_sku_list_result_item_interface[]>([]);
 const modelObejct: Api_proxy_order_Order_BackEnd_submit_params_interface = {
   site_id: 1,
   api_type: 3,
@@ -676,8 +693,10 @@ const modelObejct: Api_proxy_order_Order_BackEnd_submit_params_interface = {
   sale_mode: '名气商城',
   businessType: '名气家/精选',
   stockFreeze: '提交订单',
+  pay_mode_name: '货到付款',
   delivery_mode: 1,
   isInvoice: 0,
+  shop_goods_list: [],
   addressInfo: {
     addressIds: [],
   },
@@ -691,19 +710,13 @@ const modelObejct: Api_proxy_order_Order_BackEnd_submit_params_interface = {
   dataSource: [],
   validator: {},
 };
+const formModelObject =
+  reactive<Api_proxy_order_Order_BackEnd_submit_params_interface>(
+    cloneDeep(modelObejct)
+  );
 
-const model = reactive<Api_proxy_order_Order_BackEnd_submit_params_interface>(
-  cloneDeep(modelObejct)
-);
-model.addressInfo.addressIds.forEach((item) => {});
-const commonElectronEnterpriseBoolean = ref(false);
-const commonPaperEnterpriseBoolean = ref(false);
-const specialPaperEnterpriseBoolean = ref(false);
-const commonPaperPersonalBoolean = ref(false);
-const commonElectronPersonalBoolean = ref(false);
-const manRadioDisabled = ref(false);
-const inputSearchSearch = () => {
-  if (model.user_id) {
+const plusOutlinedClickFunction = () => {
+  if (formModelObject.user_id) {
     Modal.confirm({
       title: '确定要修改吗？',
       icon: createVNode(ExclamationCircleOutlined),
@@ -713,44 +726,39 @@ const inputSearchSearch = () => {
         '修改买家信息后以下部分信息将需要重新设置，是否继续？（收货地址、开票申请、商品信息等）'
       ),
       onOk() {
-        forEach(model, (value, key) => {
-          model[
-            key as keyof Api_proxy_order_Order_BackEnd_submit_params_interface
-          ] = undefined;
+        forEach(formModelObject, (value, key) => {
+          formModelObject[key] = undefined;
         });
-        Object.assign(model, modelObejct);
-        userListModalVisible.value = true;
+        Object.assign(formModelObject, modelObejct);
+        userListModalVisibleBoolean.value = true;
       },
     });
   } else {
-    userListModalVisible.value = true;
+    userListModalVisibleBoolean.value = true;
   }
 };
 
-const finish: FormInstance['onFinish'] = (values) => {
-  goodsListModalVisible.value = true;
+const formFinishFunction: FormInstance['onFinish'] = (values) => {
+  goodsListModalVisibleBoolean.value = true;
 };
-const invoiceKindRadioGroupWatch = (newValue: number) => {
+
+const radioGroupWatchFunction = (newValue: number) => {
   if (newValue == 1 || newValue == 3) {
-    manRadioDisabled.value = false;
+    manRadioDisabledBoolean.value = false;
   } else {
-    manRadioDisabled.value = true;
-    model.order_invoice!.invoice_kind = 2;
+    manRadioDisabledBoolean.value = true;
+    formModelObject.order_invoice!.invoice_kind = 2;
   }
 };
 
-let addressNameArray: string[] = [];
-const addressIdsAddressCascaderChange: SelectProps['onChange'] = (
+const addressCascaderChangeFunction: SelectProps['onChange'] = (
   value,
   options
 ) => {
   addressNameArray = options.map(({ label }: { label: string }) => label);
 };
 
-const addressIdsFormItemRulesValidator = async (
-  _rule: Rule,
-  value: number[]
-) => {
+const formItemRulesValidator = async (_rule: Rule, value: number[]) => {
   if (!value) {
     return Promise.reject('请选择');
   } else if (value.length < 3) {
@@ -760,13 +768,15 @@ const addressIdsFormItemRulesValidator = async (
   }
 };
 
-const tableChange: TableRowSelection['onChange'] = (keys, rows) => {
-  selectedRowKeys.value = keys;
-  selectedRows.value = rows;
+const tableRowSelectionOnChangeFunction: TableRowSelection['onChange'] = (
+  keys,
+  rows
+) => {
+  tableRowSelectionSelectedRowKeysArray.value = keys;
+  selectedRowsArray.value = rows;
 };
 
-const formRef = ref<FormInstance>();
-const userListModalSelect: (
+const userListModalSelectFunction: (
   rowKeys: TableRowSelection['selectedRowKeys'],
   rows: Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface[]
 ) => void = (
@@ -784,7 +794,7 @@ const userListModalSelect: (
     },
   ]
 ) => {
-  Object.assign(model, {
+  Object.assign(formModelObject, {
     user_id,
     third_user_id,
     phone,
@@ -797,22 +807,27 @@ const userListModalSelect: (
   formRef.value!.validate(['user_id']);
 };
 
-const goodsDeleteOutlinedClick = () => {
-  if (selectedRowKeys.value.length) {
-    model.dataSource = model.dataSource.filter(({ sku_id, spu_id }) => {
-      return !selectedRowKeys.value.includes(`${spu_id}/${sku_id}`);
-    });
-    selectedRowKeys.value = [];
+const deleteOutlinedClickFunction = () => {
+  if (tableRowSelectionSelectedRowKeysArray.value.length) {
+    formModelObject.dataSource = formModelObject.dataSource.filter(
+      ({ sku_id, spu_id }) => {
+        return !tableRowSelectionSelectedRowKeysArray.value.includes(
+          `${spu_id}/${sku_id}`
+        );
+      }
+    );
+    tableRowSelectionSelectedRowKeysArray.value = [];
   }
 };
-const goodsItemDeleteOutlinedClick = (index: number) => {
-  model.dataSource.splice(index, 1);
+
+const tableDeleteOutlinedClickFunction = (index: number) => {
+  formModelObject.dataSource.splice(index, 1);
 };
 
-const goodsListModalSelect = async (
+const goodsListModalSelectFunction = async (
   rows: Api_goods_sku_list_result_item_interface[]
 ) => {
-  model.dataSource = model.dataSource.concat(
+  formModelObject.dataSource = formModelObject.dataSource.concat(
     rows.map((item, index) => {
       item.min_qty = item.real_qty && 1;
       goodsItemCalculatedFunction(item, item.min_qty, item.shop_selling_price);
@@ -862,9 +877,9 @@ const goodsItemCalculatedFunction = (
 };
 
 const handleSubmitDataFunction = (
-  model: Api_proxy_order_Order_BackEnd_submit_params_interface
+  formModelObject: Api_proxy_order_Order_BackEnd_submit_params_interface
 ) => {
-  const value = cloneDeep(model);
+  const value = cloneDeep(formModelObject);
   [
     value.addressInfo.province_id,
     value.addressInfo.city_id,
@@ -887,7 +902,10 @@ const handleSubmitDataFunction = (
     }
   );
   value.freight = multiply(value.freight, 100);
-  value.validator.total_pay = multiply(model.validator.total_pay, 100);
+  value.validator.total_pay = multiply(
+    formModelObject.validator.total_pay,
+    100
+  );
   if (value.isInvoice) {
     if (value.order_invoice.mArea) {
       [
@@ -935,13 +953,13 @@ const inputNumberChange = async (
 
 // 这个watch概念上就是table的chang事件
 watch(
-  () => model.dataSource,
+  () => formModelObject.dataSource,
   async (newValue) => {
     if (newValue.length === 0) {
-      model.freight = undefined;
-      model.qty = undefined;
-      model.total_price = undefined;
-      model.validator.total_pay = undefined;
+      formModelObject.freight = undefined;
+      formModelObject.qty = undefined;
+      formModelObject.total_price = undefined;
+      formModelObject.validator.total_pay = undefined;
     } else {
       newValue.forEach((item, index) => {
         item.number = index + 1;
@@ -953,12 +971,12 @@ watch(
 
 const setPriceFunction = debounce(async () => {
   let { data } = await api_proxy_order_Order_BackEnd_confirm(
-    handleSubmitDataFunction(model)
+    handleSubmitDataFunction(formModelObject)
   );
-  model.freight = data.total_freight / 100;
-  model.qty = data.qty;
-  model.total_price = data.total_price / 100;
-  model.validator.total_pay = data.total_real_price / 100;
+  formModelObject.freight = data.total_freight / 100;
+  formModelObject.qty = data.qty;
+  formModelObject.total_price = data.total_price / 100;
+  formModelObject.validator.total_pay = data.total_real_price / 100;
 }, 500);
 const freightInputNumberChange = setPriceFunction;
 
@@ -972,8 +990,8 @@ const tableRowKey = ({
 // 这里的watch也是change，而且是2个实体的chagne
 watch(
   [
-    () => model.order_invoice!.invoice_kind,
-    () => model.order_invoice!.invoice_form,
+    () => formModelObject.order_invoice!.invoice_kind,
+    () => formModelObject.order_invoice!.invoice_form,
   ],
   ([invoice_kind, invoice_form]) => {
     commonPaperPersonalBoolean.value = false;

@@ -19,6 +19,12 @@ const loadData: CascaderProps['loadData'] = async (selectedOptions) => {
   const targetOption = selectedOptions[selectedOptions.length - 1];
   targetOption.loading = true;
 
+  console.log(
+    selectedOptions,
+    selectedOptions[selectedOptions.length - 1].value,
+    29
+  );
+
   // load options lazily
   let { data } = await areaRequest({
     parent_id: selectedOptions[selectedOptions.length - 1].value as number,
