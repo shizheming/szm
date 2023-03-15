@@ -1,9 +1,18 @@
 // api层
 // 供应商
-export const SUPPLIER_API = '/api/stock/supplier/get-all/list';
-export const CATEGORY_API = '/api/goods/category';
-export const BRAND_API = '/api/goods/brand/list';
-export const DICT_API = '/api/order/dict';
-export const SITE_API = '/api/sys/site';
-export const ORG_API = '/api/sys/org';
-export const AREA_API = '/api/common/area';
+export const SUPPLIER_API_STRING = '/api/stock/supplier/get-all/list';
+// 类目
+export const CATEGORY_API_STRING = '/api/goods/category';
+// 品牌
+export const BRAND_API_STRING = '/api/goods/brand/list';
+// 通用
+export const DICT_API_STRING = '/api/order/dict';
+// 站点
+export const SITE_API_STRING = '/api/sys/site';
+// 组织
+export const ORG_API_STRING = '/api/sys/org';
+// 地址
+export const AREA_API_STRING = '/api/common/area';
+
+// 用户
+export const USER_API_STRING = '/api/proxy/user/User/UserSearch/epUserSearch';

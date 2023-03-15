@@ -499,7 +499,7 @@
     <a-table
       :row-key="tableRowKey"
       :columns="orderFormPageGoodsTableColumns"
-      :data-source="formModelObject.dataSource"
+      :data-source="formModelObject.tableDataSourceArray"
       :pagination="false"
       :scroll="{ x: 3000 }"
       style="margin: 15px 0"
@@ -584,7 +584,7 @@
         <a-form-item label="运费" :name="['freight']">
           <a-input-number
             v-model:value="formModelObject.freight"
-            @change="freightInputNumberChange"
+            @change="setPriceFunction"
           >
             <template #addonAfter>元</template>
           </a-input-number>
@@ -629,11 +629,10 @@ import {
   Modal,
 } from 'ant-design-vue';
 import {
-  Api_proxy_order_Order_BackEnd_submit_params_interface,
+  AddParamsInterface,
   Api_goods_sku_list_result_item_interface,
-  Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface,
-  aaa,
 } from './interface';
+import { UserInterface } from '../../../api/interface';
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -658,15 +657,11 @@ import BackgroundCategoryCascader from '../../../components/cascader/backgroundC
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 import { cloneDeep, debounce, forEach, multiply, subtract } from 'lodash';
-import {
-  api_upload_getUrl,
-  api_proxy_order_Order_BackEnd_confirm,
-} from './api';
+import { api_upload_getUrl, confirmRequestFunction } from './api';
 import { SelectProps } from 'ant-design-vue/lib/vc-select';
-import { Api_goods_category_result_item_interface } from '../../../api/interface';
 
 const UserListModal = defineAsyncComponent(
-  () => import('./components/userListModal.vue')
+  () => import('../../../components/modal/userListModal.vue')
 );
 const GoodsListModal = defineAsyncComponent(
   () => import('./components/goodsListModal.vue')
@@ -686,7 +681,7 @@ const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
 const selectedRowsArray = ref<Api_goods_sku_list_result_item_interface[]>([]);
-const modelObejct: Api_proxy_order_Order_BackEnd_submit_params_interface = {
+const modelObejct: AddParamsInterface = {
   site_id: 1,
   api_type: 3,
   entryMode: '手工创建订单',
@@ -707,35 +702,13 @@ const modelObejct: Api_proxy_order_Order_BackEnd_submit_params_interface = {
     apply_scene: 1,
   },
   pay_mode: 0,
-  dataSource: [],
+  tableDataSourceArray: [],
   validator: {},
 };
-const formModelObject =
-  reactive<Api_proxy_order_Order_BackEnd_submit_params_interface>(
-    cloneDeep(modelObejct)
-  );
+const formModelObject = reactive<AddParamsInterface>(cloneDeep(modelObejct));
 
 const plusOutlinedClickFunction = () => {
-  if (formModelObject.user_id) {
-    Modal.confirm({
-      title: '确定要修改吗？',
-      icon: createVNode(ExclamationCircleOutlined),
-      content: createVNode(
-        'div',
-        { style: 'color:red;' },
-        '修改买家信息后以下部分信息将需要重新设置，是否继续？（收货地址、开票申请、商品信息等）'
-      ),
-      onOk() {
-        forEach(formModelObject, (value, key) => {
-          formModelObject[key] = undefined;
-        });
-        Object.assign(formModelObject, modelObejct);
-        userListModalVisibleBoolean.value = true;
-      },
-    });
-  } else {
-    userListModalVisibleBoolean.value = true;
-  }
+  userListModalVisibleBoolean.value = true;
 };
 
 const formFinishFunction: FormInstance['onFinish'] = (values) => {
@@ -778,7 +751,7 @@ const tableRowSelectionOnChangeFunction: TableRowSelection['onChange'] = (
 
 const userListModalSelectFunction: (
   rowKeys: TableRowSelection['selectedRowKeys'],
-  rows: Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface[]
+  rows: UserInterface[]
 ) => void = (
   rowKeys,
   [
@@ -805,50 +778,57 @@ const userListModalSelectFunction: (
     company_name,
   });
   formRef.value!.validate(['user_id']);
+  if (formModelObject.tableDataSourceArray.length > 0) {
+    setPriceFunction();
+  }
 };
 
 const deleteOutlinedClickFunction = () => {
   if (tableRowSelectionSelectedRowKeysArray.value.length) {
-    formModelObject.dataSource = formModelObject.dataSource.filter(
-      ({ sku_id, spu_id }) => {
+    formModelObject.tableDataSourceArray =
+      formModelObject.tableDataSourceArray.filter(({ sku_id, spu_id }) => {
         return !tableRowSelectionSelectedRowKeysArray.value.includes(
           `${spu_id}/${sku_id}`
         );
-      }
-    );
+      });
     tableRowSelectionSelectedRowKeysArray.value = [];
   }
 };
 
 const tableDeleteOutlinedClickFunction = (index: number) => {
-  formModelObject.dataSource.splice(index, 1);
+  formModelObject.tableDataSourceArray.splice(index, 1);
 };
 
 const goodsListModalSelectFunction = async (
   rows: Api_goods_sku_list_result_item_interface[]
 ) => {
-  formModelObject.dataSource = formModelObject.dataSource.concat(
-    rows.map((item, index) => {
-      item.min_qty = item.real_qty && 1;
-      goodsItemCalculatedFunction(item, item.min_qty, item.shop_selling_price);
-      item.sku_type_name = '实物';
-      item.is_suit =
-        item.is_suit === 'b'
-          ? ''
-          : GOODS_FORM_ENUM[item.is_suit as number] || '普通';
-      if (item.gallery.length) {
-        const [{ key, upload_channel, bucket }] = item.gallery;
-        api_upload_getUrl({
-          key,
-          upload_channel,
-          bucket,
-        }).then(({ data }) => {
-          item.imgSrc = data;
-        });
-      }
-      return item;
-    })
-  );
+  formModelObject.tableDataSourceArray =
+    formModelObject.tableDataSourceArray.concat(
+      rows.map((item, index) => {
+        item.min_qty = item.real_qty && 1;
+        goodsItemCalculatedFunction(
+          item,
+          item.min_qty,
+          item.shop_selling_price
+        );
+        item.sku_type_name = '实物';
+        item.is_suit =
+          item.is_suit === 'b'
+            ? ''
+            : GOODS_FORM_ENUM[item.is_suit as number] || '普通';
+        if (item.gallery.length) {
+          const [{ key, upload_channel, bucket }] = item.gallery;
+          api_upload_getUrl({
+            key,
+            upload_channel,
+            bucket,
+          }).then(({ data }) => {
+            item.imgSrc = data;
+          });
+        }
+        return item;
+      })
+    );
 };
 
 const goodsItemCalculatedFunction = (
@@ -876,9 +856,7 @@ const goodsItemCalculatedFunction = (
   }
 };
 
-const handleSubmitDataFunction = (
-  formModelObject: Api_proxy_order_Order_BackEnd_submit_params_interface
-) => {
+const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
   const value = cloneDeep(formModelObject);
   [
     value.addressInfo.province_id,
@@ -892,7 +870,7 @@ const handleSubmitDataFunction = (
     value.addressInfo.district_name,
     value.addressInfo.street_name,
   ] = addressNameArray;
-  value.shop_goods_list = value.dataSource.map(
+  value.shop_goods_list = value.tableDataSourceArray.map(
     ({ qty, adjust_mount, shop_goods_id }) => {
       return {
         qty,
@@ -948,12 +926,12 @@ const inputNumberChange = async (
 // 实体的change是自己触发的，然后干一些事情，是一对一或是一对多，可以对实体自己做一些事情，也可以是对别的实体做一些事情，对别的实体是一种命令式的下发的写法，现在一般是跟自己有关的用change，如果是多个实体的change干的是同一件事情，那我可以用监听，监听多个值，这个多个值就代表监听的实体，去触发干的那同一件事情，这是一种change的变体，这里的watch从概念上来看就不能当watch来看的，而是还是一种change，只是写法不同而已，因为从逻辑上来讲这里的watch没有主语，谁监听，没有，所以概念上还是change
 // 谁在watch，是页面，没有当前input，select组件之类的watch，没有独立的watch，只有页面级别的watch
 // 事实是这样，没有所谓的组件watch主语，但是我从逻辑上可以给他一个watch主语，没毛病的，我可以这样理解
-// 实体的watch是别人触发的，然后干一些事情，是一对一或是一对多，可以对实体自己做一些事情，也可以是对别的实体做一些事情，监听别人，然后对别人干一些事情，watch主语的概念就变了，就已经是change的概念了，所以要首先明确watch的主语，有了实体主语后才知道是watch好点还是change好点
+// 实体的watch是别人触发的，然后干一些事情，是一对一或是一对多，一对多其实就是change概念了，多是多个其他实体的事情，可以对实体自己做一些事情，也可以是对别的实体做一些事情，监听别人，然后对别人干一些事情，watch主语的概念就变了，就已经是change的概念了，所以要首先明确watch的主语，有了实体主语后才知道是watch好点还是change好点
 // watch里面只有自己的事情，才能在概念上叫实体的watch，如果干了别人的事情，那概念上就是别人的change了，跟当前实体就已经没有关系了
 
-// 这个watch概念上就是table的chang事件
+// 这个watch概念上就是table的chang事件，这是是概念上的宏观change，不是table组件的change事件
 watch(
-  () => formModelObject.dataSource,
+  () => formModelObject.tableDataSourceArray,
   async (newValue) => {
     if (newValue.length === 0) {
       formModelObject.freight = undefined;
@@ -970,7 +948,7 @@ watch(
 );
 
 const setPriceFunction = debounce(async () => {
-  let { data } = await api_proxy_order_Order_BackEnd_confirm(
+  let { data } = await confirmRequestFunction(
     handleSubmitDataFunction(formModelObject)
   );
   formModelObject.freight = data.total_freight / 100;
@@ -978,7 +956,6 @@ const setPriceFunction = debounce(async () => {
   formModelObject.total_price = data.total_price / 100;
   formModelObject.validator.total_pay = data.total_real_price / 100;
 }, 500);
-const freightInputNumberChange = setPriceFunction;
 
 const tableRowKey = ({
   sku_id,

@@ -1,58 +1,55 @@
 <template>
   <a-cascader
     change-on-select
-    :options="options"
-    :load-data="loadData"
+    :options="cascaderOptionsArray"
+    :load-data="cascaderLoadDataFunction"
     placeholder="请选择"
-    :inner="inner"
+    :inner="cascaderInnerFunction"
   />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import type { CascaderProps } from 'ant-design-vue';
-import { areaRequest } from '../../api/dictionary';
+import { areaRequestFunction } from '../../api/dictionary';
 import { apiDictCacheObject } from '../../utils/global';
 
-const options = ref<CascaderProps['options']>([]);
-const loadData: CascaderProps['loadData'] = async (selectedOptions) => {
-  const targetOption = selectedOptions[selectedOptions.length - 1];
-  targetOption.loading = true;
+const cascaderOptionsArray = ref<CascaderProps['options']>([]);
+const cascaderLoadDataFunction: CascaderProps['loadData'] = async (
+  selectedOptionsArray
+) => {
+  const targetOptionObject =
+    selectedOptionsArray[selectedOptionsArray.length - 1];
+  targetOptionObject.loading = true;
 
-  console.log(
-    selectedOptions,
-    selectedOptions[selectedOptions.length - 1].value,
-    29
-  );
-
-  // load options lazily
-  let { data } = await areaRequest({
-    parent_id: selectedOptions[selectedOptions.length - 1].value as number,
+  let { data } = await areaRequestFunction({
+    parent_id: selectedOptionsArray[selectedOptionsArray.length - 1]
+      .value as number,
   });
-  targetOption.loading = false;
-  targetOption.children = data.map(({ id, name }) => {
+  targetOptionObject.loading = false;
+  targetOptionObject.children = data.map(({ id, name }) => {
     return {
       label: name,
       value: id,
-      isLeaf: selectedOptions.length === 3 ? true : false,
+      isLeaf: selectedOptionsArray.length === 3 ? true : false,
     };
   });
 };
-const inner = async () => {
+const cascaderInnerFunction = async () => {
   if (apiDictCacheObject.addressOptions) {
-    options.value = apiDictCacheObject.addressOptions;
+    cascaderOptionsArray.value = apiDictCacheObject.addressOptions;
   } else {
-    let { data } = await areaRequest({
+    let { data } = await areaRequestFunction({
       parent_id: 1,
     });
-    options.value = data.map(({ id, name }) => {
+    cascaderOptionsArray.value = data.map(({ id, name }) => {
       return {
         label: name,
         value: id,
         isLeaf: false,
       };
     });
-    apiDictCacheObject.addressOptions = options.value;
+    apiDictCacheObject.addressOptions = cascaderOptionsArray.value;
     Object.defineProperty(apiDictCacheObject, 'addressOptions', {
       writable: false,
     });

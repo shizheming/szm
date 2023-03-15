@@ -1,24 +1,24 @@
 <template>
   <!-- 供应商 -->
-  <a-select :options="options" :inner="inner" />
+  <a-select :options="selectionOptionsArray" :inner="selectInnerFunction" />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { supplierRequest } from '../../api/dictionary';
+import { supplierRequestFunction } from '../../api/dictionary';
 import type { SelectProps } from 'ant-design-vue';
 import { apiDictCacheObject } from '../../utils/global';
-const options = ref<SelectProps['options']>([]);
-const inner = async () => {
+const selectionOptionsArray = ref<SelectProps['options']>([]);
+const selectInnerFunction = async () => {
   if (apiDictCacheObject.supplierOptions) {
-    options.value = apiDictCacheObject.supplierOptions;
+    selectionOptionsArray.value = apiDictCacheObject.supplierOptions;
   } else {
-    let { data } = await supplierRequest();
-    options.value = data.map(({ id, name }) => ({
+    let { data } = await supplierRequestFunction();
+    selectionOptionsArray.value = data.map(({ id, name }) => ({
       label: name,
       value: id,
     }));
-    apiDictCacheObject.supplierOptions = options.value;
+    apiDictCacheObject.supplierOptions = selectionOptionsArray.value;
   }
 };
 </script>

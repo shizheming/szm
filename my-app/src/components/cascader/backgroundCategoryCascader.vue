@@ -1,36 +1,36 @@
 <template>
   <a-cascader
     change-on-select
-    :options="options"
+    :options="cascaderOptionsArray"
     placeholder="请选择"
-    :inner="inner"
+    :inner="cascaderInnerFunction"
   />
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import { categoryRequest } from '../../api/dictionary';
+import { categoryRequestFunction } from '../../api/dictionary';
 import type { CascaderProps } from 'ant-design-vue';
 import { apiDictCacheObject } from '../../utils/global';
 
-const options = ref<CascaderProps['options']>([]);
-const formatOptions = (category: CascaderProps['options']) => {
+const cascaderOptionsArray = ref<CascaderProps['options']>([]);
+const formatOptionsArray = (category: CascaderProps['options']) => {
   return category!.map((item) => {
     item.label = item.name;
     item.value = item.id;
     if (item.child) {
-      item.children = formatOptions(item.child);
+      item.children = formatOptionsArray(item.child);
     }
     return item;
   });
 };
 
-const inner = async () => {
+const cascaderInnerFunction = async () => {
   if (apiDictCacheObject.backgroundCategoryOptions) {
-    options.value = apiDictCacheObject.backgroundCategoryOptions;
+    cascaderOptionsArray.value = apiDictCacheObject.backgroundCategoryOptions;
   } else {
-    let { data } = await categoryRequest();
-    options.value = formatOptions(data);
-    apiDictCacheObject.backgroundCategoryOptions = options.value;
+    let { data } = await categoryRequestFunction();
+    cascaderOptionsArray.value = formatOptionsArray(data);
+    apiDictCacheObject.backgroundCategoryOptions = cascaderOptionsArray.value;
     Object.defineProperty(apiDictCacheObject, 'backgroundCategoryOptions', {
       writable: false,
     });

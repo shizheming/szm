@@ -369,10 +369,7 @@ export interface Api_order_orderSyncList_result_item_interface {
 export type Api_order_orderSyncList_params_interface =
   Partial<Api_order_orderSyncList_params_part_interface> & PageInterface;
 
-export interface aaa {
-  dataSource: Api_goods_sku_list_result_item_interface[];
-}
-export type Api_proxy_order_Order_BackEnd_submit_params_interface = Partial<{
+export type AddParamsInterface = Partial<{
   qty: number;
   total_price: number;
   freight: number;
@@ -404,7 +401,7 @@ export type Api_proxy_order_Order_BackEnd_submit_params_interface = Partial<{
     adjust_mount: number;
   }[];
 }> & {
-  dataSource: Api_goods_sku_list_result_item_interface[];
+  tableDataSourceArray: Api_goods_sku_list_result_item_interface[];
   order_invoice: Partial<{
     invoice_form: number;
     invoice_kind: number;
@@ -457,25 +454,6 @@ export type Api_proxy_order_Order_BackEnd_submit_params_interface = Partial<{
     address: string;
   }> & { addressIds: number[] };
 };
-
-/* export type Api_proxy_order_Order_BackEnd_submit_params_interface2 =
-  partPartial<
-    Api_proxy_order_Order_BackEnd_submit_params_interface,
-    'order_invoice' | 'addressInfo'
-  >; */
-
-export interface Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface {
-  user_id: string;
-  third_user_id: string;
-  username: string;
-  name: string;
-  wx_nickname: string;
-  phone: string;
-  exp_value: number;
-  company_name: string;
-  is_employee: number;
-  user_level_name: string;
-}
 
 export interface Api_goods_sku_list_params_part_interface {
   goods_search_value: string;

@@ -55,7 +55,7 @@ axios.interceptors.response.use(
     if (response.data.code !== 0) {
       message.error(response.data.msg);
       // 登陆过期
-      if (response.data.code == 401) {
+      if (response.data.code == 401 || response.data.code == 403) {
         vueCookie.remove('token');
         setTimeout(() => {
           location.href = `${location.origin}/login?path=${location.pathname}`;
@@ -109,6 +109,7 @@ axios.interceptors.response.use(
       default:
         break;
     }
+
     message.error(error.message);
     return Promise.reject(error);
   }

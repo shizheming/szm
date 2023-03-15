@@ -1,31 +1,31 @@
 <template>
   <!-- 销售站点 -->
-  <a-select :options="options" :inner="inner" />
+  <a-select :options="selectionOptionsArray" :inner="selectInnerFunction" />
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import { siteRequest } from '../../api/dictionary';
+import { siteRequestFunction } from '../../api/dictionary';
 import type { SelectProps } from 'ant-design-vue';
 import { apiDictCacheObject } from '../../utils/global';
 
-const options = ref<SelectProps['options']>([]);
-const inner = async () => {
+const selectionOptionsArray = ref<SelectProps['options']>([]);
+const selectInnerFunction = async () => {
   if (apiDictCacheObject.ownerSiteOptions) {
-    options.value = apiDictCacheObject.ownerSiteOptions;
+    selectionOptionsArray.value = apiDictCacheObject.ownerSiteOptions;
   } else {
     let {
       data: { list },
-    } = await siteRequest({
+    } = await siteRequestFunction({
       page: 1,
       page_size: 100,
     });
-    options.value = list.map(({ id, name }) => {
+    selectionOptionsArray.value = list.map(({ id, name }) => {
       return {
         label: name,
         value: id,
       };
     });
-    apiDictCacheObject.ownerSiteOptions = options.value;
+    apiDictCacheObject.ownerSiteOptions = selectionOptionsArray.value;
   }
 };
 </script>

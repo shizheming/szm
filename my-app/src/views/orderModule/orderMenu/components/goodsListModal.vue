@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    :visible="props.visible"
+    :visible="propsObject.visible"
     :ok-button-props="{ disabled: !selectedRowKeys.length }"
     title="商品选择"
     width="100%"
@@ -166,7 +166,7 @@ import {
   Api_goods_sku_list_result_item_interface,
   Api_goods_sku_list_params_part_interface,
   Api_goods_sku_list_params_interface,
-  Api_proxy_order_Order_BackEnd_submit_params_interface,
+  AddParamsInterface,
   Api_proxy_order_Manage_Invoice_repairInvoice_params_interface,
 } from '../interface';
 import { api_goods_sku_list, api_goods_sku_getSkuAreaBySkuIds } from '../api';
@@ -184,11 +184,11 @@ import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import { difference, last } from 'lodash';
 import { PageInterface } from '../../../../interface';
 
-const props = defineProps<{
+const propsObject = defineProps<{
   visible: boolean;
-  model: Api_proxy_order_Order_BackEnd_submit_params_interface;
+  model: AddParamsInterface;
 }>();
-const emits = defineEmits<{
+const emitsFunction = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
   (
     event: 'select',
@@ -313,8 +313,8 @@ const ok = async () => {
       shop_goods_ids: selectedRowsArray.value.map(
         ({ shop_goods_id }) => shop_goods_id
       ),
-      province: props.model.addressInfo.addressIds[0],
-      district: props.model.addressInfo.addressIds[2],
+      province: propsObject.model.addressInfo.addressIds[0],
+      district: propsObject.model.addressInfo.addressIds[2],
       channel_id: 1,
     });
     if (data.length) {
@@ -334,22 +334,22 @@ const ok = async () => {
       });
       selectedRowKeys.value = difference(selectedRowKeys.value, spuSkuArray);
     }
-    emits('select', selectedRowsArray.value);
-    emits('update:visible', false);
+    emitsFunction('select', selectedRowsArray.value);
+    emitsFunction('update:visible', false);
     confirmLoading.value = false;
   } catch (e) {
     confirmLoading.value = false;
   }
 };
 const cancel = () => {
-  emits('update:visible', false);
+  emitsFunction('update:visible', false);
 };
 
 watch(
-  () => props.visible,
+  () => propsObject.visible,
   async (newValue) => {
     if (newValue === true) {
-      noSelectedRowKeysArray = props.model.dataSource.map(
+      noSelectedRowKeysArray = propsObject.model.tableDataSourceArray.map(
         ({ spu_id, sku_id }) => {
           return `${spu_id}/${sku_id}`;
         }

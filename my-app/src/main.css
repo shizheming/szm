@@ -18,9 +18,3 @@
   content: '*';
 }
 
-::-webkit-scrollbar {
-  width: 8px; /*滚动条的宽度*/
-}
-::-webkit-scrollbar-thumb {
-  background-color: #e8e8e8;
-}

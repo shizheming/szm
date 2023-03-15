@@ -1,30 +1,30 @@
 <template>
   <!-- 销售渠道 -->
-  <a-select :options="options" :inner="inner" />
+  <a-select :options="selectionOptionsArray" :inner="selectInnerFunction" />
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import { dictRequest } from '../../api/dictionary';
+import { dictRequestFunction } from '../../api/dictionary';
 import type { SelectProps } from 'ant-design-vue';
 import { apiDictCacheObject } from '../../utils/global';
 
-const options = ref<SelectProps['options']>([]);
-const inner = async () => {
+const selectionOptionsArray = ref<SelectProps['options']>([]);
+const selectInnerFunction = async () => {
   if (apiDictCacheObject.saleModeOptions) {
-    options.value = apiDictCacheObject.saleModeOptions;
+    selectionOptionsArray.value = apiDictCacheObject.saleModeOptions;
   } else {
     let {
       data: { sale_mode },
-    } = await dictRequest({
+    } = await dictRequestFunction({
       type: 'sale_mode',
     });
-    options.value = sale_mode.map(({ value, code }) => {
+    selectionOptionsArray.value = sale_mode.map(({ value, code }) => {
       return {
         label: value,
         value: code,
       };
     });
-    apiDictCacheObject.saleModeOptions = options.value;
+    apiDictCacheObject.saleModeOptions = selectionOptionsArray.value;
   }
 };
 </script>

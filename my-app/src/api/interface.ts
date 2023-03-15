@@ -1,4 +1,4 @@
-export interface Api_goods_category_result_item_interface {
+export interface CategoryInterface {
   id: number;
   pid: number;
   name: string;
@@ -15,5 +15,18 @@ export interface Api_goods_category_result_item_interface {
   source_db: string;
   source_id: string;
   get_category_relation: any[];
-  child?: Api_goods_category_result_item_interface[];
+  child?: CategoryInterface[];
+}
+
+export interface UserInterface {
+  user_id: string;
+  third_user_id: string;
+  username: string;
+  name: string;
+  wx_nickname: string;
+  phone: string;
+  exp_value: number;
+  company_name: string;
+  is_employee: number;
+  user_level_name: string;
 }

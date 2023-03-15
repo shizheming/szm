@@ -318,7 +318,7 @@ import {
 import { SelectProps } from 'ant-design-vue/lib/vc-select';
 import { Api_goods_category_result_item_interface } from '../../../api/interface';
 const UserListModal = defineAsyncComponent(
-  () => import('./components/userListModal.vue')
+  () => import('../../../components/modal/userListModal.vue')
 );
 const GoodsListModal = defineAsyncComponent(
   () => import('./components/goodsListModal.vue')

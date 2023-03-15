@@ -6,11 +6,10 @@ import type {
   Api_proxy_order_manage_edit_confirmsign_params_interface,
   Api_order_orderSyncList_params_interface,
   Api_order_orderSyncList_result_item_interface,
-  Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface,
   Api_goods_sku_list_result_item_interface,
   Api_goods_sku_list_params_interface,
   Api_order_merchantRemark_batch_params_item_interface,
-  Api_proxy_order_Order_BackEnd_submit_params_interface,
+  AddParamsInterface,
   Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_item_interface,
   Api_proxy_order_manage_query_getServerInfo_item_interface,
   Api_proxy_order_Manage_Invoice_repairInvoice_params_interface,
@@ -73,15 +72,6 @@ export const api_order_getFileByUrl = (params: { url: string }) => {
   });
 };
 
-// 用户列表
-export const Api_proxy_user_User_UserSearch_epUserSearch = (
-  params: { user_id?: string } & PageInterface
-) => {
-  return axios.post<
-    ListInterface<Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface>
-  >('/api/proxy/user/User/UserSearch/epUserSearch', params);
-};
-
 // 商品列表
 export const api_goods_sku_list = (
   params: Api_goods_sku_list_params_interface
@@ -96,7 +86,7 @@ export const api_goods_sku_list = (
 
 // 人工下单
 export const api_proxy_order_Order_BackEnd_submit = (
-  params: Api_proxy_order_Order_BackEnd_submit_params_interface
+  params: AddParamsInterface
 ) => {
   return axios.post('/api/proxy/order/Order/BackEnd/submit', params);
 };
@@ -152,9 +142,7 @@ export const api_upload_getUrl = (params: {
 };
 
 // 人工下单确认
-export const api_proxy_order_Order_BackEnd_confirm = (
-  params: Api_proxy_order_Order_BackEnd_submit_params_interface
-) => {
+export const confirmRequestFunction = (params: AddParamsInterface) => {
   return axios.post<{
     qty: number;
     total_price: number;

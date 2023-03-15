@@ -4,6 +4,7 @@
     auto-size
     show-count
     :max-length="200"
+    placeholder="请输入"
     v-bind="newSlots"
   >
     <slot />

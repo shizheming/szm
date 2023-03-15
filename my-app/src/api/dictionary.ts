@@ -1,18 +1,18 @@
 import { ListInterface, PageInterface } from '../interface';
 import axios from '../utils/axios';
-import { Api_goods_category_result_item_interface } from './interface';
+import { CategoryInterface } from './interface';
 import {
-  SUPPLIER_API,
-  CATEGORY_API,
-  BRAND_API,
-  DICT_API,
-  SITE_API,
-  ORG_API,
-  AREA_API,
+  SUPPLIER_API_STRING,
+  CATEGORY_API_STRING,
+  BRAND_API_STRING,
+  DICT_API_STRING,
+  SITE_API_STRING,
+  ORG_API_STRING,
+  AREA_API_STRING,
 } from './api';
 
 // 供应商
-export const supplierRequest = () => {
+export const supplierRequestFunction = () => {
   return axios.get<
     {
       id: number;
@@ -24,19 +24,19 @@ export const supplierRequest = () => {
       finance_code: string;
       identity_type: number;
     }[]
-  >(SUPPLIER_API);
+  >(SUPPLIER_API_STRING);
 };
 
 // 后台类目
-export const categoryRequest = () =>
-  axios.get<Api_goods_category_result_item_interface[]>(CATEGORY_API);
+export const categoryRequestFunction = () =>
+  axios.get<CategoryInterface[]>(CATEGORY_API_STRING);
 
 // 商品品牌
-export const brandRequest = () =>
-  axios.get<{ id: number; name: string }[]>(BRAND_API);
+export const brandRequestFunction = () =>
+  axios.get<{ id: number; name: string }[]>(BRAND_API_STRING);
 
 // 通用字典
-export const dictRequest = (params: { type: string }) =>
+export const dictRequestFunction = (params: { type: string }) =>
   axios.get<{
     [key: string]: {
       type: string;
@@ -47,10 +47,10 @@ export const dictRequest = (params: { type: string }) =>
       rank: number;
       enterprise_id: number;
     }[];
-  }>(DICT_API, { params });
+  }>(DICT_API_STRING, { params });
 
 // 销售站点
-export const siteRequest = (params: PageInterface) =>
+export const siteRequestFunction = (params: PageInterface) =>
   axios.get<
     ListInterface<{
       id: number;
@@ -68,10 +68,10 @@ export const siteRequest = (params: PageInterface) =>
       status_name: string;
       org_name: string;
     }>
-  >(SITE_API, { params });
+  >(SITE_API_STRING, { params });
 
 // 订单销售组织
-export const orgRequest = (params: PageInterface) =>
+export const orgRequestFunction = (params: PageInterface) =>
   axios.get<
     ListInterface<{
       id: number;
@@ -99,12 +99,12 @@ export const orgRequest = (params: PageInterface) =>
       operations_type_name: string;
       status_name: string;
     }>
-  >(ORG_API, {
+  >(ORG_API_STRING, {
     params,
   });
 
 // 地址
-export const areaRequest = (params: { parent_id: number }) =>
+export const areaRequestFunction = (params: { parent_id: number }) =>
   axios.get<
     {
       id: number;
@@ -114,4 +114,4 @@ export const areaRequest = (params: { parent_id: number }) =>
       ad_code: number;
       real_name: string;
     }[]
-  >(AREA_API, { params });
+  >(AREA_API_STRING, { params });
