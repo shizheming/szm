@@ -78,6 +78,7 @@ import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import { PageInterface } from '../../interface';
 import { TableColumn, TableColumnsType } from 'ant-design-vue';
+import { cloneDeep } from 'lodash';
 
 const tableColumnsArray: TableColumnsType = [
   {
@@ -132,7 +133,6 @@ const emitsFunction = defineEmits<{
 const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
-
 const formRefObject = ref<FormInstance>();
 const selectedRowsArray = ref<UserInterface[]>([]);
 const { data, current, pageSize, run, loading, total } = usePagination(
@@ -154,9 +154,6 @@ const formModelObject = reactive<{ user_id: string } & PageInterface>({
   page: current.value,
   page_size: pageSize.value,
 });
-const formFinishFunction = async () => {
-  run(formModelObject);
-};
 
 const tablePaginationObject = computed(() => {
   return {
@@ -166,6 +163,13 @@ const tablePaginationObject = computed(() => {
     hideOnSinglePage: true,
   };
 });
+
+let confirmTableRowSelectionSelectedRowKeysArray: TableRowSelection['selectedRowKeys'] =
+  [];
+
+const formFinishFunction = async () => {
+  run(formModelObject);
+};
 
 const tableRowSelectionOnChangeFunction: TableRowSelection['onChange'] = (
   keys,
@@ -194,6 +198,9 @@ const modalOkFunction = async () => {
     tableRowSelectionSelectedRowKeysArray.value,
     selectedRowsArray.value
   );
+  confirmTableRowSelectionSelectedRowKeysArray = cloneDeep(
+    tableRowSelectionSelectedRowKeysArray.value
+  );
   emitsFunction('update:visible', false);
 };
 const modalCancelFunction = () => {
@@ -205,6 +212,8 @@ watch(
   () => propsObject.visible,
   async (newValue) => {
     if (newValue === true) {
+      tableRowSelectionSelectedRowKeysArray.value =
+        confirmTableRowSelectionSelectedRowKeysArray;
       run(formModelObject);
     }
   }

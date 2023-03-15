@@ -106,7 +106,7 @@
           :name="['addressInfo', 'addressIds']"
           :rules="{
             required: true,
-            validator: formItemRulesValidator,
+            validator: formItemRulesValidatorFunction,
           }"
         >
           <address-cascader
@@ -731,7 +731,7 @@ const addressCascaderChangeFunction: SelectProps['onChange'] = (
   addressNameArray = options.map(({ label }: { label: string }) => label);
 };
 
-const formItemRulesValidator = async (_rule: Rule, value: number[]) => {
+const formItemRulesValidatorFunction = async (_rule: Rule, value: number[]) => {
   if (!value) {
     return Promise.reject('请选择');
   } else if (value.length < 3) {
