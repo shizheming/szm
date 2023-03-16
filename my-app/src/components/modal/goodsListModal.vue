@@ -1,19 +1,21 @@
 <template>
   <a-modal
     :visible="propsObject.visible"
-    :ok-button-props="{ disabled: !selectedRowKeys.length }"
+    :ok-button-props="{
+      disabled: !tableRowSelectionSelectedRowKeysArray.length,
+    }"
     title="商品选择"
     width="100%"
     wrap-class-name="full-modal"
-    :confirmLoading="confirmLoading"
-    @ok="ok"
-    @cancel="cancel"
+    :confirm-loading="modalConfirmLoadingBoolean"
+    @ok="modalOkFunction"
+    @cancel="modalCancelFunction"
   >
     <a-form
       ref="formRef"
       :model="model"
       :label-col="{ span: 6 }"
-      @finish="finish"
+      @finish="formFinishFunction"
     >
       <a-row>
         <a-col :span="8">
@@ -22,7 +24,7 @@
               <a-select
                 style="width: 50%"
                 :allow-clear="false"
-                v-model:value="model.goods_search_key"
+                v-model:value="formModelObject.goods_search_key"
               >
                 <a-select-option value="name">商品名称</a-select-option>
                 <a-select-option value="sku_code">商品编码</a-select-option>
@@ -33,7 +35,7 @@
               </a-select>
               <a-input
                 style="width: 50%"
-                v-model:value="model.goods_search_value"
+                v-model:value="formModelObject.goods_search_value"
               />
             </a-input-group>
           </a-form-item>
@@ -45,7 +47,7 @@
             :name="['brand_id']"
           >
             <goods-brand-select
-              v-model:value="model.brand_id"
+              v-model:value="formModelObject.brand_id"
               mode="multiple"
             />
           </a-form-item>
@@ -57,7 +59,7 @@
             :name="['category_id_array']"
           >
             <background-category-cascader
-              v-model:value="model.category_id"
+              v-model:value="formModelObject.category_id"
               style="width: 100%"
             />
           </a-form-item>
@@ -66,7 +68,7 @@
           <a-form-item label="订单金额" :label-col="{ span: 6 }">
             <a-input-group compact>
               <a-input
-                v-model:value="model.sku_qty_start"
+                v-model:value="formModelObject.sku_qty_start"
                 style="width: 40%; text-align: center"
                 placeholder="最大值"
               />
@@ -81,7 +83,7 @@
                 disabled
               />
               <a-input
-                v-model:value="model.sku_qty_end"
+                v-model:value="formModelObject.sku_qty_end"
                 style="width: 40%; text-align: center; border-left: 0"
                 placeholder="最小值"
               />
@@ -96,25 +98,25 @@
               <a-button html-type="submit" type="primary">
                 <search-outlined />
               </a-button>
-              <clear-outlined @click="clearOutlinedClick" />
+              <clear-outlined @click="clearOutlinedClickFunction" />
             </a-space>
           </a-form-item>
         </a-col>
       </a-row>
     </a-form>
     <a-table
-      :row-key="tableRowKey"
+      :row-key="tableRowKeyFunction"
       :row-selection="{
-        selectedRowKeys,
-        onChange: rowSelectionOnChange,
-        getCheckboxProps,
+        selectedRowKeys: tableRowSelectionSelectedRowKeysArray,
+        onChange: tableRowSelectionOnChangeFunction,
+        getCheckboxProps: tableRowSelectionGetCheckboxPropsFunction,
         preserveSelectedRowKeys: true,
       }"
-      :data-source="dataSource?.list"
-      :columns="goodsListModalGoodsTableColumns"
+      :data-source="data?.list"
+      :columns="tableColumnsArray"
       :loading="loading"
-      :pagination="pagination"
-      @change="tableChange"
+      :pagination="tablePaginationObject"
+      @change="tableChangeFunction"
     >
       <template
         #bodyCell="{
@@ -122,7 +124,7 @@
           record,
         }: {
           column: TableColumnType,
-          record: Api_goods_sku_list_result_item_interface,
+          record: SkuRequestResultInterface,
         }"
       >
         <template v-if="column.key === 'category_id'">
@@ -152,8 +154,8 @@
 </template>
 <script setup lang="ts">
 import { ref, watch, reactive, computed } from 'vue';
-import GoodsBrandSelect from '../../../../components/select/goodsBrandSelect.vue';
-import BackgroundCategoryCascader from '../../../../components/cascader/backgroundCategoryCascader.vue';
+import GoodsBrandSelect from '../select/goodsBrandSelect.vue';
+import BackgroundCategoryCascader from '../cascader/backgroundCategoryCascader.vue';
 import {
   FormInstance,
   ModalProps,
@@ -161,19 +163,16 @@ import {
   FormProps,
   TableColumnType,
   message,
+  TableColumn,
+  TableColumnsType,
 } from 'ant-design-vue';
+import { AddParamsInterface } from '../../views/orderModule/orderMenu/interface';
 import {
-  Api_goods_sku_list_result_item_interface,
-  Api_goods_sku_list_params_part_interface,
-  Api_goods_sku_list_params_interface,
-  AddParamsInterface,
-  Api_proxy_order_Manage_Invoice_repairInvoice_params_interface,
-} from '../interface';
-import { api_goods_sku_list, api_goods_sku_getSkuAreaBySkuIds } from '../api';
-import {
-  goodsListModalGoodsTableColumns,
-  goodsListModalLadderPriceTableColumns,
-} from '../data';
+  SkuRequestResultInterface,
+  SkuRequestParamsPageInterface,
+} from '../../api/interface';
+import { api_goods_sku_getSkuAreaBySkuIds } from '../../views/orderModule/orderMenu/api';
+import { skuRequestFunction } from '../../api/list';
 import { usePagination } from 'vue-request';
 import {
   SearchOutlined,
@@ -182,7 +181,83 @@ import {
 } from '@ant-design/icons-vue';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import { difference, last } from 'lodash';
-import { PageInterface } from '../../../../interface';
+import { PageInterface } from '../../interface';
+
+const tableColumnsArray: TableColumnsType = [
+  {
+    title: '商品名称',
+    dataIndex: 'spu_name',
+    key: 'spu_name',
+  },
+  {
+    title: '商品编码',
+    dataIndex: 'sku_code',
+    key: 'sku_code',
+  },
+  {
+    title: '店铺商品编码',
+    dataIndex: 'shop_goods_code',
+    key: 'shop_goods_code',
+  },
+  {
+    title: '货号',
+    dataIndex: 'sn',
+    key: 'sn',
+  },
+  {
+    title: '销售店铺',
+    dataIndex: 'shop_name',
+    key: 'shop_name',
+  },
+  {
+    title: '商品类型',
+    dataIndex: 'sku_type_name',
+    key: 'sku_type_name',
+  },
+  {
+    title: '规格属性',
+    dataIndex: 'sku_specs',
+    key: 'sku_specs',
+  },
+  {
+    title: '品牌类目',
+    dataIndex: 'category_id',
+    key: 'category_id',
+  },
+  {
+    title: '订购单位',
+    dataIndex: 'pack_unit',
+    key: 'pack_unit',
+  },
+  {
+    title: '定价方式',
+    dataIndex: 'member_price_name',
+    key: 'member_price_name',
+  },
+  {
+    title: '销售单价',
+    dataIndex: 'shop_selling_price',
+    key: 'shop_selling_price',
+  },
+  {
+    title: '可售库存',
+    dataIndex: 'real_qty',
+    key: 'real_qty',
+  },
+];
+
+const goodsListModalLadderPriceTableColumns: TableColumnsType = [
+  {
+    title: '订购数量',
+    dataIndex: 'start_num_name',
+    key: 'start_num_name',
+  },
+  {
+    title: '销售单价',
+    dataIndex: 'member_price',
+    key: 'member_price',
+  },
+];
 
 const propsObject = defineProps<{
   visible: boolean;
@@ -190,45 +265,40 @@ const propsObject = defineProps<{
 }>();
 const emitsFunction = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
-  (
-    event: 'select',
-    selectedRowsArray: Api_goods_sku_list_result_item_interface[]
-  ): void;
+  (event: 'select', selectedRowsArray: SkuRequestResultInterface[]): void;
 }>();
-const confirmLoading = ref(false);
-const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
+const modalConfirmLoadingBoolean = ref(false);
+const tableRowSelectionSelectedRowKeysArray = ref<
+  TableRowSelection['selectedRowKeys']
+>([]);
 let noSelectedRowKeysArray: string[] = [];
-const formRef = ref<FormInstance>();
-const selectedRowsArray = ref<Api_goods_sku_list_result_item_interface[]>([]);
-const {
-  data: dataSource,
-  current,
-  pageSize,
-  run,
-  loading,
-  total,
-} = usePagination(api_goods_sku_list, {
-  manual: true,
-  formatResult: ({ data }) => {
-    data.list.forEach((current) => {
-      current.sku_type_name = '实物';
-      current.member_price_name =
-        current.member_price.length > 0 ? '阶梯价' : '固定价';
-      current.member_price.forEach((item) => {
-        item.start_num_name = `${item.start_num}${
-          item.end_num ? `~${item.end_num}` : '+'
-        }`;
+const formRefObject = ref<FormInstance>();
+const selectedRowsArray = ref<SkuRequestResultInterface[]>([]);
+const { data, current, pageSize, run, loading, total } = usePagination(
+  skuRequestFunction,
+  {
+    manual: true,
+    formatResult: ({ data }) => {
+      data.list.forEach((current) => {
+        current.sku_type_name = '实物';
+        current.member_price_name =
+          current.member_price.length > 0 ? '阶梯价' : '固定价';
+        current.member_price.forEach((item) => {
+          item.start_num_name = `${item.start_num}${
+            item.end_num ? `~${item.end_num}` : '+'
+          }`;
+        });
       });
-    });
-    return data;
-  },
-  pagination: {
-    currentKey: 'page',
-    pageSizeKey: 'page_size',
-    totalKey: 'total',
-  },
-});
-const model = reactive<Api_goods_sku_list_params_interface>({
+      return data;
+    },
+    pagination: {
+      currentKey: 'page',
+      pageSizeKey: 'page_size',
+      totalKey: 'total',
+    },
+  }
+);
+const formModelObject = reactive<SkuRequestParamsPageInterface>({
   channel_id: 1,
   is_listing: 1,
   need_stock: 1,
@@ -238,27 +308,27 @@ const model = reactive<Api_goods_sku_list_params_interface>({
   page: current.value,
   page_size: pageSize.value,
 });
-const finish = async () => {
-  run(getSearchDataObject({ page: 1, page_size: 10 }));
+const formFinishFunction = async () => {
+  run(getSearchDataFunction({ page: 1, page_size: 10 }));
 };
-const getSearchDataObject = (
+const getSearchDataFunction = (
   params: PageInterface = {
     page: current.value,
     page_size: pageSize.value,
   }
 ) => {
-  model.category_id = last(model.category_id_array);
+  formModelObject.category_id = last(formModelObject.category_id_array);
 
   return {
-    ...model,
+    ...formModelObject,
     ...params,
-    good_search_key: model.goods_search_value
-      ? model.goods_search_key
+    good_search_key: formModelObject.goods_search_value
+      ? formModelObject.goods_search_key
       : undefined,
-    good_search_value: model.goods_search_value || undefined,
+    good_search_value: formModelObject.goods_search_value || undefined,
   };
 };
-const pagination = computed(() => {
+const tablePaginationObject = computed(() => {
   return {
     total: total.value,
     current: current.value,
@@ -267,46 +337,42 @@ const pagination = computed(() => {
   };
 });
 
-const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {
-  console.log(keys, 304);
-
-  selectedRowKeys.value = keys;
+const tableRowSelectionOnChangeFunction: TableRowSelection['onChange'] = (
+  keys,
+  rows
+) => {
+  tableRowSelectionSelectedRowKeysArray.value = keys;
   selectedRowsArray.value = rows;
 };
 
-const tableChange: TableProps['onChange'] = async (pag) => {
+const tableChangeFunction: TableProps['onChange'] = async (pag) => {
   run(
-    getSearchDataObject({
+    getSearchDataFunction({
       page: pag.current!,
       page_size: pag.pageSize!,
     })
   );
 };
 
-const getCheckboxProps: TableRowSelection['getCheckboxProps'] = ({
-  sku_id,
-  spu_id,
-  real_qty,
-}) => {
-  return {
-    disabled:
-      noSelectedRowKeysArray.includes(`${spu_id}/${sku_id}`) || real_qty === 0,
+const tableRowSelectionGetCheckboxPropsFunction: TableRowSelection['getCheckboxProps'] =
+  ({ sku_id, spu_id, real_qty }) => {
+    return {
+      disabled:
+        noSelectedRowKeysArray.includes(`${spu_id}/${sku_id}`) ||
+        real_qty === 0,
+    };
   };
-};
 
-const tableRowKey = ({
-  sku_id,
-  spu_id,
-}: Api_goods_sku_list_result_item_interface) => {
+const tableRowKeyFunction = ({ sku_id, spu_id }: SkuRequestResultInterface) => {
   return `${spu_id}/${sku_id}`;
 };
 
-const clearOutlinedClick = () => {
-  formRef.value?.resetFields();
+const clearOutlinedClickFunction = () => {
+  formRefObject.value?.resetFields();
 };
 
-const ok = async () => {
-  confirmLoading.value = true;
+const modalOkFunction = async () => {
+  modalConfirmLoadingBoolean.value = true;
   try {
     // 验证选择得商品是否在可配送的范围内
     let { data } = await api_goods_sku_getSkuAreaBySkuIds({
@@ -332,16 +398,19 @@ const ok = async () => {
           }
         });
       });
-      selectedRowKeys.value = difference(selectedRowKeys.value, spuSkuArray);
+      tableRowSelectionSelectedRowKeysArray.value = difference(
+        tableRowSelectionSelectedRowKeysArray.value,
+        spuSkuArray
+      );
     }
     emitsFunction('select', selectedRowsArray.value);
     emitsFunction('update:visible', false);
-    confirmLoading.value = false;
+    modalConfirmLoadingBoolean.value = false;
   } catch (e) {
-    confirmLoading.value = false;
+    modalConfirmLoadingBoolean.value = false;
   }
 };
-const cancel = () => {
+const modalCancelFunction = () => {
   emitsFunction('update:visible', false);
 };
 
@@ -354,10 +423,10 @@ watch(
           return `${spu_id}/${sku_id}`;
         }
       );
-      run(getSearchDataObject());
+      run(getSearchDataFunction());
     } else {
-      formRef.value?.resetFields();
-      selectedRowKeys.value = [];
+      formRefObject.value?.resetFields();
+      tableRowSelectionSelectedRowKeysArray.value = [];
       selectedRowsArray.value = [];
     }
   }

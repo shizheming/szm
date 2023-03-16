@@ -54,7 +54,7 @@
           record,
         }: {
           column: TableColumnType,
-          record: UserInterface,
+          record: UserRequestResultInterface,
         }"
       >
         <template v-if="column.key === 'operation'"> </template>
@@ -71,7 +71,7 @@ import {
   FormProps,
   TableColumnType,
 } from 'ant-design-vue';
-import { UserInterface } from '../../api/interface';
+import { UserRequestResultInterface } from '../../api/interface';
 import { userRequsetFunction } from '../../api/list';
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
@@ -79,7 +79,6 @@ import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import { PageInterface } from '../../interface';
 import { TableColumn, TableColumnsType } from 'ant-design-vue';
 import { cloneDeep } from 'lodash';
-
 const tableColumnsArray: TableColumnsType = [
   {
     title: '用户名',
@@ -126,7 +125,7 @@ const emitsFunction = defineEmits<{
   (
     event: 'select',
     selectedRowKeys: TableRowSelection['selectedRowKeys'],
-    selectedRowsArray: UserInterface[]
+    selectedRowsArray: UserRequestResultInterface[]
   ): void;
 }>();
 
@@ -134,7 +133,7 @@ const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
 const formRefObject = ref<FormInstance>();
-const selectedRowsArray = ref<UserInterface[]>([]);
+const selectedRowsArray = ref<UserRequestResultInterface[]>([]);
 const { data, current, pageSize, run, loading, total } = usePagination(
   userRequsetFunction,
   {

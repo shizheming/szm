@@ -4,6 +4,7 @@ import {
   PageInterface,
   partPartial,
 } from '../../../interface/index';
+import { Api_goods_sku_list_result_item_interface } from '../../../api/interface';
 
 export interface Api_order_params_part_interface {
   order_search_key: string;
@@ -454,87 +455,6 @@ export type AddParamsInterface = Partial<{
     address: string;
   }> & { addressIds: number[] };
 };
-
-export interface Api_goods_sku_list_params_part_interface {
-  goods_search_value: string;
-  goods_search_key: string;
-  category_id: number;
-  brand_id: number;
-  sku_qty_start: number;
-  sku_qty_end: number;
-  category_id_array: number[];
-}
-export interface Api_goods_sku_list_params_interface
-  extends Partial<Api_goods_sku_list_params_part_interface>,
-    PageInterface {}
-export interface Api_goods_sku_list_result_item_interface {
-  min_qty: number;
-  purchaseAmount: number;
-  adjust_mount: number;
-  imgSrc: string;
-  number: number;
-  qty: number;
-  sku_bar_code: string;
-  sku_channel_relation_id: number;
-  spu_name: string;
-  shop_goods_id: number;
-  is_suit: string | number;
-  sku_specs: string;
-  tms_material_code: string;
-  suits: [];
-  is_support_local: number;
-  category_id: number;
-  suggest_shop_price: number;
-  sn: string;
-  spu_id: number;
-  current_selling_price: number;
-  supplier_name: string;
-  shop_goods_code: string;
-  sku_type_name: string;
-  member_price_name: string;
-  purchase_category_id: number;
-  shop_selling_price: number;
-  type_id: number;
-  area_code: string;
-  brand_name: string;
-  sku_id: number;
-  shop_name: string;
-  self_delivery: number;
-  shop_org_id: number;
-  brand_id: number;
-  shop_id: number;
-  express_delivery: number;
-  org_id: number;
-  category_path: string[];
-  site_id: number;
-  sku_specs_id: number;
-  supplier_id: number;
-  sku_code: string;
-  business_id: number;
-  pack_unit: string;
-  is_support_oversold: number;
-  input_tax_rate: string;
-  sell_tax_rate: string;
-  gallery: {
-    id: number;
-    goods_id: number;
-    key: string;
-    bucket: string;
-    upload_channel: string;
-  }[];
-  ext_service: [];
-  ext_service_list: [];
-  member_price: {
-    start_num: number;
-    start_num_name: string;
-    end_num: number;
-    member_price: number;
-  }[];
-  real_qty: number;
-  real_node_qty: number;
-  stock_qty: number;
-  account_discount_price: number;
-}
 
 export interface Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_item_interface {
   org_code: string;

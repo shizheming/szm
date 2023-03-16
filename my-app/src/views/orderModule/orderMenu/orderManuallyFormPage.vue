@@ -515,7 +515,7 @@
           index,
         }: {
           column: TableColumnType,
-          record: Api_goods_sku_list_result_item_interface,
+          record: SkuRequestResultInterface,
           index: number,
         }"
       >
@@ -627,12 +627,9 @@ import {
   TableProps,
   TableColumnType,
   Modal,
+  TableColumnsType,
 } from 'ant-design-vue';
-import {
-  AddParamsInterface,
-  Api_goods_sku_list_result_item_interface,
-} from './interface';
-import { UserInterface } from '../../../api/interface';
+import { AddParamsInterface } from './interface';
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -648,10 +645,11 @@ import {
   VAT_INVOICE_TYPE_OPTIONS,
   INVOICE_CONTENT_OPTIONS,
 } from '../../../data/dictionary';
+import { orderFormPageGoodsTableColumns } from './data';
 import {
-  orderFormPageGoodsTableColumns,
-  goodsListModalLadderPriceTableColumns,
-} from './data';
+  UserRequestResultInterface,
+  SkuRequestResultInterface,
+} from '../../../api/interface';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategoryCascader.vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
@@ -659,14 +657,12 @@ import type { Rule } from 'ant-design-vue/es/form';
 import { cloneDeep, debounce, forEach, multiply, subtract } from 'lodash';
 import { api_upload_getUrl, confirmRequestFunction } from './api';
 import { SelectProps } from 'ant-design-vue/lib/vc-select';
-
 const UserListModal = defineAsyncComponent(
   () => import('../../../components/modal/userListModal.vue')
 );
 const GoodsListModal = defineAsyncComponent(
-  () => import('./components/goodsListModal.vue')
+  () => import('../../../components/modal/goodsListModal.vue')
 );
-
 const userListModalVisibleBoolean = ref(false);
 const goodsListModalVisibleBoolean = ref(false);
 const manRadioDisabledBoolean = ref(false);
@@ -680,7 +676,21 @@ const formRef = ref<FormInstance>();
 const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
-const selectedRowsArray = ref<Api_goods_sku_list_result_item_interface[]>([]);
+const selectedRowsArray = ref<SkuRequestResultInterface[]>([]);
+
+const goodsListModalLadderPriceTableColumns: TableColumnsType = [
+  {
+    title: '订购数量',
+    dataIndex: 'start_num_name',
+    key: 'start_num_name',
+  },
+  {
+    title: '销售单价',
+    dataIndex: 'member_price',
+    key: 'member_price',
+  },
+];
+
 const modelObejct: AddParamsInterface = {
   site_id: 1,
   api_type: 3,
@@ -751,7 +761,7 @@ const tableRowSelectionOnChangeFunction: TableRowSelection['onChange'] = (
 
 const userListModalSelectFunction: (
   rowKeys: TableRowSelection['selectedRowKeys'],
-  rows: UserInterface[]
+  rows: UserRequestResultInterface[]
 ) => void = (
   rowKeys,
   [
@@ -800,7 +810,7 @@ const tableDeleteOutlinedClickFunction = (index: number) => {
 };
 
 const goodsListModalSelectFunction = async (
-  rows: Api_goods_sku_list_result_item_interface[]
+  rows: SkuRequestResultInterface[]
 ) => {
   formModelObject.tableDataSourceArray =
     formModelObject.tableDataSourceArray.concat(
@@ -832,7 +842,7 @@ const goodsListModalSelectFunction = async (
 };
 
 const goodsItemCalculatedFunction = (
-  record: Api_goods_sku_list_result_item_interface,
+  record: SkuRequestResultInterface,
   qty: number,
   unitPrice: number
 ) => {
@@ -915,9 +925,7 @@ const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
   return value;
 };
 
-const inputNumberChange = async (
-  record: Api_goods_sku_list_result_item_interface
-) => {
+const inputNumberChange = async (record: SkuRequestResultInterface) => {
   goodsItemCalculatedFunction(record, record.qty, record.current_selling_price);
   setPriceFunction();
 };
@@ -957,10 +965,7 @@ const setPriceFunction = debounce(async () => {
   formModelObject.validator.total_pay = data.total_real_price / 100;
 }, 500);
 
-const tableRowKey = ({
-  sku_id,
-  spu_id,
-}: Api_goods_sku_list_result_item_interface) => {
+const tableRowKey = ({ sku_id, spu_id }: SkuRequestResultInterface) => {
   return `${spu_id}/${sku_id}`;
 };
 

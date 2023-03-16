@@ -6,8 +6,6 @@ import type {
   Api_proxy_order_manage_edit_confirmsign_params_interface,
   Api_order_orderSyncList_params_interface,
   Api_order_orderSyncList_result_item_interface,
-  Api_goods_sku_list_result_item_interface,
-  Api_goods_sku_list_params_interface,
   Api_order_merchantRemark_batch_params_item_interface,
   AddParamsInterface,
   Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_item_interface,
@@ -70,18 +68,6 @@ export const api_order_getFileByUrl = (params: { url: string }) => {
       'Content-Type': 'application/json',
     },
   });
-};
-
-// 商品列表
-export const api_goods_sku_list = (
-  params: Api_goods_sku_list_params_interface
-) => {
-  return axios.get<ListInterface<Api_goods_sku_list_result_item_interface>>(
-    '/api/goods/sku/list',
-    {
-      params,
-    }
-  );
 };
 
 // 人工下单

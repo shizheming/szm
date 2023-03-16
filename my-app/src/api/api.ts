@@ -16,3 +16,5 @@ export const AREA_API_STRING = '/api/common/area';
 
 // 用户
 export const USER_API_STRING = '/api/proxy/user/User/UserSearch/epUserSearch';
+// sku
+export const SKU_API_STRING = '/api/goods/sku/list';

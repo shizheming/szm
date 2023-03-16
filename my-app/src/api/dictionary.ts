@@ -1,6 +1,6 @@
 import { ListInterface, PageInterface } from '../interface';
 import axios from '../utils/axios';
-import { CategoryInterface } from './interface';
+import { CategoryRequestResultInterface } from './interface';
 import {
   SUPPLIER_API_STRING,
   CATEGORY_API_STRING,
@@ -29,7 +29,7 @@ export const supplierRequestFunction = () => {
 
 // 后台类目
 export const categoryRequestFunction = () =>
-  axios.get<CategoryInterface[]>(CATEGORY_API_STRING);
+  axios.get<CategoryRequestResultInterface[]>(CATEGORY_API_STRING);
 
 // 商品品牌
 export const brandRequestFunction = () =>

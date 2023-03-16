@@ -285,7 +285,6 @@ import {
 import {
   Api_proxy_order_Manage_Invoice_repairInvoice_params_interface,
   Api_goods_sku_list_result_item_interface,
-  Api_proxy_user_User_UserSearch_epUserSearch_result_item_interface,
 } from './interface';
 import {
   PlusOutlined,
@@ -311,17 +310,13 @@ import BackgroundCategoryCascader from '../../../components/cascader/backgroundC
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 import { cloneDeep, forEach, multiply, subtract } from 'lodash';
-import {
-  api_upload_getUrl,
-  api_proxy_order_Order_BackEnd_confirm,
-} from './api';
+import { api_upload_getUrl, confirmRequestFunction } from './api';
 import { SelectProps } from 'ant-design-vue/lib/vc-select';
-import { Api_goods_category_result_item_interface } from '../../../api/interface';
 const UserListModal = defineAsyncComponent(
   () => import('../../../components/modal/userListModal.vue')
 );
 const GoodsListModal = defineAsyncComponent(
-  () => import('./components/goodsListModal.vue')
+  () => import('../../../components/modal/goodsListModal.vue')
 );
 const userListModalVisible = ref(false);
 const goodsListModalVisible = ref(false);
