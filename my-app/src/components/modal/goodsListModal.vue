@@ -412,8 +412,12 @@ const modalOkFunction = async () => {
 };
 const modalCancelFunction = () => {
   emitsFunction('update:visible', false);
+  formRefObject.value?.resetFields();
+  tableRowSelectionSelectedRowKeysArray.value = [];
+  selectedRowsArray.value = [];
 };
 
+// 这个watch其实概念上就是modal自己显示隐藏得change事件
 watch(
   () => propsObject.visible,
   async (newValue) => {
@@ -424,10 +428,6 @@ watch(
         }
       );
       run(getSearchDataFunction());
-    } else {
-      formRefObject.value?.resetFields();
-      tableRowSelectionSelectedRowKeysArray.value = [];
-      selectedRowsArray.value = [];
     }
   }
 );

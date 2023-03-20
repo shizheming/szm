@@ -206,6 +206,7 @@
             <a-radio-group
               v-model:value="formModelObject.order_invoice.invoice_form"
               :options="VAT_INVOICE_TYPE_OPTIONS"
+              @change="radioGroupChangeFunction"
             >
             </a-radio-group>
           </a-form-item>
@@ -225,6 +226,7 @@
                 () => formModelObject.order_invoice.invoice_form,
                 radioGroupWatchFunction,
               ]"
+              @change="radioGroupChangeFunction"
             >
               <a-radio :value="2">企业</a-radio>
               <a-radio :value="1" :disabled="manRadioDisabledBoolean"
@@ -596,9 +598,15 @@
         </a-form-item>
       </a-col>
     </a-row>
-    <a-form-item :wrapper-col="{ offset: 1, span: 8 }">
-      <a-button type="primary" html-type="submit"><save-outlined /></a-button>
-    </a-form-item>
+    <a-row>
+      <a-col :span="8">
+        <a-form-item :wrapper-col="{ offset: 8 }">
+          <a-button type="primary" html-type="submit">
+            <save-outlined />
+          </a-button>
+        </a-form-item>
+      </a-col>
+    </a-row>
   </a-form>
   <user-list-modal
     v-model:visible="userListModalVisibleBoolean"
@@ -905,12 +913,8 @@ const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
     }
     // 去掉了开票形式，所以要改动一下数据，后端逻辑
     if (value.order_invoice.invoice_form != 2) {
-      console.log(1);
-
       value.order_invoice.invoice_type = 1;
       if (value.order_invoice.invoice_form == 3) {
-        console.log(2);
-
         value.order_invoice.invoice_form = 2;
       }
     } else {
@@ -920,8 +924,6 @@ const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
   } else {
     delete value.order_invoice;
   }
-  console.log(value, 23);
-
   return value;
 };
 
@@ -931,7 +933,9 @@ const inputNumberChange = async (record: SkuRequestResultInterface) => {
 };
 
 // 从实体的出发
-// 实体的change是自己触发的，然后干一些事情，是一对一或是一对多，可以对实体自己做一些事情，也可以是对别的实体做一些事情，对别的实体是一种命令式的下发的写法，现在一般是跟自己有关的用change，如果是多个实体的change干的是同一件事情，那我可以用监听，监听多个值，这个多个值就代表监听的实体，去触发干的那同一件事情，这是一种change的变体，这里的watch从概念上来看就不能当watch来看的，而是还是一种change，只是写法不同而已，因为从逻辑上来讲这里的watch没有主语，谁监听，没有，所以概念上还是change
+// 实体的change是自己触发的，然后干一些事情，是一对一或是一对多，可以对实体自己做一些事情，也可以是对别的实体做一些事情，对别的实体是一种命令式的下发的写法，
+// 现在一般是跟自己有关的用change，如果是多个实体的change干的是同一件事情，那我可以用监听，监听多个值，这个多个值就代表监听的实体，去触发干的那同一件事情，这是一种change的变体，这里的watch从概念上来看就不能当watch来看的，而是还是一种change，只是写法不同而已，因为从逻辑上来讲这里的watch没有主语，谁监听，没有，所以概念上还是change
+
 // 谁在watch，是页面，没有当前input，select组件之类的watch，没有独立的watch，只有页面级别的watch
 // 事实是这样，没有所谓的组件watch主语，但是我从逻辑上可以给他一个watch主语，没毛病的，我可以这样理解
 // 实体的watch是别人触发的，然后干一些事情，是一对一或是一对多，一对多其实就是change概念了，多是多个其他实体的事情，可以对实体自己做一些事情，也可以是对别的实体做一些事情，监听别人，然后对别人干一些事情，watch主语的概念就变了，就已经是change的概念了，所以要首先明确watch的主语，有了实体主语后才知道是watch好点还是change好点
@@ -969,30 +973,41 @@ const tableRowKey = ({ sku_id, spu_id }: SkuRequestResultInterface) => {
   return `${spu_id}/${sku_id}`;
 };
 
-// 这里的watch也是change，而且是2个实体的chagne
-watch(
-  [
-    () => formModelObject.order_invoice!.invoice_kind,
-    () => formModelObject.order_invoice!.invoice_form,
-  ],
-  ([invoice_kind, invoice_form]) => {
-    commonPaperPersonalBoolean.value = false;
-    commonPaperEnterpriseBoolean.value = false;
-    commonElectronPersonalBoolean.value = false;
-    commonElectronEnterpriseBoolean.value = false;
-    specialPaperEnterpriseBoolean.value = false;
-    if (invoice_kind == 1 && invoice_form == 1) {
-      commonPaperPersonalBoolean.value = true;
-    } else if (invoice_kind == 2 && invoice_form == 1) {
-      commonPaperEnterpriseBoolean.value = true;
-    } else if (invoice_kind == 1 && invoice_form == 3) {
-      commonElectronPersonalBoolean.value = true;
-    } else if (invoice_kind == 2 && invoice_form == 3) {
-      commonElectronEnterpriseBoolean.value = true;
-    } else if (invoice_kind == 2 && invoice_form == 2) {
-      // 专票纸质
-      specialPaperEnterpriseBoolean.value = true;
-    }
+// 还是要站在更高的概念维度，但是肯定是从实体触发的，
+// 自己还是关注自己的事情，所以change事情基本都是干自己的事情，别的实体的事情不干，一对一的时候不干，，一对多的时候可以干，
+// 一对多就上升到命令的级别了，主动权从单个实体，转向一个实体change事件命令下发
+const radioGroupChangeFunction: SelectProps['onChange'] = () => {
+  commonPaperPersonalBoolean.value = false;
+  commonPaperEnterpriseBoolean.value = false;
+  commonElectronPersonalBoolean.value = false;
+  commonElectronEnterpriseBoolean.value = false;
+  specialPaperEnterpriseBoolean.value = false;
+  if (
+    formModelObject.order_invoice.invoice_kind == 1 &&
+    formModelObject.order_invoice.invoice_form == 1
+  ) {
+    commonPaperPersonalBoolean.value = true;
+  } else if (
+    formModelObject.order_invoice.invoice_kind == 2 &&
+    formModelObject.order_invoice.invoice_form == 1
+  ) {
+    commonPaperEnterpriseBoolean.value = true;
+  } else if (
+    formModelObject.order_invoice.invoice_kind == 1 &&
+    formModelObject.order_invoice.invoice_form == 3
+  ) {
+    commonElectronPersonalBoolean.value = true;
+  } else if (
+    formModelObject.order_invoice.invoice_kind == 2 &&
+    formModelObject.order_invoice.invoice_form == 3
+  ) {
+    commonElectronEnterpriseBoolean.value = true;
+  } else if (
+    formModelObject.order_invoice.invoice_kind == 2 &&
+    formModelObject.order_invoice.invoice_form == 2
+  ) {
+    // 专票纸质
+    specialPaperEnterpriseBoolean.value = true;
   }
-);
+};
 </script>
