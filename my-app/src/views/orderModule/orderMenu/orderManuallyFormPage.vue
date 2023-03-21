@@ -111,7 +111,11 @@
         >
           <address-cascader
             v-model:value="formModelObject.addressInfo.addressIds"
-            @change="addressCascaderChangeFunction"
+            v-model:options="addressCascaderOptionsArray"
+            :watch="[
+              () => formModelObject.addressInfo.addressIds,
+              addressCascaderWatchFunction,
+            ]"
           />
         </a-form-item>
       </a-col>
@@ -206,7 +210,6 @@
             <a-radio-group
               v-model:value="formModelObject.order_invoice.invoice_form"
               :options="VAT_INVOICE_TYPE_OPTIONS"
-              @change="radioGroupChangeFunction"
             >
             </a-radio-group>
           </a-form-item>
@@ -226,7 +229,6 @@
                 () => formModelObject.order_invoice.invoice_form,
                 radioGroupWatchFunction,
               ]"
-              @change="radioGroupChangeFunction"
             >
               <a-radio :value="2">企业</a-radio>
               <a-radio :value="1" :disabled="manRadioDisabledBoolean"
@@ -517,7 +519,7 @@
           index,
         }: {
           column: TableColumnType,
-          record: SkuRequestResultInterface,
+          record: GoodItemInterface,
           index: number,
         }"
       >
@@ -628,6 +630,7 @@ import {
   watchEffect,
   computed,
   createVNode,
+  ComputedRef,
 } from 'vue';
 import {
   FormInstance,
@@ -636,6 +639,7 @@ import {
   TableColumnType,
   Modal,
   TableColumnsType,
+  CascaderProps,
 } from 'ant-design-vue';
 import { AddParamsInterface } from './interface';
 import {
@@ -665,6 +669,11 @@ import type { Rule } from 'ant-design-vue/es/form';
 import { cloneDeep, debounce, forEach, multiply, subtract } from 'lodash';
 import { api_upload_getUrl, confirmRequestFunction } from './api';
 import { SelectProps } from 'ant-design-vue/lib/vc-select';
+
+type GoodItemInterface = SkuRequestResultInterface & {
+  purchaseAmount: ComputedRef<number>;
+};
+
 const UserListModal = defineAsyncComponent(
   () => import('../../../components/modal/userListModal.vue')
 );
@@ -674,17 +683,13 @@ const GoodsListModal = defineAsyncComponent(
 const userListModalVisibleBoolean = ref(false);
 const goodsListModalVisibleBoolean = ref(false);
 const manRadioDisabledBoolean = ref(false);
-const commonElectronEnterpriseBoolean = ref(false);
-const commonPaperEnterpriseBoolean = ref(false);
-const specialPaperEnterpriseBoolean = ref(false);
-const commonPaperPersonalBoolean = ref(false);
-const commonElectronPersonalBoolean = ref(false);
+
 let addressNameArray: string[] = [];
 const formRef = ref<FormInstance>();
 const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
-const selectedRowsArray = ref<SkuRequestResultInterface[]>([]);
+const selectedRowsArray = ref<GoodItemInterface[]>([]);
 
 const goodsListModalLadderPriceTableColumns: TableColumnsType = [
   {
@@ -723,7 +728,38 @@ const modelObejct: AddParamsInterface = {
   tableDataSourceArray: [],
   validator: {},
 };
-const formModelObject = reactive<AddParamsInterface>(cloneDeep(modelObejct));
+const addressCascaderOptionsArray = ref<CascaderProps['options']>([]);
+const formModelObject = reactive(cloneDeep(modelObejct));
+const commonPaperPersonalBoolean = computed(() => {
+  return (
+    formModelObject.order_invoice.invoice_kind == 1 &&
+    formModelObject.order_invoice.invoice_form == 1
+  );
+});
+const commonPaperEnterpriseBoolean = computed(() => {
+  return (
+    formModelObject.order_invoice.invoice_kind == 2 &&
+    formModelObject.order_invoice.invoice_form == 1
+  );
+});
+const commonElectronPersonalBoolean = computed(() => {
+  return (
+    formModelObject.order_invoice.invoice_kind == 1 &&
+    formModelObject.order_invoice.invoice_form == 3
+  );
+});
+const commonElectronEnterpriseBoolean = computed(() => {
+  return (
+    formModelObject.order_invoice.invoice_kind == 2 &&
+    formModelObject.order_invoice.invoice_form == 3
+  );
+});
+const specialPaperEnterpriseBoolean = computed(() => {
+  return (
+    formModelObject.order_invoice.invoice_kind == 2 &&
+    formModelObject.order_invoice.invoice_form == 2
+  );
+});
 
 const plusOutlinedClickFunction = () => {
   userListModalVisibleBoolean.value = true;
@@ -733,8 +769,11 @@ const formFinishFunction: FormInstance['onFinish'] = (values) => {
   goodsListModalVisibleBoolean.value = true;
 };
 
-const radioGroupWatchFunction = (newValue: number) => {
-  if (newValue == 1 || newValue == 3) {
+const radioGroupWatchFunction = () => {
+  if (
+    formModelObject.order_invoice.invoice_form == 1 ||
+    formModelObject.order_invoice.invoice_form == 3
+  ) {
     manRadioDisabledBoolean.value = false;
   } else {
     manRadioDisabledBoolean.value = true;
@@ -742,11 +781,17 @@ const radioGroupWatchFunction = (newValue: number) => {
   }
 };
 
-const addressCascaderChangeFunction: SelectProps['onChange'] = (
-  value,
-  options
-) => {
-  addressNameArray = options.map(({ label }: { label: string }) => label);
+const addressCascaderWatchFunction = () => {
+  addressNameArray = [];
+  let addressLevel = addressCascaderOptionsArray.value;
+  formModelObject.addressInfo.addressIds.forEach((item) => {
+    addressLevel.forEach((current) => {
+      if (current.value === item) {
+        addressNameArray.push(current.label);
+        addressLevel = current.children;
+      }
+    });
+  });
 };
 
 const formItemRulesValidatorFunction = async (_rule: Rule, value: number[]) => {
@@ -817,18 +862,54 @@ const tableDeleteOutlinedClickFunction = (index: number) => {
   formModelObject.tableDataSourceArray.splice(index, 1);
 };
 
-const goodsListModalSelectFunction = async (
-  rows: SkuRequestResultInterface[]
-) => {
+const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
   formModelObject.tableDataSourceArray =
     formModelObject.tableDataSourceArray.concat(
       rows.map((item, index) => {
+        item.purchaseAmount = computed(() => {
+          return multiply(item.current_selling_price, item.qty);
+        });
+        const shop_selling_price = item.shop_selling_price;
+        item.shop_selling_price = computed(() => {
+          // 需要判断下是否是阶梯价，阶梯价的单价会随着数量而变化
+          if (item.member_price.length > 0) {
+            let [{ member_price }] = item.member_price.filter(
+              ({ start_num, end_num }) => {
+                return (
+                  item.qty >= start_num && (end_num ? item.qty < end_num : true)
+                );
+              }
+            );
+            return member_price;
+          } else {
+            return shop_selling_price;
+          }
+        });
+        item.adjust_mount = computed(() => {
+          // 需要判断下是否是阶梯价，阶梯价的单价会随着数量而变化
+          if (item.member_price.length > 0) {
+            let [{ member_price }] = item.member_price.filter(
+              ({ start_num, end_num }) => {
+                return (
+                  item.qty >= start_num && (end_num ? item.qty < end_num : true)
+                );
+              }
+            );
+            return multiply(
+              subtract(member_price, item.current_selling_price),
+              item.qty
+            );
+          } else {
+            return multiply(
+              subtract(item.shop_selling_price, item.current_selling_price),
+              item.qty
+            );
+          }
+        });
+
         item.min_qty = item.real_qty && 1;
-        goodsItemCalculatedFunction(
-          item,
-          item.min_qty,
-          item.shop_selling_price
-        );
+        item.qty = item.min_qty;
+        item.current_selling_price = item.shop_selling_price;
         item.sku_type_name = '实物';
         item.is_suit =
           item.is_suit === 'b'
@@ -849,27 +930,25 @@ const goodsListModalSelectFunction = async (
     );
 };
 
-const goodsItemCalculatedFunction = (
-  record: SkuRequestResultInterface,
-  qty: number,
-  unitPrice: number
-) => {
-  record.qty = qty;
-  record.current_selling_price = unitPrice;
-  record.purchaseAmount = multiply(unitPrice, qty);
+const goodsItemCalculatedFunction = (record: GoodItemInterface) => {
   // 需要判断下是否是阶梯价，阶梯价的单价会随着数量而变化
   if (record.member_price.length > 0) {
     let [{ member_price }] = record.member_price.filter(
       ({ start_num, end_num }) => {
-        return qty >= start_num && (end_num ? qty < end_num : true);
+        return (
+          record.qty >= start_num && (end_num ? record.qty < end_num : true)
+        );
       }
     );
     record.shop_selling_price = member_price;
-    record.adjust_mount = multiply(subtract(member_price, unitPrice), qty);
+    record.adjust_mount = multiply(
+      subtract(member_price, record.current_selling_price),
+      record.qty
+    );
   } else {
     record.adjust_mount = multiply(
-      subtract(record.shop_selling_price, unitPrice),
-      qty
+      subtract(record.shop_selling_price, record.current_selling_price),
+      record.qty
     );
   }
 };
@@ -927,8 +1006,7 @@ const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
   return value;
 };
 
-const inputNumberChange = async (record: SkuRequestResultInterface) => {
-  goodsItemCalculatedFunction(record, record.qty, record.current_selling_price);
+const inputNumberChange = async (record: GoodItemInterface) => {
   setPriceFunction();
 };
 
@@ -969,45 +1047,7 @@ const setPriceFunction = debounce(async () => {
   formModelObject.validator.total_pay = data.total_real_price / 100;
 }, 500);
 
-const tableRowKey = ({ sku_id, spu_id }: SkuRequestResultInterface) => {
+const tableRowKey = ({ sku_id, spu_id }: GoodItemInterface) => {
   return `${spu_id}/${sku_id}`;
-};
-
-// 还是要站在更高的概念维度，但是肯定是从实体触发的，
-// 自己还是关注自己的事情，所以change事情基本都是干自己的事情，别的实体的事情不干，一对一的时候不干，，一对多的时候可以干，
-// 一对多就上升到命令的级别了，主动权从单个实体，转向一个实体change事件命令下发
-const radioGroupChangeFunction: SelectProps['onChange'] = () => {
-  commonPaperPersonalBoolean.value = false;
-  commonPaperEnterpriseBoolean.value = false;
-  commonElectronPersonalBoolean.value = false;
-  commonElectronEnterpriseBoolean.value = false;
-  specialPaperEnterpriseBoolean.value = false;
-  if (
-    formModelObject.order_invoice.invoice_kind == 1 &&
-    formModelObject.order_invoice.invoice_form == 1
-  ) {
-    commonPaperPersonalBoolean.value = true;
-  } else if (
-    formModelObject.order_invoice.invoice_kind == 2 &&
-    formModelObject.order_invoice.invoice_form == 1
-  ) {
-    commonPaperEnterpriseBoolean.value = true;
-  } else if (
-    formModelObject.order_invoice.invoice_kind == 1 &&
-    formModelObject.order_invoice.invoice_form == 3
-  ) {
-    commonElectronPersonalBoolean.value = true;
-  } else if (
-    formModelObject.order_invoice.invoice_kind == 2 &&
-    formModelObject.order_invoice.invoice_form == 3
-  ) {
-    commonElectronEnterpriseBoolean.value = true;
-  } else if (
-    formModelObject.order_invoice.invoice_kind == 2 &&
-    formModelObject.order_invoice.invoice_form == 2
-  ) {
-    // 专票纸质
-    specialPaperEnterpriseBoolean.value = true;
-  }
 };
 </script>

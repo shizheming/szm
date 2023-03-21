@@ -46,7 +46,6 @@ export type SkuRequestParamsPageInterface = Partial<SkuRequestParamsInterface> &
   PageInterface;
 export interface SkuRequestResultInterface {
   min_qty: number;
-  purchaseAmount: number;
   adjust_mount: number;
   imgSrc: string;
   number: number;
