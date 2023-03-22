@@ -552,15 +552,13 @@
             v-model:value="record.qty"
             :max="record.real_qty"
             :min="record.min_qty"
-            @change="inputNumberChange(record)"
           />
         </template>
         <template v-if="column.key === 'current_selling_price'">
           <a-input-number
             v-model:value="record.current_selling_price"
-            :max="record.shop_selling_price"
+            :max="record.shopSellingPriceComputedRef"
             :min="0"
-            @change="inputNumberChange(record)"
           />
         </template>
         <template v-if="column.key === 'imgSrc'">
@@ -588,7 +586,7 @@
         <a-form-item label="运费" :name="['freight']">
           <a-input-number
             v-model:value="formModelObject.freight"
-            @change="setPriceFunction"
+            :watch="[() => formModelObject.freight, setPriceFunction]"
           >
             <template #addonAfter>元</template>
           </a-input-number>
@@ -631,6 +629,7 @@ import {
   computed,
   createVNode,
   ComputedRef,
+  nextTick,
 } from 'vue';
 import {
   FormInstance,
@@ -666,12 +665,14 @@ import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategoryCascader.vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
-import { cloneDeep, debounce, forEach, multiply, subtract } from 'lodash';
+import { cloneDeep, throttle, forEach, multiply, subtract } from 'lodash';
 import { api_upload_getUrl, confirmRequestFunction } from './api';
 import { SelectProps } from 'ant-design-vue/lib/vc-select';
 
 type GoodItemInterface = SkuRequestResultInterface & {
-  purchaseAmount: ComputedRef<number>;
+  purchaseAmount?: ComputedRef<number>;
+  adjustMountComputedRef?: ComputedRef<number>;
+  shopSellingPriceComputedRef?: ComputedRef<number>;
 };
 
 const UserListModal = defineAsyncComponent(
@@ -846,6 +847,10 @@ const userListModalSelectFunction: (
   }
 };
 
+const tableRowKey = ({ sku_id, spu_id }: GoodItemInterface) => {
+  return `${spu_id}/${sku_id}`;
+};
+
 const deleteOutlinedClickFunction = () => {
   if (tableRowSelectionSelectedRowKeysArray.value.length) {
     formModelObject.tableDataSourceArray =
@@ -870,7 +875,7 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
           return multiply(item.current_selling_price, item.qty);
         });
         const shop_selling_price = item.shop_selling_price;
-        item.shop_selling_price = computed(() => {
+        item.shopSellingPriceComputedRef = computed(() => {
           // 需要判断下是否是阶梯价，阶梯价的单价会随着数量而变化
           if (item.member_price.length > 0) {
             let [{ member_price }] = item.member_price.filter(
@@ -885,7 +890,7 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
             return shop_selling_price;
           }
         });
-        item.adjust_mount = computed(() => {
+        item.adjustMountComputedRef = computed(() => {
           // 需要判断下是否是阶梯价，阶梯价的单价会随着数量而变化
           if (item.member_price.length > 0) {
             let [{ member_price }] = item.member_price.filter(
@@ -901,7 +906,10 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
             );
           } else {
             return multiply(
-              subtract(item.shop_selling_price, item.current_selling_price),
+              subtract(
+                item.shopSellingPriceComputedRef.value,
+                item.current_selling_price
+              ),
               item.qty
             );
           }
@@ -909,7 +917,7 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
 
         item.min_qty = item.real_qty && 1;
         item.qty = item.min_qty;
-        item.current_selling_price = item.shop_selling_price;
+        item.current_selling_price = item.shopSellingPriceComputedRef.value;
         item.sku_type_name = '实物';
         item.is_suit =
           item.is_suit === 'b'
@@ -930,29 +938,6 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
     );
 };
 
-const goodsItemCalculatedFunction = (record: GoodItemInterface) => {
-  // 需要判断下是否是阶梯价，阶梯价的单价会随着数量而变化
-  if (record.member_price.length > 0) {
-    let [{ member_price }] = record.member_price.filter(
-      ({ start_num, end_num }) => {
-        return (
-          record.qty >= start_num && (end_num ? record.qty < end_num : true)
-        );
-      }
-    );
-    record.shop_selling_price = member_price;
-    record.adjust_mount = multiply(
-      subtract(member_price, record.current_selling_price),
-      record.qty
-    );
-  } else {
-    record.adjust_mount = multiply(
-      subtract(record.shop_selling_price, record.current_selling_price),
-      record.qty
-    );
-  }
-};
-
 const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
   const value = cloneDeep(formModelObject);
   [
@@ -968,11 +953,11 @@ const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
     value.addressInfo.street_name,
   ] = addressNameArray;
   value.shop_goods_list = value.tableDataSourceArray.map(
-    ({ qty, adjust_mount, shop_goods_id }) => {
+    ({ qty, adjustMountComputedRef, shop_goods_id }) => {
       return {
         qty,
         shop_goods_id,
-        adjust_mount: multiply(adjust_mount, 100),
+        adjust_mount: multiply(adjustMountComputedRef, 100),
       };
     }
   );
@@ -1006,10 +991,6 @@ const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
   return value;
 };
 
-const inputNumberChange = async (record: GoodItemInterface) => {
-  setPriceFunction();
-};
-
 // 从实体的出发
 // 实体的change是自己触发的，然后干一些事情，是一对一或是一对多，可以对实体自己做一些事情，也可以是对别的实体做一些事情，对别的实体是一种命令式的下发的写法，
 // 现在一般是跟自己有关的用change，如果是多个实体的change干的是同一件事情，那我可以用监听，监听多个值，这个多个值就代表监听的实体，去触发干的那同一件事情，这是一种change的变体，这里的watch从概念上来看就不能当watch来看的，而是还是一种change，只是写法不同而已，因为从逻辑上来讲这里的watch没有主语，谁监听，没有，所以概念上还是change
@@ -1032,12 +1013,17 @@ watch(
       newValue.forEach((item, index) => {
         item.number = index + 1;
       });
+      console.log(119);
+
       setPriceFunction();
     }
+  },
+  {
+    deep: true,
   }
 );
 
-const setPriceFunction = debounce(async () => {
+const setPriceFunction = throttle(async () => {
   let { data } = await confirmRequestFunction(
     handleSubmitDataFunction(formModelObject)
   );
@@ -1045,9 +1031,5 @@ const setPriceFunction = debounce(async () => {
   formModelObject.qty = data.qty;
   formModelObject.total_price = data.total_price / 100;
   formModelObject.validator.total_pay = data.total_real_price / 100;
-}, 500);
-
-const tableRowKey = ({ sku_id, spu_id }: GoodItemInterface) => {
-  return `${spu_id}/${sku_id}`;
-};
+}, 1000);
 </script>

@@ -277,8 +277,8 @@ export const orderFormPageGoodsTableColumns: TableColumnsType = [
   },
   {
     title: '销售单价',
-    dataIndex: 'shop_selling_price',
-    key: 'shop_selling_price',
+    dataIndex: 'shopSellingPriceComputedRef',
+    key: 'shopSellingPriceComputedRef',
   },
   {
     title: '购买单价',
@@ -287,8 +287,8 @@ export const orderFormPageGoodsTableColumns: TableColumnsType = [
   },
   {
     title: '改价优惠金额',
-    dataIndex: 'adjust_mount',
-    key: 'adjust_mount',
+    dataIndex: 'adjustMountComputedRef',
+    key: 'adjustMountComputedRef',
   },
   {
     title: '购买金额',
