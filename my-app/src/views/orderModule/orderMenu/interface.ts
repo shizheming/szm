@@ -456,7 +456,7 @@ export type AddParamsInterface = Partial<{
   }> & { addressIds: number[] };
 };
 
-export interface Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_item_interface {
+export interface QueryOrderPlansByOslSeqRequestResultItemInterface {
   org_code: string;
   orderPlans: {
     service_code: string;
@@ -468,7 +468,7 @@ export interface Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_
   }[];
 }
 
-export interface Api_proxy_order_manage_query_getServerInfo_item_interface {
+export interface GetServerInfoRequestResultItemInterface {
   sku_code: string;
   goods_name: string;
   apply_server_time?: string;

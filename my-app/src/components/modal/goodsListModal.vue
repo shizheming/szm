@@ -139,7 +139,7 @@
             <template #content>
               <a-table
                 :data-source="record.member_price"
-                :columns="goodsListModalLadderPriceTableColumns"
+                :columns="goodsListModalLadderPriceTableColumnsArray"
                 :pagination="false"
                 size="small"
               />
@@ -246,7 +246,7 @@ const tableColumnsArray: TableColumnsType = [
   },
 ];
 
-const goodsListModalLadderPriceTableColumns: TableColumnsType = [
+const goodsListModalLadderPriceTableColumnsArray: TableColumnsType = [
   {
     title: '订购数量',
     dataIndex: 'start_num_name',

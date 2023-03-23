@@ -483,7 +483,7 @@
     </a-space>
     <a-table
       :row-key="tableRowKey"
-      :columns="orderFormPageGoodsTableColumns"
+      :columns="orderFormPageGoodsTableColumnsArray"
       :data-source="formModelObject.tableDataSourceArray"
       :pagination="false"
       :scroll="{ x: 3000 }"
@@ -513,7 +513,7 @@
             <template #content>
               <a-table
                 :data-source="record.member_price"
-                :columns="orderFormPageGoodsLadderPriceTableColumns"
+                :columns="orderFormPageGoodsLadderPriceTableColumnsArray"
                 :pagination="false"
                 size="small"
               />
@@ -643,8 +643,8 @@ import {
   INVOICE_CONTENT_OPTIONS,
 } from '../../../data/dictionary';
 import {
-  orderFormPageGoodsTableColumns,
-  orderFormPageGoodsLadderPriceTableColumns,
+  orderFormPageGoodsTableColumnsArray,
+  orderFormPageGoodsLadderPriceTableColumnsArray,
 } from './data';
 import {
   UserRequestResultInterface,
@@ -661,6 +661,7 @@ import {
   submitRequestFunction,
 } from './api';
 import { SelectProps } from 'ant-design-vue/lib/vc-select';
+import { string } from 'vue-types';
 
 type GoodItemInterface = SkuRequestResultInterface & {
   purchaseAmount?: ComputedRef<number>;
@@ -688,7 +689,9 @@ const tableRowSelectionSelectedRowKeysArray = ref<
 >([]);
 const selectedRowsArray = ref<GoodItemInterface[]>([]);
 
-const modelObejct: AddParamsInterface = {
+const modelObejct: Omit<AddParamsInterface, 'tableDataSourceArray'> & {
+  tableDataSourceArray: GoodItemInterface[];
+} = {
   site_id: 1,
   api_type: 3,
   entryMode: '手工创建订单',
@@ -713,6 +716,7 @@ const modelObejct: AddParamsInterface = {
   tableDataSourceArray: [],
   validator: {},
 };
+
 const addressCascaderOptionsArray = ref<CascaderProps['options']>([]);
 const formModelObject = reactive(cloneDeep(modelObejct));
 const commonPaperPersonalBoolean = computed(() => {

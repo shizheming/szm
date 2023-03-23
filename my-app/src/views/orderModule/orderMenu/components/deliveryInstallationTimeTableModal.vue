@@ -1,16 +1,16 @@
 <template>
   <a-modal
-    :visible="props.visible"
+    :visible="propsObject.visible"
     title="配送安装时间"
     @cancel="cancel"
     @ok="ok"
     :width="1000"
   >
-    <a-form ref="formRef" :model="model">
+    <a-form ref="formRefObject" :model="formModelObject">
       <a-table
         row-key="id"
-        :data-source="model.dataSource"
-        :columns="deliveryInstallationTimeModalTableColumns"
+        :data-source="formModelObject.tableDataSourceArray"
+        :columns="deliveryInstallationTimeModalTableColumnsArray"
         :loading="loading"
         :pagination="false"
       >
@@ -18,11 +18,11 @@
           #expandedRowRender="{
             record,
           }: {
-            record: Api_proxy_order_manage_query_getServerInfo_item_interface,
+            record: GetServerInfoRequestResultItemInterface,
           }"
         >
           <a-table
-            :columns="deliveryInstallationTimeModalTableGoodsTableColumns"
+            :columns="deliveryInstallationTimeModalTableGoodsTableColumnsArray"
             :data-source="record.goods_list"
             :pagination="false"
             size="small"
@@ -34,7 +34,7 @@
                 index,
               }: {
                 column: TableColumnType,
-                record: Api_proxy_order_manage_query_getServerInfo_item_interface['goods_list'][number],
+                record: GetServerInfoRequestResultItemInterface['goods_list'][number],
                 index: number,
               }"
             >
@@ -56,7 +56,7 @@
             index,
           }: {
             column: TableColumnType,
-            record: Api_proxy_order_manage_query_getServerInfo_item_interface,
+            record: GetServerInfoRequestResultItemInterface,
             index: number,
           }"
         >
@@ -71,8 +71,11 @@
               >
                 <a-date-picker
                   :disabled="record.isTime"
-                  :disabled-date="datePickerDisabledDate"
-                  :watch="[() => record.isTime, () => datePickerWatch(index)]"
+                  :disabled-date="datePickerDisabledDateFunction"
+                  :watch="[
+                    () => record.isTime,
+                    () => datePickerWatchFunction(index),
+                  ]"
                   v-model:value="record.apply_server_time"
                 />
               </a-form-item>
@@ -101,43 +104,38 @@ import {
   nextTick,
 } from 'vue';
 import {
-  deliveryInstallationTimeModalTableColumns,
-  deliveryInstallationTimeModalTableGoodsTableColumns,
+  deliveryInstallationTimeModalTableColumnsArray,
+  deliveryInstallationTimeModalTableGoodsTableColumnsArray,
 } from '../data';
 import { usePagination } from 'vue-request';
 import {
-  Api_proxy_order_manage_query_getServerInfo_item_interface,
-  Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_item_interface,
-  Api_order_result_item_interface,
+  GetServerInfoRequestResultItemInterface,
+  OrderListRequestResultItemInterface,
 } from '../interface';
 import {
-  api_proxy_order_manage_query_getServerInfo,
-  api_proxy_order_Order_assistant_queryOrderPlansByOslSeq,
-  api_proxy_order_manage_edit_confirmPreOrder,
+  getServerInfoRequestFunction,
+  queryOrderPlansByOslSeqRequestFunction,
+  confirmPreOrderRequestFunction,
 } from '../api';
 import { SelectProps } from 'ant-design-vue/lib/vc-select';
 import dayjs, { Dayjs } from 'dayjs';
 import { datePickerProps } from 'ant-design-vue/es/date-picker/generatePicker/props';
 
-const props = defineProps<{
+const propsObject = defineProps<{
   visible: boolean;
-  record: Api_order_result_item_interface;
+  record: OrderListRequestResultItemInterface;
 }>();
-const emits = defineEmits<{
+const emitsFunction = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
   (event: 'submit'): void;
 }>();
 
-const datePickerWatch = (index: number) => {
+const datePickerWatchFunction = (index: number) => {
   nextTick(() => {
-    formRef.value!.validate([['dataSource', index, 'apply_server_time']]);
+    formRefObject.value!.validate([['dataSource', index, 'apply_server_time']]);
   });
 };
-const {
-  data: dataSource,
-  run,
-  loading,
-} = usePagination(api_proxy_order_manage_query_getServerInfo, {
+const { data, run, loading } = usePagination(getServerInfoRequestFunction, {
   manual: true,
   formatResult: ({ data }) => {
     return data.map((item) => {
@@ -146,20 +144,20 @@ const {
     });
   },
 });
-const model = reactive({
-  dataSource,
+const formModelObject = reactive({
+  tableDataSourceArray: data,
 });
-const datePickerDisabledDate = (current: Dayjs) => {
+const datePickerDisabledDateFunction = (current: Dayjs) => {
   return !dateArray.includes(current.startOf('day').valueOf());
 };
-const formRef = ref<FormInstance>();
+const formRefObject = ref<FormInstance>();
 let dateArray: number[];
 watch(
-  () => props.visible,
+  () => propsObject.visible,
   async (newValue) => {
     if (newValue === true) {
       run({
-        osl_seq: props.record.osl_seq,
+        osl_seq: propsObject.record.osl_seq,
       });
       let {
         data: [
@@ -167,8 +165,8 @@ watch(
             orderPlans: [{ orderPlans }],
           },
         ],
-      } = await api_proxy_order_Order_assistant_queryOrderPlansByOslSeq({
-        osl_seq: props.record.osl_seq,
+      } = await queryOrderPlansByOslSeqRequestFunction({
+        osl_seq: propsObject.record.osl_seq,
       });
       dateArray = orderPlans.map(({ planTime }) => {
         return planTime * 1000;
@@ -178,21 +176,21 @@ watch(
 );
 
 const cancel: ModalProps['onCancel'] = () => {
-  emits('update:visible', false);
+  emitsFunction('update:visible', false);
 };
 const ok = async () => {
   try {
-    await formRef.value!.validate();
-    await api_proxy_order_manage_edit_confirmPreOrder({
-      osl_seq: props.record.osl_seq,
-      server_list: model.dataSource!.map((item) => {
+    await formRefObject.value!.validate();
+    await confirmPreOrderRequestFunction({
+      osl_seq: propsObject.record.osl_seq,
+      server_list: formModelObject.tableDataSourceArray!.map((item) => {
         return {
           apply_server_time: item.isTime ? 0 : item.apply_server_time,
         };
       }),
     });
-    emits('submit');
-    emits('update:visible', false);
+    emitsFunction('submit');
+    emitsFunction('update:visible', false);
   } catch (e) {}
 };
 </script>

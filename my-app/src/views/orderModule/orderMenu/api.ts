@@ -8,8 +8,8 @@ import type {
   Api_order_orderSyncList_result_item_interface,
   Api_order_merchantRemark_batch_params_item_interface,
   AddParamsInterface,
-  Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_item_interface,
-  Api_proxy_order_manage_query_getServerInfo_item_interface,
+  QueryOrderPlansByOslSeqRequestResultItemInterface,
+  GetServerInfoRequestResultItemInterface,
   Api_proxy_order_Manage_Invoice_repairInvoice_params_interface,
 } from './interface';
 
@@ -90,21 +90,22 @@ export const saleOutstockRequestFunction = (params: { osl_seq: string }) => {
 };
 
 // 配送安装时间列表
-export const api_proxy_order_manage_query_getServerInfo = (params: {
-  osl_seq: string;
-}) => {
-  return axios.post<
-    Api_proxy_order_manage_query_getServerInfo_item_interface[]
-  >('/api/proxy/order/manage/query/getServerInfo', params);
+export const getServerInfoRequestFunction = (params: { osl_seq: string }) => {
+  return axios.post<GetServerInfoRequestResultItemInterface[]>(
+    '/api/proxy/order/manage/query/getServerInfo',
+    params
+  );
 };
 
 // 配送安装选择时间列表
-export const api_proxy_order_Order_assistant_queryOrderPlansByOslSeq =
-  (params: { osl_seq: string }) => {
-    return axios.post<
-      Api_proxy_order_Order_assistant_queryOrderPlansByOslSeq_result_item_interface[]
-    >('/api/proxy/order/Order/assistant/queryOrderPlansByOslSeq', params);
-  };
+export const queryOrderPlansByOslSeqRequestFunction = (params: {
+  osl_seq: string;
+}) => {
+  return axios.post<QueryOrderPlansByOslSeqRequestResultItemInterface[]>(
+    '/api/proxy/order/Order/assistant/queryOrderPlansByOslSeq',
+    params
+  );
+};
 
 // 下单商品验证是否在配送地址返回内
 export const api_goods_sku_getSkuAreaBySkuIds = (params: {
