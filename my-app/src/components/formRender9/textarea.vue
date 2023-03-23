@@ -5,7 +5,7 @@
     show-count
     :max-length="200"
     placeholder="请输入"
-    v-bind="newSlots"
+    v-bind="newSlotsObject"
   >
     <slot />
   </Textarea>
@@ -18,11 +18,11 @@ import { PropsInterface } from './props';
 // 不删除这个属性会报警告
 delete Textarea.props.prefix;
 
-const p = defineProps<{
+const propsObject = defineProps<{
   isDetail?: Boolean;
   inner?: () => void;
   watch?: any[];
   outer?: () => void;
 }>();
-const { newSlots } = core(p);
+const { newSlotsObject } = core(propsObject);
 </script>

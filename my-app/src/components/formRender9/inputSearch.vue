@@ -1,11 +1,11 @@
 <template>
   <InputSearch
     allow-clear
-    :placeholder="$props.isDetail ? '' : '请输入'"
-    :disabled="detailStyleObj.disabled"
-    :bordered="detailStyleObj.bordered"
-    :class="detailStyleObj.class"
-    v-bind="newSlots"
+    :placeholder="propsObject.isDetail ? '' : '请输入'"
+    :disabled="detailStyleObject.disabled"
+    :bordered="detailStyleObject.bordered"
+    :class="detailStyleObject.class"
+    v-bind="newSlotsObject"
   >
     <slot />
   </InputSearch>
@@ -15,13 +15,13 @@ import core from './core';
 import { InputSearch } from 'ant-design-vue';
 import { PropsInterface } from './props';
 
-const p = defineProps<{
+const propsObject = defineProps<{
   isDetail?: Boolean;
   inner?: () => void;
   watch?: any[];
   outer?: () => void;
 }>();
-const { newSlots, detailStyleObj } = core(p);
+const { newSlotsObject, detailStyleObject } = core(propsObject);
 </script>
 <style>
 .formDetail .ant-input-affix-wrapper {

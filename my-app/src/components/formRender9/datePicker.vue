@@ -1,5 +1,5 @@
 <template>
-  <DatePicker v-bind="newSlots">
+  <DatePicker v-bind="newSlotsObject">
     <slot />
   </DatePicker>
 </template>
@@ -9,11 +9,11 @@ import { DatePicker } from 'ant-design-vue';
 import { PropsInterface } from './props';
 import { useSlots, useAttrs, inject, Ref } from 'vue';
 
-const p = defineProps<{
+const propsObject = defineProps<{
   isDetail?: Boolean;
   inner?: () => void;
   watch?: any[];
   outer?: () => void;
 }>();
-const { newSlots } = core(p);
+const { newSlotsObject } = core(propsObject);
 </script>

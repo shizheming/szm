@@ -1,5 +1,5 @@
 <template>
-  <TimePicker v-bind="newSlots" allow-clear>
+  <TimePicker v-bind="newSlotsObject" allow-clear>
     <slot />
   </TimePicker>
 </template>
@@ -9,12 +9,11 @@ import { TimePicker } from 'ant-design-vue';
 import { PropsInterface } from './props';
 import { useSlots, inject, useAttrs } from 'vue';
 
-let outer = inject('outer');
-const p = defineProps<{
+const propsObject = defineProps<{
   isDetail?: Boolean;
   inner?: () => void;
   watch?: any[];
   outer?: () => void;
 }>();
-const { newSlots } = core(p);
+const { newSlotsObject } = core(propsObject);
 </script>

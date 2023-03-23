@@ -1,5 +1,5 @@
 <template>
-  <Switch v-bind="newSlots">
+  <Switch v-bind="newSlotsObject">
     <slot />
   </Switch>
 </template>
@@ -8,11 +8,11 @@ import core from './core';
 import { Switch } from 'ant-design-vue';
 import { PropsInterface } from './props';
 
-const p = defineProps<{
+const propsObject = defineProps<{
   isDetail?: Boolean;
   inner?: () => void;
   watch?: any[];
   outer?: () => void;
 }>();
-const { newSlots } = core(p);
+const { newSlotsObject } = core(propsObject);
 </script>

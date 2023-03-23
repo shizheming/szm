@@ -1,5 +1,5 @@
 <template>
-  <TimeRangePicker allow-clear v-bind="newSlots">
+  <TimeRangePicker allow-clear v-bind="newSlotsObject">
     <slot />
   </TimeRangePicker>
 </template>
@@ -8,11 +8,11 @@ import core from './core';
 import { TimeRangePicker } from 'ant-design-vue';
 import { PropsInterface } from './props';
 
-const p = defineProps<{
+const propsObject = defineProps<{
   isDetail?: Boolean;
   inner?: () => void;
   watch?: any[];
   outer?: () => void;
 }>();
-const { newSlots } = core(p);
+const { newSlotsObject } = core(propsObject);
 </script>

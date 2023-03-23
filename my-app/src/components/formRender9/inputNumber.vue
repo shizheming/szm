@@ -1,10 +1,10 @@
 <template>
   <InputNumber
     style="width: 100%"
-    :disabled="detailStyleObj.disabled"
-    :bordered="detailStyleObj.bordered"
-    :class="detailStyleObj.class"
-    v-bind="newSlots"
+    :disabled="detailStyleObject.disabled"
+    :bordered="detailStyleObject.bordered"
+    :class="detailStyleObject.class"
+    v-bind="newSlotsObject"
   >
     <slot />
   </InputNumber>
@@ -14,13 +14,13 @@ import core from './core';
 import { InputNumber } from 'ant-design-vue';
 import { PropsInterface } from './props';
 
-const p = defineProps<{
+const propsObject = defineProps<{
   isDetail?: Boolean;
   inner?: () => void;
   watch?: any[];
   outer?: () => void;
 }>();
-const { newSlots, detailStyleObj } = core(p);
+const { newSlotsObject, detailStyleObject } = core(propsObject);
 </script>
 
 <style>
