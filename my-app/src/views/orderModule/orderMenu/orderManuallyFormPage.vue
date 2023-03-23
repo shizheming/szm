@@ -181,14 +181,7 @@
     </a-row>
     <a-row>
       <a-col :span="8">
-        <a-form-item
-          label="开具发票"
-          :name="['isInvoice']"
-          :rules="{
-            required: true,
-            message: '请选择',
-          }"
-        >
+        <a-form-item label="开具发票" :name="['isInvoice']">
           <a-radio-group
             v-model:value="formModelObject.isInvoice"
             :options="WHETHER_OPTIONS"
@@ -202,10 +195,6 @@
           <a-form-item
             label="增值税发票类型"
             :name="['order_invoice', 'invoice_form']"
-            :rules="{
-              required: true,
-              message: '请选择',
-            }"
           >
             <a-radio-group
               v-model:value="formModelObject.order_invoice.invoice_form"
@@ -218,10 +207,6 @@
           <a-form-item
             label="发票抬头类型"
             :name="['order_invoice', 'invoice_kind']"
-            :rules="{
-              required: true,
-              message: '请选择',
-            }"
           >
             <a-radio-group
               v-model:value="formModelObject.order_invoice.invoice_kind"
@@ -243,10 +228,6 @@
           <a-form-item
             label="发票内容"
             :name="['order_invoice', 'content_type']"
-            :rules="{
-              required: true,
-              message: '请选择',
-            }"
           >
             <a-radio-group
               v-model:value="formModelObject.order_invoice.content_type"
@@ -495,7 +476,7 @@
       </a-col>
     </a-row>
     <a-space>
-      <a-button html-type="submit">
+      <a-button @click="selectGoodsButtonClickFunction">
         <plus-outlined />
       </a-button>
       <delete-outlined @click="deleteOutlinedClickFunction" />
@@ -532,7 +513,7 @@
             <template #content>
               <a-table
                 :data-source="record.member_price"
-                :columns="goodsListModalLadderPriceTableColumns"
+                :columns="orderFormPageGoodsLadderPriceTableColumns"
                 :pagination="false"
                 size="small"
               />
@@ -601,7 +582,11 @@
     <a-row>
       <a-col :span="8">
         <a-form-item :wrapper-col="{ offset: 8 }">
-          <a-button type="primary" html-type="submit">
+          <a-button
+            type="primary"
+            html-type="submit"
+            :loading="buttonLoadingBoolean"
+          >
             <save-outlined />
           </a-button>
         </a-form-item>
@@ -631,6 +616,7 @@ import {
   ComputedRef,
   nextTick,
 } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import {
   FormInstance,
   InputProps,
@@ -656,7 +642,10 @@ import {
   VAT_INVOICE_TYPE_OPTIONS,
   INVOICE_CONTENT_OPTIONS,
 } from '../../../data/dictionary';
-import { orderFormPageGoodsTableColumns } from './data';
+import {
+  orderFormPageGoodsTableColumns,
+  orderFormPageGoodsLadderPriceTableColumns,
+} from './data';
 import {
   UserRequestResultInterface,
   SkuRequestResultInterface,
@@ -666,7 +655,11 @@ import BackgroundCategoryCascader from '../../../components/cascader/backgroundC
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 import { cloneDeep, throttle, forEach, multiply, subtract } from 'lodash';
-import { api_upload_getUrl, confirmRequestFunction } from './api';
+import {
+  imgUrlRequestFunction,
+  confirmRequestFunction,
+  submitRequestFunction,
+} from './api';
 import { SelectProps } from 'ant-design-vue/lib/vc-select';
 
 type GoodItemInterface = SkuRequestResultInterface & {
@@ -674,6 +667,9 @@ type GoodItemInterface = SkuRequestResultInterface & {
   adjustMountComputedRef?: ComputedRef<number>;
   shopSellingPriceComputedRef?: ComputedRef<number>;
 };
+
+const routeObject = useRoute();
+const routerObject = useRouter();
 
 const UserListModal = defineAsyncComponent(
   () => import('../../../components/modal/userListModal.vue')
@@ -684,26 +680,13 @@ const GoodsListModal = defineAsyncComponent(
 const userListModalVisibleBoolean = ref(false);
 const goodsListModalVisibleBoolean = ref(false);
 const manRadioDisabledBoolean = ref(false);
-
+const buttonLoadingBoolean = ref(false);
 let addressNameArray: string[] = [];
 const formRef = ref<FormInstance>();
 const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
 const selectedRowsArray = ref<GoodItemInterface[]>([]);
-
-const goodsListModalLadderPriceTableColumns: TableColumnsType = [
-  {
-    title: '订购数量',
-    dataIndex: 'start_num_name',
-    key: 'start_num_name',
-  },
-  {
-    title: '销售单价',
-    dataIndex: 'member_price',
-    key: 'member_price',
-  },
-];
 
 const modelObejct: AddParamsInterface = {
   site_id: 1,
@@ -724,6 +707,7 @@ const modelObejct: AddParamsInterface = {
     invoice_form: 3,
     invoice_kind: 2,
     apply_scene: 1,
+    content_type: 1,
   },
   pay_mode: 0,
   tableDataSourceArray: [],
@@ -766,8 +750,27 @@ const plusOutlinedClickFunction = () => {
   userListModalVisibleBoolean.value = true;
 };
 
-const formFinishFunction: FormInstance['onFinish'] = (values) => {
-  goodsListModalVisibleBoolean.value = true;
+const formFinishFunction: FormInstance['onFinish'] = async () => {
+  buttonLoadingBoolean.value = true;
+  await submitRequestFunction(handleSubmitDataFunction());
+  buttonLoadingBoolean.value = false;
+  routerObject.push({
+    name: 'orderListPage',
+  });
+};
+
+const selectGoodsButtonClickFunction = () => {
+  formRef.value
+    .validate([
+      'user_id',
+      ['addressInfo', 'name'],
+      ['addressInfo', 'mobile'],
+      ['addressInfo', 'addressIds'],
+      ['addressInfo', 'address'],
+    ])
+    .then((data) => {
+      goodsListModalVisibleBoolean.value = true;
+    });
 };
 
 const radioGroupWatchFunction = () => {
@@ -925,7 +928,7 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
             : GOODS_FORM_ENUM[item.is_suit as number] || '普通';
         if (item.gallery.length) {
           const [{ key, upload_channel, bucket }] = item.gallery;
-          api_upload_getUrl({
+          imgUrlRequestFunction({
             key,
             upload_channel,
             bucket,
@@ -938,7 +941,7 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
     );
 };
 
-const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
+const handleSubmitDataFunction = () => {
   const value = cloneDeep(formModelObject);
   [
     value.addressInfo.province_id,
@@ -1001,6 +1004,7 @@ const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
 // watch里面只有自己的事情，才能在概念上叫实体的watch，如果干了别人的事情，那概念上就是别人的change了，跟当前实体就已经没有关系了
 
 // 这个watch概念上就是table的chang事件，这是是概念上的宏观change，不是table组件的change事件
+// 这里就要统一了，不能分开watch字段了，应为是需要请求接口下发的数据，所以需要统一
 watch(
   () => formModelObject.tableDataSourceArray,
   async (newValue) => {
@@ -1013,8 +1017,6 @@ watch(
       newValue.forEach((item, index) => {
         item.number = index + 1;
       });
-      console.log(119);
-
       setPriceFunction();
     }
   },
@@ -1024,9 +1026,7 @@ watch(
 );
 
 const setPriceFunction = throttle(async () => {
-  let { data } = await confirmRequestFunction(
-    handleSubmitDataFunction(formModelObject)
-  );
+  let { data } = await confirmRequestFunction(handleSubmitDataFunction());
   formModelObject.freight = data.total_freight / 100;
   formModelObject.qty = data.qty;
   formModelObject.total_price = data.total_price / 100;

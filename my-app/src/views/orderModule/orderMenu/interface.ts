@@ -4,9 +4,9 @@ import {
   PageInterface,
   partPartial,
 } from '../../../interface/index';
-import { Api_goods_sku_list_result_item_interface } from '../../../api/interface';
+import { SkuRequestResultInterface } from '../../../api/interface';
 
-export interface Api_order_params_part_interface {
+export interface OrderListRequestParamsInterface {
   order_search_key: string;
   order_search_value: string;
   good_search_key: string;
@@ -60,8 +60,8 @@ export interface Api_order_params_part_interface {
   pay_mode: number;
 }
 
-export type Api_order_result_interface =
-  ListInterface<Api_order_result_item_interface> & {
+export type OrderListRequestResultInterface =
+  ListInterface<OrderListRequestResultItemInterface> & {
     total0: number;
     total5: number;
     total20: number;
@@ -76,10 +76,10 @@ export type Api_order_result_interface =
     page_size: number;
   };
 
-export type Api_order_params_interface =
-  Partial<Api_order_params_part_interface> & PageInterface;
+export type OrderLsitParamsPageInterface =
+  Partial<OrderListRequestParamsInterface> & PageInterface;
 
-export interface Api_order_result_item_interface {
+export interface OrderListRequestResultItemInterface {
   activeKey: string;
   pay_mode: {
     value: number;
@@ -329,7 +329,7 @@ export interface Api_order_result_item_interface {
   group_time: string;
 }
 
-export interface Api_proxy_order_manage_edit_confirmsign_params_interface {
+export interface ConfirmsignRequestParamsInterface {
   user_id: string;
   osl_seq: string;
   operator: string;
@@ -402,7 +402,7 @@ export type AddParamsInterface = Partial<{
     adjust_mount: number;
   }[];
 }> & {
-  tableDataSourceArray: Api_goods_sku_list_result_item_interface[];
+  tableDataSourceArray: SkuRequestResultInterface[];
   order_invoice: Partial<{
     invoice_form: number;
     invoice_kind: number;

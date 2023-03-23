@@ -297,6 +297,19 @@ export const orderFormPageGoodsTableColumns: TableColumnsType = [
   },
 ];
 
+export const orderFormPageGoodsLadderPriceTableColumns: TableColumnsType = [
+  {
+    title: '订购数量',
+    dataIndex: 'start_num_name',
+    key: 'start_num_name',
+  },
+  {
+    title: '销售单价',
+    dataIndex: 'member_price',
+    key: 'member_price',
+  },
+];
+
 export const deliveryInstallationTimeModalTableColumns: TableColumnsType = [
   {
     title: '服务名称',
