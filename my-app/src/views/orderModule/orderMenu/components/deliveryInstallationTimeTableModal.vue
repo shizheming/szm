@@ -123,7 +123,7 @@ import { datePickerProps } from 'ant-design-vue/es/date-picker/generatePicker/pr
 
 const propsObject = defineProps<{
   visible: boolean;
-  record: OrderListRequestResultItemInterface;
+  record: Partial<OrderListRequestResultItemInterface>;
 }>();
 const emitsFunction = defineEmits<{
   (event: 'update:visible', visible: boolean): void;

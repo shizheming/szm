@@ -631,7 +631,7 @@
         <a-tab-pane key="2" tab="商品信息" force-render>
           <a-table
             size="small"
-            :columns="orderListPageGoodsTableColumns"
+            :columns="orderListPageGoodsTableColumnsArray"
             :pagination="false"
             :data-source="record.item"
           >
@@ -785,8 +785,8 @@ import OwnerSiteSelect from '../../../components/select/ownerSiteSelect.vue';
 import SubOrgSelect from '../../../components/select/subOrgSelect.vue';
 import AddressCascader from '../../../components/cascader/addressCascader.vue';
 import {
-  orderListPageTableColumns,
-  orderListPageGoodsTableColumns,
+  orderListPageTableColumnsArray,
+  orderListPageGoodsTableColumnsArray,
 } from './data';
 import {
   DownOutlined,
@@ -932,7 +932,7 @@ const getSearchDataObject = (
 };
 const sortedInfoObject = ref<SorterResult>();
 const columns = computed(() => {
-  return orderListPageTableColumns.map((item) => {
+  return orderListPageTableColumnsArray.map((item) => {
     if (item.sorter) {
       item.sortOrder =
         sortedInfoObject.value?.columnKey === item.key
@@ -1038,7 +1038,7 @@ const confirmSigningPopconfirmConfirm = async (
   }, 500);
 };
 
-const recordObject = ref<OrderListRequestResultItemInterface>({});
+const recordObject = ref<Partial<OrderListRequestResultItemInterface>>({});
 const bookingConfirmationPopconfirmConfirm1 = (
   record: OrderListRequestResultItemInterface
 ) => {

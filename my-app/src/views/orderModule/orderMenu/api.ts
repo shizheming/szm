@@ -4,9 +4,9 @@ import type {
   OrderLsitParamsPageInterface,
   OrderListRequestResultInterface,
   ConfirmsignRequestParamsInterface,
-  Api_order_orderSyncList_params_interface,
-  Api_order_orderSyncList_result_item_interface,
-  Api_order_merchantRemark_batch_params_item_interface,
+  OrderSyncListRequestParamsPageInterface,
+  OrderSyncListRequestResultItemInterface,
+  BatchRequestParamsInterface,
   AddParamsInterface,
   QueryOrderPlansByOslSeqRequestResultItemInterface,
   GetServerInfoRequestResultItemInterface,
@@ -44,21 +44,22 @@ export const confirmPreOrderRequestFunction = (
 };
 
 // 批量修改卖家备注
-export const api_order_merchantRemark_batch = (params: {
-  ids: Api_order_merchantRemark_batch_params_item_interface[];
+export const batchRequestFunction = (params: {
+  ids: BatchRequestParamsInterface[];
 }) => {
   return axios.put('/api/order/merchant-remark/batch', params);
 };
 
 // 查看任务
-export const api_order_orderSyncList = (
-  params: Api_order_orderSyncList_params_interface
+export const orderSyncListRequestFunction = (
+  params: OrderSyncListRequestParamsPageInterface
 ) => {
-  return axios.get<
-    ListInterface<Api_order_orderSyncList_result_item_interface>
-  >('/api/order/orderSyncList', {
-    params,
-  });
+  return axios.get<ListInterface<OrderSyncListRequestResultItemInterface>>(
+    '/api/order/orderSyncList',
+    {
+      params,
+    }
+  );
 };
 
 // 查看日志

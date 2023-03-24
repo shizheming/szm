@@ -335,13 +335,13 @@ export interface ConfirmsignRequestParamsInterface {
   operator: string;
 }
 
-export interface Api_order_merchantRemark_batch_params_item_interface {
+export interface BatchRequestParamsInterface {
   merchant_remark: string;
   osl_seq: string;
   user_id: string;
 }
 
-export interface Api_order_orderSyncList_params_part_interface {
+export interface OrderSyncListRequestParamsInterface {
   sync_id: number;
   type: number;
   user_name: number;
@@ -350,7 +350,7 @@ export interface Api_order_orderSyncList_params_part_interface {
   operate_time_end: string;
 }
 
-export interface Api_order_orderSyncList_result_item_interface {
+export interface OrderSyncListRequestResultItemInterface {
   id: number;
   name: string;
   short_message: string;
@@ -367,8 +367,8 @@ export interface Api_order_orderSyncList_result_item_interface {
   import_url: string;
 }
 
-export type Api_order_orderSyncList_params_interface =
-  Partial<Api_order_orderSyncList_params_part_interface> & PageInterface;
+export type OrderSyncListRequestParamsPageInterface =
+  Partial<OrderSyncListRequestParamsInterface> & PageInterface;
 
 export type AddParamsInterface = Partial<{
   qty: number;

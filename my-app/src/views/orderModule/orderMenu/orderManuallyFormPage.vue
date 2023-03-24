@@ -689,9 +689,7 @@ const tableRowSelectionSelectedRowKeysArray = ref<
 >([]);
 const selectedRowsArray = ref<GoodItemInterface[]>([]);
 
-const modelObejct: Omit<AddParamsInterface, 'tableDataSourceArray'> & {
-  tableDataSourceArray: GoodItemInterface[];
-} = {
+const modelObejct: AddParamsInterface = {
   site_id: 1,
   api_type: 3,
   entryMode: '手工创建订单',
@@ -907,18 +905,22 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
                 );
               }
             );
-            return multiply(
+            const resultNumber = multiply(
               subtract(member_price, item.current_selling_price),
               item.qty
             );
+            item.adjust_mount = resultNumber;
+            return resultNumber;
           } else {
-            return multiply(
+            const resultNumber = multiply(
               subtract(
                 item.shopSellingPriceComputedRef.value,
                 item.current_selling_price
               ),
               item.qty
             );
+            item.adjust_mount = resultNumber
+            return resultNumber
           }
         });
 
@@ -960,11 +962,11 @@ const handleSubmitDataFunction = () => {
     value.addressInfo.street_name,
   ] = addressNameArray;
   value.shop_goods_list = value.tableDataSourceArray.map(
-    ({ qty, adjustMountComputedRef, shop_goods_id }) => {
+    ({ qty, adjust_mount, shop_goods_id }) => {
       return {
         qty,
         shop_goods_id,
-        adjust_mount: multiply(adjustMountComputedRef, 100),
+        adjust_mount: multiply(adjust_mount, 100),
       };
     }
   );
