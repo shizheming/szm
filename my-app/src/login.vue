@@ -101,15 +101,6 @@ const formFinishFunction: FormProps['onFinish'] = async (values) => {
       url: '/api/manager/me',
     });
     buttonLoading.value = false;
-    console.log(
-      {
-        token,
-        permissions: JSON.stringify(d2),
-        userInfo: JSON.stringify(d3),
-      },
-      18877
-    );
-
     routerObject.push({
       name: 'index',
       params: {

@@ -104,6 +104,7 @@ const routerObject = useRouter();
 const allRouteArray = r.getRoutes();
 const menusArray = ref<RouteRecord[]>([]);
 const pathArray = compact(routeObject.path.split('/'));
+console.log(allRouteArray, 1234);
 
 const userInfoObject: Api_manager_me_result_interface = JSON.parse(
   localStorage.userInfo
@@ -143,7 +144,7 @@ const getMenuDataFunction = (path: string) => {
   let newPathString = first(compact(path.split('/')));
 
   menusArray.value = allRouteArray
-    .filter((item) => item.meta.type) //获取是菜单的
+    .filter((item) => item.meta.type === 'menu') //获取是菜单的
     .filter((item) => item.path.includes(newPathString!)) //获取当前模块路由
     .map((item) => {
       // 过滤类似详情页不需要展示在侧边栏的菜单
