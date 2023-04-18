@@ -130,7 +130,7 @@ myRouter.beforeEach((to, form) => {
     console.log(to, form, 93);
 
     if (form.query.path) {
-      return form.query.path;
+      return form.query.path as string;
     } else {
       return '/';
     }

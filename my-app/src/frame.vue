@@ -9,10 +9,10 @@
         />名气商城后台运营管理系统
       </div>
       <a-menu
-        v-model:selectedKeys="navigationMenuSelectedKeys"
+        v-model:selectedKeys="navigationMenuSelectedKeysArray"
         theme="dark"
         mode="horizontal"
-        @select="navigationMenuSelect"
+        @select="navigationMenuSelectFunction"
         :style="{ lineHeight: '64px', display: 'inline-block' }"
       >
         <a-menu-item v-for="item in navigationArray" :key="item.name">
@@ -21,14 +21,16 @@
       </a-menu>
       <a-space style="color: #abadaf; float: right">
         <span>{{ userInfoObject.username }}</span>
-        <a style="color: #abadaf" @click="logoutLinkClick">退出登录</a>
+        <a style="color: #abadaf" @click="logoutLinkButtonClickFunction"
+          >退出登录</a
+        >
       </a-space>
     </a-layout-header>
     <a-layout>
       <a-layout-sider width="200">
         <a-menu
-          v-model:selectedKeys="menuSelectedKeys"
-          v-model:openKeys="menuOpenKeys"
+          v-model:selectedKeys="menuSelectedKeysArray"
+          v-model:openKeys="menuOpenKeysArray"
           theme="dark"
           mode="inline"
           :style="{ height: '100%', borderRight: 0 }"
@@ -108,11 +110,11 @@ const userInfoObject: Api_manager_me_result_interface = JSON.parse(
 );
 const breadcrumbArray = ref<RouteRecord[]>([]);
 
-const menuSelectedKeys = ref([pathArray[2]]);
-const menuOpenKeys = ref([pathArray[1]]);
-const navigationMenuSelectedKeys = ref([first(pathArray)]);
+const menuSelectedKeysArray = ref([pathArray[2]]);
+const menuOpenKeysArray = ref([pathArray[1]]);
+const navigationMenuSelectedKeysArray = ref([first(pathArray)]);
 
-const logoutLinkClick = async () => {
+const logoutLinkButtonClickFunction = async () => {
   await axios.post('/api/manager/logout');
   routerObject.push({
     name: 'index',
@@ -123,7 +125,7 @@ const logoutLinkClick = async () => {
 };
 
 // 获取面包屑导航
-const getBreadcrumbDataFn = (pathArray: string[]) => {
+const getBreadcrumbDataFunction = (pathArray: string[]) => {
   const newPathArray: string[] = [];
   pathArray.forEach((item, index) => {
     if (index === 0) newPathArray.push(`/${item}`);
@@ -137,7 +139,7 @@ const getBreadcrumbDataFn = (pathArray: string[]) => {
 };
 
 // 获取侧边栏导航
-const getMenuDataFn = (path: string) => {
+const getMenuDataFunction = (path: string) => {
   let newPathString = first(compact(path.split('/')));
 
   menusArray.value = allRouteArray
@@ -152,19 +154,19 @@ const getMenuDataFn = (path: string) => {
     });
 };
 
-const navigationMenuSelect: MenuProps['onClick'] = (v) => {
-  getMenuDataFn(v.key as string);
+const navigationMenuSelectFunction: MenuProps['onClick'] = (v) => {
+  getMenuDataFunction(v.key as string);
 };
 
 // 初始化
-getBreadcrumbDataFn(pathArray);
-getMenuDataFn(routeObject.path);
+getBreadcrumbDataFunction(pathArray);
+getMenuDataFunction(routeObject.path);
 onBeforeRouteUpdate((updateGuard) => {
   breadcrumbArray.value = [];
-  getBreadcrumbDataFn(compact(updateGuard.path.split('/')));
+  getBreadcrumbDataFunction(compact(updateGuard.path.split('/')));
   const updatePathData = compact(updateGuard.path.split('/'));
-  menuSelectedKeys.value = [updatePathData[2]];
-  menuOpenKeys.value = [updatePathData[1]];
+  menuSelectedKeysArray.value = [updatePathData[2]];
+  menuOpenKeysArray.value = [updatePathData[1]];
 });
 </script>
 

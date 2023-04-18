@@ -1,6 +1,6 @@
 import CryptoJS from 'crypto-js';
 import { isNumber, isString, last } from 'lodash';
-import { RouteRecordRaw } from 'vue-router';
+import { RouteRecordRaw, RouteRecord } from 'vue-router';
 
 const keyHex = CryptoJS.enc.Utf8.parse('70682896');
 
@@ -48,7 +48,7 @@ export const flatRouter = (router: RouteRecordRaw[]) => {
   router.forEach((current) => {
     current.meta!.type = 'menu';
     let resultArray: RouteRecordRaw[] = [];
-    current.children?.forEach((item) => {
+    current.children.forEach((item) => {
       item.children?.forEach((the) => {
         the.path = `${item.path}/${the.path}`;
         the.meta!.menuIsHidden = true;

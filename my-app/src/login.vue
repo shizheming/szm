@@ -4,7 +4,7 @@
     :model="formModel"
     :wrapper-col="{ span: 5 }"
     style="margin-top: 200px"
-    @finish="formFinish"
+    @finish="formFinishFunction"
   >
     <a-form-item
       label="账号"
@@ -80,7 +80,7 @@ const formRef = ref<FormInstance>();
 const routerObject = useRouter();
 const buttonLoading = ref(false);
 
-const formFinish: FormProps['onFinish'] = async (values) => {
+const formFinishFunction: FormProps['onFinish'] = async (values) => {
   buttonLoading.value = true;
   try {
     let {
@@ -101,6 +101,14 @@ const formFinish: FormProps['onFinish'] = async (values) => {
       url: '/api/manager/me',
     });
     buttonLoading.value = false;
+    console.log(
+      {
+        token,
+        permissions: JSON.stringify(d2),
+        userInfo: JSON.stringify(d3),
+      },
+      18877
+    );
 
     routerObject.push({
       name: 'index',
