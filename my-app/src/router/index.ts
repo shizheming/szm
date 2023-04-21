@@ -90,23 +90,31 @@ let hasNecessaryRouteBoolean = true;
 myRouterObject.beforeEach((to, form) => {
   nprogress.start();
   if (vueCookie.get('token')) {
-    // 主动退出登陆，我在这里删除token，所以一开始进来的时候是有token的
     if (to.params.token === '0') {
+      // 主动退出登陆，我在这里删除token，所以一开始进来的时候是有token的
       vueCookie.remove('token');
       // 我只能通过刷新页面来实现重置路由，难道4就没有重置的方法吗？？？？
       location.href = location.href;
       return false;
     } else if (form.path === '/') {
-      // 刷新页面进来的，根据权限数据添加动态路由
-      // 有token没有用户信息，没有就要重新登陆
-      if (localStorage.userInfo === undefined) {
+      // 说明是刷新页面进来的
+      if (
+        !localStorage.userInfo ||
+        !localStorage.permissions ||
+        !vueCookie.get('token')
+      ) {
+        // userInfo，permissions，token任一一个没有就要重新登陆
         vueCookie.remove('token');
+        setAxiosHeader({ token: undefined });
+        localStorage.permissions = '';
+        localStorage.userInfo = '';
         if (to.path) {
           return `/login?path=${to.path}`;
         } else {
           return '/login';
         }
       }
+      // 都有得请款下要加载这个页面了
       // 权限
       let permissions = JSON.parse(localStorage.permissions);
       // 处理。。。。。。
@@ -127,17 +135,15 @@ myRouterObject.beforeEach((to, form) => {
       }
     }
   } else if (to.params && to.params.token) {
-    // 说明是用户登陆，带token参数过来的，设置token和菜单
+    // 说明是用户登陆进来，带token参数过来的，
     // 设置登录态
-
     vueCookie.set('token', to.params.token);
     // 设置请求头
     setAxiosHeader({ token: to.params.token as string });
     // 缓存用户信息和权限信息
     localStorage.permissions = to.params.permissions;
     localStorage.userInfo = to.params.userInfo;
-    // 根据权限处理菜单
-    // to.params.permissions.
+
     if (form.query.path) {
       return form.query.path as string;
     } else {

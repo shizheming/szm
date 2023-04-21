@@ -85,7 +85,10 @@ import {
   Router,
 } from 'vue-router';
 import r from './router/index';
-import { Api_manager_me_result_interface } from './interface/index';
+import {
+  UserInfoRequestResultInterface,
+  PermissionsRequestResultInterface,
+} from './interface/index';
 import type { MenuProps, MenuItemProps } from 'ant-design-vue';
 import { compact, first } from 'lodash';
 
@@ -99,6 +102,7 @@ const navigationArray = [
     zh_CN: '商品',
   },
 ];
+
 const routeObject = useRoute();
 const routerObject = useRouter();
 const allRouteArray = r.getRoutes();
@@ -106,7 +110,10 @@ const menusArray = ref<RouteRecord[]>([]);
 const pathArray = compact(routeObject.path.split('/'));
 console.log(allRouteArray, 1234);
 
-const userInfoObject: Api_manager_me_result_interface = JSON.parse(
+const permissionsArray: PermissionsRequestResultInterface[] = JSON.parse(
+  localStorage.permissions
+);
+const userInfoObject: UserInfoRequestResultInterface = JSON.parse(
   localStorage.userInfo
 );
 const breadcrumbArray = ref<RouteRecord[]>([]);
@@ -114,6 +121,9 @@ const breadcrumbArray = ref<RouteRecord[]>([]);
 const menuSelectedKeysArray = ref([pathArray[2]]);
 const menuOpenKeysArray = ref([pathArray[1]]);
 const navigationMenuSelectedKeysArray = ref([first(pathArray)]);
+
+// 更具权限显示模块和菜单
+permissionsArray.forEach((item) => {});
 
 const logoutLinkButtonClickFunction = async () => {
   await axios.post('/api/manager/logout');
@@ -127,6 +137,7 @@ const logoutLinkButtonClickFunction = async () => {
 
 // 获取面包屑导航
 const getBreadcrumbDataFunction = (pathArray: string[]) => {
+  breadcrumbArray.value = [];
   const newPathArray: string[] = [];
   pathArray.forEach((item, index) => {
     if (index === 0) newPathArray.push(`/${item}`);
@@ -162,8 +173,8 @@ const navigationMenuSelectFunction: MenuProps['onClick'] = (v) => {
 // 初始化
 getBreadcrumbDataFunction(pathArray);
 getMenuDataFunction(routeObject.path);
+
 onBeforeRouteUpdate((updateGuard) => {
-  breadcrumbArray.value = [];
   getBreadcrumbDataFunction(compact(updateGuard.path.split('/')));
   const updatePathData = compact(updateGuard.path.split('/'));
   menuSelectedKeysArray.value = [updatePathData[2]];
