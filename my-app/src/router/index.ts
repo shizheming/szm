@@ -12,6 +12,8 @@ import { setAxiosHeader } from '../utils/axios';
 import order from './order';
 import goods from './goods';
 import { flatRouter } from '../utils/tool';
+import { PermissionsRequestResultInterface } from '../interface/index';
+import { routerPermissionsArray } from '../permissions/index';
 
 // 这里的问题牵扯的就是什么时候利用作用域，什么时候用函数返回
 flatRouter(order);
@@ -50,7 +52,6 @@ const routesArray = [
       title: '首页',
     },
     component: () => import('../frame.vue'),
-    children: moudleRouterArray,
   },
   {
     path: '/login',
@@ -81,13 +82,13 @@ function handleRouteFunction(arr: RouteRecordRaw[], father?: string) {
   });
 } */
 
-const myRouterObject = createRouter({
+const myRouteObject = createRouter({
   history: createWebHistory(),
   routes: routesArray,
 });
 let hasNecessaryRouteBoolean = true;
 
-myRouterObject.beforeEach((to, form) => {
+myRouteObject.beforeEach((to, form) => {
   nprogress.start();
   if (vueCookie.get('token')) {
     if (to.params.token === '0') {
@@ -114,11 +115,9 @@ myRouterObject.beforeEach((to, form) => {
           return '/login';
         }
       }
-      // 都有得请款下要加载这个页面了
+      // 都有得就要加载这个页面了
       // 权限
-      let permissions = JSON.parse(localStorage.permissions);
-      // 处理。。。。。。
-
+      addRouteFunction(JSON.parse(localStorage.permissions));
       if (hasNecessaryRouteBoolean) {
         // 添加token
         setAxiosHeader({ token: vueCookie.get('token') });
@@ -143,7 +142,9 @@ myRouterObject.beforeEach((to, form) => {
     // 缓存用户信息和权限信息
     localStorage.permissions = to.params.permissions;
     localStorage.userInfo = to.params.userInfo;
+    // 动态添加路由
 
+    addRouteFunction(JSON.parse(to.params.permissions as string));
     if (form.query.path) {
       return form.query.path as string;
     } else {
@@ -161,8 +162,38 @@ myRouterObject.beforeEach((to, form) => {
   }
 });
 
-myRouterObject.afterEach(() => {
+myRouteObject.afterEach(() => {
   nprogress.done();
 });
 
-export default myRouterObject;
+// 获取权限对应得路由，然后添加
+const addRouteFunction = (
+  permissionsArray: PermissionsRequestResultInterface[]
+) => {
+  haddleMoudleRouterFunction(permissionsArray, moudleRouterArray).forEach(
+    (item) => {
+      myRouteObject.addRoute('index', item);
+    }
+  );
+};
+
+type xx = typeof moudleRouterArray;
+
+// 匹配权限
+const haddleMoudleRouterFunction = (
+  permissionsArray: PermissionsRequestResultInterface[],
+  routerArray: typeof moudleRouterArray
+): typeof moudleRouterArray => {
+  const newMoudleRouterArray = routerArray.filter(({ name }) => {
+    const permissionsObject = routerPermissionsArray.find(
+      (item) => item.name === name
+    );
+    if (permissionsObject) {
+      return permissionsArray.some(
+        (item) => item.name === permissionsObject.permissionName
+      );
+    }
+  });
+  return newMoudleRouterArray;
+};
+export default myRouteObject;

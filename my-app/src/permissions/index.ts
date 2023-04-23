@@ -1,6 +1,7 @@
-const routerPermissionsArray = [
+export const routerPermissionsArray = [
   {
-    name: 'order',
-    path: '/orderModule',
+    permissionName: 'order',
+    name: 'orderModule',
+    childrens: [],
   },
 ];

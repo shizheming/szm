@@ -68,7 +68,7 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from './utils/axios';
 import { encrypt } from './utils/tool';
-
+import { PermissionsRequestResultInterface } from './interface/index';
 // 这种不需要写接口，自己都能类型推断，减少工作量，
 const formModel = reactive({
   sms_code: '',
@@ -95,11 +95,12 @@ const formFinishFunction: FormProps['onFinish'] = async (values) => {
       headers: { Authorization: token },
       url: '/api/manager/permissions',
     });
-    let { data: d3 } = await axios({
-      method: 'GET',
-      headers: { Authorization: token },
-      url: '/api/manager/me',
-    });
+    let { data: d3 } = await axios.get<PermissionsRequestResultInterface>(
+      '/api/manager/me',
+      {
+        headers: { Authorization: token },
+      }
+    );
     buttonLoading.value = false;
     routerObject.push({
       name: 'index',
