@@ -112,10 +112,7 @@
           <address-cascader
             v-model:value="formModelObject.addressInfo.addressIds"
             v-model:options="addressCascaderOptionsArray"
-            :watch="[
-              () => formModelObject.addressInfo.addressIds,
-              addressCascaderWatchFunction,
-            ]"
+            @change="addressCascaderChangeFunction"
           />
         </a-form-item>
       </a-col>
@@ -661,9 +658,9 @@ import {
   confirmRequestFunction,
   submitRequestFunction,
 } from './api';
-import { SelectProps } from 'ant-design-vue/lib/vc-select';
-import { string } from 'vue-types';
+import { DefaultOptionType } from 'ant-design-vue/lib/vc-cascader';
 
+// 在接口原来的基础上添加一些自己用的字段类型
 type GoodItemInterface = SkuSingleInterface & {
   purchaseAmount?: ComputedRef<number>;
   adjustMountComputedRef?: ComputedRef<number>;
@@ -689,19 +686,6 @@ const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
 const selectedRowsArray = ref<SkuSingleInterface[]>([]);
-
-const goodsListModalLadderPriceTableColumns: TableColumnsType = [
-  {
-    title: '订购数量',
-    dataIndex: 'start_num_name',
-    key: 'start_num_name',
-  },
-  {
-    title: '销售单价',
-    dataIndex: 'member_price',
-    key: 'member_price',
-  },
-];
 
 const modelObejct: AddParamsInterface = {
   site_id: 1,
@@ -731,6 +715,8 @@ const modelObejct: AddParamsInterface = {
 
 const addressCascaderOptionsArray = ref<CascaderProps['options']>([]);
 const formModelObject = reactive(cloneDeep(modelObejct));
+
+// 把watch，invoice_kind，invoice_form分发给不同的状态变化，到变成一个状态就是一个监听，而不是分发，是主动监听，从我出发
 const commonPaperPersonalBoolean = computed(() => {
   return (
     formModelObject.order_invoice.invoice_kind == 1 &&
@@ -762,10 +748,12 @@ const specialPaperEnterpriseBoolean = computed(() => {
   );
 });
 
+// 用户选择事件
 const plusOutlinedClickFunction = () => {
   userListModalVisibleBoolean.value = true;
 };
 
+// 提交
 const formFinishFunction: FormInstance['onFinish'] = async () => {
   buttonLoadingBoolean.value = true;
   await submitRequestFunction(handleSubmitDataFunction(formModelObject));
@@ -775,20 +763,19 @@ const formFinishFunction: FormInstance['onFinish'] = async () => {
   });
 };
 
-const selectGoodsButtonClickFunction = () => {
-  formRef.value
-    .validate([
-      'user_id',
-      ['addressInfo', 'name'],
-      ['addressInfo', 'mobile'],
-      ['addressInfo', 'addressIds'],
-      ['addressInfo', 'address'],
-    ])
-    .then((data) => {
-      goodsListModalVisibleBoolean.value = true;
-    });
+// 选择商品按钮事件
+const selectGoodsButtonClickFunction = async () => {
+  await formRef.value.validate([
+    'user_id',
+    ['addressInfo', 'name'],
+    ['addressInfo', 'mobile'],
+    ['addressInfo', 'addressIds'],
+    ['addressInfo', 'address'],
+  ]);
+  goodsListModalVisibleBoolean.value = true;
 };
 
+// 监听invoice_form改变自己的状态
 const radioGroupWatchFunction = () => {
   if (
     formModelObject.order_invoice.invoice_form == 1 ||
@@ -801,19 +788,17 @@ const radioGroupWatchFunction = () => {
   }
 };
 
-const addressCascaderWatchFunction = () => {
-  addressNameArray = [];
-  let addressLevel = addressCascaderOptionsArray.value;
-  formModelObject.addressInfo.addressIds.forEach((item) => {
-    addressLevel.forEach((current) => {
-      if (current.value === item) {
-        addressNameArray.push(current.label);
-        addressLevel = current.children;
-      }
-    });
-  });
+// 地址change事件
+const addressCascaderChangeFunction: CascaderProps['onChange'] = (
+  value,
+  valueArray
+) => {
+  addressNameArray = (valueArray as DefaultOptionType[]).map(
+    ({ label }) => label
+  );
 };
 
+// 地址验证
 const formItemRulesValidatorFunction = async (_rule: Rule, value: number[]) => {
   if (!value) {
     return Promise.reject('请选择');
@@ -824,6 +809,7 @@ const formItemRulesValidatorFunction = async (_rule: Rule, value: number[]) => {
   }
 };
 
+// 商品表格选择事件
 const tableRowSelectionOnChangeFunction: TableRowSelection['onChange'] = (
   keys,
   rows
@@ -832,6 +818,7 @@ const tableRowSelectionOnChangeFunction: TableRowSelection['onChange'] = (
   selectedRowsArray.value = rows;
 };
 
+// 用户列表选择好后回调函数，回显选择的数据
 const userListModalSelectFunction: (
   rowKeys: TableRowSelection['selectedRowKeys'],
   rows: UserSingleInterface[]
@@ -866,6 +853,7 @@ const userListModalSelectFunction: (
   }
 };
 
+// 批量删除商品事件
 const deleteOutlinedClickFunction = () => {
   if (tableRowSelectionSelectedRowKeysArray.value.length) {
     formModelObject.tableDataSourceArray =
@@ -878,10 +866,13 @@ const deleteOutlinedClickFunction = () => {
   }
 };
 
+// 删除单个商品
 const tableDeleteOutlinedClickFunction = (index: number) => {
   formModelObject.tableDataSourceArray.splice(index, 1);
 };
 
+// 商品弹框选好后的回调，回显选择的数据
+// 按照我组件别人触发，是要用监听的，按理来说弹框选好那么多数据，要设置的每条数据都应该监听这个弹框，按照我的理念，但是弹框不是一直在的，弹框实体是需要的时候才会显示，从概念上来说，无监听，所以组件是被动触发，没毛病，他的维度比页面高
 const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
   formModelObject.tableDataSourceArray =
     formModelObject.tableDataSourceArray.concat(
@@ -957,6 +948,7 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
     );
 };
 
+// 单条商品计算金额函数方法
 const goodsItemCalculatedFunction = (
   record: GoodItemInterface,
   qty: number,
@@ -981,6 +973,7 @@ const goodsItemCalculatedFunction = (
   }
 };
 
+// 最后提交前的数据结构处理
 const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
   const value = cloneDeep(formModelObject);
   [
@@ -1034,11 +1027,6 @@ const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
   return value;
 };
 
-const inputNumberChange = async (record: SkuSingleInterface) => {
-  goodsItemCalculatedFunction(record, record.qty, record.current_selling_price);
-  setPriceFunction();
-};
-
 // 从实体的出发
 // 实体的change是自己触发的，然后干一些事情，是一对一或是一对多，可以对实体自己做一些事情，也可以是对别的实体做一些事情，对别的实体是一种命令式的下发的写法，
 // 现在一般是跟自己有关的用change，如果是多个实体的change干的是同一件事情，那我可以用监听，监听多个值，这个多个值就代表监听的实体，去触发干的那同一件事情，这是一种change的变体，这里的watch从概念上来看就不能当watch来看的，而是还是一种change，只是写法不同而已，因为从逻辑上来讲这里的watch没有主语，谁监听，没有，所以概念上还是change
@@ -1070,6 +1058,7 @@ watch(
   }
 );
 
+// 计算订单总金额函数方法
 const setPriceFunction = throttle(async () => {
   let { data } = await confirmRequestFunction(
     handleSubmitDataFunction(formModelObject)
@@ -1080,6 +1069,7 @@ const setPriceFunction = throttle(async () => {
   formModelObject.validator.total_pay = data.total_real_price / 100;
 }, 500);
 
+// 设置表格唯一id
 const tableRowKey = ({ sku_id, spu_id }: SkuSingleInterface) => {
   return `${spu_id}/${sku_id}`;
 };
