@@ -1,14 +1,15 @@
-import { categoryRequest } from '../api/dictionary';
-import { Api_goods_category_result_item_interface } from '../api/interface';
+import { categoryRequestFunction } from '../api/dictionary';
+import { CategorySingleInterface } from '../api/interface';
 // 获取类目
-let categoryArray: Api_goods_category_result_item_interface[];
-categoryRequest().then(({ data }) => {
+let categoryArray: CategorySingleInterface[];
+categoryRequestFunction().then(({ data }) => {
   categoryArray = data;
 });
 
+// 给最后一级，寻找上面两级
 export function findCategory(
   n: number,
-  data: Api_goods_category_result_item_interface[] = categoryArray
+  data: CategorySingleInterface[] = categoryArray
 ) {
   var result: string[] = [];
 

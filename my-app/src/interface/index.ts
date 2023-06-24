@@ -1,16 +1,20 @@
+// 分页
 export interface PageInterface {
   page: number;
   page_size: number;
 }
 
+// 列表出参
 export interface ListInterface<T> {
   list: T[];
 }
 
+// 部分可选参数入参
 export type partPartial<T, AK extends keyof T> = {
   [K in keyof Omit<T, AK>]?: T[K];
 } & { [K in AK]: Partial<T[K]> };
 
+// 登陆接口出参
 export interface Api_manager_me_result_interface {
   bucket: any;
   display_name: string;

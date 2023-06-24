@@ -515,7 +515,7 @@
           index,
         }: {
           column: TableColumnType,
-          record: SkuRequestResultInterface,
+          record: SkuSingleInterface,
           index: number,
         }"
       >
@@ -638,17 +638,17 @@ import {
   SaveOutlined,
 } from '@ant-design/icons-vue';
 import AddressCascader from '../../../components/cascader/addressCascader.vue';
+import { GOODS_FORM_ENUM } from '../../../data/dictionary';
 import {
   WHETHER_OPTIONS,
   DELIVERY_METHOD_OPTIONS,
-  GOODS_FORM_ENUM,
   VAT_INVOICE_TYPE_OPTIONS,
   INVOICE_CONTENT_OPTIONS,
-} from '../../../data/dictionary';
+} from '../../../data/options';
 import { orderFormPageGoodsTableColumns } from './data';
 import {
-  UserRequestResultInterface,
-  SkuRequestResultInterface,
+  UserSingleInterface,
+  SkuSingleInterface,
 } from '../../../api/interface';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategoryCascader.vue';
@@ -676,7 +676,7 @@ const formRef = ref<FormInstance>();
 const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
-const selectedRowsArray = ref<SkuRequestResultInterface[]>([]);
+const selectedRowsArray = ref<SkuSingleInterface[]>([]);
 
 const goodsListModalLadderPriceTableColumns: TableColumnsType = [
   {
@@ -761,7 +761,7 @@ const tableRowSelectionOnChangeFunction: TableRowSelection['onChange'] = (
 
 const userListModalSelectFunction: (
   rowKeys: TableRowSelection['selectedRowKeys'],
-  rows: UserRequestResultInterface[]
+  rows: UserSingleInterface[]
 ) => void = (
   rowKeys,
   [
@@ -809,9 +809,7 @@ const tableDeleteOutlinedClickFunction = (index: number) => {
   formModelObject.tableDataSourceArray.splice(index, 1);
 };
 
-const goodsListModalSelectFunction = async (
-  rows: SkuRequestResultInterface[]
-) => {
+const goodsListModalSelectFunction = async (rows: SkuSingleInterface[]) => {
   formModelObject.tableDataSourceArray =
     formModelObject.tableDataSourceArray.concat(
       rows.map((item, index) => {
@@ -842,7 +840,7 @@ const goodsListModalSelectFunction = async (
 };
 
 const goodsItemCalculatedFunction = (
-  record: SkuRequestResultInterface,
+  record: SkuSingleInterface,
   qty: number,
   unitPrice: number
 ) => {
@@ -925,7 +923,7 @@ const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
   return value;
 };
 
-const inputNumberChange = async (record: SkuRequestResultInterface) => {
+const inputNumberChange = async (record: SkuSingleInterface) => {
   goodsItemCalculatedFunction(record, record.qty, record.current_selling_price);
   setPriceFunction();
 };
@@ -965,7 +963,7 @@ const setPriceFunction = debounce(async () => {
   formModelObject.validator.total_pay = data.total_real_price / 100;
 }, 500);
 
-const tableRowKey = ({ sku_id, spu_id }: SkuRequestResultInterface) => {
+const tableRowKey = ({ sku_id, spu_id }: SkuSingleInterface) => {
   return `${spu_id}/${sku_id}`;
 };
 

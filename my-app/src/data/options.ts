@@ -1,0 +1,71 @@
+import { optionsEnum } from '../utils/tool';
+import {
+  WHETHER_ENUM,
+  YES_NO_ENUM,
+  ORDER_STATUS_ENUM,
+  PAY_STATUS_ENUM,
+  DELIVERY_STATUS_ENUM,
+  USER_LEVEL_ENUM,
+  SOURCE_TERMINAL_ENUM,
+  DELIVERY_METHOD_ENUM,
+  ENTRY_METHOD_EUNM,
+  PAYMENT_METHOD_ENUM,
+  PAYMENT_TASK_CLASS_ENUM,
+  IS_INVOICE_ENUM,
+  ORDER_GOODS_SOURCE_ENUM,
+  DETAIL_OF_MARKETING_ACTIVITIES_ENUM,
+  ORDER_TASK_CLASS_ENUM,
+  BUSINESS_MODEL_ENUM,
+  GROUPING_STATUS_ENUM,
+  TASK_CLASS_ENUM,
+  VAT_INVOICE_TYPE_ENMU,
+  INVOICE_HEADER_TYPE_ENMU,
+  INVOICE_CONTENT_ENMU,
+} from './dictionary';
+
+// 是否
+export const WHETHER_OPTIONS = optionsEnum(WHETHER_ENUM);
+// 有无
+export const YES_NO_OPTIONS = optionsEnum(YES_NO_ENUM);
+// 订单状态
+export const ORDER_STATUS_OPTIONS = optionsEnum(ORDER_STATUS_ENUM);
+// 支付状态
+export const PAY_STATUS_OPTIONS = optionsEnum(PAY_STATUS_ENUM);
+// 发货状态
+export const DELIVERY_STATUS_OPTIONS = optionsEnum(DELIVERY_STATUS_ENUM);
+// 用户等级
+export const USER_LEVEL_OPTIONS = optionsEnum(USER_LEVEL_ENUM);
+// 来源终端
+export const SOURCE_TERMINAL_OPTIONS = optionsEnum(SOURCE_TERMINAL_ENUM);
+// 配送方式
+export const DELIVERY_METHOD_OPTIONS = optionsEnum(DELIVERY_METHOD_ENUM);
+// 录入方式
+export const ENTRY_METHOD_OPTIONS = optionsEnum(ENTRY_METHOD_EUNM);
+// 支付方式
+export const PAYMENT_METHOD_OPTIONS = optionsEnum(PAYMENT_METHOD_ENUM);
+// 支付类型
+export const PAYMENT_TYPE_OPTIONS = optionsEnum(PAYMENT_TASK_CLASS_ENUM);
+// 发票
+export const IS_INVOICE_OPTIONS = optionsEnum(IS_INVOICE_ENUM);
+// 订单商品来源
+export const ORDER_GOODS_SOURCE_OPTIONS = optionsEnum(ORDER_GOODS_SOURCE_ENUM);
+// 营销活动明细
+export const DETAIL_OF_MARKETING_ACTIVITIES_OPTIONS = optionsEnum(
+  DETAIL_OF_MARKETING_ACTIVITIES_ENUM
+);
+// 订单类型
+export const ORDER_TYPE_OPTIONS = optionsEnum(ORDER_TASK_CLASS_ENUM);
+// 业务模式
+export const BUSINESS_MODEL_OPTIONS = optionsEnum(BUSINESS_MODEL_ENUM);
+// 拼团状态
+export const GROUPING_STATUS_OPTIONS = optionsEnum(GROUPING_STATUS_ENUM);
+// 任务类
+export const TASK_CLASS_OPTIONS = optionsEnum(TASK_CLASS_ENUM);
+// 增值税发票类型
+export const VAT_INVOICE_TYPE_OPTIONS = optionsEnum(VAT_INVOICE_TYPE_ENMU);
+// 发票抬头类型
+export const INVOICE_HEADER_TYPE_OPTIONS = optionsEnum(
+  INVOICE_HEADER_TYPE_ENMU
+);
+// 发票内容
+export const INVOICE_CONTENT_OPTIONS = optionsEnum(INVOICE_CONTENT_ENMU);

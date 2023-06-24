@@ -124,7 +124,7 @@
           record,
         }: {
           column: TableColumnType,
-          record: SkuRequestResultInterface,
+          record: SkuSingleInterface,
         }"
       >
         <template v-if="column.key === 'category_id'">
@@ -168,8 +168,8 @@ import {
 } from 'ant-design-vue';
 import { AddParamsInterface } from '../../views/orderModule/orderMenu/interface';
 import {
-  SkuRequestResultInterface,
-  SkuRequestParamsPageInterface,
+  SkuSingleInterface,
+  SkuRequestParamsInterface,
 } from '../../api/interface';
 import { api_goods_sku_getSkuAreaBySkuIds } from '../../views/orderModule/orderMenu/api';
 import { skuRequestFunction } from '../../api/list';
@@ -265,7 +265,7 @@ const propsObject = defineProps<{
 }>();
 const emitsFunction = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
-  (event: 'select', selectedRowsArray: SkuRequestResultInterface[]): void;
+  (event: 'select', selectedRowsArray: SkuSingleInterface[]): void;
 }>();
 const modalConfirmLoadingBoolean = ref(false);
 const tableRowSelectionSelectedRowKeysArray = ref<
@@ -273,7 +273,7 @@ const tableRowSelectionSelectedRowKeysArray = ref<
 >([]);
 let noSelectedRowKeysArray: string[] = [];
 const formRefObject = ref<FormInstance>();
-const selectedRowsArray = ref<SkuRequestResultInterface[]>([]);
+const selectedRowsArray = ref<SkuSingleInterface[]>([]);
 const { data, current, pageSize, run, loading, total } = usePagination(
   skuRequestFunction,
   {
@@ -298,7 +298,7 @@ const { data, current, pageSize, run, loading, total } = usePagination(
     },
   }
 );
-const formModelObject = reactive<SkuRequestParamsPageInterface>({
+const formModelObject = reactive<SkuRequestParamsInterface>({
   channel_id: 1,
   is_listing: 1,
   need_stock: 1,
@@ -363,7 +363,7 @@ const tableRowSelectionGetCheckboxPropsFunction: TableRowSelection['getCheckboxP
     };
   };
 
-const tableRowKeyFunction = ({ sku_id, spu_id }: SkuRequestResultInterface) => {
+const tableRowKeyFunction = ({ sku_id, spu_id }: SkuSingleInterface) => {
   return `${spu_id}/${sku_id}`;
 };
 

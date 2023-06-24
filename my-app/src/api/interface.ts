@@ -1,5 +1,6 @@
 import { ListInterface, PageInterface } from '../interface';
-export interface CategoryRequestResultInterface {
+// 后台类目出参
+export interface CategorySingleInterface {
   id: number;
   pid: number;
   name: string;
@@ -16,10 +17,11 @@ export interface CategoryRequestResultInterface {
   source_db: string;
   source_id: string;
   get_category_relation: any[];
-  child?: CategoryRequestResultInterface[];
+  child?: CategorySingleInterface[];
 }
 
-export interface UserRequestResultInterface {
+// 用户列表单条出参
+export interface UserSingleInterface {
   user_id: string;
   third_user_id: string;
   username: string;
@@ -32,7 +34,11 @@ export interface UserRequestResultInterface {
   user_level_name: string;
 }
 
-export interface SkuRequestParamsInterface {
+// 用户列表出参
+export type UserRequestResultInterface = ListInterface<UserSingleInterface>;
+
+// 商品列表不带分页入参
+export interface SkuRequestParamsNoPageInterface {
   goods_search_value: string;
   goods_search_key: string;
   category_id: number;
@@ -42,9 +48,12 @@ export interface SkuRequestParamsInterface {
   category_id_array: number[];
 }
 
-export type SkuRequestParamsPageInterface = Partial<SkuRequestParamsInterface> &
-  PageInterface;
-export interface SkuRequestResultInterface {
+// 商品列表入参
+export type SkuRequestParamsInterface =
+  Partial<SkuRequestParamsNoPageInterface> & PageInterface;
+
+// 商品列表单条出参
+export interface SkuSingleInterface {
   min_qty: number;
   purchaseAmount: number;
   adjust_mount: number;
@@ -111,4 +120,103 @@ export interface SkuRequestResultInterface {
   real_node_qty: number;
   stock_qty: number;
   account_discount_price: number;
+}
+
+// 商品列表出参
+export type SkuRequestResultInterface = ListInterface<SkuSingleInterface>;
+
+// 供应商单条出参
+export interface SupplierSingleInterface {
+  id: number;
+  name: string;
+  code: string;
+  status: number;
+  stock_check_type: number;
+  is_self: number;
+  finance_code: string;
+  identity_type: number;
+}
+
+// 商品品牌单条出参
+export interface BrandSingleInterface {
+  id: number;
+  name: string;
+}
+
+// 通用字典单条出参
+export interface DictSingleInterface {
+  type: string;
+  parent_code: string;
+  code: string;
+  value: string;
+  remark: string;
+  rank: number;
+  enterprise_id: number;
+}
+
+// 通用字典出参
+export type DictRequestResultInterface = {
+  [key: string]: DictSingleInterface[];
+};
+
+// 销售单条站点
+export interface SiteSingleInterface {
+  id: number;
+  name: string;
+  org_id: number;
+  is_virtual: number;
+  status: number;
+  remark: string;
+  order_delay_day: number;
+  delay_end_day: number;
+  forbidden_date: string;
+  create_time: string;
+  enterprise_id: number;
+  creator_id: number;
+  status_name: string;
+  org_name: string;
+}
+
+// 销售站点
+export type SiteRequestResultInterface = ListInterface<SiteSingleInterface>;
+
+// 订单销售组织单条出参
+export interface OrgSingleInterface {
+  id: number;
+  org_code: string;
+  name: string;
+  parent_id: number;
+  operations_type: number;
+  business: string;
+  status: number;
+  remark: string;
+  invoice_channel: string;
+  invoice_type: string;
+  is_support_invoice: number;
+  invoice_company_code: string;
+  self_delivery: number;
+  create_time: string;
+  enterprise_id: number;
+  duty_sign: string;
+  pay_type: string;
+  share_profit: number;
+  is_area_org: number;
+  area_org_ids: string;
+  is_support_purchase: number;
+  area_org_text: string;
+  operations_type_name: string;
+  status_name: string;
+}
+
+// 订单销售组织出参
+export type OrgRequestResultInterface = ListInterface<OrgSingleInterface>;
+
+// 地址单条出参
+export interface AddressSingleInterface {
+  id: number;
+  name: string;
+  fullname: string;
+  level: number;
+  ad_code: number;
+  real_name: string;
 }

@@ -1,4 +1,5 @@
 // api层
+// 字典api
 // 供应商
 export const SUPPLIER_API_STRING = '/api/stock/supplier/get-all/list';
 // 类目
@@ -14,6 +15,7 @@ export const ORG_API_STRING = '/api/sys/org';
 // 地址
 export const AREA_API_STRING = '/api/common/area';
 
+// 弹框api
 // 用户
 export const USER_API_STRING = '/api/proxy/user/User/UserSearch/epUserSearch';
 // sku
