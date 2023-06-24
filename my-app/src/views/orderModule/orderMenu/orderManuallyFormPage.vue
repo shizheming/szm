@@ -500,7 +500,7 @@
           index,
         }: {
           column: TableColumnType,
-          record: SkuSingleInterface,
+          record: GoodItemInterface,
           index: number,
         }"
       >
@@ -664,7 +664,7 @@ import {
 import { SelectProps } from 'ant-design-vue/lib/vc-select';
 import { string } from 'vue-types';
 
-type GoodItemInterface = SkuRequestResultInterface & {
+type GoodItemInterface = SkuSingleInterface & {
   purchaseAmount?: ComputedRef<number>;
   adjustMountComputedRef?: ComputedRef<number>;
   shopSellingPriceComputedRef?: ComputedRef<number>;
@@ -768,7 +768,7 @@ const plusOutlinedClickFunction = () => {
 
 const formFinishFunction: FormInstance['onFinish'] = async () => {
   buttonLoadingBoolean.value = true;
-  await submitRequestFunction(handleSubmitDataFunction());
+  await submitRequestFunction(handleSubmitDataFunction(formModelObject));
   buttonLoadingBoolean.value = false;
   routerObject.push({
     name: 'orderListPage',
@@ -882,7 +882,7 @@ const tableDeleteOutlinedClickFunction = (index: number) => {
   formModelObject.tableDataSourceArray.splice(index, 1);
 };
 
-const goodsListModalSelectFunction = async (rows: SkuSingleInterface[]) => {
+const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
   formModelObject.tableDataSourceArray =
     formModelObject.tableDataSourceArray.concat(
       rows.map((item, index) => {
@@ -958,13 +958,12 @@ const goodsListModalSelectFunction = async (rows: SkuSingleInterface[]) => {
 };
 
 const goodsItemCalculatedFunction = (
-  record: SkuSingleInterface,
+  record: GoodItemInterface,
   qty: number,
   unitPrice: number
 ) => {
   record.qty = qty;
   record.current_selling_price = unitPrice;
-  record.purchaseAmount = multiply(unitPrice, qty);
   // 需要判断下是否是阶梯价，阶梯价的单价会随着数量而变化
   if (record.member_price.length > 0) {
     let [{ member_price }] = record.member_price.filter(
@@ -1072,7 +1071,9 @@ watch(
 );
 
 const setPriceFunction = throttle(async () => {
-  let { data } = await confirmRequestFunction(handleSubmitDataFunction());
+  let { data } = await confirmRequestFunction(
+    handleSubmitDataFunction(formModelObject)
+  );
   formModelObject.freight = data.total_freight / 100;
   formModelObject.qty = data.qty;
   formModelObject.total_price = data.total_price / 100;

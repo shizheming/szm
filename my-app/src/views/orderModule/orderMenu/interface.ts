@@ -4,7 +4,7 @@ import {
   PageInterface,
   partPartial,
 } from '../../../interface/index';
-import { SkuRequestResultInterface } from '../../../api/interface';
+import { SkuSingleInterface } from '../../../api/interface';
 
 export interface OrderListRequestParamsInterface {
   order_search_key: string;
@@ -402,7 +402,7 @@ export type AddParamsInterface = Partial<{
     adjust_mount: number;
   }[];
 }> & {
-  tableDataSourceArray: SkuRequestResultInterface[];
+  tableDataSourceArray: SkuSingleInterface[];
   order_invoice: Partial<{
     invoice_form: number;
     invoice_kind: number;
