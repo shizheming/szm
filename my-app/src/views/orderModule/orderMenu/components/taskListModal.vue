@@ -1,34 +1,34 @@
 <template>
   <a-modal
-    :visible="props.visible"
+    :visible="propsObject.visible"
     title="查看任务"
     @ok="ok"
     @cancel="cancel"
     :width="1400"
   >
     <a-form
-      ref="formRef"
-      :model="model"
+      ref="formRefObject"
+      :model="formModelObject"
       :label-col="{ span: 6 }"
       @finish="finish"
     >
       <a-row>
         <a-col :span="8">
           <a-form-item label="任务编码" :name="['sync_id']">
-            <a-input v-model:value="model.sync_id" />
+            <a-input v-model:value="formModelObject.sync_id" />
           </a-form-item>
         </a-col>
         <a-col :span="8">
           <a-form-item label="任务类" :name="['name']">
             <a-select
               :options="TASK_CLASS_OPTIONS"
-              v-model:value="model.type"
+              v-model:value="formModelObject.type"
             />
           </a-form-item>
         </a-col>
         <a-col :span="8">
           <a-form-item label="操作人" :name="['name']">
-            <a-input v-model:value="model.user_name" />
+            <a-input v-model:value="formModelObject.user_name" />
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -36,7 +36,7 @@
             <a-range-picker
               show-time
               value-format="YYYY-MM-DD HH:mm:ss"
-              v-model:value="model.time"
+              v-model:value="formModelObject.time"
             />
           </a-form-item>
         </a-col>
@@ -56,8 +56,8 @@
     </a-form>
     <a-table
       row-key="id"
-      :data-source="dataSource?.list"
-      :columns="taskListModalTableColumns"
+      :data-source="data?.list"
+      :columns="taskListModalTableColumnsArray"
       :loading="loading"
       :pagination="pagination"
       @change="tableChange"
@@ -68,7 +68,7 @@
           record,
         }: {
           column: TableColumnType,
-          record: Api_order_orderSyncList_result_item_interface,
+          record: OrderSyncListRequestResultItemInterface,
         }"
       >
         <template v-if="column.key === 'operation'">
@@ -103,60 +103,55 @@ import {
   TableColumnType,
 } from 'ant-design-vue';
 import {
-  Api_order_orderSyncList_params_part_interface,
-  Api_order_orderSyncList_result_item_interface,
-  Api_order_orderSyncList_params_interface,
+  OrderSyncListRequestResultItemInterface,
+  OrderSyncListRequestParamsPageInterface,
 } from '../interface';
-import { api_order_orderSyncList, api_order_getFileByUrl } from '../api';
+import { orderSyncListRequestFunction, api_order_getFileByUrl } from '../api';
 import { TASK_CLASS_OPTIONS } from '../../../../data/dictionary';
-import { taskListModalTableColumns } from '../data';
+import { taskListModalTableColumnsArray } from '../data';
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
-import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 
-const props = defineProps<{
+const propsObject = defineProps<{
   visible: boolean;
 }>();
-const emits = defineEmits<{
+const emitsFunction = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
   (event: 'select'): void;
 }>();
 
-const formRef = ref<FormInstance>();
-const {
-  data: dataSource,
-  current,
-  pageSize,
-  run,
-  loading,
-  total,
-} = usePagination(api_order_orderSyncList, {
-  manual: true,
-  formatResult: ({ data }) => {
-    return data;
-  },
-  pagination: {
-    currentKey: 'page',
-    pageSizeKey: 'page_size',
-    totalKey: 'total',
-  },
-});
-const model = reactive<Api_order_orderSyncList_params_interface>({
+const formRefObject = ref<FormInstance>();
+const { data, current, pageSize, run, loading, total } = usePagination(
+  orderSyncListRequestFunction,
+  {
+    manual: true,
+    formatResult: ({ data }) => {
+      return data;
+    },
+    pagination: {
+      currentKey: 'page',
+      pageSizeKey: 'page_size',
+      totalKey: 'total',
+    },
+  }
+);
+const formModelObject = reactive<OrderSyncListRequestParamsPageInterface>({
   page: current.value,
   page_size: pageSize.value,
 });
 const getSearchDataObject = (
-  params: Api_order_orderSyncList_params_interface = {
+  params: OrderSyncListRequestParamsPageInterface = {
     page: current.value,
     page_size: pageSize.value,
   }
 ) => {
-  [model.operate_time_begin, model.operate_time_end] = model.time || [];
+  [formModelObject.operate_time_begin, formModelObject.operate_time_end] =
+    formModelObject.time || [];
   // 不管选哪个type都是2？？？？
-  model.type = model.type ? 2 : undefined;
+  formModelObject.type = formModelObject.type ? 2 : undefined;
 
   return {
-    ...model,
+    ...formModelObject,
     ...params,
   };
 };
@@ -189,18 +184,18 @@ const tableChange: TableProps['onChange'] = async (pag) => {
 };
 
 const clearOutlinedClick = () => {
-  formRef.value?.resetFields();
+  formRefObject.value?.resetFields();
 };
 
 const ok: ModalProps['onOk'] = async (e) => {
-  formRef.value?.resetFields();
+  formRefObject.value?.resetFields();
 
-  emits('select');
-  emits('update:visible', false);
+  emitsFunction('select');
+  emitsFunction('update:visible', false);
 };
 const cancel: ModalProps['onCancel'] = (e) => {
-  formRef.value?.resetFields();
-  emits('update:visible', false);
+  formRefObject.value?.resetFields();
+  emitsFunction('update:visible', false);
 };
 
 const downTxtButtonClick = async (url: any) => {
@@ -225,7 +220,7 @@ const download = (blobUrl: any) => {
 };
 
 watch(
-  () => props.visible,
+  () => propsObject.visible,
   async (newValue) => {
     if (newValue === true) {
       run(getSearchDataObject());

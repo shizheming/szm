@@ -1,5 +1,5 @@
 import { TableColumn, TableColumnsType } from 'ant-design-vue';
-export const orderListPageTableColumns: TableColumnsType = [
+export const orderListPageTableColumnsArray: TableColumnsType = [
   {
     title: '操作',
     dataIndex: 'operation',
@@ -75,7 +75,7 @@ export const orderListPageTableColumns: TableColumnsType = [
   },
 ];
 
-export const orderListPageGoodsTableColumns: TableColumnsType = [
+export const orderListPageGoodsTableColumnsArray: TableColumnsType = [
   {
     title: '图片',
     dataIndex: 'pic',
@@ -143,7 +143,7 @@ export const orderListPageGoodsTableColumns: TableColumnsType = [
   },
 ];
 
-export const taskListModalTableColumns: TableColumnsType = [
+export const taskListModalTableColumnsArray: TableColumnsType = [
   {
     title: '操作',
     dataIndex: 'operation',
@@ -186,7 +186,7 @@ export const taskListModalTableColumns: TableColumnsType = [
   },
 ];
 
-export const orderFormPageGoodsTableColumns: TableColumnsType = [
+export const orderFormPageGoodsTableColumnsArray: TableColumnsType = [
   {
     title: '操作',
     dataIndex: 'opration',
@@ -277,8 +277,8 @@ export const orderFormPageGoodsTableColumns: TableColumnsType = [
   },
   {
     title: '销售单价',
-    dataIndex: 'shop_selling_price',
-    key: 'shop_selling_price',
+    dataIndex: 'shopSellingPriceComputedRef',
+    key: 'shopSellingPriceComputedRef',
   },
   {
     title: '购买单价',
@@ -287,8 +287,8 @@ export const orderFormPageGoodsTableColumns: TableColumnsType = [
   },
   {
     title: '改价优惠金额',
-    dataIndex: 'adjust_mount',
-    key: 'adjust_mount',
+    dataIndex: 'adjustMountComputedRef',
+    key: 'adjustMountComputedRef',
   },
   {
     title: '购买金额',
@@ -297,20 +297,35 @@ export const orderFormPageGoodsTableColumns: TableColumnsType = [
   },
 ];
 
-export const deliveryInstallationTimeModalTableColumns: TableColumnsType = [
-  {
-    title: '服务名称',
-    dataIndex: 'goods_name',
-    key: 'goods_name',
-  },
-  {
-    title: '选择时间',
-    dataIndex: 'apply_server_time',
-    key: 'apply_server_time',
-  },
-];
+export const orderFormPageGoodsLadderPriceTableColumnsArray: TableColumnsType =
+  [
+    {
+      title: '订购数量',
+      dataIndex: 'start_num_name',
+      key: 'start_num_name',
+    },
+    {
+      title: '销售单价',
+      dataIndex: 'member_price',
+      key: 'member_price',
+    },
+  ];
 
-export const deliveryInstallationTimeModalTableGoodsTableColumns: TableColumnsType =
+export const deliveryInstallationTimeModalTableColumnsArray: TableColumnsType =
+  [
+    {
+      title: '服务名称',
+      dataIndex: 'goods_name',
+      key: 'goods_name',
+    },
+    {
+      title: '选择时间',
+      dataIndex: 'apply_server_time',
+      key: 'apply_server_time',
+    },
+  ];
+
+export const deliveryInstallationTimeModalTableGoodsTableColumnsArray: TableColumnsType =
   [
     {
       title: '主图',

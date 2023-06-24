@@ -1,13 +1,17 @@
 <template>
-  <a-form ref="formRef" :model="model" @finish="finish">
-    <a-row :style="`height:${height};overflow:hidden`">
+  <a-form
+    ref="formRefObject"
+    :model="formModelObject"
+    @finish="formFinishFunction"
+  >
+    <a-row :style="`height:${heightString};overflow:hidden`">
       <a-col :span="8">
         <a-form-item label="订单搜索" :label-col="{ span: 6 }">
           <a-input-group compact>
             <a-select
               style="width: 50%"
               :allow-clear="false"
-              v-model:value="model.order_search_key"
+              v-model:value="formModelObject.order_search_key"
             >
               <a-select-option value="osl_seq">订单编号</a-select-option>
               <a-select-option value="out_ono">外部订单号</a-select-option>
@@ -20,7 +24,7 @@
             </a-select>
             <a-input
               style="width: 50%"
-              v-model:value="model.order_search_value"
+              v-model:value="formModelObject.order_search_value"
             />
           </a-input-group>
         </a-form-item>
@@ -31,7 +35,7 @@
             <a-select
               style="width: 50%"
               :allow-clear="false"
-              v-model:value="model.good_search_key"
+              v-model:value="formModelObject.good_search_key"
             >
               <a-select-option value="goods_name">商品名称</a-select-option>
               <a-select-option value="sku_code">商品编码</a-select-option>
@@ -42,7 +46,7 @@
             </a-select>
             <a-input
               style="width: 50%"
-              v-model:value="model.good_search_value"
+              v-model:value="formModelObject.good_search_value"
             />
           </a-input-group>
         </a-form-item>
@@ -56,7 +60,7 @@
           <a-select
             mode="multiple"
             :options="ORDER_STATUS_OPTIONS"
-            v-model:value="model.sub_status_arr"
+            v-model:value="formModelObject.sub_status_arr"
           />
         </a-form-item>
       </a-col>
@@ -69,7 +73,7 @@
           <a-select
             mode="multiple"
             :options="PAY_STATUS_OPTIONS"
-            v-model:value="model.pay_status_arr"
+            v-model:value="formModelObject.pay_status_arr"
           />
         </a-form-item>
       </a-col>
@@ -82,7 +86,7 @@
           <a-select
             mode="multiple"
             :options="DELIVERY_STATUS_OPTIONS"
-            v-model:value="model.deliver_arr"
+            v-model:value="formModelObject.deliver_arr"
           />
         </a-form-item>
       </a-col>
@@ -92,7 +96,7 @@
           :label-col="{ span: 6 }"
           :name="['shop_name']"
         >
-          <a-input v-model:value="model.shop_name" />
+          <a-input v-model:value="formModelObject.shop_name" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -101,7 +105,7 @@
           :label-col="{ span: 6 }"
           :name="['supplier_id']"
         >
-          <supplier-select v-model:value="model.supplier_id" />
+          <supplier-select v-model:value="formModelObject.supplier_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -112,7 +116,7 @@
         >
           <a-select
             :options="USER_LEVEL_OPTIONS"
-            v-model:value="model.user_level"
+            v-model:value="formModelObject.user_level"
           />
         </a-form-item>
       </a-col>
@@ -123,7 +127,7 @@
           :name="['category_id_array']"
         >
           <background-category-cascader
-            v-model:value="model.category_id_array"
+            v-model:value="formModelObject.category_id_array"
             style="width: 100%"
           />
         </a-form-item>
@@ -135,7 +139,7 @@
           :name="['brand_name_arr']"
         >
           <goods-brand-select
-            v-model:value="model.brand_name_arr"
+            v-model:value="formModelObject.brand_name_arr"
             mode="multiple"
           />
         </a-form-item>
@@ -146,7 +150,7 @@
           :label-col="{ span: 6 }"
           :name="['user_id']"
         >
-          <a-input v-model:value="model.user_id" />
+          <a-input v-model:value="formModelObject.user_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -156,7 +160,7 @@
           :name="['create_mode_arr']"
         >
           <a-select
-            v-model:value="model.create_mode_arr"
+            v-model:value="formModelObject.create_mode_arr"
             mode="multiple"
             :options="ENTRY_METHOD_OPTIONS"
           />
@@ -169,7 +173,7 @@
           :name="['app_platform']"
         >
           <a-select
-            v-model:value="model.app_platform"
+            v-model:value="formModelObject.app_platform"
             :options="SOURCE_TERMINAL_OPTIONS"
           />
         </a-form-item>
@@ -180,7 +184,7 @@
           :label-col="{ span: 6 }"
           :name="['sale_mode']"
         >
-          <sale-mode-select v-model:value="model.sale_mode" />
+          <sale-mode-select v-model:value="formModelObject.sale_mode" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -190,7 +194,7 @@
           :name="['delivery_mode']"
         >
           <a-select
-            v-model:value="model.delivery_mode"
+            v-model:value="formModelObject.delivery_mode"
             :options="DELIVERY_METHOD_OPTIONS"
           />
         </a-form-item>
@@ -202,7 +206,7 @@
           :name="['pay_type']"
         >
           <a-select
-            v-model:value="model.pay_type"
+            v-model:value="formModelObject.pay_type"
             :options="PAYMENT_METHOD_OPTIONS"
           />
         </a-form-item>
@@ -214,7 +218,7 @@
           :name="['payment_type']"
         >
           <a-select
-            v-model:value="model.payment_type"
+            v-model:value="formModelObject.payment_type"
             :options="PAYMENT_TYPE_OPTIONS"
           />
         </a-form-item>
@@ -226,7 +230,7 @@
           :name="['is_invoice']"
         >
           <a-select
-            v-model:value="model.is_invoice"
+            v-model:value="formModelObject.is_invoice"
             :options="IS_INVOICE_OPTIONS"
           />
         </a-form-item>
@@ -238,7 +242,7 @@
           :name="['is_support_local']"
         >
           <a-select
-            v-model:value="model.is_support_local"
+            v-model:value="formModelObject.is_support_local"
             :options="WHETHER_OPTIONS"
           />
         </a-form-item>
@@ -250,7 +254,7 @@
           :name="['goods_source']"
         >
           <a-select
-            v-model:value="model.goods_source"
+            v-model:value="formModelObject.goods_source"
             :options="ORDER_GOODS_SOURCE_OPTIONS"
           />
         </a-form-item>
@@ -262,7 +266,7 @@
           :name="['distribute_order']"
         >
           <a-select
-            v-model:value="model.distribute_order"
+            v-model:value="formModelObject.distribute_order"
             :options="WHETHER_OPTIONS"
           />
         </a-form-item>
@@ -273,7 +277,7 @@
           :label-col="{ span: 6 }"
           :name="['owner_site_id']"
         >
-          <owner-site-select v-model:value="model.owner_site_id" />
+          <owner-site-select v-model:value="formModelObject.owner_site_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -284,7 +288,7 @@
         >
           <a-range-picker
             show-time
-            v-model:value="model.createTime"
+            v-model:value="formModelObject.createTime"
             value-format="YYYY-MM-DD HH:mm:ss"
           />
         </a-form-item>
@@ -295,7 +299,7 @@
           :label-col="{ span: 6 }"
           :name="['create_user_id']"
         >
-          <a-input v-model:value="model.create_user_id" />
+          <a-input v-model:value="formModelObject.create_user_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -306,7 +310,7 @@
         >
           <a-range-picker
             show-time
-            v-model:value="model.paymentTime"
+            v-model:value="formModelObject.paymentTime"
             value-format="YYYY-MM-DD HH:mm:ss"
           />
         </a-form-item>
@@ -317,7 +321,7 @@
           :label-col="{ span: 6 }"
           :name="['trade_no']"
         >
-          <a-input v-model:value="model.trade_no" />
+          <a-input v-model:value="formModelObject.trade_no" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -328,7 +332,7 @@
         >
           <a-range-picker
             show-time
-            v-model:value="model.deliveryTime"
+            v-model:value="formModelObject.deliveryTime"
             value-format="YYYY-MM-DD HH:mm:ss"
           />
         </a-form-item>
@@ -339,7 +343,7 @@
           :label-col="{ span: 6 }"
           :name="['recommend_staff']"
         >
-          <a-input v-model:value="model.recommend_staff" />
+          <a-input v-model:value="formModelObject.recommend_staff" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -349,7 +353,7 @@
           :name="['marketing_type']"
         >
           <a-select
-            v-model:value="model.marketing_type"
+            v-model:value="formModelObject.marketing_type"
             :options="DETAIL_OF_MARKETING_ACTIVITIES_OPTIONS"
           />
         </a-form-item>
@@ -361,7 +365,7 @@
           :name="['order_type']"
         >
           <a-select
-            v-model:value="model.order_type"
+            v-model:value="formModelObject.order_type"
             :options="ORDER_TYPE_OPTIONS"
           />
         </a-form-item>
@@ -372,7 +376,10 @@
           :label-col="{ span: 6 }"
           :name="['is_return']"
         >
-          <a-select v-model:value="model.is_return" :options="YES_NO_OPTIONS" />
+          <a-select
+            v-model:value="formModelObject.is_return"
+            :options="YES_NO_OPTIONS"
+          />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -381,7 +388,7 @@
           :label-col="{ span: 6 }"
           :name="['package_no']"
         >
-          <a-input v-model:value="model.package_no" />
+          <a-input v-model:value="formModelObject.package_no" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -391,7 +398,7 @@
           :name="['is_mem_msg']"
         >
           <a-select
-            v-model:value="model.is_mem_msg"
+            v-model:value="formModelObject.is_mem_msg"
             :options="YES_NO_OPTIONS"
           />
         </a-form-item>
@@ -402,7 +409,7 @@
           :label-col="{ span: 6 }"
           :name="['sub_org_id']"
         >
-          <sub-org-select v-model:value="model.sub_org_id" />
+          <sub-org-select v-model:value="formModelObject.sub_org_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -411,7 +418,7 @@
           :label-col="{ span: 6 }"
           :name="['gas_account']"
         >
-          <a-input v-model:value="model.gas_account" />
+          <a-input v-model:value="formModelObject.gas_account" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -421,7 +428,7 @@
           :name="['business_id']"
         >
           <a-select
-            v-model:value="model.business_id"
+            v-model:value="formModelObject.business_id"
             :options="BUSINESS_MODEL_OPTIONS"
           />
         </a-form-item>
@@ -433,7 +440,7 @@
           :name="['is_pre_subscribe']"
         >
           <a-select
-            v-model:value="model.is_pre_subscribe"
+            v-model:value="formModelObject.is_pre_subscribe"
             :options="WHETHER_OPTIONS"
           />
         </a-form-item>
@@ -444,7 +451,7 @@
           :label-col="{ span: 6 }"
           :name="['source_site_id']"
         >
-          <owner-site-select v-model:value="model.source_site_id" />
+          <owner-site-select v-model:value="formModelObject.source_site_id" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -454,7 +461,7 @@
           :name="['spell_order_status']"
         >
           <a-select
-            v-model:value="model.spell_order_status"
+            v-model:value="formModelObject.spell_order_status"
             :options="GROUPING_STATUS_OPTIONS"
           />
         </a-form-item>
@@ -466,7 +473,7 @@
           :name="['is_out_supplier']"
         >
           <a-select
-            v-model:value="model.is_out_supplier"
+            v-model:value="formModelObject.is_out_supplier"
             :options="WHETHER_OPTIONS"
           />
         </a-form-item>
@@ -477,7 +484,7 @@
           :label-col="{ span: 6 }"
           :name="['address']"
         >
-          <address-cascader v-model:value="model.address" />
+          <address-cascader v-model:value="formModelObject.address" />
         </a-form-item>
       </a-col>
     </a-row>
@@ -485,7 +492,7 @@
       <a-col :span="8">
         <a-form-item :wrapper-col="{ offset: 6 }">
           <a-space size="large">
-            <a-button html-type="submit" type="primary">
+            <a-button html-type="submit" type="primary" title="kkkkkkk">
               <search-outlined />
             </a-button>
             <clear-outlined @click="clearOutlinedClick" />
@@ -529,7 +536,7 @@
       #expandedRowRender="{
         record,
       }: {
-        record: Api_order_result_item_interface,
+        record: OrderListRequestResultItemInterface,
       }"
     >
       <a-tabs v-model:activeKey="record.activeKey">
@@ -624,7 +631,7 @@
         <a-tab-pane key="2" tab="商品信息" force-render>
           <a-table
             size="small"
-            :columns="orderListPageGoodsTableColumns"
+            :columns="orderListPageGoodsTableColumnsArray"
             :pagination="false"
             :data-source="record.item"
           >
@@ -634,7 +641,7 @@
                 record: itemRecord,
               }: {
                 column: TableColumnType,
-                record: Api_order_result_item_interface['item'][number],
+                record: OrderListRequestResultItemInterface['item'][number],
               }"
             >
               <template v-if="column.key === 'pic'">
@@ -651,7 +658,7 @@
         record,
       }: {
         column: TableColumnType,
-        record: Api_order_result_item_interface,
+        record: OrderListRequestResultItemInterface,
       }"
     >
       <template v-if="column.key === 'operation'">
@@ -778,8 +785,8 @@ import OwnerSiteSelect from '../../../components/select/ownerSiteSelect.vue';
 import SubOrgSelect from '../../../components/select/subOrgSelect.vue';
 import AddressCascader from '../../../components/cascader/addressCascader.vue';
 import {
-  orderListPageTableColumns,
-  orderListPageGoodsTableColumns,
+  orderListPageTableColumnsArray,
+  orderListPageGoodsTableColumnsArray,
 } from './data';
 import {
   DownOutlined,
@@ -792,16 +799,15 @@ import {
 } from '@ant-design/icons-vue';
 import { last, compact, values, isInteger } from 'lodash';
 import type {
-  Api_order_params_part_interface,
-  Api_order_result_item_interface,
-  Api_order_params_interface,
+  OrderListRequestResultItemInterface,
+  OrderLsitParamsPageInterface,
 } from './interface';
 import {
-  api_order,
-  api_proxy_order_manage_edit_confirmsign,
-  api_proxy_order_manage_edit_confirmPreOrder,
-  api_order_orderDetailExport,
-  api_proxy_order_Order_Purchase_saleOutstock,
+  orderListRequestFunction,
+  confirmsignRequestFunction,
+  confirmPreOrderRequestFunction,
+  orderDetailExportRequestFunction,
+  saleOutstockRequestFunction,
 } from './api';
 import { usePagination } from 'vue-request';
 import { computed } from '@vue/reactivity';
@@ -825,8 +831,8 @@ const DeliveryInstallationTimeTableModal = defineAsyncComponent(
 const remarkFormModalVisible = ref(false);
 const taskListModalVisible = ref(false);
 const deliveryInstallationTimeTableModalVisible = ref(false);
-const formRef = ref<FormInstance>();
-const height = ref('220px');
+const formRefObject = ref<FormInstance>();
+const heightString = ref('220px');
 
 const {
   data: dataSource,
@@ -835,7 +841,7 @@ const {
   run,
   loading,
   total,
-} = usePagination(api_order, {
+} = usePagination(orderListRequestFunction, {
   formatResult: ({ data }) => {
     data.list.forEach((current) => {
       current.sub_total_amount = isInteger(current.sub_total_amount)
@@ -881,14 +887,14 @@ const pagination = computed(() => {
     showQuickJumper: true,
   };
 });
-const model = reactive<Api_order_params_interface>({
+const formModelObject = reactive<OrderLsitParamsPageInterface>({
   order_search_key: 'osl_seq',
   good_search_key: 'goods_name',
   page: current.value,
   page_size: pageSize.value,
 });
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
-const selectedRowsArray = ref<Api_order_result_item_interface[]>([]);
+const selectedRowsArray = ref<OrderListRequestResultItemInterface[]>([]);
 const rowSelectionOnChange: TableRowSelection['onChange'] = (keys, rows) => {
   selectedRowKeys.value = keys;
   selectedRowsArray.value = rows;
@@ -900,29 +906,33 @@ const getSearchDataObject = (
     page_size: pageSize.value,
   }
 ) => {
-  model.category_id = last(model.category_id_array);
-  [model.create_time_start, model.create_time_end] = model.createTime || [];
-  [model.pay_time_start, model.pay_time_end] = model.paymentTime || [];
-  [model.pre_delivery_start_date, model.pre_delivery_end_date] =
-    model.deliveryTime || [];
-  model.pay_mode = model.payment_type;
+  formModelObject.category_id = last(formModelObject.category_id_array);
+  [formModelObject.create_time_start, formModelObject.create_time_end] =
+    formModelObject.createTime || [];
+  [formModelObject.pay_time_start, formModelObject.pay_time_end] =
+    formModelObject.paymentTime || [];
+  [
+    formModelObject.pre_delivery_start_date,
+    formModelObject.pre_delivery_end_date,
+  ] = formModelObject.deliveryTime || [];
+  formModelObject.pay_mode = formModelObject.payment_type;
 
   return {
-    ...model,
+    ...formModelObject,
     ...params,
-    order_search_key: model.order_search_value
-      ? model.order_search_key
+    order_search_key: formModelObject.order_search_value
+      ? formModelObject.order_search_key
       : undefined,
-    order_search_value: model.order_search_value || undefined, //为了排除空字符串
-    good_search_key: model.good_search_value
-      ? model.good_search_key
+    order_search_value: formModelObject.order_search_value || undefined, //为了排除空字符串
+    good_search_key: formModelObject.good_search_value
+      ? formModelObject.good_search_key
       : undefined,
-    good_search_value: model.good_search_value || undefined,
+    good_search_value: formModelObject.good_search_value || undefined,
   };
 };
 const sortedInfoObject = ref<SorterResult>();
 const columns = computed(() => {
-  return orderListPageTableColumns.map((item) => {
+  return orderListPageTableColumnsArray.map((item) => {
     if (item.sorter) {
       item.sortOrder =
         sortedInfoObject.value?.columnKey === item.key
@@ -932,7 +942,7 @@ const columns = computed(() => {
     return item;
   });
 });
-const finish = async () => {
+const formFinishFunction = async () => {
   sortedInfoObject.value = undefined;
   run(
     getSearchDataObject({
@@ -943,14 +953,14 @@ const finish = async () => {
 };
 
 const exporButtonClick = async (service_type: number) => {
-  if (compact(values(model)).length <= 2) {
+  if (compact(values(formModelObject)).length <= 2) {
     message.warning(
       '为避免导出数据量过大，目前仅支持导出有大于等于两个查询条件的结果数据！'
     );
     return;
   }
-  await finish();
-  let { data } = await api_order_orderDetailExport({
+  await formFinishFunction();
+  let { data } = await orderDetailExportRequestFunction({
     ...getSearchDataObject({
       page: 1,
       page_size: 10,
@@ -975,9 +985,9 @@ const arrowClick = () => {
   isExpandArrowBoolean.value = !isExpandArrowBoolean.value;
 };
 const clearOutlinedClick = () => {
-  formRef.value?.resetFields();
-  model.order_search_value = undefined;
-  model.good_search_value = undefined;
+  formRefObject.value?.resetFields();
+  formModelObject.order_search_value = undefined;
+  formModelObject.good_search_value = undefined;
 };
 
 const tableChange: TableProps['onChange'] = async (pag, filters, sorter) => {
@@ -1015,9 +1025,9 @@ const taskButtonClick = () => {
   taskListModalVisible.value = true;
 };
 const confirmSigningPopconfirmConfirm = async (
-  record: Api_order_result_item_interface
+  record: OrderListRequestResultItemInterface
 ) => {
-  await api_proxy_order_manage_edit_confirmsign({
+  await confirmsignRequestFunction({
     user_id: String(record.user.user_id),
     osl_seq: record.osl_seq,
     operator: USER_INFO.user_id,
@@ -1028,17 +1038,17 @@ const confirmSigningPopconfirmConfirm = async (
   }, 500);
 };
 
-const recordObject = ref<Api_order_result_item_interface>({});
+const recordObject = ref<Partial<OrderListRequestResultItemInterface>>({});
 const bookingConfirmationPopconfirmConfirm1 = (
-  record: Api_order_result_item_interface
+  record: OrderListRequestResultItemInterface
 ) => {
   recordObject.value = record;
   deliveryInstallationTimeTableModalVisible.value = true;
 };
 const bookingConfirmationPopconfirmConfirm2 = async (
-  record: Api_order_result_item_interface
+  record: OrderListRequestResultItemInterface
 ) => {
-  await api_proxy_order_manage_edit_confirmPreOrder({
+  await confirmPreOrderRequestFunction({
     osl_seq: record.osl_seq,
   });
   message.success('成功');
@@ -1048,9 +1058,9 @@ const bookingConfirmationPopconfirmConfirm2 = async (
 };
 
 const generateSalesIssueDocumentPopconfirmConfirm = async (
-  record: Api_order_result_item_interface
+  record: OrderListRequestResultItemInterface
 ) => {
-  await api_proxy_order_Order_Purchase_saleOutstock({
+  await saleOutstockRequestFunction({
     osl_seq: record.osl_seq,
   });
   message.success('成功');
@@ -1067,9 +1077,9 @@ enum SORT_KEY_ENUM {
 
 watch(isExpandArrowBoolean, (newValue) => {
   if (newValue) {
-    height.value = 'auto';
+    heightString.value = 'auto';
   } else {
-    height.value = '220px';
+    heightString.value = '220px';
   }
 });
 </script>

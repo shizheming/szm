@@ -1,5 +1,5 @@
 <template>
-  <FormItem v-bind="newSlots">
+  <FormItem v-bind="newSlotsObject">
     <slot />
   </FormItem>
 </template>
@@ -9,14 +9,14 @@ import core from './core';
 import { FormItem } from 'ant-design-vue';
 import { PropsInterface } from './props';
 
-const p = defineProps<{
+const propsObject = defineProps<{
   isDetail?: Boolean;
   inner?: () => void;
   watch?: any[];
   outer?: () => void;
 }>();
-const attrs = useAttrs();
-const componentName = ref<string>(attrs.name as string);
-provide('componentName', componentName);
-const { newSlots } = core(p);
+const attrsObject = useAttrs();
+const componentNameStringArray = ref<string | []>(attrsObject.name);
+provide('componentName', componentNameStringArray);
+const { newSlotsObject } = core(propsObject);
 </script>

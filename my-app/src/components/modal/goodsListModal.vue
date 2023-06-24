@@ -139,7 +139,7 @@
             <template #content>
               <a-table
                 :data-source="record.member_price"
-                :columns="goodsListModalLadderPriceTableColumns"
+                :columns="goodsListModalLadderPriceTableColumnsArray"
                 :pagination="false"
                 size="small"
               />
@@ -246,7 +246,7 @@ const tableColumnsArray: TableColumnsType = [
   },
 ];
 
-const goodsListModalLadderPriceTableColumns: TableColumnsType = [
+const goodsListModalLadderPriceTableColumnsArray: TableColumnsType = [
   {
     title: '订购数量',
     dataIndex: 'start_num_name',
@@ -412,8 +412,12 @@ const modalOkFunction = async () => {
 };
 const modalCancelFunction = () => {
   emitsFunction('update:visible', false);
+  formRefObject.value?.resetFields();
+  tableRowSelectionSelectedRowKeysArray.value = [];
+  selectedRowsArray.value = [];
 };
 
+// 这个watch其实概念上就是modal自己显示隐藏得change事件
 watch(
   () => propsObject.visible,
   async (newValue) => {
@@ -424,10 +428,6 @@ watch(
         }
       );
       run(getSearchDataFunction());
-    } else {
-      formRefObject.value?.resetFields();
-      tableRowSelectionSelectedRowKeysArray.value = [];
-      selectedRowsArray.value = [];
     }
   }
 );

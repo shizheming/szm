@@ -1,7 +1,12 @@
 <template>
+  <!-- 4级地址 -->
   <a-cascader
     change-on-select
-    :options="cascaderOptionsArray"
+    :options="
+      propsObject.options === undefined
+        ? cascaderOptionsArray
+        : propsObject.options
+    "
     :load-data="cascaderLoadDataFunction"
     placeholder="请选择"
     :inner="cascaderInnerFunction"
@@ -13,6 +18,14 @@ import { ref } from 'vue';
 import type { CascaderProps } from 'ant-design-vue';
 import { areaRequestFunction } from '../../api/dictionary';
 import { apiDictCacheObject } from '../../utils/global';
+
+const propsObject = defineProps<{
+  options?: CascaderProps['options'];
+}>();
+
+const emitsFunction = defineEmits<{
+  (event: 'update:options', options: CascaderProps['options']): void;
+}>();
 
 const cascaderOptionsArray = ref<CascaderProps['options']>([]);
 const cascaderLoadDataFunction: CascaderProps['loadData'] = async (
@@ -38,6 +51,7 @@ const cascaderLoadDataFunction: CascaderProps['loadData'] = async (
 const cascaderInnerFunction = async () => {
   if (apiDictCacheObject.addressOptions) {
     cascaderOptionsArray.value = apiDictCacheObject.addressOptions;
+    emitsFunction('update:options', apiDictCacheObject.addressOptions);
   } else {
     let { data } = await areaRequestFunction({
       parent_id: 1,
@@ -50,6 +64,7 @@ const cascaderInnerFunction = async () => {
       };
     });
     apiDictCacheObject.addressOptions = cascaderOptionsArray.value;
+    emitsFunction('update:options', cascaderOptionsArray.value);
     Object.defineProperty(apiDictCacheObject, 'addressOptions', {
       writable: false,
     });

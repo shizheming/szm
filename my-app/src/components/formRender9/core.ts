@@ -25,8 +25,8 @@ import {
 import { PropsInterface } from './props';
 
 export default function (props: PropsInterface): {
-  newSlots: {};
-  detailStyleObj: Ref<{
+  newSlotsObject: {};
+  detailStyleObject: Ref<{
     disabled: boolean;
     bordered: boolean;
     showArrow: boolean;
@@ -35,27 +35,27 @@ export default function (props: PropsInterface): {
   }>;
 } {
   /********************** 接受form给的数据 **********************/
-  const outer = inject<Ref>('outer', ref());
-  const componentName = inject<Ref>('componentName', ref());
-  let componentNameStr: string = '';
-  let detailStyleObj = ref({
+  const outerObject = inject<Ref>('outer', ref());
+  const componentNameStringArray = inject<Ref>('componentName', ref());
+  let componentNameString: string = '';
+  let detailStyleObject = ref({
     disabled: false,
     bordered: true,
     showArrow: true,
     class: '',
     style: '',
   });
-  const slots = useSlots();
+  const slotsObject = useSlots();
 
-  let newSlots: { [name: string]: any } = {};
-  forEach(slots, (value, key) => {
-    newSlots[key] = (<Function>value)();
+  let newSlotsObject: { [name: string]: any } = {};
+  forEach(slotsObject, (value, key) => {
+    newSlotsObject[key] = (<Function>value)();
   });
 
-  if (isArray(componentName.value)) {
-    componentNameStr = componentName.value.join('.');
-  } else if (isString(componentName.value)) {
-    componentNameStr = componentName.value;
+  if (isArray(componentNameStringArray.value)) {
+    componentNameString = componentNameStringArray.value.join('.');
+  } else if (isString(componentNameStringArray.value)) {
+    componentNameString = componentNameStringArray.value;
   }
 
   if (props.inner) {
@@ -67,17 +67,17 @@ export default function (props: PropsInterface): {
       () => props.isDetail,
       (newValue) => {
         if (newValue) {
-          detailStyleObj.value.disabled = true;
-          detailStyleObj.value.bordered = false;
-          detailStyleObj.value.showArrow = false;
-          detailStyleObj.value.class = 'formDetail';
-          detailStyleObj.value.style = '';
+          detailStyleObject.value.disabled = true;
+          detailStyleObject.value.bordered = false;
+          detailStyleObject.value.showArrow = false;
+          detailStyleObject.value.class = 'formDetail';
+          detailStyleObject.value.style = '';
         } else {
-          detailStyleObj.value.disabled = false;
-          detailStyleObj.value.bordered = true;
-          detailStyleObj.value.showArrow = true;
-          detailStyleObj.value.class = '';
-          detailStyleObj.value.style = 'margin:auto';
+          detailStyleObject.value.disabled = false;
+          detailStyleObject.value.bordered = true;
+          detailStyleObject.value.showArrow = true;
+          detailStyleObject.value.class = '';
+          detailStyleObject.value.style = 'margin:auto';
         }
       },
       { immediate: true }
@@ -89,12 +89,12 @@ export default function (props: PropsInterface): {
   }
 
   /* outer函数 */
-  if (props.outer && outer) {
-    if (componentNameStr) {
-      outer.value[componentNameStr] = (data: any) => {
+  if (props.outer && outerObject) {
+    if (componentNameString) {
+      outerObject.value[componentNameString] = (data: any) => {
         return (props.outer as Function)(data);
       };
     }
   }
-  return { newSlots, detailStyleObj };
+  return { newSlotsObject, detailStyleObject };
 }

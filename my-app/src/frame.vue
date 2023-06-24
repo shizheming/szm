@@ -9,26 +9,28 @@
         />名气商城后台运营管理系统
       </div>
       <a-menu
-        v-model:selectedKeys="navigationMenuSelectedKeys"
+        v-model:selectedKeys="navigationMenuSelectedKeysArray"
         theme="dark"
         mode="horizontal"
-        @select="navigationMenuSelect"
+        @select="navigationMenuSelectFunction"
         :style="{ lineHeight: '64px', display: 'inline-block' }"
       >
         <a-menu-item v-for="item in navigationArray" :key="item.name">
-          <router-link :to="`/${item.name}`">{{ item.zh_CN }}</router-link>
+          <router-link :to="item.path">{{ item.title }}</router-link>
         </a-menu-item>
       </a-menu>
       <a-space style="color: #abadaf; float: right">
         <span>{{ userInfoObject.username }}</span>
-        <a style="color: #abadaf" @click="logoutLinkClick">退出登录</a>
+        <a style="color: #abadaf" @click="logoutLinkButtonClickFunction"
+          >退出登录</a
+        >
       </a-space>
     </a-layout-header>
     <a-layout>
       <a-layout-sider width="200">
         <a-menu
-          v-model:selectedKeys="menuSelectedKeys"
-          v-model:openKeys="menuOpenKeys"
+          v-model:selectedKeys="menuSelectedKeysArray"
+          v-model:openKeys="menuOpenKeysArray"
           theme="dark"
           mode="inline"
           :style="{ height: '100%', borderRight: 0 }"
@@ -81,38 +83,46 @@ import {
   onBeforeRouteUpdate,
   RouteRecord,
   Router,
+  RouteRecordName,
 } from 'vue-router';
-import r from './router/index';
-import { Api_manager_me_result_interface } from './interface/index';
+import myRouteObject from './router/index';
+import {
+  UserInfoRequestResultInterface,
+  PermissionsRequestResultInterface,
+} from './interface/index';
 import type { MenuProps, MenuItemProps } from 'ant-design-vue';
 import { compact, first } from 'lodash';
+import { routerPermissionsArray } from './permissions/index';
 
-const navigationArray = [
+const navigationArray = ref<
   {
-    name: 'orderModule',
-    zh_CN: '订单',
-  },
-  {
-    name: 'goodsModule',
-    zh_CN: '商品',
-  },
-];
+    name: RouteRecordName;
+    path: string;
+    title: string;
+  }[]
+>([]);
+
 const routeObject = useRoute();
 const routerObject = useRouter();
-const allRouteArray = r.getRoutes();
+const allRouteArray = myRouteObject.getRoutes();
 const menusArray = ref<RouteRecord[]>([]);
 const pathArray = compact(routeObject.path.split('/'));
+console.log(allRouteArray, 1234);
+console.log(pathArray, 12300);
 
-const userInfoObject: Api_manager_me_result_interface = JSON.parse(
+const permissionsArray: PermissionsRequestResultInterface[] = JSON.parse(
+  localStorage.permissions
+);
+const userInfoObject: UserInfoRequestResultInterface = JSON.parse(
   localStorage.userInfo
 );
 const breadcrumbArray = ref<RouteRecord[]>([]);
 
-const menuSelectedKeys = ref([pathArray[2]]);
-const menuOpenKeys = ref([pathArray[1]]);
-const navigationMenuSelectedKeys = ref([first(pathArray)]);
+const menuSelectedKeysArray = ref([pathArray[2]]);
+const menuOpenKeysArray = ref([pathArray[1]]);
+const navigationMenuSelectedKeysArray = ref([first(pathArray)]);
 
-const logoutLinkClick = async () => {
+const logoutLinkButtonClickFunction = async () => {
   await axios.post('/api/manager/logout');
   routerObject.push({
     name: 'index',
@@ -123,7 +133,8 @@ const logoutLinkClick = async () => {
 };
 
 // 获取面包屑导航
-const getBreadcrumbDataFn = (pathArray: string[]) => {
+const getBreadcrumbDataFunction = (pathArray: string[]) => {
+  breadcrumbArray.value = [];
   const newPathArray: string[] = [];
   pathArray.forEach((item, index) => {
     if (index === 0) newPathArray.push(`/${item}`);
@@ -137,11 +148,10 @@ const getBreadcrumbDataFn = (pathArray: string[]) => {
 };
 
 // 获取侧边栏导航
-const getMenuDataFn = (path: string) => {
+const getMenuDataFunction = (path: string) => {
   let newPathString = first(compact(path.split('/')));
-
   menusArray.value = allRouteArray
-    .filter((item) => item.meta.type) //获取是菜单的
+    .filter((item) => item.meta.type === 'menu') //获取是菜单的
     .filter((item) => item.path.includes(newPathString!)) //获取当前模块路由
     .map((item) => {
       // 过滤类似详情页不需要展示在侧边栏的菜单
@@ -152,19 +162,43 @@ const getMenuDataFn = (path: string) => {
     });
 };
 
-const navigationMenuSelect: MenuProps['onClick'] = (v) => {
-  getMenuDataFn(v.key as string);
+const navigationMenuSelectFunction: MenuProps['onClick'] = (v) => {
+  getMenuDataFunction(v.key as string);
 };
 
 // 初始化
-getBreadcrumbDataFn(pathArray);
-getMenuDataFn(routeObject.path);
+// 根据权限显示模块和菜单
+routerPermissionsArray.forEach((item) => {
+  if (
+    permissionsArray.some((current) => {
+      return item.permissionName === current.name;
+    })
+  ) {
+    const {
+      name,
+      path,
+      meta: { title },
+    } = allRouteArray.find(({ name }) => name === item.name);
+    // 添加模块
+    navigationArray.value.push({
+      name,
+      path,
+      title: title as string,
+    });
+    // 添加菜单
+    console.log(routeObject.path, 2839);
+
+    getMenuDataFunction(routeObject.path);
+  }
+});
+
+getBreadcrumbDataFunction(pathArray);
+
 onBeforeRouteUpdate((updateGuard) => {
-  breadcrumbArray.value = [];
-  getBreadcrumbDataFn(compact(updateGuard.path.split('/')));
+  getBreadcrumbDataFunction(compact(updateGuard.path.split('/')));
   const updatePathData = compact(updateGuard.path.split('/'));
-  menuSelectedKeys.value = [updatePathData[2]];
-  menuOpenKeys.value = [updatePathData[1]];
+  menuSelectedKeysArray.value = [updatePathData[2]];
+  menuOpenKeysArray.value = [updatePathData[1]];
 });
 </script>
 

@@ -34,3 +34,28 @@ export interface Api_manager_me_result_interface {
   user_id: number;
   username: string;
 }
+
+export interface PermissionsRequestResultInterface {
+  children: PermissionsRequestResultInterface[];
+  display_name: string;
+  id: number;
+  name: string;
+  parent_id: number;
+  sort: number;
+  url: string;
+  permission_group?: {
+    create_time: string;
+    delete_time: number;
+    display_name: string;
+    enterprise_id: number;
+    guard_name: string;
+    id: number;
+    is_delete: number;
+    modules_id: number;
+    name: string;
+    permission_name: string;
+    sort: number;
+    update_time: string;
+    url: string;
+  }[];
+}

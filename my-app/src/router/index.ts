@@ -12,11 +12,38 @@ import { setAxiosHeader } from '../utils/axios';
 import order from './order';
 import goods from './goods';
 import { flatRouter } from '../utils/tool';
+import { PermissionsRequestResultInterface } from '../interface/index';
+import { routerPermissionsArray } from '../permissions/index';
 
 // 这里的问题牵扯的就是什么时候利用作用域，什么时候用函数返回
 flatRouter(order);
 
-const routes = [
+const moudleRouterArray: RouteRecordRaw[] = [
+  {
+    path: '/orderModule',
+    name: 'orderModule',
+    meta: {
+      title: '订单模块',
+    },
+    component: () => import('../views/orderModule/orderModule.vue'),
+    children: order,
+  },
+  {
+    path: '/goodsModule',
+    name: 'goodsModule',
+    meta: {
+      title: '商品模块',
+    },
+    component: () => import('../views/goodsModule/goodsModule.vue'),
+    children: goods,
+  },
+];
+
+moudleRouterArray.forEach((item) => {
+  item.meta.type = 'moudle';
+});
+
+const routesArray = [
   {
     path: '/',
     // redirect: "/system",
@@ -25,26 +52,6 @@ const routes = [
       title: '首页',
     },
     component: () => import('../frame.vue'),
-    children: [
-      {
-        path: '/orderModule',
-        name: 'orderModule',
-        meta: {
-          title: '订单模块',
-        },
-        component: () => import('../views/orderModule/orderModule.vue'),
-        children: order,
-      },
-      {
-        path: '/goodsModule',
-        name: 'goodsModule',
-        meta: {
-          title: '商品模块',
-        },
-        component: () => import('../views/goodsModule/goodsModule.vue'),
-        children: goods,
-      },
-    ],
   },
   {
     path: '/login',
@@ -59,53 +66,62 @@ const routes = [
     component: () => import('../404.vue'),
   },
 ];
+
 // path加上父级，同时打平
-let newRoute: RouteRecordRaw[] = [];
-function handleRoute(arr: RouteRecordRaw[], father?: string) {
+// 这是是用来干嘛得，没有用到饿？？？？
+/* let newRouteArray: RouteRecordRaw[] = [];
+function handleRouteFunction(arr: RouteRecordRaw[], father?: string) {
   arr.forEach((item) => {
     if (father) {
       item.path = `${father}/${item.path}`;
     }
     if (item.children) {
-      handleRoute(item.children, item.path);
+      handleRouteFunction(item.children, item.path);
     }
-    newRoute.push(item);
+    newRouteArray.push(item);
   });
-}
+} */
 
-const myRouter = createRouter({
+const myRouteObject = createRouter({
   history: createWebHistory(),
-  routes,
+  routes: routesArray,
 });
-let hasNecessaryRoute = true;
+let hasNecessaryRouteBoolean = true;
 
-myRouter.beforeEach((to, form) => {
+myRouteObject.beforeEach((to, form) => {
   nprogress.start();
   if (vueCookie.get('token')) {
-    // 主动退出登陆，我在这里删除token，所以一开始进来的时候是有token的
     if (to.params.token === '0') {
+      // 主动退出登陆，我在这里删除token，所以一开始进来的时候是有token的
       vueCookie.remove('token');
       // 我只能通过刷新页面来实现重置路由，难道4就没有重置的方法吗？？？？
       location.href = location.href;
       return false;
     } else if (form.path === '/') {
-      // 刷新页面进来的，根据权限数据添加动态路由
-      // 有token没有用户信息，没有就要重新登陆
-      if (localStorage.userInfo === undefined) {
+      // 说明是刷新页面进来的
+      if (
+        !localStorage.userInfo ||
+        !localStorage.permissions ||
+        !vueCookie.get('token')
+      ) {
+        // userInfo，permissions，token任一一个没有就要重新登陆
         vueCookie.remove('token');
+        setAxiosHeader({ token: undefined });
+        localStorage.permissions = '';
+        localStorage.userInfo = '';
         if (to.path) {
           return `/login?path=${to.path}`;
         } else {
           return '/login';
         }
       }
+      // 都有得就要加载这个页面了
       // 权限
-      // let permissions = JSON.parse(localStorage.permissions);
-      // // 处理。。。。。。
-      if (hasNecessaryRoute) {
+      addRouteFunction(JSON.parse(localStorage.permissions));
+      if (hasNecessaryRouteBoolean) {
         // 添加token
         setAxiosHeader({ token: vueCookie.get('token') });
-        hasNecessaryRoute = false;
+        hasNecessaryRouteBoolean = false;
         // 当有token的时候打开登陆页，让他去首页
 
         if (to.path === '/login') {
@@ -118,19 +134,19 @@ myRouter.beforeEach((to, form) => {
       }
     }
   } else if (to.params && to.params.token) {
-    // 说明是用户登陆，带token参数过来的，设置token和菜单
+    // 说明是用户登陆进来，带token参数过来的，
     // 设置登录态
-
     vueCookie.set('token', to.params.token);
     // 设置请求头
     setAxiosHeader({ token: to.params.token as string });
-    // 设置权限
+    // 缓存用户信息和权限信息
     localStorage.permissions = to.params.permissions;
     localStorage.userInfo = to.params.userInfo;
-    console.log(to, form, 93);
+    // 动态添加路由
 
+    addRouteFunction(JSON.parse(to.params.permissions as string));
     if (form.query.path) {
-      return form.query.path;
+      return form.query.path as string;
     } else {
       return '/';
     }
@@ -146,8 +162,38 @@ myRouter.beforeEach((to, form) => {
   }
 });
 
-myRouter.afterEach(() => {
+myRouteObject.afterEach(() => {
   nprogress.done();
 });
 
-export default myRouter;
+// 获取权限对应得路由，然后添加
+const addRouteFunction = (
+  permissionsArray: PermissionsRequestResultInterface[]
+) => {
+  haddleMoudleRouterFunction(permissionsArray, moudleRouterArray).forEach(
+    (item) => {
+      myRouteObject.addRoute('index', item);
+    }
+  );
+};
+
+type xx = typeof moudleRouterArray;
+
+// 匹配权限
+const haddleMoudleRouterFunction = (
+  permissionsArray: PermissionsRequestResultInterface[],
+  routerArray: typeof moudleRouterArray
+): typeof moudleRouterArray => {
+  const newMoudleRouterArray = routerArray.filter(({ name }) => {
+    const permissionsObject = routerPermissionsArray.find(
+      (item) => item.name === name
+    );
+    if (permissionsObject) {
+      return permissionsArray.some(
+        (item) => item.name === permissionsObject.permissionName
+      );
+    }
+  });
+  return newMoudleRouterArray;
+};
+export default myRouteObject;

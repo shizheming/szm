@@ -55,7 +55,6 @@ export type SkuRequestParamsInterface =
 // 商品列表单条出参
 export interface SkuSingleInterface {
   min_qty: number;
-  purchaseAmount: number;
   adjust_mount: number;
   imgSrc: string;
   number: number;

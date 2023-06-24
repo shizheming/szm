@@ -3,12 +3,12 @@
     allow-clear
     show-search
     :filter-option="filterOption"
-    :placeholder="p.isDetail ? '' : '请选择'"
-    :disabled="detailStyleObj.disabled"
-    :show-arrow="detailStyleObj.showArrow"
-    :bordered="detailStyleObj.bordered"
-    :class="detailStyleObj.class"
-    v-bind="newSlots"
+    :placeholder="propsObject.isDetail ? '' : '请选择'"
+    :disabled="detailStyleObject.disabled"
+    :show-arrow="detailStyleObject.showArrow"
+    :bordered="detailStyleObject.bordered"
+    :class="detailStyleObject.class"
+    v-bind="newSlotsObject"
   >
     <slot />
   </Select>
@@ -19,13 +19,13 @@ import { PropsInterface } from './props';
 import { Select, SelectProps } from 'ant-design-vue';
 import { getCurrentInstance } from 'vue';
 
-const p = defineProps<{
+const propsObject = defineProps<{
   isDetail?: Boolean;
   inner?: () => void;
   watch?: any[];
   outer?: () => void;
 }>();
-const { newSlots, detailStyleObj } = core(p);
+const { newSlotsObject, detailStyleObject } = core(propsObject);
 
 function filterOption(value: string, options: any) {
   return options.label.includes(value);

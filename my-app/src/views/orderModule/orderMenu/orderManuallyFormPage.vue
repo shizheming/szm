@@ -111,7 +111,11 @@
         >
           <address-cascader
             v-model:value="formModelObject.addressInfo.addressIds"
-            @change="addressCascaderChangeFunction"
+            v-model:options="addressCascaderOptionsArray"
+            :watch="[
+              () => formModelObject.addressInfo.addressIds,
+              addressCascaderWatchFunction,
+            ]"
           />
         </a-form-item>
       </a-col>
@@ -177,14 +181,7 @@
     </a-row>
     <a-row>
       <a-col :span="8">
-        <a-form-item
-          label="开具发票"
-          :name="['isInvoice']"
-          :rules="{
-            required: true,
-            message: '请选择',
-          }"
-        >
+        <a-form-item label="开具发票" :name="['isInvoice']">
           <a-radio-group
             v-model:value="formModelObject.isInvoice"
             :options="WHETHER_OPTIONS"
@@ -198,10 +195,6 @@
           <a-form-item
             label="增值税发票类型"
             :name="['order_invoice', 'invoice_form']"
-            :rules="{
-              required: true,
-              message: '请选择',
-            }"
           >
             <a-radio-group
               v-model:value="formModelObject.order_invoice.invoice_form"
@@ -214,10 +207,6 @@
           <a-form-item
             label="发票抬头类型"
             :name="['order_invoice', 'invoice_kind']"
-            :rules="{
-              required: true,
-              message: '请选择',
-            }"
           >
             <a-radio-group
               v-model:value="formModelObject.order_invoice.invoice_kind"
@@ -239,10 +228,6 @@
           <a-form-item
             label="发票内容"
             :name="['order_invoice', 'content_type']"
-            :rules="{
-              required: true,
-              message: '请选择',
-            }"
           >
             <a-radio-group
               v-model:value="formModelObject.order_invoice.content_type"
@@ -491,14 +476,14 @@
       </a-col>
     </a-row>
     <a-space>
-      <a-button html-type="submit">
+      <a-button @click="selectGoodsButtonClickFunction">
         <plus-outlined />
       </a-button>
       <delete-outlined @click="deleteOutlinedClickFunction" />
     </a-space>
     <a-table
       :row-key="tableRowKey"
-      :columns="orderFormPageGoodsTableColumns"
+      :columns="orderFormPageGoodsTableColumnsArray"
       :data-source="formModelObject.tableDataSourceArray"
       :pagination="false"
       :scroll="{ x: 3000 }"
@@ -528,7 +513,7 @@
             <template #content>
               <a-table
                 :data-source="record.member_price"
-                :columns="goodsListModalLadderPriceTableColumns"
+                :columns="orderFormPageGoodsLadderPriceTableColumnsArray"
                 :pagination="false"
                 size="small"
               />
@@ -548,15 +533,13 @@
             v-model:value="record.qty"
             :max="record.real_qty"
             :min="record.min_qty"
-            @change="inputNumberChange(record)"
           />
         </template>
         <template v-if="column.key === 'current_selling_price'">
           <a-input-number
             v-model:value="record.current_selling_price"
-            :max="record.shop_selling_price"
+            :max="record.shopSellingPriceComputedRef"
             :min="0"
-            @change="inputNumberChange(record)"
           />
         </template>
         <template v-if="column.key === 'imgSrc'">
@@ -584,7 +567,7 @@
         <a-form-item label="运费" :name="['freight']">
           <a-input-number
             v-model:value="formModelObject.freight"
-            @change="setPriceFunction"
+            :watch="[() => formModelObject.freight, setPriceFunction]"
           >
             <template #addonAfter>元</template>
           </a-input-number>
@@ -596,9 +579,19 @@
         </a-form-item>
       </a-col>
     </a-row>
-    <a-form-item :wrapper-col="{ offset: 1, span: 8 }">
-      <a-button type="primary" html-type="submit"><save-outlined /></a-button>
-    </a-form-item>
+    <a-row>
+      <a-col :span="8">
+        <a-form-item :wrapper-col="{ offset: 8 }">
+          <a-button
+            type="primary"
+            html-type="submit"
+            :loading="buttonLoadingBoolean"
+          >
+            <save-outlined />
+          </a-button>
+        </a-form-item>
+      </a-col>
+    </a-row>
   </a-form>
   <user-list-modal
     v-model:visible="userListModalVisibleBoolean"
@@ -620,7 +613,10 @@ import {
   watchEffect,
   computed,
   createVNode,
+  ComputedRef,
+  nextTick,
 } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import {
   FormInstance,
   InputProps,
@@ -628,6 +624,7 @@ import {
   TableColumnType,
   Modal,
   TableColumnsType,
+  CascaderProps,
 } from 'ant-design-vue';
 import { AddParamsInterface } from './interface';
 import {
@@ -645,18 +642,37 @@ import {
   VAT_INVOICE_TYPE_OPTIONS,
   INVOICE_CONTENT_OPTIONS,
 } from '../../../data/options';
-import { orderFormPageGoodsTableColumns } from './data';
+import {
+  orderFormPageGoodsTableColumnsArray,
+  orderFormPageGoodsLadderPriceTableColumnsArray,
+} from './data';
 import {
   UserSingleInterface,
   SkuSingleInterface,
+  SkuRequestResultInterface,
 } from '../../../api/interface';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategoryCascader.vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
-import { cloneDeep, debounce, forEach, multiply, subtract } from 'lodash';
-import { api_upload_getUrl, confirmRequestFunction } from './api';
+import { cloneDeep, throttle, forEach, multiply, subtract } from 'lodash';
+import {
+  imgUrlRequestFunction,
+  confirmRequestFunction,
+  submitRequestFunction,
+} from './api';
 import { SelectProps } from 'ant-design-vue/lib/vc-select';
+import { string } from 'vue-types';
+
+type GoodItemInterface = SkuRequestResultInterface & {
+  purchaseAmount?: ComputedRef<number>;
+  adjustMountComputedRef?: ComputedRef<number>;
+  shopSellingPriceComputedRef?: ComputedRef<number>;
+};
+
+const routeObject = useRoute();
+const routerObject = useRouter();
+
 const UserListModal = defineAsyncComponent(
   () => import('../../../components/modal/userListModal.vue')
 );
@@ -666,11 +682,7 @@ const GoodsListModal = defineAsyncComponent(
 const userListModalVisibleBoolean = ref(false);
 const goodsListModalVisibleBoolean = ref(false);
 const manRadioDisabledBoolean = ref(false);
-const commonElectronEnterpriseBoolean = ref(false);
-const commonPaperEnterpriseBoolean = ref(false);
-const specialPaperEnterpriseBoolean = ref(false);
-const commonPaperPersonalBoolean = ref(false);
-const commonElectronPersonalBoolean = ref(false);
+const buttonLoadingBoolean = ref(false);
 let addressNameArray: string[] = [];
 const formRef = ref<FormInstance>();
 const tableRowSelectionSelectedRowKeysArray = ref<
@@ -710,23 +722,78 @@ const modelObejct: AddParamsInterface = {
     invoice_form: 3,
     invoice_kind: 2,
     apply_scene: 1,
+    content_type: 1,
   },
   pay_mode: 0,
   tableDataSourceArray: [],
   validator: {},
 };
-const formModelObject = reactive<AddParamsInterface>(cloneDeep(modelObejct));
+
+const addressCascaderOptionsArray = ref<CascaderProps['options']>([]);
+const formModelObject = reactive(cloneDeep(modelObejct));
+const commonPaperPersonalBoolean = computed(() => {
+  return (
+    formModelObject.order_invoice.invoice_kind == 1 &&
+    formModelObject.order_invoice.invoice_form == 1
+  );
+});
+const commonPaperEnterpriseBoolean = computed(() => {
+  return (
+    formModelObject.order_invoice.invoice_kind == 2 &&
+    formModelObject.order_invoice.invoice_form == 1
+  );
+});
+const commonElectronPersonalBoolean = computed(() => {
+  return (
+    formModelObject.order_invoice.invoice_kind == 1 &&
+    formModelObject.order_invoice.invoice_form == 3
+  );
+});
+const commonElectronEnterpriseBoolean = computed(() => {
+  return (
+    formModelObject.order_invoice.invoice_kind == 2 &&
+    formModelObject.order_invoice.invoice_form == 3
+  );
+});
+const specialPaperEnterpriseBoolean = computed(() => {
+  return (
+    formModelObject.order_invoice.invoice_kind == 2 &&
+    formModelObject.order_invoice.invoice_form == 2
+  );
+});
 
 const plusOutlinedClickFunction = () => {
   userListModalVisibleBoolean.value = true;
 };
 
-const formFinishFunction: FormInstance['onFinish'] = (values) => {
-  goodsListModalVisibleBoolean.value = true;
+const formFinishFunction: FormInstance['onFinish'] = async () => {
+  buttonLoadingBoolean.value = true;
+  await submitRequestFunction(handleSubmitDataFunction());
+  buttonLoadingBoolean.value = false;
+  routerObject.push({
+    name: 'orderListPage',
+  });
 };
 
-const radioGroupWatchFunction = (newValue: number) => {
-  if (newValue == 1 || newValue == 3) {
+const selectGoodsButtonClickFunction = () => {
+  formRef.value
+    .validate([
+      'user_id',
+      ['addressInfo', 'name'],
+      ['addressInfo', 'mobile'],
+      ['addressInfo', 'addressIds'],
+      ['addressInfo', 'address'],
+    ])
+    .then((data) => {
+      goodsListModalVisibleBoolean.value = true;
+    });
+};
+
+const radioGroupWatchFunction = () => {
+  if (
+    formModelObject.order_invoice.invoice_form == 1 ||
+    formModelObject.order_invoice.invoice_form == 3
+  ) {
     manRadioDisabledBoolean.value = false;
   } else {
     manRadioDisabledBoolean.value = true;
@@ -734,11 +801,17 @@ const radioGroupWatchFunction = (newValue: number) => {
   }
 };
 
-const addressCascaderChangeFunction: SelectProps['onChange'] = (
-  value,
-  options
-) => {
-  addressNameArray = options.map(({ label }: { label: string }) => label);
+const addressCascaderWatchFunction = () => {
+  addressNameArray = [];
+  let addressLevel = addressCascaderOptionsArray.value;
+  formModelObject.addressInfo.addressIds.forEach((item) => {
+    addressLevel.forEach((current) => {
+      if (current.value === item) {
+        addressNameArray.push(current.label);
+        addressLevel = current.children;
+      }
+    });
+  });
 };
 
 const formItemRulesValidatorFunction = async (_rule: Rule, value: number[]) => {
@@ -813,12 +886,57 @@ const goodsListModalSelectFunction = async (rows: SkuSingleInterface[]) => {
   formModelObject.tableDataSourceArray =
     formModelObject.tableDataSourceArray.concat(
       rows.map((item, index) => {
+        item.purchaseAmount = computed(() => {
+          return multiply(item.current_selling_price, item.qty);
+        });
+        const shop_selling_price = item.shop_selling_price;
+        item.shopSellingPriceComputedRef = computed(() => {
+          // 需要判断下是否是阶梯价，阶梯价的单价会随着数量而变化
+          if (item.member_price.length > 0) {
+            let [{ member_price }] = item.member_price.filter(
+              ({ start_num, end_num }) => {
+                return (
+                  item.qty >= start_num && (end_num ? item.qty < end_num : true)
+                );
+              }
+            );
+            return member_price;
+          } else {
+            return shop_selling_price;
+          }
+        });
+        item.adjustMountComputedRef = computed(() => {
+          // 需要判断下是否是阶梯价，阶梯价的单价会随着数量而变化
+          if (item.member_price.length > 0) {
+            let [{ member_price }] = item.member_price.filter(
+              ({ start_num, end_num }) => {
+                return (
+                  item.qty >= start_num && (end_num ? item.qty < end_num : true)
+                );
+              }
+            );
+            const resultNumber = multiply(
+              subtract(member_price, item.current_selling_price),
+              item.qty
+            );
+            item.adjust_mount = resultNumber;
+            return resultNumber;
+          } else {
+            const resultNumber = multiply(
+              subtract(
+                item.shopSellingPriceComputedRef.value,
+                item.current_selling_price
+              ),
+              item.qty
+            );
+            item.adjust_mount = resultNumber;
+            return resultNumber;
+          }
+        });
+
         item.min_qty = item.real_qty && 1;
-        goodsItemCalculatedFunction(
-          item,
-          item.min_qty,
-          item.shop_selling_price
-        );
+        item.qty = item.min_qty;
+        item.current_selling_price = item.shopSellingPriceComputedRef.value;
         item.sku_type_name = '实物';
         item.is_suit =
           item.is_suit === 'b'
@@ -826,7 +944,7 @@ const goodsListModalSelectFunction = async (rows: SkuSingleInterface[]) => {
             : GOODS_FORM_ENUM[item.is_suit as number] || '普通';
         if (item.gallery.length) {
           const [{ key, upload_channel, bucket }] = item.gallery;
-          api_upload_getUrl({
+          imgUrlRequestFunction({
             key,
             upload_channel,
             bucket,
@@ -903,12 +1021,8 @@ const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
     }
     // 去掉了开票形式，所以要改动一下数据，后端逻辑
     if (value.order_invoice.invoice_form != 2) {
-      console.log(1);
-
       value.order_invoice.invoice_type = 1;
       if (value.order_invoice.invoice_form == 3) {
-        console.log(2);
-
         value.order_invoice.invoice_form = 2;
       }
     } else {
@@ -918,8 +1032,6 @@ const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
   } else {
     delete value.order_invoice;
   }
-  console.log(value, 23);
-
   return value;
 };
 
@@ -929,13 +1041,16 @@ const inputNumberChange = async (record: SkuSingleInterface) => {
 };
 
 // 从实体的出发
-// 实体的change是自己触发的，然后干一些事情，是一对一或是一对多，可以对实体自己做一些事情，也可以是对别的实体做一些事情，对别的实体是一种命令式的下发的写法，现在一般是跟自己有关的用change，如果是多个实体的change干的是同一件事情，那我可以用监听，监听多个值，这个多个值就代表监听的实体，去触发干的那同一件事情，这是一种change的变体，这里的watch从概念上来看就不能当watch来看的，而是还是一种change，只是写法不同而已，因为从逻辑上来讲这里的watch没有主语，谁监听，没有，所以概念上还是change
+// 实体的change是自己触发的，然后干一些事情，是一对一或是一对多，可以对实体自己做一些事情，也可以是对别的实体做一些事情，对别的实体是一种命令式的下发的写法，
+// 现在一般是跟自己有关的用change，如果是多个实体的change干的是同一件事情，那我可以用监听，监听多个值，这个多个值就代表监听的实体，去触发干的那同一件事情，这是一种change的变体，这里的watch从概念上来看就不能当watch来看的，而是还是一种change，只是写法不同而已，因为从逻辑上来讲这里的watch没有主语，谁监听，没有，所以概念上还是change
+
 // 谁在watch，是页面，没有当前input，select组件之类的watch，没有独立的watch，只有页面级别的watch
 // 事实是这样，没有所谓的组件watch主语，但是我从逻辑上可以给他一个watch主语，没毛病的，我可以这样理解
 // 实体的watch是别人触发的，然后干一些事情，是一对一或是一对多，一对多其实就是change概念了，多是多个其他实体的事情，可以对实体自己做一些事情，也可以是对别的实体做一些事情，监听别人，然后对别人干一些事情，watch主语的概念就变了，就已经是change的概念了，所以要首先明确watch的主语，有了实体主语后才知道是watch好点还是change好点
 // watch里面只有自己的事情，才能在概念上叫实体的watch，如果干了别人的事情，那概念上就是别人的change了，跟当前实体就已经没有关系了
 
 // 这个watch概念上就是table的chang事件，这是是概念上的宏观change，不是table组件的change事件
+// 这里就要统一了，不能分开watch字段了，应为是需要请求接口下发的数据，所以需要统一
 watch(
   () => formModelObject.tableDataSourceArray,
   async (newValue) => {
@@ -950,13 +1065,14 @@ watch(
       });
       setPriceFunction();
     }
+  },
+  {
+    deep: true,
   }
 );
 
-const setPriceFunction = debounce(async () => {
-  let { data } = await confirmRequestFunction(
-    handleSubmitDataFunction(formModelObject)
-  );
+const setPriceFunction = throttle(async () => {
+  let { data } = await confirmRequestFunction(handleSubmitDataFunction());
   formModelObject.freight = data.total_freight / 100;
   formModelObject.qty = data.qty;
   formModelObject.total_price = data.total_price / 100;
@@ -966,31 +1082,4 @@ const setPriceFunction = debounce(async () => {
 const tableRowKey = ({ sku_id, spu_id }: SkuSingleInterface) => {
   return `${spu_id}/${sku_id}`;
 };
-
-// 这里的watch也是change，而且是2个实体的chagne
-watch(
-  [
-    () => formModelObject.order_invoice!.invoice_kind,
-    () => formModelObject.order_invoice!.invoice_form,
-  ],
-  ([invoice_kind, invoice_form]) => {
-    commonPaperPersonalBoolean.value = false;
-    commonPaperEnterpriseBoolean.value = false;
-    commonElectronPersonalBoolean.value = false;
-    commonElectronEnterpriseBoolean.value = false;
-    specialPaperEnterpriseBoolean.value = false;
-    if (invoice_kind == 1 && invoice_form == 1) {
-      commonPaperPersonalBoolean.value = true;
-    } else if (invoice_kind == 2 && invoice_form == 1) {
-      commonPaperEnterpriseBoolean.value = true;
-    } else if (invoice_kind == 1 && invoice_form == 3) {
-      commonElectronPersonalBoolean.value = true;
-    } else if (invoice_kind == 2 && invoice_form == 3) {
-      commonElectronEnterpriseBoolean.value = true;
-    } else if (invoice_kind == 2 && invoice_form == 2) {
-      // 专票纸质
-      specialPaperEnterpriseBoolean.value = true;
-    }
-  }
-);
 </script>

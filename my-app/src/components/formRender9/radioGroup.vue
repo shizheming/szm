@@ -1,5 +1,5 @@
 <template>
-  <RadioGroup v-bind="newSlots" v-if="!p.isDetail">
+  <RadioGroup v-bind="newSlotsObject" v-if="!p.isDetail">
     <slot />
   </RadioGroup>
   <Select v-else v-bind="$props" />
@@ -16,5 +16,5 @@ const p = defineProps<{
   outer?: () => void;
 }>();
 
-const { newSlots } = core(p);
+const { newSlotsObject } = core(p);
 </script>

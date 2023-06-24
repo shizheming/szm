@@ -41,7 +41,7 @@
       </a-col>
       <a-col :span="8">
         <a-form-item
-          :label="invoiceTitleFormItemLabel"
+          label="invoiceTitleFormItemLabel"
           :name="['invoice_title']"
           :rules="{
             required: true,
@@ -223,47 +223,10 @@
         <a-form-item label="订单信息" :colon="false" style="font-weight: 700" />
       </a-col>
     </a-row>
-    <h1 style="font-weight: 700"></h1>
-    <a-space>
-      <a-button html-type="submit">
-        <plus-outlined />
-      </a-button>
-      <delete-outlined @click="goodsDeleteOutlinedClick" />
-    </a-space>
-    <a-table
-      :row-key="tableRowKey"
-      :columns="orderFormPageGoodsTableColumns"
-      :data-source="model.dataSource"
-      :pagination="false"
-      :scroll="{ x: 3000 }"
-      style="margin: 15px 0"
-      :row-selection="{
-        selectedRowKeys,
-        onChange: tableChange,
-      }"
-    >
-      <template
-        #bodyCell="{
-          column,
-          record,
-          index,
-        }: {
-          column: TableColumnType,
-          record: Api_goods_sku_list_result_item_interface,
-          index: number,
-        }"
-      >
-      </template>
-    </a-table>
     <a-form-item :wrapper-col="{ offset: 1, span: 8 }">
       <a-button type="primary" html-type="submit">提交</a-button>
     </a-form-item>
   </a-form>
-  <goods-list-modal
-    v-model:visible="goodsListModalVisible"
-    :model="model"
-    @select="goodsListModalSelect"
-  />
 </template>
 <script setup lang="ts">
 import {
@@ -282,10 +245,7 @@ import {
   TableColumnType,
   Modal,
 } from 'ant-design-vue';
-import {
-  Api_proxy_order_Manage_Invoice_repairInvoice_params_interface,
-  Api_goods_sku_list_result_item_interface,
-} from './interface';
+import { Api_proxy_order_Manage_Invoice_repairInvoice_params_interface } from './interface';
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -301,27 +261,12 @@ import {
   VAT_INVOICE_TYPE_OPTIONS,
   INVOICE_CONTENT_OPTIONS,
 } from '../../../data/dictionary';
-import {
-  orderFormPageGoodsTableColumns,
-  goodsListModalLadderPriceTableColumns,
-} from './data';
+import {} from './data';
+import { SkuRequestResultInterface } from '../../../api/interface';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
-import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategoryCascader.vue';
-import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
-import type { Rule } from 'ant-design-vue/es/form';
-import { cloneDeep, forEach, multiply, subtract } from 'lodash';
-import { api_upload_getUrl, confirmRequestFunction } from './api';
-import { SelectProps } from 'ant-design-vue/lib/vc-select';
-const UserListModal = defineAsyncComponent(
-  () => import('../../../components/modal/userListModal.vue')
-);
-const GoodsListModal = defineAsyncComponent(
-  () => import('../../../components/modal/goodsListModal.vue')
-);
-const userListModalVisible = ref(false);
 const goodsListModalVisible = ref(false);
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
-const selectedRows = ref<Api_goods_sku_list_result_item_interface[]>([]);
+const selectedRows = ref<SkuRequestResultInterface[]>([]);
 const model =
   reactive<Api_proxy_order_Manage_Invoice_repairInvoice_params_interface>({
     invoice_type: 3,
@@ -350,11 +295,6 @@ const finish: FormInstance['onFinish'] = (values) => {
   goodsListModalVisible.value = true;
 };
 
-const tableChange: TableRowSelection['onChange'] = (keys, rows) => {
-  selectedRowKeys.value = keys;
-  selectedRows.value = rows;
-};
-
 const formRef = ref<FormInstance>();
 
 const goodsDeleteOutlinedClick = () => {
@@ -365,55 +305,4 @@ const goodsDeleteOutlinedClick = () => {
     selectedRowKeys.value = [];
   }
 };
-const goodsItemDeleteOutlinedClick = (index: number) => {
-  model.dataSource.splice(index, 1);
-};
-
-const goodsListModalSelect = async (
-  rows: Api_goods_sku_list_result_item_interface[]
-) => {
-  model.dataSource = model.dataSource.concat(rows);
-};
-
-const invoiceTitleFormItemLabel = computed(() => {
-  return specialInvoiceBoolean.value || electronicCommonInvoiceUnitBoolean.value
-    ? '单位名称'
-    : '个人名称';
-});
-
-// 这个watch概念上就是table的chang事件
-watch(
-  () => model.dataSource,
-  async (newValue) => {
-    if (newValue.length !== 0) {
-      newValue.forEach((item, index) => {
-        item.number = index + 1;
-      });
-    }
-  }
-);
-
-const tableRowKey = ({
-  sku_id,
-  spu_id,
-}: Api_goods_sku_list_result_item_interface) => {
-  return `${spu_id}/${sku_id}`;
-};
-
-// 这里的watch也是change，而且是2个实体的chagne
-watch(
-  [() => model.invoice_type, () => model.invoice_kind],
-  ([invoice_type, invoice_kind]) => {
-    electronicCommonInvoiceUnitBoolean.value = false;
-    electronicCommonInvoiceIndividualBoolean.value = false;
-    specialInvoiceBoolean.value = false;
-    if (invoice_type === 3 && invoice_kind == 1) {
-      electronicCommonInvoiceIndividualBoolean.value = true;
-    } else if (invoice_type === 3 && invoice_kind == 2) {
-      electronicCommonInvoiceUnitBoolean.value = true;
-    } else if (invoice_type === 2) {
-      specialInvoiceBoolean.value = true;
-    }
-  }
-);
 </script>

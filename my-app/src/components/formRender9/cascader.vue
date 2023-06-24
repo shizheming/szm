@@ -1,12 +1,12 @@
 <template>
   <Cascader
     allow-clear
-    :placeholder="p.isDetail ? '' : '请选择'"
-    :disabled="detailStyleObj.disabled"
-    :show-arrow="detailStyleObj.showArrow"
-    :bordered="detailStyleObj.bordered"
-    :class="detailStyleObj.class"
-    v-bind="newSlots"
+    :placeholder="propsObject.isDetail ? '' : '请选择'"
+    :disabled="detailStyleObject.disabled"
+    :show-arrow="detailStyleObject.showArrow"
+    :bordered="detailStyleObject.bordered"
+    :class="detailStyleObject.class"
+    v-bind="newSlotsObject"
   />
 </template>
 <script setup lang="ts">
@@ -14,11 +14,11 @@ import core from './core';
 import { Cascader } from 'ant-design-vue';
 import { PropsInterface } from './props';
 
-const p = defineProps<{
+const propsObject = defineProps<{
   isDetail?: Boolean;
   inner?: () => void;
   watch?: any[];
   outer?: () => void;
 }>();
-const { newSlots, detailStyleObj } = core(p);
+const { newSlotsObject, detailStyleObject } = core(propsObject);
 </script>

@@ -1,12 +1,12 @@
 <template>
   <a-modal
-    :visible="props.visible"
+    :visible="propsObject.visible"
     title="卖家备注"
-    @ok="ok"
-    @cancel="cancel"
-    :confirmLoading="confirmLoading"
+    @ok="modalOkFunction"
+    @cancel="modalCancelFunction"
+    :confirmLoading="modalConfirmLoadingBoolean"
   >
-    <a-form ref="formRef" :model="model" layout="vertical">
+    <a-form ref="formRefObject" :model="formModelObject" layout="vertical">
       <a-form-item
         label="卖家备注"
         :name="['merchant_remark']"
@@ -15,7 +15,7 @@
           message: '请填写',
         }"
       >
-        <a-textarea v-model:value="model.merchant_remark" />
+        <a-textarea v-model:value="formModelObject.merchant_remark" />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -23,50 +23,49 @@
 <script setup lang="ts">
 import { ref, watch, reactive } from 'vue';
 import { FormInstance, message, ModalProps } from 'ant-design-vue';
-import {
-  Api_order_merchantRemark_batch_params_item_interface,
-  Api_order_result_item_interface,
-} from '../interface';
-import { api_order_merchantRemark_batch } from '../api';
+import { OrderListRequestResultItemInterface } from '../interface';
+import { batchRequestFunction } from '../api';
 
-const props = defineProps<{
+const propsObject = defineProps<{
   visible: boolean;
-  selectedRowsArray: Api_order_result_item_interface[];
+  selectedRowsArray: OrderListRequestResultItemInterface[];
 }>();
-const emits = defineEmits<{
+const emitsFunction = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
   (event: 'submit'): void;
 }>();
-const model = reactive({
+const formModelObject = reactive({
   merchant_remark: '',
 });
-const formRef = ref<FormInstance>();
-const confirmLoading = ref(false);
+const formRefObject = ref<FormInstance>();
+const modalConfirmLoadingBoolean = ref(false);
 
-const ok = async () => {
+const modalOkFunction = async () => {
   try {
-    await formRef.value?.validate();
-    await api_order_merchantRemark_batch({
-      ids: props.selectedRowsArray.map(({ osl_seq, user: { user_id } }) => {
-        return {
-          ...model,
-          osl_seq,
-          user_id: String(user_id),
-        };
-      }),
+    await formRefObject.value?.validate();
+    await batchRequestFunction({
+      ids: propsObject.selectedRowsArray.map(
+        ({ osl_seq, user: { user_id } }) => {
+          return {
+            ...formModelObject,
+            osl_seq,
+            user_id: String(user_id),
+          };
+        }
+      ),
     });
     message.success('成功');
-    confirmLoading.value = true;
-    emits('submit');
-    confirmLoading.value = false;
-    formRef.value?.resetFields();
-    emits('update:visible', false);
+    modalConfirmLoadingBoolean.value = true;
+    emitsFunction('submit');
+    modalConfirmLoadingBoolean.value = false;
+    formRefObject.value?.resetFields();
+    emitsFunction('update:visible', false);
   } catch (error) {
-    confirmLoading.value = false;
+    modalConfirmLoadingBoolean.value = false;
   }
 };
-const cancel = () => {
-  formRef.value?.resetFields();
-  emits('update:visible', false);
+const modalCancelFunction = () => {
+  formRefObject.value?.resetFields();
+  emitsFunction('update:visible', false);
 };
 </script>
