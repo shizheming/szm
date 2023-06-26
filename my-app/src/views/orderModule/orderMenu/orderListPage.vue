@@ -752,6 +752,15 @@ import {
 } from 'ant-design-vue';
 import { findCategory } from '../../../utils/z';
 import {
+  SORT_ENUM,
+  USER_INFO,
+  WHETHER_ENUM,
+  GROUPING_STATUS_ENUM,
+  YES_NO_ENUM,
+  ORDER_GOODS_SOURCE_ENUM,
+  GOODS_FORM_ENUM,
+} from '../../../data/dictionary';
+import {
   ORDER_STATUS_OPTIONS,
   PAY_STATUS_OPTIONS,
   DELIVERY_STATUS_OPTIONS,
@@ -769,14 +778,7 @@ import {
   YES_NO_OPTIONS,
   BUSINESS_MODEL_OPTIONS,
   GROUPING_STATUS_OPTIONS,
-  SORT_ENUM,
-  USER_INFO,
-  WHETHER_ENUM,
-  GROUPING_STATUS_ENUM,
-  YES_NO_ENUM,
-  ORDER_GOODS_SOURCE_ENUM,
-  GOODS_FORM_ENUM,
-} from '../../../data/dictionary';
+} from '../../../data/options';
 import SupplierSelect from '../../../components/select/supplierSelect.vue';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategoryCascader.vue';
 import GoodsBrandSelect from '../../../components/select/goodsBrandSelect.vue';

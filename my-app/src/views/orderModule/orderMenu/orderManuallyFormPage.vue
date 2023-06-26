@@ -111,7 +111,6 @@
         >
           <address-cascader
             v-model:value="formModelObject.addressInfo.addressIds"
-            v-model:options="addressCascaderOptionsArray"
             @change="addressCascaderChangeFunction"
           />
         </a-form-item>
@@ -622,6 +621,7 @@ import {
   Modal,
   TableColumnsType,
   CascaderProps,
+  message,
 } from 'ant-design-vue';
 import { AddParamsInterface } from './interface';
 import {
@@ -680,7 +680,6 @@ const userListModalVisibleBoolean = ref(false);
 const goodsListModalVisibleBoolean = ref(false);
 const manRadioDisabledBoolean = ref(false);
 const buttonLoadingBoolean = ref(false);
-let addressNameArray: string[] = [];
 const formRef = ref<FormInstance>();
 const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
@@ -713,7 +712,6 @@ const modelObejct: AddParamsInterface = {
   validator: {},
 };
 
-const addressCascaderOptionsArray = ref<CascaderProps['options']>([]);
 const formModelObject = reactive(cloneDeep(modelObejct));
 
 // 把watch，invoice_kind，invoice_form分发给不同的状态变化，到变成一个状态就是一个监听，而不是分发，是主动监听，从我出发
@@ -756,8 +754,14 @@ const plusOutlinedClickFunction = () => {
 // 提交
 const formFinishFunction: FormInstance['onFinish'] = async () => {
   buttonLoadingBoolean.value = true;
-  await submitRequestFunction(handleSubmitDataFunction(formModelObject));
+  await submitRequestFunction(handleSubmitDataFunction(formModelObject)).catch(
+    () => {
+      buttonLoadingBoolean.value = false;
+      return Promise.reject();
+    }
+  );
   buttonLoadingBoolean.value = false;
+  message.success('成功');
   routerObject.push({
     name: 'orderListPage',
   });
@@ -793,9 +797,12 @@ const addressCascaderChangeFunction: CascaderProps['onChange'] = (
   value,
   valueArray
 ) => {
-  addressNameArray = (valueArray as DefaultOptionType[]).map(
-    ({ label }) => label
-  );
+  [
+    formModelObject.addressInfo.province_name,
+    formModelObject.addressInfo.city_name,
+    formModelObject.addressInfo.district_name,
+    formModelObject.addressInfo.street_name,
+  ] = (valueArray as DefaultOptionType[]).map(({ label }) => label);
 };
 
 // 地址验证
@@ -948,31 +955,6 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
     );
 };
 
-// 单条商品计算金额函数方法
-const goodsItemCalculatedFunction = (
-  record: GoodItemInterface,
-  qty: number,
-  unitPrice: number
-) => {
-  record.qty = qty;
-  record.current_selling_price = unitPrice;
-  // 需要判断下是否是阶梯价，阶梯价的单价会随着数量而变化
-  if (record.member_price.length > 0) {
-    let [{ member_price }] = record.member_price.filter(
-      ({ start_num, end_num }) => {
-        return qty >= start_num && (end_num ? qty < end_num : true);
-      }
-    );
-    record.shop_selling_price = member_price;
-    record.adjust_mount = multiply(subtract(member_price, unitPrice), qty);
-  } else {
-    record.adjust_mount = multiply(
-      subtract(record.shop_selling_price, unitPrice),
-      qty
-    );
-  }
-};
-
 // 最后提交前的数据结构处理
 const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
   const value = cloneDeep(formModelObject);
@@ -982,12 +964,7 @@ const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
     value.addressInfo.district_id,
     value.addressInfo.street_id,
   ] = value.addressInfo.addressIds;
-  [
-    value.addressInfo.province_name,
-    value.addressInfo.city_name,
-    value.addressInfo.district_name,
-    value.addressInfo.street_name,
-  ] = addressNameArray;
+
   value.shop_goods_list = value.tableDataSourceArray.map(
     ({ qty, adjust_mount, shop_goods_id }) => {
       return {
