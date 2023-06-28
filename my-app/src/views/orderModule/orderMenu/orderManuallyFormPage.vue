@@ -798,6 +798,12 @@ const addressCascaderChangeFunction: CascaderProps['onChange'] = (
   valueArray
 ) => {
   [
+    formModelObject.addressInfo.province_id,
+    formModelObject.addressInfo.city_id,
+    formModelObject.addressInfo.district_id,
+    formModelObject.addressInfo.street_id,
+  ] = value as number[];
+  [
     formModelObject.addressInfo.province_name,
     formModelObject.addressInfo.city_name,
     formModelObject.addressInfo.district_name,
@@ -957,12 +963,6 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
 // 最后提交前的数据结构处理
 const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
   const value = cloneDeep(formModelObject);
-  [
-    value.addressInfo.province_id,
-    value.addressInfo.city_id,
-    value.addressInfo.district_id,
-    value.addressInfo.street_id,
-  ] = value.addressInfo.addressIds;
 
   value.shop_goods_list = value.tableDataSourceArray.map(
     ({ qty, adjust_mount, shop_goods_id }) => {
