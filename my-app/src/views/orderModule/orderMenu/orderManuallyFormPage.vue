@@ -36,7 +36,7 @@
           label="用户ID"
           :name="['user_id']"
           :rules="{
-            required: true,
+            required: false,
             message: '请选择',
           }"
         >
@@ -428,6 +428,7 @@
           >
             <address-cascader
               v-model:value="formModelObject.order_invoice.mArea"
+              @change="mAreaAddressCascaderChangeFunction"
             />
           </a-form-item>
         </a-col>
@@ -752,7 +753,9 @@ const plusOutlinedClickFunction = () => {
 };
 
 // 提交
-const formFinishFunction: FormInstance['onFinish'] = async () => {
+const formFinishFunction: FormInstance['onFinish'] = async (value) => {
+  console.log(value,11,formModelObject);
+  
   buttonLoadingBoolean.value = true;
   await submitRequestFunction(handleSubmitDataFunction(formModelObject)).catch(
     () => {
@@ -809,6 +812,18 @@ const addressCascaderChangeFunction: CascaderProps['onChange'] = (
     formModelObject.addressInfo.district_name,
     formModelObject.addressInfo.street_name,
   ] = (valueArray as DefaultOptionType[]).map(({ label }) => label);
+};
+
+// 开票地址change事件
+const mAreaAddressCascaderChangeFunction: CascaderProps['onChange'] = (
+  value,
+) => {
+  [
+    formModelObject.order_invoice.province_id,
+    formModelObject.order_invoice.city_id,
+    formModelObject.order_invoice.district_id,
+    formModelObject.order_invoice.street_id,
+  ] = value as number[];
 };
 
 // 地址验证
@@ -963,7 +978,6 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
 // 最后提交前的数据结构处理
 const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
   const value = cloneDeep(formModelObject);
-
   value.shop_goods_list = value.tableDataSourceArray.map(
     ({ qty, adjust_mount, shop_goods_id }) => {
       return {
@@ -978,15 +992,8 @@ const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
     formModelObject.validator.total_pay,
     100
   );
+  
   if (value.isInvoice) {
-    if (value.order_invoice.mArea) {
-      [
-        value.order_invoice.province_id,
-        value.order_invoice.city_id,
-        value.order_invoice.district_id,
-        value.order_invoice.street_id,
-      ] = value.order_invoice.mArea;
-    }
     // 去掉了开票形式，所以要改动一下数据，后端逻辑
     if (value.order_invoice.invoice_form != 2) {
       value.order_invoice.invoice_type = 1;

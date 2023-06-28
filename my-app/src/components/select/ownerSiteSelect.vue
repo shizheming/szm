@@ -1,13 +1,6 @@
 <template>
   <!-- 销售站点 -->
-  <a-select
-    :options="
-      propsObject.options === undefined
-        ? selectionOptionsArray
-        : propsObject.options
-    "
-    :inner="selectInnerFunction"
-  />
+  <a-select :options="selectionOptionsArray" />
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
@@ -15,26 +8,14 @@ import { siteRequestFunction } from '../../api/dictionary';
 import type { SelectProps } from 'ant-design-vue';
 import { apiDictCacheObject } from '../../utils/global';
 
-const propsObject = defineProps<{
-  options?: SelectProps['options'];
-}>();
-
-const emitsFunction = defineEmits<{
-  (event: 'update:options', options: SelectProps['options']): void;
-}>();
-
 const selectionOptionsArray = ref<SelectProps['options']>([]);
-const selectInnerFunction = async () => {
-  if (apiDictCacheObject.ownerSiteOptions) {
-    selectionOptionsArray.value = apiDictCacheObject.ownerSiteOptions;
-    emitsFunction('update:options', apiDictCacheObject.ownerSiteOptions);
-  } else {
-    let {
-      data: { list },
-    } = await siteRequestFunction({
-      page: 1,
-      page_size: 100,
-    });
+if (apiDictCacheObject.ownerSiteOptions) {
+  selectionOptionsArray.value = apiDictCacheObject.ownerSiteOptions;
+} else {
+  await siteRequestFunction({
+    page: 1,
+    page_size: 100,
+  }).then(({ data: { list } }) => {
     selectionOptionsArray.value = list.map(({ id, name }) => {
       return {
         label: name,
@@ -42,7 +23,6 @@ const selectInnerFunction = async () => {
       };
     });
     apiDictCacheObject.ownerSiteOptions = selectionOptionsArray.value;
-    emitsFunction('update:options', apiDictCacheObject.ownerSiteOptions);
-  }
-};
+  });
+}
 </script>

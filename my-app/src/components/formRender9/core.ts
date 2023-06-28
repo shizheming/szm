@@ -37,7 +37,7 @@ export default function (props: PropsInterface): {
   /********************** 接受form给的数据 **********************/
   const outerObject = inject<Ref>('outer', ref());
   const componentNameStringArray = inject<Ref>('componentName', ref());
-  let componentNameString: string = '';
+  let componentNameString = '';
   let detailStyleObject = ref({
     disabled: false,
     bordered: true,

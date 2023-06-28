@@ -22,7 +22,8 @@ import { cloneDeep, forEach, last, isArray } from 'lodash';
 import { setLevelValue, getLevelValue } from './tool';
 import { FormInstance } from 'ant-design-vue';
 const attrs = useAttrs();
-const p = defineProps({
+
+const propsObject = defineProps({
   isDetail: {
     type: Boolean,
     default: undefined,
@@ -31,25 +32,48 @@ const p = defineProps({
     type: Boolean,
     default: undefined,
   },
+  finish: {
+    type: Function,
+    default: () => {},
+  },
 });
 
 const slots = useSlots();
 let newSlots: { [name: string]: any } = {};
+
 forEach(slots, (value, key) => {
   newSlots[key] = (value as () => {})();
 });
 // 判断是不是编辑页
-provide('isEdit', p.isEdit);
+provide('isEdit', propsObject.isEdit);
 // 判断是不是详情页
-provide('isDetail', p.isDetail);
+provide('isDetail', propsObject.isDetail);
 
 // 收集表单里面的组件的outer函数
 const outer = reactive<{ [narme: string]: (v: any) => {} }>({});
 provide('outer', outer);
 
-const outerModel = reactive<{ [narme: string]: any }>({});
-/* 设置外面的fromRender */
 const formRender = ref();
+/* 
+const emitsFunction = defineEmits<{
+  (event: 'finish', value: any): void;
+}>();
+const outerModel = reactive<{ [narme: string]: any }>({});
+// 没有绑在组件上得值是带不进去，还想做出参得outer呢，看起来不行
+const formFinishFunction: FormInstance['onFinish'] = (data) => {
+  console.log(data, 123);
+  // 处理outer所有的函数
+  forEach(data, (value, key) => {
+    if (!outer[key]) {
+      outerModel[key] = value;
+    }
+  });
+  // 处理嵌套层级outer数据
+  forEach(outer, (value, key) => {
+    setLevelValue(key, value(data), outerModel);
+  });
+  emitsFunction('finish', outerModel);
+}; */
 
 defineExpose({
   scrollToField(params: any) {
@@ -63,19 +87,7 @@ defineExpose({
     return formRender.value.clearValidate(params);
   },
   validate(params: any) {
-    return formRender.value.validate(params).then((data: any) => {
-      // 处理outer所有的函数
-      forEach(data, (value, key) => {
-        if (!outer[key]) {
-          outerModel[key] = value;
-        }
-      });
-      // 处理嵌套层级outer数据
-      forEach(outer, (value, key) => {
-        setLevelValue(key, value(data), outerModel);
-      });
-      return outerModel;
-    });
+    return formRender.value.validate(params);
   },
   onlyValidate(params: any) {
     return formRender.value.validateFields(params);

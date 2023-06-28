@@ -20,5 +20,6 @@ const propsObject = defineProps<{
   watch?: any[];
   outer?: () => void;
 }>();
+
 const { newSlotsObject, detailStyleObject } = core(propsObject);
 </script>
