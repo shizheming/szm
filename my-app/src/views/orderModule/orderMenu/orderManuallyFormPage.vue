@@ -754,8 +754,8 @@ const plusOutlinedClickFunction = () => {
 
 // 提交
 const formFinishFunction: FormInstance['onFinish'] = async (value) => {
-  console.log(value,11,formModelObject);
-  
+  console.log(value, 11, formModelObject);
+
   buttonLoadingBoolean.value = true;
   await submitRequestFunction(handleSubmitDataFunction(formModelObject)).catch(
     () => {
@@ -816,7 +816,7 @@ const addressCascaderChangeFunction: CascaderProps['onChange'] = (
 
 // 开票地址change事件
 const mAreaAddressCascaderChangeFunction: CascaderProps['onChange'] = (
-  value,
+  value
 ) => {
   [
     formModelObject.order_invoice.province_id,
@@ -978,21 +978,12 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
 // 最后提交前的数据结构处理
 const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
   const value = cloneDeep(formModelObject);
-  value.shop_goods_list = value.tableDataSourceArray.map(
-    ({ qty, adjust_mount, shop_goods_id }) => {
-      return {
-        qty,
-        shop_goods_id,
-        adjust_mount: multiply(adjust_mount, 100),
-      };
-    }
-  );
   value.freight = multiply(value.freight, 100);
   value.validator.total_pay = multiply(
     formModelObject.validator.total_pay,
     100
   );
-  
+
   if (value.isInvoice) {
     // 去掉了开票形式，所以要改动一下数据，后端逻辑
     if (value.order_invoice.invoice_form != 2) {
@@ -1029,8 +1020,14 @@ watch(
       formModelObject.total_price = undefined;
       formModelObject.validator.total_pay = undefined;
     } else {
-      newValue.forEach((item, index) => {
+      formModelObject.shop_goods_list = newValue.map((item, index) => {
         item.number = index + 1;
+        let { qty, adjust_mount, shop_goods_id } = item;
+        return {
+          qty,
+          shop_goods_id,
+          adjust_mount: multiply(adjust_mount, 100),
+        };
       });
       setPriceFunction();
     }
