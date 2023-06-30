@@ -32,7 +32,7 @@ if (import.meta.env.PROD === true) {
 }
 
 axios.defaults.baseURL = baseURL;
-axios.defaults.timeout = 4000;
+axios.defaults.timeout = 100000;
 axios.defaults.headers['Content-Type'] = 'application/json';
 
 // 开发环境联调需要带上的开发分支

@@ -36,7 +36,7 @@
           label="用户ID"
           :name="['user_id']"
           :rules="{
-            required: false,
+            required: true,
             message: '请选择',
           }"
         >
@@ -530,6 +530,7 @@
             v-model:value="record.qty"
             :max="record.real_qty"
             :min="record.min_qty"
+            @change="setPriceFunction"
           />
         </template>
         <template v-if="column.key === 'current_selling_price'">
@@ -537,6 +538,7 @@
             v-model:value="record.current_selling_price"
             :max="record.shopSellingPriceComputedRef"
             :min="0"
+            @change="setPriceFunction"
           />
         </template>
         <template v-if="column.key === 'imgSrc'">
@@ -564,7 +566,7 @@
         <a-form-item label="运费" :name="['freight']">
           <a-input-number
             v-model:value="formModelObject.freight"
-            :watch="[() => formModelObject.freight, setPriceFunction]"
+            @change="setPriceFunction"
           >
             <template #addonAfter>元</template>
           </a-input-number>
@@ -754,8 +756,6 @@ const plusOutlinedClickFunction = () => {
 
 // 提交
 const formFinishFunction: FormInstance['onFinish'] = async (value) => {
-  console.log(value, 11, formModelObject);
-
   buttonLoadingBoolean.value = true;
   await submitRequestFunction(handleSubmitDataFunction(formModelObject)).catch(
     () => {
@@ -905,9 +905,11 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
   formModelObject.tableDataSourceArray =
     formModelObject.tableDataSourceArray.concat(
       rows.map((item, index) => {
+        // 单条购买总金额
         item.purchaseAmount = computed(() => {
           return multiply(item.current_selling_price, item.qty);
         });
+        // 单条销售单价
         item.shopSellingPriceComputedRef = computed(() => {
           // 需要判断下是否是阶梯价，阶梯价的单价会随着数量而变化
           if (item.member_price.length > 0) {
@@ -923,33 +925,15 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
             return item.shop_selling_price;
           }
         });
+        // 单条改价优惠金额
         item.adjustMountComputedRef = computed(() => {
-          // 需要判断下是否是阶梯价，阶梯价的单价会随着数量而变化
-          if (item.member_price.length > 0) {
-            let [{ member_price }] = item.member_price.filter(
-              ({ start_num, end_num }) => {
-                return (
-                  item.qty >= start_num && (end_num ? item.qty < end_num : true)
-                );
-              }
-            );
-            const resultNumber = multiply(
-              subtract(member_price, item.current_selling_price),
-              item.qty
-            );
-            item.adjust_mount = resultNumber;
-            return resultNumber;
-          } else {
-            const resultNumber = multiply(
-              subtract(
-                item.shopSellingPriceComputedRef.value,
-                item.current_selling_price
-              ),
-              item.qty
-            );
-            item.adjust_mount = resultNumber;
-            return resultNumber;
-          }
+          return multiply(
+            subtract(
+              item.shopSellingPriceComputedRef.value,
+              item.current_selling_price
+            ),
+            item.qty
+          );
         });
 
         item.min_qty = item.real_qty && 1;
@@ -983,7 +967,15 @@ const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
     formModelObject.validator.total_pay,
     100
   );
-
+  value.shop_goods_list = value.tableDataSourceArray.map((item, index) => {
+    item.number = index + 1;
+    let { qty, shop_goods_id, adjustMountComputedRef } = item;
+    return {
+      qty,
+      shop_goods_id,
+      adjust_mount: multiply(adjustMountComputedRef.value, 100),
+    };
+  });
   if (value.isInvoice) {
     // 去掉了开票形式，所以要改动一下数据，后端逻辑
     if (value.order_invoice.invoice_form != 2) {
@@ -1020,32 +1012,25 @@ watch(
       formModelObject.total_price = undefined;
       formModelObject.validator.total_pay = undefined;
     } else {
-      formModelObject.shop_goods_list = newValue.map((item, index) => {
-        item.number = index + 1;
-        let { qty, adjust_mount, shop_goods_id } = item;
-        return {
-          qty,
-          shop_goods_id,
-          adjust_mount: multiply(adjust_mount, 100),
-        };
-      });
       setPriceFunction();
     }
-  },
-  {
-    deep: true,
   }
 );
 
 // 计算订单总金额函数方法
-const setPriceFunction = throttle(async () => {
-  let { data } = await confirmRequestFunction(
-    handleSubmitDataFunction(formModelObject)
-  );
-  formModelObject.freight = data.total_freight / 100;
-  formModelObject.qty = data.qty;
-  formModelObject.total_price = data.total_price / 100;
-  formModelObject.validator.total_pay = data.total_real_price / 100;
+const setPriceFunction = throttle(() => {
+  // 什么要用nextTick是因为，比如我在改变数量的时候，change就去请求接口了，那table里面的金额，但是这个金额Computed属性还没有开始计算，所以金额是不正确的，所以要等全部都计算完了再去请求接口，当然如果都是用change自己控制顺序的话，不会有这种问题
+  nextTick(() => {
+    async () => {
+      let { data } = await confirmRequestFunction(
+        handleSubmitDataFunction(formModelObject)
+      );
+      formModelObject.freight = data.total_freight / 100;
+      formModelObject.qty = data.qty;
+      formModelObject.total_price = data.total_price / 100;
+      formModelObject.validator.total_pay = data.total_real_price / 100;
+    };
+  });
 }, 500);
 
 // 设置表格唯一id

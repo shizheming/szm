@@ -133,7 +133,7 @@ const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
 const formRefObject = ref<FormInstance>();
-const selectedRowsArray = ref<UserSingleInterface[]>([]);
+let selectedRowsArray: UserSingleInterface[] = [];
 const { data, current, pageSize, run, loading, total } = usePagination(
   userRequsetFunction,
   {
@@ -165,6 +165,7 @@ const tablePaginationObject = computed(() => {
 
 let confirmTableRowSelectionSelectedRowKeysArray: TableRowSelection['selectedRowKeys'] =
   [];
+let confirmSelectedRowsArray: UserSingleInterface[] = [];
 
 const formFinishFunction = async () => {
   run(formModelObject);
@@ -175,7 +176,7 @@ const tableRowSelectionOnChangeFunction: TableRowSelection['onChange'] = (
   rows
 ) => {
   tableRowSelectionSelectedRowKeysArray.value = keys;
-  selectedRowsArray.value = rows;
+  selectedRowsArray = rows;
 };
 
 const tableChangeFunction: TableProps['onChange'] = async (pag) => {
@@ -195,11 +196,12 @@ const modalOkFunction = async () => {
   emitsFunction(
     'select',
     tableRowSelectionSelectedRowKeysArray.value,
-    selectedRowsArray.value
+    selectedRowsArray
   );
   confirmTableRowSelectionSelectedRowKeysArray = cloneDeep(
     tableRowSelectionSelectedRowKeysArray.value
   );
+  confirmSelectedRowsArray = cloneDeep(selectedRowsArray);
   emitsFunction('update:visible', false);
 };
 const modalCancelFunction = () => {
@@ -213,6 +215,7 @@ watch(
     if (newValue === true) {
       tableRowSelectionSelectedRowKeysArray.value =
         confirmTableRowSelectionSelectedRowKeysArray;
+      selectedRowsArray = confirmSelectedRowsArray;
       run(formModelObject);
     }
   }
