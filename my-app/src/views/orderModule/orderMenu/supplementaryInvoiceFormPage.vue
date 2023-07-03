@@ -5,11 +5,7 @@
     :label-col="{ span: 8 }"
     @finish="finish"
   >
-    <a-row>
-      <a-col :span="8">
-        <a-form-item label="申请信息" :colon="false" style="font-weight: 700" />
-      </a-col>
-    </a-row>
+    <a-divider orientation="left">申请信息</a-divider>
     <a-row>
       <a-col :span="8">
         <a-form-item label="增值税发票类型" :name="['invoice_type']">
@@ -254,13 +250,15 @@ import {
 } from '@ant-design/icons-vue';
 import AddressCascader from '../../../components/cascader/addressCascader.vue';
 import {
+  GOODS_FORM_ENUM,
+} from '../../../data/dictionary';
+import {
   WHETHER_OPTIONS,
   DELIVERY_METHOD_OPTIONS,
-  GOODS_FORM_ENUM,
   INVOICE_HEADER_TYPE_OPTIONS,
   VAT_INVOICE_TYPE_OPTIONS,
   INVOICE_CONTENT_OPTIONS,
-} from '../../../data/dictionary';
+} from '../../../data/options';
 import {} from './data';
 import { SkuRequestResultInterface } from '../../../api/interface';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';

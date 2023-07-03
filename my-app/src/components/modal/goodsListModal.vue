@@ -166,7 +166,6 @@ import {
   TableColumn,
   TableColumnsType,
 } from 'ant-design-vue';
-import { AddParamsInterface } from '../../views/orderModule/orderMenu/interface';
 import {
   SkuSingleInterface,
   SkuRequestParamsInterface,
@@ -261,7 +260,8 @@ const goodsListModalLadderPriceTableColumnsArray: TableColumnsType = [
 
 const propsObject = defineProps<{
   visible: boolean;
-  model: AddParamsInterface;
+  tableDataSource: SkuSingleInterface[];
+  area: number[];
 }>();
 const emitsFunction = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
@@ -373,42 +373,41 @@ const clearOutlinedClickFunction = () => {
 
 const modalOkFunction = async () => {
   modalConfirmLoadingBoolean.value = true;
-  try {
-    // 验证选择得商品是否在可配送的范围内
-    let { data } = await api_goods_sku_getSkuAreaBySkuIds({
-      shop_goods_ids: selectedRowsArray.value.map(
-        ({ shop_goods_id }) => shop_goods_id
-      ),
-      province: propsObject.model.addressInfo.addressIds[0],
-      district: propsObject.model.addressInfo.addressIds[2],
-      channel_id: 1,
-    });
-    if (data.length) {
-      message.warning(
-        `所选择的商品中有${data.length}个商品不支持该收货地址，系统已自动删除！`
-      );
-      let spuSkuArray: string[] = [];
-      data.forEach((item) => {
-        selectedRowsArray.value = selectedRowsArray.value.filter((current) => {
-          if (current.shop_goods_id !== item) {
-            return true;
-          } else {
-            spuSkuArray.push(`${current.spu_id}/${current.sku_id}`);
-            return false;
-          }
-        });
+  // 验证选择得商品是否在可配送的范围内
+  let { data } = await api_goods_sku_getSkuAreaBySkuIds({
+    shop_goods_ids: selectedRowsArray.value.map(
+      ({ shop_goods_id }) => shop_goods_id
+    ),
+    province: propsObject.area[0],
+    district: propsObject.area[2],
+    channel_id: 1,
+  }).catch(() => {
+    modalConfirmLoadingBoolean.value = false;
+    return Promise.reject();
+  });
+  if (data.length) {
+    message.warning(
+      `所选择的商品中有${data.length}个商品不支持该收货地址，系统已自动删除！`
+    );
+    let spuSkuArray: string[] = [];
+    data.forEach((item) => {
+      selectedRowsArray.value = selectedRowsArray.value.filter((current) => {
+        if (current.shop_goods_id !== item) {
+          return true;
+        } else {
+          spuSkuArray.push(`${current.spu_id}/${current.sku_id}`);
+          return false;
+        }
       });
-      tableRowSelectionSelectedRowKeysArray.value = difference(
-        tableRowSelectionSelectedRowKeysArray.value,
-        spuSkuArray
-      );
-    }
-    emitsFunction('select', selectedRowsArray.value);
-    emitsFunction('update:visible', false);
-    modalConfirmLoadingBoolean.value = false;
-  } catch (e) {
-    modalConfirmLoadingBoolean.value = false;
+    });
+    tableRowSelectionSelectedRowKeysArray.value = difference(
+      tableRowSelectionSelectedRowKeysArray.value,
+      spuSkuArray
+    );
   }
+  emitsFunction('select', selectedRowsArray.value);
+  emitsFunction('update:visible', false);
+  modalConfirmLoadingBoolean.value = false;
 };
 const modalCancelFunction = () => {
   emitsFunction('update:visible', false);
@@ -422,7 +421,7 @@ watch(
   () => propsObject.visible,
   async (newValue) => {
     if (newValue === true) {
-      noSelectedRowKeysArray = propsObject.model.tableDataSourceArray.map(
+      noSelectedRowKeysArray = propsObject.tableDataSource.map(
         ({ spu_id, sku_id }) => {
           return `${spu_id}/${sku_id}`;
         }

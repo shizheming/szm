@@ -5,11 +5,7 @@
     :label-col="{ span: 8 }"
     @finish="formFinishFunction"
   >
-    <a-row>
-      <a-col :span="8">
-        <a-typography-title :level="4">基本信息</a-typography-title>
-      </a-col>
-    </a-row>
+    <a-divider orientation="left">基本信息</a-divider>
     <a-row>
       <a-col :span="8">
         <a-form-item label="录入方式" :name="['entryMode']">
@@ -150,11 +146,7 @@
         </a-form-item>
       </a-col>
     </a-row>
-    <a-row>
-      <a-col :span="8">
-        <a-typography-title :level="4">发运计划</a-typography-title>
-      </a-col>
-    </a-row>
+    <a-divider orientation="left">发运计划</a-divider>
     <a-row>
       <a-col :span="8">
         <a-form-item label="库存冻结" :name="['stockFreeze']">
@@ -170,11 +162,8 @@
         </a-form-item>
       </a-col>
     </a-row>
-    <a-row>
-      <a-col :span="8">
-        <a-typography-title :level="4">开票申请</a-typography-title>
-      </a-col>
-    </a-row>
+    <a-divider orientation="left">开票申请</a-divider>
+
     <a-row>
       <a-col :span="8">
         <a-form-item label="开具发票" :name="['isInvoice']">
@@ -455,11 +444,7 @@
         </a-col>
       </a-row>
     </div>
-    <a-row>
-      <a-col :span="8">
-        <a-typography-title :level="4">支付和结算</a-typography-title>
-      </a-col>
-    </a-row>
+    <a-divider orientation="left">支付和结算</a-divider>
     <a-row>
       <a-col :span="8">
         <a-form-item label="支付类型" :name="['pay_mode']">
@@ -467,11 +452,7 @@
         </a-form-item>
       </a-col>
     </a-row>
-    <a-row>
-      <a-col :span="8">
-        <a-typography-title :level="4">商品信息</a-typography-title>
-      </a-col>
-    </a-row>
+    <a-divider orientation="left">商品信息</a-divider>
     <a-space>
       <a-button @click="selectGoodsButtonClickFunction">
         <plus-outlined />
@@ -546,11 +527,7 @@
         </template>
       </template>
     </a-table>
-    <a-row>
-      <a-col :span="8">
-        <a-typography-title :level="4">订单合计</a-typography-title>
-      </a-col>
-    </a-row>
+    <a-divider orientation="left">订单合计</a-divider>
     <a-row>
       <a-col :span="8">
         <a-form-item label="商品数量合计" :name="['qty']">
@@ -598,7 +575,8 @@
   />
   <goods-list-modal
     v-model:visible="goodsListModalVisibleBoolean"
-    :model="formModelObject"
+    :tableDataSource="formModelObject.tableDataSourceArray"
+    :area="formModelObject.addressInfo.addressIds"
     @select="goodsListModalSelectFunction"
   />
 </template>
@@ -923,7 +901,7 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
             let [{ member_price }] = item.member_price.filter(
               ({ start_num, end_num }) => {
                 // 这里是为了输入框有可能被用户清空，导致qty是空
-                item.qty = item.qty || 1
+                item.qty = item.qty || 1;
                 return (
                   item.qty >= start_num && (end_num ? item.qty < end_num : true)
                 );
