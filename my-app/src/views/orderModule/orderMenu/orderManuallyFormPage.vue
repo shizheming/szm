@@ -688,8 +688,13 @@ const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
 const selectedRowsArray = ref<SkuSingleInterface[]>([]);
-
-const modelObejct: AddParamsInterface = {
+type FormType = AddParamsInterface & {
+  tableDataSourceArray: GoodItemInterface[];
+};
+type BaseFormType = AddParamsInterface & {
+  tableDataSourceArray: any[];
+};
+const modelObejct: BaseFormType = {
   site_id: 1,
   api_type: 3,
   entryMode: '手工创建订单',
@@ -715,7 +720,7 @@ const modelObejct: AddParamsInterface = {
   validator: {},
 };
 
-const formModelObject = reactive(cloneDeep(modelObejct));
+const formModelObject: FormType = reactive(cloneDeep(modelObejct));
 
 // 把watch，invoice_kind，invoice_form分发给不同的状态变化，到变成一个状态就是一个监听，而不是分发，是主动监听，从我出发
 const commonPaperPersonalBoolean = computed(() => {
@@ -960,7 +965,7 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
 };
 
 // 最后提交前的数据结构处理
-const handleSubmitDataFunction = (formModelObject: AddParamsInterface) => {
+const handleSubmitDataFunction = (formModelObject: FormType) => {
   const value = cloneDeep(formModelObject);
   value.freight = multiply(value.freight, 100);
   value.validator.total_pay = multiply(

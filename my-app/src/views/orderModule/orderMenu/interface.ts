@@ -402,7 +402,6 @@ export type AddParamsInterface = Partial<{
     adjust_mount: number;
   }[];
 }> & {
-  tableDataSourceArray: SkuSingleInterface[];
   order_invoice: Partial<{
     invoice_form: number;
     invoice_kind: number;
