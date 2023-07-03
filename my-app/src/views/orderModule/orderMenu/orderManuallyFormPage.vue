@@ -914,12 +914,16 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
         item.purchaseAmount = computed(() => {
           return multiply(item.current_selling_price, item.qty);
         });
+        item.min_qty = 1;
+        item.qty = 1;
         // 单条销售单价
         item.shopSellingPriceComputedRef = computed(() => {
           // 需要判断下是否是阶梯价，阶梯价的单价会随着数量而变化
           if (item.member_price.length > 0) {
             let [{ member_price }] = item.member_price.filter(
               ({ start_num, end_num }) => {
+                // 这里是为了输入框有可能被用户清空，导致qty是空
+                item.qty = item.qty || 1
                 return (
                   item.qty >= start_num && (end_num ? item.qty < end_num : true)
                 );
@@ -934,16 +938,14 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
         item.adjustMountComputedRef = computed(() => {
           return multiply(
             subtract(
-              item.shopSellingPriceComputedRef.value,
+              item.shopSellingPriceComputedRef,
               item.current_selling_price
             ),
             item.qty
           );
         });
 
-        item.min_qty = item.real_qty && 1;
-        item.qty = item.min_qty;
-        item.current_selling_price = item.shopSellingPriceComputedRef.value;
+        item.current_selling_price = item.shopSellingPriceComputedRef;
         item.sku_type_name = '实物';
         item.is_suit =
           item.is_suit === 'b'
@@ -978,7 +980,7 @@ const handleSubmitDataFunction = (formModelObject: FormType) => {
     return {
       qty,
       shop_goods_id,
-      adjust_mount: multiply(adjustMountComputedRef.value, 100),
+      adjust_mount: multiply(adjustMountComputedRef, 100),
     };
   });
   if (value.isInvoice) {
@@ -1025,16 +1027,14 @@ watch(
 // 计算订单总金额函数方法
 const setPriceFunction = throttle(() => {
   // 什么要用nextTick是因为，比如我在改变数量的时候，change就去请求接口了，那table里面的金额，但是这个金额Computed属性还没有开始计算，所以金额是不正确的，所以要等全部都计算完了再去请求接口，当然如果都是用change自己控制顺序的话，不会有这种问题
-  nextTick(() => {
-    async () => {
-      let { data } = await confirmRequestFunction(
-        handleSubmitDataFunction(formModelObject)
-      );
-      formModelObject.freight = data.total_freight / 100;
-      formModelObject.qty = data.qty;
-      formModelObject.total_price = data.total_price / 100;
-      formModelObject.validator.total_pay = data.total_real_price / 100;
-    };
+  nextTick(async () => {
+    let { data } = await confirmRequestFunction(
+      handleSubmitDataFunction(formModelObject)
+    );
+    formModelObject.freight = data.total_freight / 100;
+    formModelObject.qty = data.qty;
+    formModelObject.total_price = data.total_price / 100;
+    formModelObject.validator.total_pay = data.total_real_price / 100;
   });
 }, 500);
 
