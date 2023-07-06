@@ -13,7 +13,7 @@
   >
     <a-form
       ref="formRef"
-      :model="model"
+      :model="formModelObject"
       :label-col="{ span: 6 }"
       @finish="formFinishFunction"
     >
@@ -127,13 +127,6 @@
           record: SkuSingleInterface,
         }"
       >
-        <template v-if="column.key === 'category_id'">
-          <background-category-cascader
-            :is-detail="true"
-            :value="record.category_path.map(Number)"
-            style="width: 100%"
-          />
-        </template>
         <template v-if="column.key === 'shop_selling_price'">
           <a-popover title="阶梯价展示" v-if="record.member_price.length > 0">
             <template #content>
@@ -156,6 +149,7 @@
 import { ref, watch, reactive, computed } from 'vue';
 import GoodsBrandSelect from '../select/goodsBrandSelect.vue';
 import BackgroundCategoryCascader from '../cascader/backgroundCategoryCascader.vue';
+import { findCategoryFunction } from '../../utils/z';
 import {
   FormInstance,
   ModalProps,
@@ -220,8 +214,8 @@ const tableColumnsArray: TableColumnsType = [
   },
   {
     title: '品牌类目',
-    dataIndex: 'category_id',
-    key: 'category_id',
+    dataIndex: 'category_name',
+    key: 'category_name',
   },
   {
     title: '订购单位',
@@ -288,6 +282,9 @@ const { data, current, pageSize, run, loading, total } = usePagination(
             item.end_num ? `~${item.end_num}` : '+'
           }`;
         });
+        current.category_name = findCategoryFunction(current.category_id).join(
+          '/'
+        );
       });
       return data;
     },

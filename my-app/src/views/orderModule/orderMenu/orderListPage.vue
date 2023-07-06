@@ -750,7 +750,7 @@ import {
   PopconfirmProps,
   Modal,
 } from 'ant-design-vue';
-import { findCategory } from '../../../utils/z';
+import { findCategoryFunction } from '../../../utils/z';
 import {
   SORT_ENUM,
   USER_INFO,
@@ -868,7 +868,7 @@ const {
           ? (item.real_price as number).toFixed(2)
           : item.real_price;
 
-        item.category_name = findCategory(Number(item.category_id)).join('/');
+        item.category_name = findCategoryFunction(Number(item.category_id)).join('/');
       });
     });
     return data;

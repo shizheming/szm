@@ -208,7 +208,6 @@
                 value: 0,
               },
             ]"
-            :is-detail="true"
             v-model:value="model.pay_mode"
           />
         </a-form-item>

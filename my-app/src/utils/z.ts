@@ -7,21 +7,21 @@ categoryRequestFunction().then(({ data }) => {
 });
 
 // 给最后一级，寻找上面两级
-export function findCategory(
+export function findCategoryFunction(
   n: number,
   data: CategorySingleInterface[] = categoryArray
 ) {
   var result: string[] = [];
 
-  data.forEach((current) => {
+data.forEach((current) => {
     if (current.id == n) {
       result.unshift(current.name);
       if (current.pid) {
-        result = findCategory(current.pid, categoryArray).concat(result);
+        result = findCategoryFunction(current.pid, categoryArray).concat(result);
       }
     } else {
       if (current.child) {
-        result = findCategory(n, current.child).concat(result);
+        result = findCategoryFunction(n, current.child).concat(result);
       }
     }
   });

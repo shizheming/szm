@@ -82,6 +82,7 @@ export interface SkuSingleInterface {
   type_id: number;
   area_code: string;
   brand_name: string;
+  category_name: string;
   sku_id: number;
   shop_name: string;
   self_delivery: number;

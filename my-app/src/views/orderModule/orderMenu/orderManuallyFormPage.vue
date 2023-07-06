@@ -93,7 +93,7 @@
             message: '请填写',
           }"
         >
-          <a-input v-model:value="formModelObject.addressInfo.mobile" />
+          <a-input v-model:value="formModelObject.addressInfo.mobile" :maxlength="11" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -499,13 +499,6 @@
             <info-circle-outlined />
           </a-popover>
         </template>
-        <template v-if="column.key === 'category_path'">
-          <background-category-cascader
-            :is-detail="true"
-            :value="record.category_path.map(Number)"
-            style="width: 100%"
-          />
-        </template>
         <template v-if="column.key === 'qty'">
           <a-input-number
             v-model:value="record.qty"
@@ -520,7 +513,9 @@
             :max="record.shopSellingPriceComputedRef"
             :min="0"
             @change="setPriceFunction"
-          />
+          >
+            <template #addonAfter>元</template>
+          </a-input-number>
         </template>
         <template v-if="column.key === 'imgSrc'">
           <a-image :src="record.imgSrc" :width="50" />
@@ -989,9 +984,9 @@ const handleSubmitDataFunction = (formModelObject: FormType) => {
 // 这个watch概念上就是table的chang事件，这是是概念上的宏观change，不是table组件的change事件
 // 这里就要统一了，不能分开watch字段了，应为是需要请求接口下发的数据，所以需要统一
 watch(
-  () => formModelObject.tableDataSourceArray,
+  () => formModelObject.tableDataSourceArray.length,
   async (newValue) => {
-    if (newValue.length === 0) {
+    if (newValue === 0) {
       formModelObject.freight = undefined;
       formModelObject.qty = undefined;
       formModelObject.total_price = undefined;

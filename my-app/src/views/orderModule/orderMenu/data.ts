@@ -251,8 +251,8 @@ export const orderFormPageGoodsTableColumnsArray: TableColumnsType = [
   },
   {
     title: '类目',
-    dataIndex: 'category_path',
-    key: 'category_path',
+    dataIndex: 'category_name',
+    key: 'category_name',
     width: 300,
   },
   {
