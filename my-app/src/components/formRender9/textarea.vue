@@ -19,7 +19,7 @@ import { PropsInterface } from './props';
 delete Textarea.props.prefix;
 
 const propsObject = defineProps<{
-  isDetail?: Boolean;
+  
   inner?: () => void;
   watch?: any[];
   outer?: () => void;

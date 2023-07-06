@@ -1,7 +1,7 @@
 <template>
   <Cascader
     allow-clear
-    :placeholder="propsObject.isDetail ? '' : '请选择'"
+    placeholder="请选择"
     :disabled="detailStyleObject.disabled"
     :show-arrow="detailStyleObject.showArrow"
     :bordered="detailStyleObject.bordered"
@@ -15,7 +15,7 @@ import { Cascader } from 'ant-design-vue';
 import { PropsInterface } from './props';
 
 const propsObject = defineProps<{
-  isDetail?: Boolean;
+  
   inner?: () => void;
   watch?: any[];
   outer?: () => void;

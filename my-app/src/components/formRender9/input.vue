@@ -1,7 +1,7 @@
 <template>
   <Input
     allow-clear
-    :placeholder="propsObject.isDetail ? '' : '请输入'"
+    placeholder="请输入"
     :disabled="detailStyleObject.disabled"
     :bordered="detailStyleObject.bordered"
     :class="detailStyleObject.class"
@@ -16,7 +16,7 @@ import { PropsInterface } from './props';
 import { Input } from 'ant-design-vue';
 
 const propsObject = defineProps<{
-  isDetail?: Boolean;
+  
   inner?: () => void;
   watch?: any[];
   outer?: () => void;

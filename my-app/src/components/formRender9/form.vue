@@ -24,10 +24,6 @@ import { FormInstance } from 'ant-design-vue';
 const attrs = useAttrs();
 
 const propsObject = defineProps({
-  isDetail: {
-    type: Boolean,
-    default: undefined,
-  },
   isEdit: {
     type: Boolean,
     default: undefined,
@@ -46,8 +42,6 @@ forEach(slots, (value, key) => {
 });
 // 判断是不是编辑页
 provide('isEdit', propsObject.isEdit);
-// 判断是不是详情页
-provide('isDetail', propsObject.isDetail);
 
 // 收集表单里面的组件的outer函数
 const outer = reactive<{ [narme: string]: (v: any) => {} }>({});

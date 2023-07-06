@@ -62,28 +62,6 @@ export default function (props: PropsInterface): {
     props.inner();
   }
 
-  if (props.isDetail) {
-    watch(
-      () => props.isDetail,
-      (newValue) => {
-        if (newValue) {
-          detailStyleObject.value.disabled = true;
-          detailStyleObject.value.bordered = false;
-          detailStyleObject.value.showArrow = false;
-          detailStyleObject.value.class = 'formDetail';
-          detailStyleObject.value.style = '';
-        } else {
-          detailStyleObject.value.disabled = false;
-          detailStyleObject.value.bordered = true;
-          detailStyleObject.value.showArrow = true;
-          detailStyleObject.value.class = '';
-          detailStyleObject.value.style = 'margin:auto';
-        }
-      },
-      { immediate: true }
-    );
-  }
-
   if (props.watch) {
     watch(...props.watch);
   }

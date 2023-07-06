@@ -3,7 +3,7 @@
     allow-clear
     show-search
     :filter-option="filterOption"
-    :placeholder="propsObject.isDetail ? '' : '请选择'"
+    placeholder="请选择"
     :disabled="detailStyleObject.disabled"
     :show-arrow="detailStyleObject.showArrow"
     :bordered="detailStyleObject.bordered"
@@ -20,7 +20,7 @@ import { Select, SelectProps } from 'ant-design-vue';
 import { getCurrentInstance } from 'vue';
 
 const propsObject = defineProps<{
-  isDetail?: Boolean;
+  
   inner?: () => void;
   watch?: any[];
   outer?: () => void;

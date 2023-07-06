@@ -10,7 +10,7 @@ import { forEach } from 'lodash';
 const slots = useSlots();
 
 const propsObject = defineProps<{
-  isDetail?: Boolean;
+  
   inner?: () => void;
   watch?: any[];
   outer?: () => void;

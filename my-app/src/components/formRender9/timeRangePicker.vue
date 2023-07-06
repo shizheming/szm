@@ -9,7 +9,7 @@ import { TimeRangePicker } from 'ant-design-vue';
 import { PropsInterface } from './props';
 
 const propsObject = defineProps<{
-  isDetail?: Boolean;
+  
   inner?: () => void;
   watch?: any[];
   outer?: () => void;

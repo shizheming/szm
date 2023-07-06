@@ -15,7 +15,7 @@ import { PropsInterface } from './props';
 import dayjs, { Dayjs } from 'dayjs';
 
 const propsObject = defineProps<{
-  isDetail?: Boolean;
+  
   inner?: () => void;
   watch?: any[];
   outer?: () => void;

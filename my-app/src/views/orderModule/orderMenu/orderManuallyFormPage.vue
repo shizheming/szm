@@ -922,7 +922,7 @@ const goodsListModalSelectFunction = async (rows: GoodItemInterface[]) => {
             item.qty
           );
         });
-
+        // 现在计算属性都不需要.value来拿值了么
         item.current_selling_price = item.shopSellingPriceComputedRef;
         item.sku_type_name = '实物';
         item.is_suit =

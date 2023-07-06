@@ -10,7 +10,7 @@ import { PropsInterface } from './props';
 import { useSlots, useAttrs, inject, Ref } from 'vue';
 
 const propsObject = defineProps<{
-  isDetail?: Boolean;
+  
   inner?: () => void;
   watch?: any[];
   outer?: () => void;

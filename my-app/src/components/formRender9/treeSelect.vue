@@ -9,7 +9,7 @@ import { TreeSelect } from 'ant-design-vue';
 import { PropsInterface } from './props';
 
 const p = defineProps<{
-  isDetail?: Boolean;
+  
   inner?: () => void;
   watch?: any[];
   outer?: () => void;
