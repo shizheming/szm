@@ -12,7 +12,7 @@ const selectionOptionsArray = ref<SelectProps['options']>([]);
 if (apiDictCacheObject.ownerSiteOptions) {
   selectionOptionsArray.value = apiDictCacheObject.ownerSiteOptions;
 } else {
-  await siteRequestFunction({
+  siteRequestFunction({
     page: 1,
     page_size: 100,
   }).then(({ data: { list } }) => {

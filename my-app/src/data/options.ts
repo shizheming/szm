@@ -18,9 +18,10 @@ import {
   BUSINESS_MODEL_ENUM,
   GROUPING_STATUS_ENUM,
   TASK_CLASS_ENUM,
-  VAT_INVOICE_TYPE_ENMU,
+  INVOICE_FORM_ENMU,
   INVOICE_HEADER_TYPE_ENMU,
   INVOICE_CONTENT_ENMU,
+  INVOICE_TYPE_ENMU
 } from './dictionary';
 
 // 是否
@@ -62,10 +63,13 @@ export const GROUPING_STATUS_OPTIONS = optionsEnum(GROUPING_STATUS_ENUM);
 // 任务类
 export const TASK_CLASS_OPTIONS = optionsEnum(TASK_CLASS_ENUM);
 // 增值税发票类型
-export const VAT_INVOICE_TYPE_OPTIONS = optionsEnum(VAT_INVOICE_TYPE_ENMU);
+export const INVOICE_FORM_OPTIONS = optionsEnum(INVOICE_FORM_ENMU);
 // 发票抬头类型
 export const INVOICE_HEADER_TYPE_OPTIONS = optionsEnum(
   INVOICE_HEADER_TYPE_ENMU
 );
 // 发票内容
 export const INVOICE_CONTENT_OPTIONS = optionsEnum(INVOICE_CONTENT_ENMU);
+// 发票种类
+export const INVOICE_TYPE_OPTIONS = optionsEnum(INVOICE_TYPE_ENMU);
+

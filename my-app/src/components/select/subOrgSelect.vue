@@ -12,7 +12,7 @@ const selectionOptionsArray = ref<SelectProps['options']>([]);
 if (apiDictCacheObject.subOrgOptions) {
   selectionOptionsArray.value = apiDictCacheObject.subOrgOptions;
 } else {
-  await orgRequestFunction({
+  orgRequestFunction({
     page: 1,
     page_size: 100,
   }).then(({ data: { list } }) => {

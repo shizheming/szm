@@ -138,7 +138,7 @@ export enum DETAIL_OF_MARKETING_ACTIVITIES_ENUM {
 export enum ORDER_TASK_CLASS_ENUM {
   普通 = 1,
   供应商直送 = 5,
-  自提 = 6,
+  自提,
 }
 
 // 业务模式
@@ -170,15 +170,21 @@ export enum GOODS_FORM_ENUM {
 
 
 // 增值税发票类型
-export enum VAT_INVOICE_TYPE_ENMU {
+export enum INVOICE_FORM_ENMU {
   专用发票 = 2,
   电子普通发票,
+}
+
+// 发票种类
+export enum INVOICE_TYPE_ENMU {
+  增值税电子普通 = 1,
+  增值税专用,
 }
 
 // 发票抬头类型
 export enum INVOICE_HEADER_TYPE_ENMU {
   个人 = 1,
-  单位 = 2,
+  单位,
 }
 
 // 发票内容

@@ -1,25 +1,30 @@
 <template>
   <a-form
-    ref="formRef"
-    :model="model"
+    ref="formRefObject"
+    :model="formModelObject"
     :label-col="{ span: 8 }"
     @finish="finish"
   >
     <a-divider orientation="left">申请信息</a-divider>
     <a-row>
       <a-col :span="8">
-        <a-form-item label="增值税发票类型" :name="['invoice_type']">
+        <a-form-item label="发票种类" :name="['invoice_type']">
           <a-radio-group
-            v-model:value="model.invoice_type"
-            :options="VAT_INVOICE_TYPE_OPTIONS"
+            v-model:value="formModelObject.invoice_type"
+            :options="INVOICE_TYPE_OPTIONS"
           >
           </a-radio-group>
         </a-form-item>
       </a-col>
-      <a-col :span="8" v-if="model.invoice_type === 3">
+      <a-col :span="8">
+        <a-form-item label="发票内容">商品明细</a-form-item>
+      </a-col>
+    </a-row>
+    <a-row>
+      <a-col :span="8" v-if="formModelObject.invoice_type === 1">
         <a-form-item label="发票抬头类型" :name="['invoice_kind']">
           <a-radio-group
-            v-model:value="model.invoice_kind"
+            v-model:value="formModelObject.invoice_kind"
             :options="INVOICE_HEADER_TYPE_OPTIONS"
           >
           </a-radio-group>
@@ -28,23 +33,18 @@
     </a-row>
     <a-row>
       <a-col :span="8">
-        <a-form-item label="发票内容" :name="['invoiceContent']">
-          <a-radio-group
-            v-model:value="model.invoiceContent"
-            :options="INVOICE_CONTENT_OPTIONS"
-          />
-        </a-form-item>
-      </a-col>
-      <a-col :span="8">
         <a-form-item
-          label="invoiceTitleFormItemLabel"
+          :label="
+            formModelObject.invoice_type === 2
+              ? '单位名称'
+              : INVOICE_HEADER_TYPE_ENMU[formModelObject.invoice_kind] + '名称'
+          "
           :name="['invoice_title']"
           :rules="{
             required: true,
-            message: '请填写',
           }"
         >
-          <a-input v-model:value="model.invoice_title" />
+          <a-input v-model:value="formModelObject.invoice_title" />
         </a-form-item>
       </a-col>
       <a-col
@@ -56,10 +56,9 @@
           :name="['vat_number']"
           :rules="{
             required: true,
-            message: '请填写',
           }"
         >
-          <a-input v-model:value="model.vat_number" />
+          <a-input v-model:value="formModelObject.vat_number" />
         </a-form-item>
       </a-col>
       <a-col
@@ -71,10 +70,9 @@
           :name="['et_bank_name']"
           :rules="{
             required: specialInvoiceBoolean,
-            message: '请填写',
           }"
         >
-          <a-input v-model:value="model.et_bank_name" />
+          <a-input v-model:value="formModelObject.et_bank_name" />
         </a-form-item>
       </a-col>
       <a-col
@@ -86,10 +84,9 @@
           :name="['et_bank_account']"
           :rules="{
             required: specialInvoiceBoolean,
-            message: '请填写',
           }"
         >
-          <a-input v-model:value="model.et_bank_account" />
+          <a-input v-model:value="formModelObject.et_bank_account" />
         </a-form-item>
       </a-col>
       <a-col
@@ -101,10 +98,9 @@
           :name="['et_address']"
           :rules="{
             required: specialInvoiceBoolean,
-            message: '请填写',
           }"
         >
-          <a-input v-model:value="model.et_address" />
+          <a-input v-model:value="formModelObject.et_address" />
         </a-form-item>
       </a-col>
       <a-col
@@ -116,22 +112,20 @@
           :name="['et_phone_num']"
           :rules="{
             required: specialInvoiceBoolean,
-            message: '请填写',
           }"
         >
-          <a-input v-model:value="model.et_phone_num" />
+          <a-input v-model:value="formModelObject.et_phone_num" />
         </a-form-item>
       </a-col>
-      <a-col :span="8" v-if="specialInvoiceBoolean">
+      <a-col :span="8" v-if="specialInvoiceBoolean || specialInvoiceBoolean">
         <a-form-item
           label="收票人姓名"
           :name="['invoice_username']"
           :rules="{
             required: true,
-            message: '请填写',
           }"
         >
-          <a-input v-model:value="model.invoice_username" />
+          <a-input v-model:value="formModelObject.invoice_username" />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -140,10 +134,9 @@
           :name="['invoice_phone_num']"
           :rules="{
             required: true,
-            message: '请填写',
           }"
         >
-          <a-input v-model:value="model.invoice_phone_num" />
+          <a-input v-model:value="formModelObject.invoice_phone_num" />
         </a-form-item>
       </a-col>
       <a-col
@@ -158,66 +151,36 @@
           :name="['invoice_email']"
           :rules="{
             required: true,
-            message: '请填写',
           }"
         >
-          <a-input v-model:value="model.invoice_email" />
+          <a-input v-model:value="formModelObject.invoice_email" />
         </a-form-item>
       </a-col>
-      <a-col :span="8" v-if="specialInvoiceBoolean">
+      <a-col :span="8" v-if="specialInvoiceBoolean || specialInvoiceBoolean">
         <a-form-item
           label="收票地址"
           :name="['mArea']"
           :rules="{
             required: true,
-            message: '请选择',
           }"
         >
-          <address-cascader v-model:value="model.mArea" />
+          <address-cascader v-model:value="formModelObject.mArea" />
         </a-form-item>
       </a-col>
-      <a-col :span="8" v-if="specialInvoiceBoolean">
+      <a-col :span="8" v-if="specialInvoiceBoolean || specialInvoiceBoolean">
         <a-form-item
           label="收票详细地址"
           :name="['invoice_address']"
           :rules="{
             required: true,
-            message: '请填写',
           }"
         >
-          <a-input v-model:value="model.invoice_address" />
+          <a-input v-model:value="formModelObject.invoice_address" />
         </a-form-item>
       </a-col>
     </a-row>
-    <a-row>
-      <a-col :span="8">
-        <a-form-item
-          label="开票主体信息"
-          :colon="false"
-          style="font-weight: 700"
-        />
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col :span="8">
-        <a-form-item label="支付类型" :name="['pay_mode']">
-          <a-select
-            :options="[
-              {
-                label: '货到付款',
-                value: 0,
-              },
-            ]"
-            v-model:value="model.pay_mode"
-          />
-        </a-form-item>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col :span="8">
-        <a-form-item label="订单信息" :colon="false" style="font-weight: 700" />
-      </a-col>
-    </a-row>
+    <a-divider orientation="left">开票主体信息</a-divider>
+    <a-divider orientation="left">订单信息</a-divider>
     <a-form-item :wrapper-col="{ offset: 1, span: 8 }">
       <a-button type="primary" html-type="submit">提交</a-button>
     </a-form-item>
@@ -248,14 +211,12 @@ import {
   InfoCircleOutlined,
 } from '@ant-design/icons-vue';
 import AddressCascader from '../../../components/cascader/addressCascader.vue';
-import {
-  GOODS_FORM_ENUM,
-} from '../../../data/dictionary';
+import { INVOICE_HEADER_TYPE_ENMU } from '../../../data/dictionary';
 import {
   WHETHER_OPTIONS,
   DELIVERY_METHOD_OPTIONS,
   INVOICE_HEADER_TYPE_OPTIONS,
-  VAT_INVOICE_TYPE_OPTIONS,
+  INVOICE_TYPE_OPTIONS,
   INVOICE_CONTENT_OPTIONS,
 } from '../../../data/options';
 import {} from './data';
@@ -264,9 +225,9 @@ import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 const goodsListModalVisible = ref(false);
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 const selectedRows = ref<SkuRequestResultInterface[]>([]);
-const model =
+const formModelObject =
   reactive<Api_proxy_order_Manage_Invoice_repairInvoice_params_interface>({
-    invoice_type: 3,
+    invoice_type: 1,
     invoice_kind: 1,
     invoiceContent: 1,
     et_address: '',
@@ -281,25 +242,23 @@ const model =
     vat_number: '',
     mArea: [],
   });
-// 电子普通单位
-const electronicCommonInvoiceUnitBoolean = ref(false);
-// 电子普通个人
-const electronicCommonInvoiceIndividualBoolean = ref(false);
+// 增值税电子普通-单位
+const electronicCommonInvoiceUnitBoolean = computed(
+  () => formModelObject.invoice_type === 1 && formModelObject.invoice_kind === 2
+);
+// 增值税电子普通-个人
+const electronicCommonInvoiceIndividualBoolean = computed(
+  () => formModelObject.invoice_type === 1 && formModelObject.invoice_kind === 1
+);
 // 专票
-const specialInvoiceBoolean = ref(false);
+const specialInvoiceBoolean = computed(
+  () => formModelObject.invoice_type === 2
+);
 
 const finish: FormInstance['onFinish'] = (values) => {
   goodsListModalVisible.value = true;
 };
 
-const formRef = ref<FormInstance>();
+const formRefObject = ref<FormInstance>();
 
-const goodsDeleteOutlinedClick = () => {
-  if (selectedRowKeys.value.length) {
-    model.dataSource = model.dataSource.filter(({ sku_id, spu_id }) => {
-      return !selectedRowKeys.value.includes(`${spu_id}/${sku_id}`);
-    });
-    selectedRowKeys.value = [];
-  }
-};
 </script>

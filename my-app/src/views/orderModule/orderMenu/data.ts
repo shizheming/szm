@@ -253,7 +253,6 @@ export const orderFormPageGoodsTableColumnsArray: TableColumnsType = [
     title: '类目',
     dataIndex: 'category_name',
     key: 'category_name',
-    width: 300,
   },
   {
     title: '订购单位',

@@ -13,7 +13,7 @@ const selectionOptionsArray = ref<SelectProps['options']>([]);
 if (apiDictCacheObject.supplierOptions) {
   selectionOptionsArray.value = apiDictCacheObject.supplierOptions;
 } else {
-  await supplierRequestFunction().then(({ data }) => {
+  supplierRequestFunction().then(({ data }) => {
     selectionOptionsArray.value = data.map(({ id, name }) => ({
       label: name,
       value: id,

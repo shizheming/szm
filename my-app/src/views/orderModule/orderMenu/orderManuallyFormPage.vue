@@ -33,7 +33,6 @@
           :name="['user_id']"
           :rules="{
             required: true,
-            message: '请选择',
           }"
         >
           <a-space>
@@ -78,7 +77,6 @@
           :name="['addressInfo', 'name']"
           :rules="{
             required: true,
-            message: '请填写',
           }"
         >
           <a-input v-model:value="formModelObject.addressInfo.name" />
@@ -90,7 +88,6 @@
           :name="['addressInfo', 'mobile']"
           :rules="{
             required: true,
-            message: '请填写',
           }"
         >
           <a-input v-model:value="formModelObject.addressInfo.mobile" :maxlength="11" />
@@ -117,7 +114,6 @@
           :name="['addressInfo', 'address']"
           :rules="{
             required: true,
-            message: '请填写',
           }"
         >
           <a-input v-model:value="formModelObject.addressInfo.address" />
@@ -183,7 +179,7 @@
           >
             <a-radio-group
               v-model:value="formModelObject.order_invoice.invoice_form"
-              :options="VAT_INVOICE_TYPE_OPTIONS"
+              :options="INVOICE_FORM_OPTIONS"
             >
             </a-radio-group>
           </a-form-item>
@@ -236,7 +232,6 @@
             :name="['order_invoice', 'invoice_title']"
             :rules="{
               required: true,
-              message: '请填写',
             }"
           >
             <a-input
@@ -257,7 +252,6 @@
             :name="['order_invoice', 'vat_number']"
             :rules="{
               required: true,
-              message: '请填写',
             }"
           >
             <a-input v-model:value="formModelObject.order_invoice.vat_number" />
@@ -276,7 +270,6 @@
             :name="['order_invoice', 'et_address']"
             :rules="{
               required: specialPaperEnterpriseBoolean,
-              message: '请填写',
             }"
           >
             <a-input v-model:value="formModelObject.order_invoice.et_address" />
@@ -295,7 +288,6 @@
             :name="['order_invoice', 'et_phone_num']"
             :rules="{
               required: specialPaperEnterpriseBoolean,
-              message: '请填写',
             }"
           >
             <a-input
@@ -316,7 +308,6 @@
             :name="['order_invoice', 'et_bank_name']"
             :rules="{
               required: specialPaperEnterpriseBoolean,
-              message: '请填写',
             }"
           >
             <a-input
@@ -337,7 +328,6 @@
             :name="['order_invoice', 'et_bank_account']"
             :rules="{
               required: specialPaperEnterpriseBoolean,
-              message: '请填写',
             }"
           >
             <a-input
@@ -358,7 +348,6 @@
             :name="['order_invoice', 'invoice_username']"
             :rules="{
               required: true,
-              message: '请填写',
             }"
           >
             <a-input
@@ -372,7 +361,6 @@
             :name="['order_invoice', 'invoice_phone_num']"
             :rules="{
               required: true,
-              message: '请填写',
             }"
           >
             <a-input
@@ -391,7 +379,6 @@
             :name="['order_invoice', 'invoice_email']"
             :rules="{
               required: true,
-              message: '请填写',
             }"
           >
             <a-input
@@ -412,7 +399,6 @@
             :name="['order_invoice', 'mArea']"
             :rules="{
               required: true,
-              message: '请选择',
             }"
           >
             <address-cascader
@@ -434,7 +420,6 @@
             :name="['order_invoice', 'invoice_address']"
             :rules="{
               required: true,
-              message: '请填写',
             }"
           >
             <a-input
@@ -460,7 +445,7 @@
       <delete-outlined @click="deleteOutlinedClickFunction" />
     </a-space>
     <a-table
-      :row-key="tableRowKey"
+      :row-key="tableRowKeyFunction"
       :columns="orderFormPageGoodsTableColumnsArray"
       :data-source="formModelObject.tableDataSourceArray"
       :pagination="false"
@@ -612,7 +597,7 @@ import { GOODS_FORM_ENUM } from '../../../data/dictionary';
 import {
   WHETHER_OPTIONS,
   DELIVERY_METHOD_OPTIONS,
-  VAT_INVOICE_TYPE_OPTIONS,
+  INVOICE_FORM_OPTIONS,
   INVOICE_CONTENT_OPTIONS,
 } from '../../../data/options';
 import {
@@ -1012,7 +997,7 @@ const setPriceFunction = throttle(() => {
 }, 500);
 
 // 设置表格唯一id
-const tableRowKey = ({ sku_id, spu_id }: SkuSingleInterface) => {
+const tableRowKeyFunction = ({ sku_id, spu_id }: SkuSingleInterface) => {
   return `${spu_id}/${sku_id}`;
 };
 </script>
