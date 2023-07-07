@@ -18,5 +18,7 @@ export const AREA_API_STRING = '/api/common/area';
 // 弹框api
 // 用户
 export const USER_API_STRING = '/api/proxy/user/User/UserSearch/epUserSearch';
-// sku
+// sku商品列表
 export const SKU_API_STRING = '/api/goods/sku/list';
+// 发票抬头
+export const INVOICE_TITLE_STRING = '/api/proxy/order/config/invoiceTitle/getList'

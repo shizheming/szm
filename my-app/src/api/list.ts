@@ -5,7 +5,7 @@ import {
   SkuRequestResultInterface,
 } from './interface';
 import axios from '../utils/axios';
-import { USER_API_STRING, SKU_API_STRING } from './api';
+import { USER_API_STRING, SKU_API_STRING, INVOICE_TITLE_STRING } from './api';
 
 // 用户列表
 export const userRequsetFunction = (
@@ -44,3 +44,11 @@ export const skuRequestFunction = (params: SkuRequestParamsInterface) => {
     params,
   });
 };
+
+// 发票抬头列表
+export const xxxxxxx = (params: SkuRequestParamsInterface) => {
+  return axios.post<SkuRequestResultInterface>(INVOICE_TITLE_STRING, {
+    params,
+  });
+};
+

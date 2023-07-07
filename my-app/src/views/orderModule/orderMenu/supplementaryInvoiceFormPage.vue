@@ -6,6 +6,7 @@
     @finish="finish"
   >
     <a-divider orientation="left">申请信息</a-divider>
+    <a-button @click="chooseInvoiceTitleClickFunction" size="small" type="primary">选择发票抬头</a-button>
     <a-row>
       <a-col :span="8">
         <a-form-item label="发票种类" :name="['invoice_type']">
@@ -254,6 +255,10 @@ const electronicCommonInvoiceIndividualBoolean = computed(
 const specialInvoiceBoolean = computed(
   () => formModelObject.invoice_type === 2
 );
+
+const chooseInvoiceTitleClickFunction = () => {
+
+}
 
 const finish: FormInstance['onFinish'] = (values) => {
   goodsListModalVisible.value = true;
