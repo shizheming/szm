@@ -37,8 +37,8 @@ export interface UserSingleInterface {
 // 用户列表出参
 export type UserRequestResultInterface = ListInterface<UserSingleInterface>;
 
-// 商品列表不带分页入参
-export interface SkuRequestParamsNoPageInterface {
+// 商品列表入参
+export type SkuRequestParamsInterface = Partial<{
   goods_search_value: string;
   goods_search_key: string;
   category_id: number;
@@ -46,11 +46,14 @@ export interface SkuRequestParamsNoPageInterface {
   sku_qty_start: number;
   sku_qty_end: number;
   category_id_array: number[];
-}
-
-// 商品列表入参
-export type SkuRequestParamsInterface =
-  Partial<SkuRequestParamsNoPageInterface> & PageInterface;
+  channel_id: number;
+  is_listing: number;
+  need_stock: number;
+  business_id: number;
+  is_support_local: number;
+  is_suit: number;
+}> &
+  PageInterface;
 
 // 商品列表单条出参
 export interface SkuSingleInterface {
@@ -220,3 +223,47 @@ export interface AddressSingleInterface {
   ad_code: number;
   real_name: string;
 }
+
+// 发票抬头单条出参
+export interface InvoiceTitleSingleInterface {
+  id: number;
+  invoice_kind: number;
+  invoice_title: string;
+  vat_number: string;
+  et_address: string;
+  et_phone_num: string;
+  et_bank_name: string;
+  et_bank_account: string;
+  invoice_username: string;
+  invoice_phone_num: string;
+  invoice_email: string;
+  invoice_province_id: number;
+  invoice_city_id: number;
+  invoice_district_id: number;
+  invoice_street_id: number;
+  invoice_address: string;
+  org_id: number;
+  user_id: number;
+  create_mode: number;
+  rank: number;
+  status: number;
+  is_delete: number;
+  enterprise_id: number;
+  create_time: number;
+  update_time: number;
+  delete_time: number;
+  modify_time: string;
+  number: number;
+  invoice_kind_name: string;
+}
+
+// 发票抬头出参
+export type InvoiceTitleInterface = ListInterface<InvoiceTitleSingleInterface>;
+
+// 发票抬头入参
+export type InvoiceTitleParamsInterface = Partial<{
+  invoice_kind: string;
+  invoice_phone_num: string;
+  vat_number: string;
+}> &
+  PageInterface;

@@ -490,19 +490,39 @@ export interface GetServerInfoRequestResultItemInterface {
   }[];
 }
 
-export interface Api_proxy_order_Manage_Invoice_repairInvoice_params_interface {
+export type InvoiceRepairInvoiceRequestParamsInterface = Partial<{
   invoice_type: number;
   invoice_kind: number;
-  invoiceContent: number;
-  et_address: string;
-  et_phone_num: string;
+  invoice_title: string;
+  vat_number: string;
   et_bank_name: string;
   et_bank_account: string;
+  et_address: string;
+  et_phone_num: string;
   invoice_username: string;
   invoice_phone_num: string;
   invoice_email: string;
   invoice_address: string;
-  invoice_title: string;
-  vat_number: string;
   mArea: number[];
+  name:string
+  sale_tax_num:string;
+  sale_address:string;
+  sale_phone:string;
+  sale_bank:string;
+  sale_account:string;
+}>;
+
+export interface InvoiceCodeSingleInterface {
+  invoice_company_code: string;
+  invoice_channel: string;
+  sale_tax_num: string;
+  sale_company: string;
+  sale_account: string;
+  sale_bank: string;
+  sale_address: string;
+  sale_phone: string;
+  payee: string;
+  checker: string;
+  clerk: string;
+  remark: string;
 }

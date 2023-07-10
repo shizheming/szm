@@ -26,7 +26,7 @@
         <a-col :span="8">
           <a-form-item :wrapper-col="{ offset: 6 }">
             <a-space style="font-size: 18px" size="large">
-              <a-button html-type="submit" type="primary">
+              <a-button html-type="submit" type="primary" :loading="loading">
                 <search-outlined />
               </a-button>
               <clear-outlined @click="clearOutlinedClickFunction" />
@@ -42,7 +42,7 @@
         onChange: tableRowSelectionOnChangeFunction,
         type: 'radio',
       }"
-      :data-source="data?.list"
+      :data-source="data"
       :columns="tableColumnsArray"
       :loading="loading"
       :pagination="tablePaginationObject"
@@ -124,7 +124,7 @@ const emitsFunction = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
   (
     event: 'select',
-    selectedRowKeys: TableRowSelection['selectedRowKeys'],
+    selectedRowKeysArray: TableRowSelection['selectedRowKeys'],
     selectedRowsArray: UserSingleInterface[]
   ): void;
 }>();
@@ -139,7 +139,7 @@ const { data, current, pageSize, run, loading, total } = usePagination(
   {
     manual: true,
     formatResult: ({ data }) => {
-      return data;
+      return data.list;
     },
     pagination: {
       currentKey: 'page',
@@ -193,19 +193,21 @@ const clearOutlinedClickFunction = () => {
 
 const modalOkFunction = async () => {
   formRefObject.value?.resetFields();
-  emitsFunction(
-    'select',
-    tableRowSelectionSelectedRowKeysArray.value,
-    selectedRowsArray
-  );
   confirmTableRowSelectionSelectedRowKeysArray = cloneDeep(
     tableRowSelectionSelectedRowKeysArray.value
   );
   confirmSelectedRowsArray = cloneDeep(selectedRowsArray);
-  emitsFunction('update:visible', false);
+  emitsFunction(
+    'select',
+    confirmTableRowSelectionSelectedRowKeysArray,
+    confirmSelectedRowsArray
+  );
+  modalCancelFunction();
 };
 const modalCancelFunction = () => {
   formRefObject.value?.resetFields();
+  tableRowSelectionSelectedRowKeysArray.value = [];
+  selectedRowsArray = [];
   emitsFunction('update:visible', false);
 };
 

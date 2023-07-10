@@ -4,10 +4,11 @@
     :ok-button-props="{
       disabled: !tableRowSelectionSelectedRowKeysArray.length,
     }"
-    title="用户选择"
+    title="添加抬头"
     @ok="modalOkFunction"
     @cancel="modalCancelFunction"
-    :width="1000"
+    width="100%"
+    wrap-class-name="full-modal"
   >
     <a-form
       ref="formRefObject"
@@ -21,12 +22,22 @@
             <a-input v-model:value="formModelObject.invoice_kind" />
           </a-form-item>
         </a-col>
+        <a-col :span="8">
+          <a-form-item label="税号" :name="['vat_number']">
+            <a-input v-model:value="formModelObject.vat_number" />
+          </a-form-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-item label="收票人手机" :name="['invoice_phone_num']">
+            <a-input v-model:value="formModelObject.invoice_phone_num" />
+          </a-form-item>
+        </a-col>
       </a-row>
       <a-row>
         <a-col :span="8">
           <a-form-item :wrapper-col="{ offset: 6 }">
             <a-space style="font-size: 18px" size="large">
-              <a-button html-type="submit" type="primary">
+              <a-button html-type="submit" type="primary" :loading="loading">
                 <search-outlined />
               </a-button>
               <clear-outlined @click="clearOutlinedClickFunction" />
@@ -36,7 +47,7 @@
       </a-row>
     </a-form>
     <a-table
-      row-key="user_id"
+      row-key="id"
       :row-selection="{
         selectedRowKeys: tableRowSelectionSelectedRowKeysArray,
         onChange: tableRowSelectionOnChangeFunction,
@@ -46,6 +57,7 @@
       :columns="tableColumnsArray"
       :loading="loading"
       :pagination="tablePaginationObject"
+      :scroll="{ x: 'max-content' }"
       @change="tableChangeFunction"
     >
       <template
@@ -54,7 +66,7 @@
           record,
         }: {
           column: TableColumnType,
-          record: UserSingleInterface,
+          record: InvoiceTitleSingleInterface,
         }"
       >
         <template v-if="column.key === 'operation'"> </template>
@@ -71,49 +83,80 @@ import {
   FormProps,
   TableColumnType,
 } from 'ant-design-vue';
-import { UserSingleInterface } from '../../api/interface';
-import { userRequsetFunction } from '../../api/list';
+import {
+  InvoiceTitleSingleInterface,
+  InvoiceTitleParamsInterface,
+} from '../../api/interface';
+import { invoiceTitleRequestFunction } from '../../api/list';
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import { PageInterface } from '../../interface';
 import { TableColumn, TableColumnsType } from 'ant-design-vue';
 import { cloneDeep } from 'lodash';
+import { INVOICE_HEADER_TYPE_ENMU } from '../../data/dictionary';
 const tableColumnsArray: TableColumnsType = [
   {
-    title: '用户名',
-    dataIndex: 'username',
-    key: 'username',
+    title: '序号',
+    dataIndex: 'number',
+    key: 'number',
+    width: 100,
   },
   {
-    title: '用户ID',
-    dataIndex: 'user_id',
-    key: 'user_id',
+    title: '发票抬头',
+    dataIndex: 'invoice_kind_name',
+    key: 'invoice_kind_name',
+    width: 100,
   },
   {
-    title: '微信昵称',
-    dataIndex: 'wx_nickname',
-    key: 'wx_nickname',
+    title: '税号',
+    dataIndex: 'vat_number',
+    key: 'vat_number',
   },
   {
-    title: '买家姓名',
-    dataIndex: 'name',
-    key: 'name',
+    title: '注册地址',
+    dataIndex: 'et_address',
+    key: 'et_address',
   },
   {
-    title: '手机号',
-    dataIndex: 'phone',
-    key: 'phone',
+    title: '注册电话',
+    dataIndex: 'et_phone_num',
+    key: 'et_phone_num',
   },
   {
-    title: '用户等级',
-    dataIndex: 'user_level_name',
-    key: 'user_level_name',
+    title: '开户银行',
+    dataIndex: 'et_bank_name',
+    key: 'et_bank_name',
   },
   {
-    title: '企业名称',
-    dataIndex: 'company_name',
-    key: 'company_name',
+    title: '银行账号',
+    dataIndex: 'et_bank_account',
+    key: 'et_bank_account',
+  },
+  {
+    title: '收票人',
+    dataIndex: 'invoice_username',
+    key: 'invoice_username',
+  },
+  {
+    title: '收票人手机',
+    dataIndex: 'invoice_phone_num',
+    key: 'invoice_phone_num',
+  },
+  {
+    title: '收票人邮箱',
+    dataIndex: 'invoice_email',
+    key: 'invoice_email',
+  },
+  {
+    title: '收票地址',
+    dataIndex: 'invoiceArea',
+    key: 'invoiceArea',
+  },
+  {
+    title: '详细地址',
+    dataIndex: 'invoice_address',
+    key: 'invoice_address',
   },
 ];
 
@@ -124,8 +167,8 @@ const emitsFunction = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
   (
     event: 'select',
-    selectedRowKeys: TableRowSelection['selectedRowKeys'],
-    selectedRowsArray: UserSingleInterface[]
+    selectedRowKeysArray: TableRowSelection['selectedRowKeys'],
+    selectedRowsArray: InvoiceTitleSingleInterface[]
   ): void;
 }>();
 
@@ -133,12 +176,17 @@ const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
 const formRefObject = ref<FormInstance>();
-let selectedRowsArray: UserSingleInterface[] = [];
+let selectedRowsArray: InvoiceTitleSingleInterface[] = [];
 const { data, current, pageSize, run, loading, total } = usePagination(
-  userRequsetFunction,
+  invoiceTitleRequestFunction,
   {
     manual: true,
     formatResult: ({ data }) => {
+      data.list.forEach((item, index) => {
+        item.number = index + 1;
+        item.invoice_kind_name = INVOICE_HEADER_TYPE_ENMU[item.invoice_kind];
+        return item;
+      });
       return data;
     },
     pagination: {
@@ -148,8 +196,7 @@ const { data, current, pageSize, run, loading, total } = usePagination(
     },
   }
 );
-const formModelObject = reactive<{ user_id: string } & PageInterface>({
-  user_id: undefined,
+const formModelObject = reactive<InvoiceTitleParamsInterface>({
   page: current.value,
   page_size: pageSize.value,
 });
@@ -165,7 +212,7 @@ const tablePaginationObject = computed(() => {
 
 let confirmTableRowSelectionSelectedRowKeysArray: TableRowSelection['selectedRowKeys'] =
   [];
-let confirmSelectedRowsArray: UserSingleInterface[] = [];
+let confirmSelectedRowsArray: InvoiceTitleSingleInterface[] = [];
 
 const formFinishFunction = async () => {
   run(formModelObject);
@@ -193,19 +240,21 @@ const clearOutlinedClickFunction = () => {
 
 const modalOkFunction = async () => {
   formRefObject.value?.resetFields();
-  emitsFunction(
-    'select',
-    tableRowSelectionSelectedRowKeysArray.value,
-    selectedRowsArray
-  );
   confirmTableRowSelectionSelectedRowKeysArray = cloneDeep(
     tableRowSelectionSelectedRowKeysArray.value
   );
   confirmSelectedRowsArray = cloneDeep(selectedRowsArray);
-  emitsFunction('update:visible', false);
+  emitsFunction(
+    'select',
+    confirmTableRowSelectionSelectedRowKeysArray,
+    confirmSelectedRowsArray
+  );
+  modalCancelFunction();
 };
 const modalCancelFunction = () => {
   formRefObject.value?.resetFields();
+  tableRowSelectionSelectedRowKeysArray.value = [];
+  selectedRowsArray = [];
   emitsFunction('update:visible', false);
 };
 
@@ -221,3 +270,18 @@ watch(
   }
 );
 </script>
+<style>
+.full-modal .ant-modal {
+  max-width: 100%;
+  top: 0;
+  padding-bottom: 0;
+  margin: 0;
+}
+.full-modal .ant-modal-content {
+  display: flex;
+  flex-direction: column;
+}
+.full-modal .ant-modal-body {
+  flex: 1;
+}
+</style>

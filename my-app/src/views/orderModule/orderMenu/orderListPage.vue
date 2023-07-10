@@ -492,7 +492,7 @@
       <a-col :span="8">
         <a-form-item :wrapper-col="{ offset: 6 }">
           <a-space size="large">
-            <a-button html-type="submit" type="primary" title="kkkkkkk">
+            <a-button html-type="submit" type="primary" :loading="loading">
               <search-outlined />
             </a-button>
             <clear-outlined @click="clearOutlinedClick" />
@@ -530,6 +530,7 @@
     :columns="columns"
     :loading="loading"
     :pagination="pagination"
+    :scroll="{ x: 'max-content' }"
     @change="tableChange"
   >
     <template

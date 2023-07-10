@@ -5,7 +5,7 @@ export interface PageInterface {
 }
 
 // 列表出参
-export interface ListInterface<T> {
+export interface ListInterface<T> extends PageInterface {
   list: T[];
 }
 

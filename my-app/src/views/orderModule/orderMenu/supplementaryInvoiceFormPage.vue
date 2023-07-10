@@ -6,7 +6,11 @@
     @finish="finish"
   >
     <a-divider orientation="left">申请信息</a-divider>
-    <a-button @click="chooseInvoiceTitleClickFunction" size="small" type="primary">选择发票抬头</a-button>
+    <a-button
+      @click="chooseInvoiceTitleClickFunction"
+      size="small"
+      >选择发票抬头</a-button
+    >
     <a-row>
       <a-col :span="8">
         <a-form-item label="发票种类" :name="['invoice_type']">
@@ -181,11 +185,61 @@
       </a-col>
     </a-row>
     <a-divider orientation="left">开票主体信息</a-divider>
+    <a-row>
+      <a-col :span="8">
+        <a-form-item label="名称" :name="['xxx']">
+          <a-select
+            v-model:value="formModelObject.name"
+            :options="nameSelectOptionsArray"
+            @change="nameSelectChangeFunction"
+          />
+        </a-form-item>
+      </a-col>
+    </a-row>
+    <a-row>
+      <a-col :span="8">
+        <a-form-item label="税号">
+          {{ formModelObject.sale_tax_num }}
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="地址">
+          {{ formModelObject.sale_address }}
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="电话">
+          {{ formModelObject.sale_phone }}
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="开户银行">
+          {{ formModelObject.sale_bank }}
+        </a-form-item>
+      </a-col>
+      <a-col :span="8">
+        <a-form-item label="银行账号">
+          {{ formModelObject.sale_account }}
+        </a-form-item>
+      </a-col>
+    </a-row>
     <a-divider orientation="left">订单信息</a-divider>
+    <a-space>
+      <a-button @click="selectOrderButtonClickFunction">
+        <plus-outlined />
+      </a-button>
+      <delete-outlined @click="deleteOutlinedClickFunction" />
+    </a-space>
     <a-form-item :wrapper-col="{ offset: 1, span: 8 }">
-      <a-button type="primary" html-type="submit">提交</a-button>
+      <a-button type="primary" html-type="submit">
+        <save-outlined />
+      </a-button>
     </a-form-item>
   </a-form>
+  <invoice-title-list-modal
+    v-model:visible="invoiceTitleListModalVisibleBoolean"
+    @select="personTitleListModalSelectFunction"
+  />
 </template>
 <script setup lang="ts">
 import {
@@ -203,13 +257,15 @@ import {
   TableProps,
   TableColumnType,
   Modal,
+  SelectProps,
 } from 'ant-design-vue';
-import { Api_proxy_order_Manage_Invoice_repairInvoice_params_interface } from './interface';
+import { InvoiceRepairInvoiceRequestParamsInterface } from './interface';
 import {
   PlusOutlined,
   DeleteOutlined,
   EditOutlined,
   InfoCircleOutlined,
+  SaveOutlined
 } from '@ant-design/icons-vue';
 import AddressCascader from '../../../components/cascader/addressCascader.vue';
 import { INVOICE_HEADER_TYPE_ENMU } from '../../../data/dictionary';
@@ -221,28 +277,27 @@ import {
   INVOICE_CONTENT_OPTIONS,
 } from '../../../data/options';
 import {} from './data';
-import { SkuRequestResultInterface } from '../../../api/interface';
+import {
+  InvoiceTitleSingleInterface,
+  SkuRequestResultInterface,
+} from '../../../api/interface';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
+import { partPartial } from '../../../interface';
+import { getInvoiceCodeRequestFunction } from './api';
+import { DefaultOptionType } from 'ant-design-vue/lib/select';
 const goodsListModalVisible = ref(false);
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 const selectedRows = ref<SkuRequestResultInterface[]>([]);
-const formModelObject =
-  reactive<Api_proxy_order_Manage_Invoice_repairInvoice_params_interface>({
-    invoice_type: 1,
-    invoice_kind: 1,
-    invoiceContent: 1,
-    et_address: '',
-    et_phone_num: '',
-    et_bank_name: '',
-    et_bank_account: '',
-    invoice_username: '',
-    invoice_phone_num: '',
-    invoice_email: '',
-    invoice_address: '',
-    invoice_title: '',
-    vat_number: '',
-    mArea: [],
-  });
+const InvoiceTitleListModal = defineAsyncComponent(
+  () => import('../../../components/modal/invoiceTitleListModal.vue')
+);
+const invoiceTitleListModalVisibleBoolean = ref(false);
+const nameSelectOptionsArray = ref<SelectProps['options']>([]);
+const formModelObject = reactive<InvoiceRepairInvoiceRequestParamsInterface>({
+  invoice_type: 1,
+  invoice_kind: 1,
+  mArea: [],
+});
 // 增值税电子普通-单位
 const electronicCommonInvoiceUnitBoolean = computed(
   () => formModelObject.invoice_type === 1 && formModelObject.invoice_kind === 2
@@ -257,13 +312,57 @@ const specialInvoiceBoolean = computed(
 );
 
 const chooseInvoiceTitleClickFunction = () => {
-
-}
+  invoiceTitleListModalVisibleBoolean.value = true;
+};
 
 const finish: FormInstance['onFinish'] = (values) => {
   goodsListModalVisible.value = true;
 };
 
-const formRefObject = ref<FormInstance>();
+const personTitleListModalSelectFunction: (
+  rowKeys: TableRowSelection['selectedRowKeys'],
+  rows: InvoiceTitleSingleInterface[]
+) => void = (keys, [row]) => {
+  ({
+    invoice_kind: formModelObject.invoice_kind,
+    invoice_title: formModelObject.invoice_title,
+    vat_number: formModelObject.vat_number,
+    et_bank_name: formModelObject.et_bank_name,
+    et_bank_account: formModelObject.et_bank_account,
+    et_address: formModelObject.et_address,
+    et_phone_num: formModelObject.et_phone_num,
+    invoice_username: formModelObject.invoice_username,
+    invoice_phone_num: formModelObject.invoice_phone_num,
+    invoice_email: formModelObject.invoice_email,
+    invoice_address: formModelObject.invoice_address,
+  } = row);
+};
 
+const nameSelectChangeFunction: SelectProps['onChange'] = (value, opt) => {
+  ({
+    sale_tax_num: formModelObject.sale_tax_num,
+    sale_address: formModelObject.sale_address,
+    sale_phone: formModelObject.sale_phone,
+    sale_bank: formModelObject.sale_bank,
+    sale_account: formModelObject.sale_account,
+  } = opt as DefaultOptionType);
+};
+
+const selectOrderButtonClickFunction = () => {}
+const deleteOutlinedClickFunction = () => {}
+
+getInvoiceCodeRequestFunction().then(({ data }) => {
+  nameSelectOptionsArray.value = data.map((item) => {
+    const { sale_company, invoice_company_code } = item;
+    return {
+      label: sale_company,
+      value: invoice_company_code,
+      ...item,
+    };
+  });
+  formModelObject.name = data[0].invoice_company_code;
+  nameSelectChangeFunction(undefined, data[0]);
+});
+
+const formRefObject = ref<FormInstance>();
 </script>

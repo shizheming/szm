@@ -95,7 +95,7 @@
         <a-col :span="8">
           <a-form-item :wrapper-col="{ offset: 6 }">
             <a-space style="font-size: 18px" size="large">
-              <a-button html-type="submit" type="primary">
+              <a-button html-type="submit" type="primary" :loading="loading">
                 <search-outlined />
               </a-button>
               <clear-outlined @click="clearOutlinedClickFunction" />
@@ -116,6 +116,7 @@
       :columns="tableColumnsArray"
       :loading="loading"
       :pagination="tablePaginationObject"
+      :scroll="{ x: 'max-content' }"
       @change="tableChangeFunction"
     >
       <template
@@ -267,7 +268,7 @@ const tableRowSelectionSelectedRowKeysArray = ref<
 >([]);
 let noSelectedRowKeysArray: string[] = [];
 const formRefObject = ref<FormInstance>();
-const selectedRowsArray = ref<SkuSingleInterface[]>([]);
+let selectedRowsArray: SkuSingleInterface[] = [];
 const { data, current, pageSize, run, loading, total } = usePagination(
   skuRequestFunction,
   {
@@ -296,6 +297,7 @@ const { data, current, pageSize, run, loading, total } = usePagination(
   }
 );
 const formModelObject = reactive<SkuRequestParamsInterface>({
+  category_id_array: [],
   channel_id: 1,
   is_listing: 1,
   need_stock: 1,
@@ -339,7 +341,7 @@ const tableRowSelectionOnChangeFunction: TableRowSelection['onChange'] = (
   rows
 ) => {
   tableRowSelectionSelectedRowKeysArray.value = keys;
-  selectedRowsArray.value = rows;
+  selectedRowsArray = rows;
 };
 
 const tableChangeFunction: TableProps['onChange'] = async (pag) => {
@@ -372,9 +374,7 @@ const modalOkFunction = async () => {
   modalConfirmLoadingBoolean.value = true;
   // 验证选择得商品是否在可配送的范围内
   let { data } = await api_goods_sku_getSkuAreaBySkuIds({
-    shop_goods_ids: selectedRowsArray.value.map(
-      ({ shop_goods_id }) => shop_goods_id
-    ),
+    shop_goods_ids: selectedRowsArray.map(({ shop_goods_id }) => shop_goods_id),
     province: propsObject.area[0],
     district: propsObject.area[2],
     channel_id: 1,
@@ -388,7 +388,7 @@ const modalOkFunction = async () => {
     );
     let spuSkuArray: string[] = [];
     data.forEach((item) => {
-      selectedRowsArray.value = selectedRowsArray.value.filter((current) => {
+      selectedRowsArray = selectedRowsArray.filter((current) => {
         if (current.shop_goods_id !== item) {
           return true;
         } else {
@@ -402,7 +402,7 @@ const modalOkFunction = async () => {
       spuSkuArray
     );
   }
-  emitsFunction('select', selectedRowsArray.value);
+  emitsFunction('select', selectedRowsArray);
   emitsFunction('update:visible', false);
   modalConfirmLoadingBoolean.value = false;
 };
@@ -410,7 +410,7 @@ const modalCancelFunction = () => {
   emitsFunction('update:visible', false);
   formRefObject.value?.resetFields();
   tableRowSelectionSelectedRowKeysArray.value = [];
-  selectedRowsArray.value = [];
+  selectedRowsArray = [];
 };
 
 // 这个watch其实概念上就是modal自己显示隐藏得change事件
