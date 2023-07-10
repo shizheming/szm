@@ -5,9 +5,16 @@ import {
   SkuRequestResultInterface,
   InvoiceTitleInterface,
   InvoiceTitleParamsInterface,
+  OrderRequestParamsInterface,
+  orderRequestResultInterType,
 } from './interface';
 import axios from '../utils/axios';
-import { USER_API_STRING, SKU_API_STRING, INVOICE_TITLE_STRING } from './api';
+import {
+  USER_API_STRING,
+  SKU_API_STRING,
+  INVOICE_TITLE_STRING,
+  ORDER_STRING,
+} from './api';
 
 // 用户列表
 export const userRequsetFunction = (
@@ -48,9 +55,17 @@ export const skuRequestFunction = (params: SkuRequestParamsInterface) => {
 };
 
 // 发票抬头列表
-export const invoiceTitleRequestFunction = (params: InvoiceTitleParamsInterface) => {
+export const invoiceTitleRequestFunction = (
+  params: InvoiceTitleParamsInterface
+) => {
   return axios.post<InvoiceTitleInterface>(INVOICE_TITLE_STRING, {
     params,
   });
 };
 
+// 订单列表
+export const orderRequestFunction = (params: OrderRequestParamsInterface) => {
+  return axios.post<orderRequestResultInterType>(ORDER_STRING, {
+    params,
+  });
+};

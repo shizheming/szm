@@ -646,7 +646,7 @@
               }"
             >
               <template v-if="column.key === 'pic'">
-                <a-image :src="itemRecord.pic_url_pic" :width="100" />
+                <a-image :src="itemRecord.pic_url_pic" :width="50" />
               </template>
             </template>
           </a-table>

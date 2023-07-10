@@ -267,3 +267,36 @@ export type InvoiceTitleParamsInterface = Partial<{
   vat_number: string;
 }> &
   PageInterface;
+
+// 订单搜索
+export type OrderRequestParamsInterface = Partial<{
+  osl_seq: string;
+  user_id: string;
+  shop_name: string;
+  pay_status: string;
+  orderTime: string;
+}> &
+  PageInterface;
+
+// 订单单条出参
+export interface orderSingleInterface {
+  ono: string;
+  user_id: number;
+  sub_list: {
+    ono: string;
+    osl_seq: string;
+    user_id: number;
+    sub_status_name: string;
+    pay_status_name: string;
+    shop_name: string;
+    sub_org_name: string;
+    sub_purchase_amount: number;
+    sub_total_pay: number;
+    create_datetime: string;
+    create_mode_name: string;
+    allow_invoice_amount: number;
+  }[];
+}
+
+// 订单出参
+export type orderRequestResultInterType = ListInterface<orderSingleInterface>

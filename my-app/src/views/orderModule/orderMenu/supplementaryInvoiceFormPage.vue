@@ -240,6 +240,10 @@
     v-model:visible="invoiceTitleListModalVisibleBoolean"
     @select="personTitleListModalSelectFunction"
   />
+  <order-list-modal 
+  v-model:visible="orderListModalVisibleBoolean"
+    @select="orderListModalSelectFunction"
+  />
 </template>
 <script setup lang="ts">
 import {
@@ -291,7 +295,11 @@ const selectedRows = ref<SkuRequestResultInterface[]>([]);
 const InvoiceTitleListModal = defineAsyncComponent(
   () => import('../../../components/modal/invoiceTitleListModal.vue')
 );
+const OrderListModal = defineAsyncComponent(
+  () => import('../../../components/modal/orderListModal.vue')
+);
 const invoiceTitleListModalVisibleBoolean = ref(false);
+const orderListModalVisibleBoolean = ref(false)
 const nameSelectOptionsArray = ref<SelectProps['options']>([]);
 const formModelObject = reactive<InvoiceRepairInvoiceRequestParamsInterface>({
   invoice_type: 1,
@@ -348,8 +356,12 @@ const nameSelectChangeFunction: SelectProps['onChange'] = (value, opt) => {
   } = opt as DefaultOptionType);
 };
 
-const selectOrderButtonClickFunction = () => {}
+const selectOrderButtonClickFunction = () => {
+  orderListModalVisibleBoolean.value = true;
+}
 const deleteOutlinedClickFunction = () => {}
+
+const orderListModalSelectFunction = () => {}
 
 getInvoiceCodeRequestFunction().then(({ data }) => {
   nameSelectOptionsArray.value = data.map((item) => {

@@ -21,4 +21,7 @@ export const USER_API_STRING = '/api/proxy/user/User/UserSearch/epUserSearch';
 // sku商品列表
 export const SKU_API_STRING = '/api/goods/sku/list';
 // 发票抬头
-export const INVOICE_TITLE_STRING = '/api/proxy/order/config/invoiceTitle/getList'
+export const INVOICE_TITLE_STRING =
+  '/api/proxy/order/config/invoiceTitle/getList';
+// 订单
+export const ORDER_STRING = '/api/proxy/order/Manage/query/searchOrder';
