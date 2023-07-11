@@ -493,7 +493,7 @@
         <a-form-item :wrapper-col="{ offset: 6 }">
           <a-space size="large">
             <a-button html-type="submit" type="primary" :loading="loading">
-              <search-outlined />
+              <template #icon><search-outlined /></template>
             </a-button>
             <clear-outlined @click="clearOutlinedClick" />
             <up-outlined @click="arrowClick" v-if="isExpandArrowBoolean" />

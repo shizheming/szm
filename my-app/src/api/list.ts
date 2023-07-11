@@ -65,7 +65,5 @@ export const invoiceTitleRequestFunction = (
 
 // 订单列表
 export const orderRequestFunction = (params: OrderRequestParamsInterface) => {
-  return axios.post<orderRequestResultInterType>(ORDER_STRING, {
-    params,
-  });
+  return axios.post<orderRequestResultInterType>(ORDER_STRING, params);
 };

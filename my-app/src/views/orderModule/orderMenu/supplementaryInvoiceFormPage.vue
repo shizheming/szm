@@ -6,9 +6,7 @@
     @finish="finish"
   >
     <a-divider orientation="left">申请信息</a-divider>
-    <a-button
-      @click="chooseInvoiceTitleClickFunction"
-      size="small"
+    <a-button @click="chooseInvoiceTitleClickFunction" size="small"
       >选择发票抬头</a-button
     >
     <a-row>
@@ -240,8 +238,9 @@
     v-model:visible="invoiceTitleListModalVisibleBoolean"
     @select="personTitleListModalSelectFunction"
   />
-  <order-list-modal 
-  v-model:visible="orderListModalVisibleBoolean"
+  <order-list-modal
+    v-model:visible="orderListModalVisibleBoolean"
+    :invoice-code="formModelObject.name"
     @select="orderListModalSelectFunction"
   />
 </template>
@@ -269,7 +268,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   InfoCircleOutlined,
-  SaveOutlined
+  SaveOutlined,
 } from '@ant-design/icons-vue';
 import AddressCascader from '../../../components/cascader/addressCascader.vue';
 import { INVOICE_HEADER_TYPE_ENMU } from '../../../data/dictionary';
@@ -299,12 +298,13 @@ const OrderListModal = defineAsyncComponent(
   () => import('../../../components/modal/orderListModal.vue')
 );
 const invoiceTitleListModalVisibleBoolean = ref(false);
-const orderListModalVisibleBoolean = ref(false)
+const orderListModalVisibleBoolean = ref(false);
 const nameSelectOptionsArray = ref<SelectProps['options']>([]);
 const formModelObject = reactive<InvoiceRepairInvoiceRequestParamsInterface>({
   invoice_type: 1,
   invoice_kind: 1,
   mArea: [],
+  name:''
 });
 // 增值税电子普通-单位
 const electronicCommonInvoiceUnitBoolean = computed(
@@ -358,10 +358,10 @@ const nameSelectChangeFunction: SelectProps['onChange'] = (value, opt) => {
 
 const selectOrderButtonClickFunction = () => {
   orderListModalVisibleBoolean.value = true;
-}
-const deleteOutlinedClickFunction = () => {}
+};
+const deleteOutlinedClickFunction = () => {};
 
-const orderListModalSelectFunction = () => {}
+const orderListModalSelectFunction = () => {};
 
 getInvoiceCodeRequestFunction().then(({ data }) => {
   nameSelectOptionsArray.value = data.map((item) => {

@@ -96,7 +96,7 @@
           <a-form-item :wrapper-col="{ offset: 6 }">
             <a-space style="font-size: 18px" size="large">
               <a-button html-type="submit" type="primary" :loading="loading">
-                <search-outlined />
+                <template #icon><search-outlined /></template>
               </a-button>
               <clear-outlined @click="clearOutlinedClickFunction" />
             </a-space>
@@ -333,6 +333,7 @@ const tablePaginationObject = computed(() => {
     current: current.value,
     pageSize: pageSize.value,
     hideOnSinglePage: true,
+    showQuickJumper: true,
   };
 });
 

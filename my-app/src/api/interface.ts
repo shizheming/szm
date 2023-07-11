@@ -275,28 +275,33 @@ export type OrderRequestParamsInterface = Partial<{
   shop_name: string;
   pay_status: string;
   orderTime: string;
+  invoice_code: string;
+  source_type: number;
 }> &
   PageInterface;
 
 // 订单单条出参
-export interface orderSingleInterface {
+export interface OrderSingleInterface {
   ono: string;
   user_id: number;
-  sub_list: {
-    ono: string;
-    osl_seq: string;
-    user_id: number;
-    sub_status_name: string;
-    pay_status_name: string;
-    shop_name: string;
-    sub_org_name: string;
-    sub_purchase_amount: number;
-    sub_total_pay: number;
-    create_datetime: string;
-    create_mode_name: string;
-    allow_invoice_amount: number;
-  }[];
+  sub_list: OrderRowSingleInterface[];
+}
+// 订单行出参，把subList拿出来了，上面是主单号维度，下面是子单号维度
+export interface OrderRowSingleInterface {
+  ono: string;
+  osl_seq: string;
+  user_id: number;
+  sub_status_name: string;
+  pay_status_name: string;
+  shop_name: string;
+  sub_org_name: string;
+  sub_purchase_amount: number;
+  sub_total_pay: number;
+  create_datetime: string;
+  create_mode_name: string;
+  allow_invoice_amount: number;
+  rowSpan: number;
 }
 
 // 订单出参
-export type orderRequestResultInterType = ListInterface<orderSingleInterface>
+export type orderRequestResultInterType = ListInterface<OrderSingleInterface | OrderRowSingleInterface>;

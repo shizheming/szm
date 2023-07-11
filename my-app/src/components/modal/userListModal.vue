@@ -27,7 +27,7 @@
           <a-form-item :wrapper-col="{ offset: 6 }">
             <a-space style="font-size: 18px" size="large">
               <a-button html-type="submit" type="primary" :loading="loading">
-                <search-outlined />
+                <template #icon><search-outlined /></template>
               </a-button>
               <clear-outlined @click="clearOutlinedClickFunction" />
             </a-space>
@@ -42,7 +42,7 @@
         onChange: tableRowSelectionOnChangeFunction,
         type: 'radio',
       }"
-      :data-source="data"
+      :data-source="data?.list"
       :columns="tableColumnsArray"
       :loading="loading"
       :pagination="tablePaginationObject"
@@ -139,7 +139,7 @@ const { data, current, pageSize, run, loading, total } = usePagination(
   {
     manual: true,
     formatResult: ({ data }) => {
-      return data.list;
+      return data;
     },
     pagination: {
       currentKey: 'page',
@@ -160,6 +160,7 @@ const tablePaginationObject = computed(() => {
     current: current.value,
     pageSize: pageSize.value,
     hideOnSinglePage: true,
+    showQuickJumper: true,
   };
 });
 

@@ -7,7 +7,8 @@
     title="选择订单"
     @ok="modalOkFunction"
     @cancel="modalCancelFunction"
-    :width="1400"
+    width="100%"
+    wrap-class-name="full-modal"
   >
     <a-form
       ref="formRefObject"
@@ -39,9 +40,9 @@
         <a-col :span="8">
           <a-form-item label="下单" :name="['orderTime']">
             <a-range-picker
-            v-model:value="formModelObject.orderTime"
-            value-format="YYYY-MM-DD HH:mm:ss"
-          />
+              v-model:value="formModelObject.orderTime"
+              value-format="YYYY-MM-DD HH:mm:ss"
+            />
           </a-form-item>
         </a-col>
       </a-row>
@@ -50,7 +51,7 @@
           <a-form-item :wrapper-col="{ offset: 6 }">
             <a-space style="font-size: 18px" size="large">
               <a-button html-type="submit" type="primary" :loading="loading">
-                <search-outlined />
+                <template #icon><search-outlined /></template>
               </a-button>
               <clear-outlined @click="clearOutlinedClickFunction" />
             </a-space>
@@ -59,16 +60,17 @@
       </a-row>
     </a-form>
     <a-table
-      row-key="user_id"
+      row-key="ono"
       :row-selection="{
         selectedRowKeys: tableRowSelectionSelectedRowKeysArray,
         onChange: tableRowSelectionOnChangeFunction,
         type: 'radio',
       }"
-      :data-source="data"
+      :data-source="data?.list"
       :columns="tableColumnsArray"
       :loading="loading"
       :pagination="tablePaginationObject"
+      :scroll="{ x: 'max-content' }"
       @change="tableChangeFunction"
     >
       <template
@@ -77,7 +79,7 @@
           record,
         }: {
           column: TableColumnType,
-          record: orderSingleInterface,
+          record: OrderSingleInterface,
         }"
       >
         <template v-if="column.key === 'operation'"> </template>
@@ -94,7 +96,11 @@ import {
   FormProps,
   TableColumnType,
 } from 'ant-design-vue';
-import { orderSingleInterface, OrderRequestParamsInterface } from '../../api/interface';
+import {
+  OrderSingleInterface,
+  OrderRequestParamsInterface,
+  OrderRowSingleInterface,
+} from '../../api/interface';
 import { orderRequestFunction } from '../../api/list';
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
@@ -104,51 +110,72 @@ import { TableColumn, TableColumnsType } from 'ant-design-vue';
 import { cloneDeep } from 'lodash';
 const tableColumnsArray: TableColumnsType = [
   {
-    title: '用户名',
-    dataIndex: 'username',
-    key: 'username',
+    title: '主订单号',
+    dataIndex: 'ono',
+    key: 'ono',
+    customCell: ({ rowSpan }) => {
+      return {
+        rowSpan,
+      };
+    },
   },
   {
-    title: '用户ID',
-    dataIndex: 'user_id',
-    key: 'user_id',
+    title: '支付状态',
+    dataIndex: 'pay_status_name',
+    key: 'pay_status_name',
   },
   {
-    title: '微信昵称',
-    dataIndex: 'wx_nickname',
-    key: 'wx_nickname',
+    title: '发货状态',
+    dataIndex: 'sub_status_name',
+    key: 'sub_status_name',
   },
   {
-    title: '买家姓名',
-    dataIndex: 'name',
-    key: 'name',
+    title: '商品实付金额',
+    dataIndex: 'money_sub_total_pay',
+    key: 'money_sub_total_pay',
   },
   {
-    title: '手机号',
-    dataIndex: 'phone',
-    key: 'phone',
+    title: '销售店铺',
+    dataIndex: 'shop_name',
+    key: 'shop_name',
   },
   {
-    title: '用户等级',
-    dataIndex: 'user_level_name',
-    key: 'user_level_name',
+    title: '销售组织',
+    dataIndex: 'sub_org_name',
+    key: 'sub_org_name',
   },
   {
-    title: '企业名称',
-    dataIndex: 'company_name',
-    key: 'company_name',
+    title: '剩余可申请开票金额',
+    dataIndex: 'money_allow_invoice_amount',
+    key: 'money_allow_invoice_amount',
+  },
+  {
+    title: '订单创建时间',
+    dataIndex: 'create_datetime',
+    key: 'create_datetime',
+  },
+  {
+    title: '录入方式',
+    dataIndex: 'create_mode_name',
+    key: 'create_mode_name',
+  },
+  {
+    title: '订单编号',
+    dataIndex: 'osl_seq',
+    key: 'osl_seq',
   },
 ];
 
 const propsObject = defineProps<{
   visible: boolean;
+  invoiceCode: string;
 }>();
 const emitsFunction = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
   (
     event: 'select',
     selectedRowKeysArray: TableRowSelection['selectedRowKeys'],
-    selectedRowsArray: orderSingleInterface[]
+    selectedRowsArray: OrderSingleInterface[]
   ): void;
 }>();
 
@@ -156,13 +183,21 @@ const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
 const formRefObject = ref<FormInstance>();
-let selectedRowsArray: orderSingleInterface[] = [];
+let selectedRowsArray: OrderSingleInterface[] = [];
 const { data, current, pageSize, run, loading, total } = usePagination(
   orderRequestFunction,
   {
     manual: true,
     formatResult: ({ data }) => {
-      return data.list;
+      data.list = (data.list as OrderSingleInterface[])
+        .map((item) => {
+          item.sub_list.forEach((current, index) => {
+            current.rowSpan = index === 0 ? item.sub_list.length : 0;
+          });
+          return item.sub_list;
+        })
+        .flat();
+      return data;
     },
     pagination: {
       currentKey: 'page',
@@ -174,6 +209,7 @@ const { data, current, pageSize, run, loading, total } = usePagination(
 const formModelObject = reactive<OrderRequestParamsInterface>({
   page: current.value,
   page_size: pageSize.value,
+  source_type: 11,
 });
 
 const tablePaginationObject = computed(() => {
@@ -182,12 +218,13 @@ const tablePaginationObject = computed(() => {
     current: current.value,
     pageSize: pageSize.value,
     hideOnSinglePage: true,
+    showQuickJumper: true,
   };
 });
 
 let confirmTableRowSelectionSelectedRowKeysArray: TableRowSelection['selectedRowKeys'] =
   [];
-let confirmSelectedRowsArray: orderSingleInterface[] = [];
+let confirmSelectedRowsArray: OrderSingleInterface[] = [];
 
 const formFinishFunction = async () => {
   run(formModelObject);
@@ -240,8 +277,24 @@ watch(
       tableRowSelectionSelectedRowKeysArray.value =
         confirmTableRowSelectionSelectedRowKeysArray;
       selectedRowsArray = confirmSelectedRowsArray;
+      formModelObject.invoice_code = propsObject.invoiceCode;
       run(formModelObject);
     }
   }
 );
 </script>
+<style>
+.full-modal .ant-modal {
+  max-width: 100%;
+  top: 0;
+  padding-bottom: 0;
+  margin: 0;
+}
+.full-modal .ant-modal-content {
+  display: flex;
+  flex-direction: column;
+}
+.full-modal .ant-modal-body {
+  flex: 1;
+}
+</style>
