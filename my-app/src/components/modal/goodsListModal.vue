@@ -404,7 +404,7 @@ const modalOkFunction = async () => {
     );
   }
   emitsFunction('select', selectedRowsArray);
-  emitsFunction('update:visible', false);
+  modalCancelFunction();
   modalConfirmLoadingBoolean.value = false;
 };
 const modalCancelFunction = () => {
@@ -424,7 +424,7 @@ watch(
           return `${spu_id}/${sku_id}`;
         }
       );
-      run(getSearchDataFunction());
+      run(getSearchDataFunction({ page: 1, page_size: 10 }));
     }
   }
 );

@@ -355,16 +355,6 @@ export const deliveryInstallationTimeModalTableGoodsTableColumnsArray: TableColu
 
 export const supplementaryInvoiceFormPageTableColumnsArray: TableColumnsType = [
   {
-    title: '主订单号',
-    dataIndex: 'ono',
-    key: 'ono',
-    customCell: ({ rowSpan }) => {
-      return {
-        rowSpan,
-      };
-    },
-  },
-  {
     title: '支付状态',
     dataIndex: 'pay_status_name',
     key: 'pay_status_name',

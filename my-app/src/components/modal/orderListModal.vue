@@ -184,7 +184,7 @@ const emitsFunction = defineEmits<{
   (
     event: 'select',
     selectedRowKeysArray: TableRowSelection['selectedRowKeys'],
-    selectedRowsArray: OrderRowSingleInterface[]
+    selectedRowsArray: OrderSingleInterface[]
   ): void;
 }>();
 
@@ -192,7 +192,7 @@ const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
 const formRefObject = ref<FormInstance>();
-let selectedRowsArray: OrderRowSingleInterface[] = [];
+let selectedRowsArray: OrderSingleInterface[] = [];
 const tableDefaultExpandedRowKeysArray = ref<string[]>([]);
 const { data, current, pageSize, run, loading, total } = usePagination(
   orderRequestFunction,
@@ -227,7 +227,7 @@ const tablePaginationObject = computed(() => {
 
 let confirmTableRowSelectionSelectedRowKeysArray: TableRowSelection['selectedRowKeys'] =
   [];
-let confirmSelectedRowsArray: OrderRowSingleInterface[] = [];
+let confirmSelectedRowsArray: OrderSingleInterface[] = [];
 
 const formFinishFunction = async () => {
   run(formModelObject);
@@ -239,15 +239,7 @@ const tableRowSelectionOnChangeFunction: TableRowSelection['onChange'] = (
 ) => {
   tableRowSelectionSelectedRowKeysArray.value = keys;
   // 这里就不能这样接了，因为展示的时候是子弹维度，keys用的是主单，主单要合并单元格，所以勾选的时候数据，返回的只是一条主单的子弹，也就是说如果一个主单下面有多个子弹，选中的时候，数据只有一条子弹，所以我要自己手动过滤出子弹
-  // selectedRowsArray = rows;
-
-  selectedRowsArray = (data.value.list as OrderRowSingleInterface[]).filter(
-    (item) => {
-      if (keys.includes(item.ono)) {
-        return true;
-      }
-    }
-  );
+  selectedRowsArray = rows;
 };
 
 const tableChangeFunction: TableProps['onChange'] = async (pag) => {
@@ -278,6 +270,8 @@ const modalOkFunction = async () => {
   );
 
   confirmSelectedRowsArray = cloneDeep(selectedRowsArray);
+  console.log(confirmSelectedRowsArray, 2222);
+
   emitsFunction(
     'select',
     confirmTableRowSelectionSelectedRowKeysArray,
@@ -286,7 +280,7 @@ const modalOkFunction = async () => {
   modalCancelFunction();
 };
 const modalCancelFunction = () => {
-  formRefObject.value?.resetFields();
+  // formRefObject.value?.resetFields();
   tableRowSelectionSelectedRowKeysArray.value = [];
   selectedRowsArray = [];
   emitsFunction('update:visible', false);
@@ -300,6 +294,8 @@ watch(
         confirmTableRowSelectionSelectedRowKeysArray;
       selectedRowsArray = confirmSelectedRowsArray;
       formModelObject.invoice_code = propsObject.invoiceCode;
+      console.log(formModelObject,23);
+      
       run(formModelObject);
     }
   }

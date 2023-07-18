@@ -304,4 +304,4 @@ export interface OrderRowSingleInterface {
 }
 
 // 订单出参
-export type orderRequestResultInterType = ListInterface<OrderSingleInterface | OrderRowSingleInterface>;
+export type orderRequestResultInterType = ListInterface<OrderSingleInterface>;

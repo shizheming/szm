@@ -6,7 +6,10 @@
     @finish="finish"
   >
     <a-divider orientation="left">申请信息</a-divider>
-    <a-button type="primary" @click="chooseInvoiceTitleClickFunction" size="small"
+    <a-button
+      type="primary"
+      @click="chooseInvoiceTitleClickFunction"
+      size="small"
       >选择发票抬头</a-button
     >
     <a-row>
@@ -228,34 +231,50 @@
           <plus-outlined />
         </template>
       </a-button>
-      <a-button @click="deleteOutlinedClickFunction" size="small" :disabled="tableRowSelectionSelectedRowKeysArray.length === 0">
+      <a-button
+        @click="deleteOutlinedClickFunction"
+        size="small"
+        :disabled="tableRowSelectionSelectedRowKeysArray.length === 0"
+      >
         <template #icon>
           <delete-outlined />
         </template>
       </a-button>
     </a-space>
     <a-table
-      row-key="osl_seq"
+      row-key="ono"
       style="margin: 15px 0"
       :row-selection="{
         selectedRowKeys: tableRowSelectionSelectedRowKeysArray,
         onChange: tableRowSelectionOnChangeFunction,
       }"
       :data-source="tableDataSourceArray"
-      :columns="supplementaryInvoiceFormPageTableColumnsArray"
+      :columns="[
+        {
+          title: '主订单号',
+          dataIndex: 'ono',
+          key: 'ono',
+        },
+      ]"
+      :expandedRowKeys="tableDefaultExpandedRowKeysArray"
       :pagination="false"
       :scroll="{ x: 'max-content' }"
     >
       <template
-        #bodyCell="{
+        #expandedRowRender="{
           column,
           record,
         }: {
           column: TableColumnType,
-          record: OrderRowSingleInterface,
+          record: OrderSingleInterface,
         }"
       >
-        <template v-if="column.key === 'operation'"> </template>
+        <a-table
+          :columns="supplementaryInvoiceFormPageTableColumnsArray"
+          :data-source="record.sub_list"
+          :pagination="false"
+        >
+        </a-table>
       </template>
     </a-table>
     <a-row>
@@ -344,11 +363,12 @@ const formModelObject = reactive<InvoiceRepairInvoiceRequestParamsInterface>({
   mArea: [],
   name: '',
 });
-const tableDataSourceArray = ref<OrderRowSingleInterface[]>([]);
+const tableDataSourceArray = ref<OrderSingleInterface[]>([]);
 const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
 let selectedRowsArray: OrderSingleInterface[] = [];
+const tableDefaultExpandedRowKeysArray = ref<string[]>([]);
 
 // 增值税电子普通-单位
 const electronicCommonInvoiceUnitBoolean = computed(
@@ -415,11 +435,12 @@ const deleteOutlinedClickFunction = () => {};
 
 const orderListModalSelectFunction: (
   keys: TableRowSelection['selectedRowKeys'],
-  rows: OrderRowSingleInterface[]
+  rows: OrderSingleInterface[]
 ) => void = (keys, rows) => {
-  console.log(rows,2);
-  
+  console.log(rows, 2);
+
   tableDataSourceArray.value = rows;
+  tableDefaultExpandedRowKeysArray.value = rows.map(({ ono }) => ono);
 };
 
 getInvoiceCodeRequestFunction().then(({ data }) => {
