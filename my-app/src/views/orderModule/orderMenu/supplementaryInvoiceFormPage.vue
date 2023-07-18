@@ -6,7 +6,7 @@
     @finish="finish"
   >
     <a-divider orientation="left">申请信息</a-divider>
-    <a-button @click="chooseInvoiceTitleClickFunction" size="small"
+    <a-button type="primary" @click="chooseInvoiceTitleClickFunction" size="small"
       >选择发票抬头</a-button
     >
     <a-row>
@@ -223,16 +223,52 @@
     </a-row>
     <a-divider orientation="left">订单信息</a-divider>
     <a-space>
-      <a-button @click="selectOrderButtonClickFunction">
-        <plus-outlined />
+      <a-button @click="selectOrderButtonClickFunction" size="small">
+        <template #icon>
+          <plus-outlined />
+        </template>
       </a-button>
-      <delete-outlined @click="deleteOutlinedClickFunction" />
+      <a-button @click="deleteOutlinedClickFunction" size="small" :disabled="tableRowSelectionSelectedRowKeysArray.length === 0">
+        <template #icon>
+          <delete-outlined />
+        </template>
+      </a-button>
     </a-space>
-    <a-form-item :wrapper-col="{ offset: 1, span: 8 }">
-      <a-button type="primary" html-type="submit">
-        <save-outlined />
-      </a-button>
-    </a-form-item>
+    <a-table
+      row-key="osl_seq"
+      style="margin: 15px 0"
+      :row-selection="{
+        selectedRowKeys: tableRowSelectionSelectedRowKeysArray,
+        onChange: tableRowSelectionOnChangeFunction,
+      }"
+      :data-source="tableDataSourceArray"
+      :columns="supplementaryInvoiceFormPageTableColumnsArray"
+      :pagination="false"
+      :scroll="{ x: 'max-content' }"
+    >
+      <template
+        #bodyCell="{
+          column,
+          record,
+        }: {
+          column: TableColumnType,
+          record: OrderRowSingleInterface,
+        }"
+      >
+        <template v-if="column.key === 'operation'"> </template>
+      </template>
+    </a-table>
+    <a-row>
+      <a-col :span="8">
+        <a-form-item :wrapper-col="{ offset: 8 }">
+          <a-button type="primary" html-type="submit">
+            <template #icon>
+              <save-outlined />
+            </template>
+          </a-button>
+        </a-form-item>
+      </a-col>
+    </a-row>
   </a-form>
   <invoice-title-list-modal
     v-model:visible="invoiceTitleListModalVisibleBoolean"
@@ -279,9 +315,11 @@ import {
   INVOICE_TYPE_OPTIONS,
   INVOICE_CONTENT_OPTIONS,
 } from '../../../data/options';
-import {} from './data';
+import { supplementaryInvoiceFormPageTableColumnsArray } from './data';
 import {
   InvoiceTitleSingleInterface,
+  OrderRowSingleInterface,
+  OrderSingleInterface,
   SkuRequestResultInterface,
 } from '../../../api/interface';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
@@ -304,8 +342,14 @@ const formModelObject = reactive<InvoiceRepairInvoiceRequestParamsInterface>({
   invoice_type: 1,
   invoice_kind: 1,
   mArea: [],
-  name:''
+  name: '',
 });
+const tableDataSourceArray = ref<OrderRowSingleInterface[]>([]);
+const tableRowSelectionSelectedRowKeysArray = ref<
+  TableRowSelection['selectedRowKeys']
+>([]);
+let selectedRowsArray: OrderSingleInterface[] = [];
+
 // 增值税电子普通-单位
 const electronicCommonInvoiceUnitBoolean = computed(
   () => formModelObject.invoice_type === 1 && formModelObject.invoice_kind === 2
@@ -318,6 +362,14 @@ const electronicCommonInvoiceIndividualBoolean = computed(
 const specialInvoiceBoolean = computed(
   () => formModelObject.invoice_type === 2
 );
+
+const tableRowSelectionOnChangeFunction: TableRowSelection['onChange'] = (
+  keys,
+  rows
+) => {
+  tableRowSelectionSelectedRowKeysArray.value = keys;
+  selectedRowsArray = rows;
+};
 
 const chooseInvoiceTitleClickFunction = () => {
   invoiceTitleListModalVisibleBoolean.value = true;
@@ -361,7 +413,14 @@ const selectOrderButtonClickFunction = () => {
 };
 const deleteOutlinedClickFunction = () => {};
 
-const orderListModalSelectFunction = () => {};
+const orderListModalSelectFunction: (
+  keys: TableRowSelection['selectedRowKeys'],
+  rows: OrderRowSingleInterface[]
+) => void = (keys, rows) => {
+  console.log(rows,2);
+  
+  tableDataSourceArray.value = rows;
+};
 
 getInvoiceCodeRequestFunction().then(({ data }) => {
   nameSelectOptionsArray.value = data.map((item) => {

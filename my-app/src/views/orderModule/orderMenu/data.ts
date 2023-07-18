@@ -352,3 +352,61 @@ export const deliveryInstallationTimeModalTableGoodsTableColumnsArray: TableColu
       key: 'sku_spec',
     },
   ];
+
+export const supplementaryInvoiceFormPageTableColumnsArray: TableColumnsType = [
+  {
+    title: '主订单号',
+    dataIndex: 'ono',
+    key: 'ono',
+    customCell: ({ rowSpan }) => {
+      return {
+        rowSpan,
+      };
+    },
+  },
+  {
+    title: '支付状态',
+    dataIndex: 'pay_status_name',
+    key: 'pay_status_name',
+  },
+  {
+    title: '发货状态',
+    dataIndex: 'sub_status_name',
+    key: 'sub_status_name',
+  },
+  {
+    title: '商品实付金额',
+    dataIndex: 'money_sub_total_pay',
+    key: 'money_sub_total_pay',
+  },
+  {
+    title: '销售店铺',
+    dataIndex: 'shop_name',
+    key: 'shop_name',
+  },
+  {
+    title: '销售组织',
+    dataIndex: 'sub_org_name',
+    key: 'sub_org_name',
+  },
+  {
+    title: '剩余可申请开票金额',
+    dataIndex: 'money_allow_invoice_amount',
+    key: 'money_allow_invoice_amount',
+  },
+  {
+    title: '订单创建时间',
+    dataIndex: 'create_datetime',
+    key: 'create_datetime',
+  },
+  {
+    title: '录入方式',
+    dataIndex: 'create_mode_name',
+    key: 'create_mode_name',
+  },
+  {
+    title: '订单编号',
+    dataIndex: 'osl_seq',
+    key: 'osl_seq',
+  },
+];

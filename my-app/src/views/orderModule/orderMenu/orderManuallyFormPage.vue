@@ -90,7 +90,10 @@
             required: true,
           }"
         >
-          <a-input v-model:value="formModelObject.addressInfo.mobile" :maxlength="11" />
+          <a-input
+            v-model:value="formModelObject.addressInfo.mobile"
+            :maxlength="11"
+          />
         </a-form-item>
       </a-col>
       <a-col :span="8">
@@ -439,10 +442,16 @@
     </a-row>
     <a-divider orientation="left">商品信息</a-divider>
     <a-space>
-      <a-button @click="selectGoodsButtonClickFunction">
-        <plus-outlined />
+      <a-button @click="selectGoodsButtonClickFunction" size="small">
+        <template #icon>
+          <plus-outlined />
+        </template>
       </a-button>
-      <delete-outlined @click="deleteOutlinedClickFunction" />
+      <a-button @click="deleteOutlinedClickFunction" size="small">
+        <template #icon>
+          <delete-outlined />
+        </template>
+      </a-button>
     </a-space>
     <a-table
       :row-key="tableRowKeyFunction"
@@ -543,7 +552,9 @@
             html-type="submit"
             :loading="buttonLoadingBoolean"
           >
-            <save-outlined />
+            <template #icon>
+              <save-outlined />
+            </template>
           </a-button>
         </a-form-item>
       </a-col>

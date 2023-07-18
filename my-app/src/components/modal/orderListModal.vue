@@ -64,17 +64,19 @@
       :row-selection="{
         selectedRowKeys: tableRowSelectionSelectedRowKeysArray,
         onChange: tableRowSelectionOnChangeFunction,
-        type: 'radio',
+        getCheckboxProps: tableRowSelectionGetCheckboxPropsFunction,
+        preserveSelectedRowKeys: true,
       }"
       :data-source="data?.list"
       :columns="tableColumnsArray"
       :loading="loading"
       :pagination="tablePaginationObject"
       :scroll="{ x: 'max-content' }"
+      :expandedRowKeys="tableDefaultExpandedRowKeysArray"
       @change="tableChangeFunction"
     >
       <template
-        #bodyCell="{
+        #expandedRowRender="{
           column,
           record,
         }: {
@@ -82,7 +84,12 @@
           record: OrderSingleInterface,
         }"
       >
-        <template v-if="column.key === 'operation'"> </template>
+        <a-table
+          :columns="tableColumnsInnerArray"
+          :data-source="record.sub_list"
+          :pagination="false"
+        >
+        </a-table>
       </template>
     </a-table>
   </a-modal>
@@ -108,17 +115,7 @@ import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import { PageInterface } from '../../interface';
 import { TableColumn, TableColumnsType } from 'ant-design-vue';
 import { cloneDeep } from 'lodash';
-const tableColumnsArray: TableColumnsType = [
-  {
-    title: '主订单号',
-    dataIndex: 'ono',
-    key: 'ono',
-    customCell: ({ rowSpan }) => {
-      return {
-        rowSpan,
-      };
-    },
-  },
+const tableColumnsInnerArray: TableColumnsType = [
   {
     title: '支付状态',
     dataIndex: 'pay_status_name',
@@ -165,6 +162,18 @@ const tableColumnsArray: TableColumnsType = [
     key: 'osl_seq',
   },
 ];
+const tableColumnsArray: TableColumnsType = [
+  {
+    title: '主订单号',
+    dataIndex: 'ono',
+    key: 'ono',
+    customCell: ({ rowSpan }) => {
+      return {
+        rowSpan,
+      };
+    },
+  },
+];
 
 const propsObject = defineProps<{
   visible: boolean;
@@ -175,7 +184,7 @@ const emitsFunction = defineEmits<{
   (
     event: 'select',
     selectedRowKeysArray: TableRowSelection['selectedRowKeys'],
-    selectedRowsArray: OrderSingleInterface[]
+    selectedRowsArray: OrderRowSingleInterface[]
   ): void;
 }>();
 
@@ -183,20 +192,14 @@ const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
 const formRefObject = ref<FormInstance>();
-let selectedRowsArray: OrderSingleInterface[] = [];
+let selectedRowsArray: OrderRowSingleInterface[] = [];
+const tableDefaultExpandedRowKeysArray = ref<string[]>([]);
 const { data, current, pageSize, run, loading, total } = usePagination(
   orderRequestFunction,
   {
     manual: true,
     formatResult: ({ data }) => {
-      data.list = (data.list as OrderSingleInterface[])
-        .map((item) => {
-          item.sub_list.forEach((current, index) => {
-            current.rowSpan = index === 0 ? item.sub_list.length : 0;
-          });
-          return item.sub_list;
-        })
-        .flat();
+      tableDefaultExpandedRowKeysArray.value = data.list.map(({ ono }) => ono);
       return data;
     },
     pagination: {
@@ -224,7 +227,7 @@ const tablePaginationObject = computed(() => {
 
 let confirmTableRowSelectionSelectedRowKeysArray: TableRowSelection['selectedRowKeys'] =
   [];
-let confirmSelectedRowsArray: OrderSingleInterface[] = [];
+let confirmSelectedRowsArray: OrderRowSingleInterface[] = [];
 
 const formFinishFunction = async () => {
   run(formModelObject);
@@ -235,7 +238,16 @@ const tableRowSelectionOnChangeFunction: TableRowSelection['onChange'] = (
   rows
 ) => {
   tableRowSelectionSelectedRowKeysArray.value = keys;
-  selectedRowsArray = rows;
+  // 这里就不能这样接了，因为展示的时候是子弹维度，keys用的是主单，主单要合并单元格，所以勾选的时候数据，返回的只是一条主单的子弹，也就是说如果一个主单下面有多个子弹，选中的时候，数据只有一条子弹，所以我要自己手动过滤出子弹
+  // selectedRowsArray = rows;
+
+  selectedRowsArray = (data.value.list as OrderRowSingleInterface[]).filter(
+    (item) => {
+      if (keys.includes(item.ono)) {
+        return true;
+      }
+    }
+  );
 };
 
 const tableChangeFunction: TableProps['onChange'] = async (pag) => {
@@ -250,11 +262,21 @@ const clearOutlinedClickFunction = () => {
   formRefObject.value?.resetFields();
 };
 
+const tableRowSelectionGetCheckboxPropsFunction: TableRowSelection['getCheckboxProps'] =
+  (record: OrderRowSingleInterface) => {
+    return {
+      disabled: confirmTableRowSelectionSelectedRowKeysArray.includes(
+        record.ono
+      ),
+    };
+  };
+
 const modalOkFunction = async () => {
   formRefObject.value?.resetFields();
   confirmTableRowSelectionSelectedRowKeysArray = cloneDeep(
     tableRowSelectionSelectedRowKeysArray.value
   );
+
   confirmSelectedRowsArray = cloneDeep(selectedRowsArray);
   emitsFunction(
     'select',
