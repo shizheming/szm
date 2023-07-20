@@ -3,7 +3,7 @@
     ref="formRefObject"
     :model="formModelObject"
     :label-col="{ span: 8 }"
-    @finish="finish"
+    @finish="formFinishFunction"
   >
     <a-divider orientation="left">申请信息</a-divider>
     <a-button
@@ -280,7 +280,11 @@
     <a-row>
       <a-col :span="8">
         <a-form-item :wrapper-col="{ offset: 8 }">
-          <a-button type="primary" html-type="submit">
+          <a-button
+            type="primary"
+            html-type="submit"
+            :loading="buttonLoadingBoolean"
+          >
             <template #icon>
               <save-outlined />
             </template>
@@ -296,6 +300,7 @@
   <order-list-modal
     v-model:visible="orderListModalVisibleBoolean"
     :invoice-code="formModelObject.name"
+    :data-source="tableDataSourceArray"
     @select="orderListModalSelectFunction"
   />
 </template>
@@ -316,8 +321,10 @@ import {
   TableColumnType,
   Modal,
   SelectProps,
+  message,
 } from 'ant-design-vue';
 import { InvoiceRepairInvoiceRequestParamsInterface } from './interface';
+import { useRoute, useRouter } from 'vue-router';
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -343,9 +350,11 @@ import {
 } from '../../../api/interface';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import { partPartial } from '../../../interface';
-import { getInvoiceCodeRequestFunction } from './api';
+import {
+  getInvoiceCodeRequestFunction,
+  repairInvoiceRequestFunction,
+} from './api';
 import { DefaultOptionType } from 'ant-design-vue/lib/select';
-const goodsListModalVisible = ref(false);
 const selectedRowKeys = ref<TableRowSelection['selectedRowKeys']>([]);
 const selectedRows = ref<SkuRequestResultInterface[]>([]);
 const InvoiceTitleListModal = defineAsyncComponent(
@@ -363,6 +372,9 @@ const formModelObject = reactive<InvoiceRepairInvoiceRequestParamsInterface>({
   mArea: [],
   name: '',
 });
+const buttonLoadingBoolean = ref(false);
+const routeObject = useRoute();
+const routerObject = useRouter();
 const tableDataSourceArray = ref<OrderSingleInterface[]>([]);
 const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
@@ -395,8 +407,31 @@ const chooseInvoiceTitleClickFunction = () => {
   invoiceTitleListModalVisibleBoolean.value = true;
 };
 
-const finish: FormInstance['onFinish'] = (values) => {
-  goodsListModalVisible.value = true;
+const formFinishFunction: FormInstance['onFinish'] = async (values) => {
+  if (tableDataSourceArray.value.length === 0) {
+    message.info('请选择订单');
+    return;
+  }
+  buttonLoadingBoolean.value = true;
+  await repairInvoiceRequestFunction({
+    invoice: {
+      content_type: 0,
+      ...formModelObject,
+    },
+    order: tableDataSourceArray.value.map(({ ono, user_id }) => {
+      return {
+        ono,
+        user_id: String(user_id),
+      };
+    }),
+  }).catch((e) => {
+    buttonLoadingBoolean.value = false;
+    return Promise.reject();
+  });
+  message.success('提交成功');
+  buttonLoadingBoolean.value = false;
+
+  routerObject.push({ name: 'orderListPage' });
 };
 
 const personTitleListModalSelectFunction: (
@@ -431,14 +466,17 @@ const nameSelectChangeFunction: SelectProps['onChange'] = (value, opt) => {
 const selectOrderButtonClickFunction = () => {
   orderListModalVisibleBoolean.value = true;
 };
-const deleteOutlinedClickFunction = () => {};
+const deleteOutlinedClickFunction = () => {
+  tableDataSourceArray.value = tableDataSourceArray.value.filter((item) => {
+    return !tableRowSelectionSelectedRowKeysArray.value.includes(item.ono);
+  });
+  tableRowSelectionSelectedRowKeysArray.value = [];
+};
 
 const orderListModalSelectFunction: (
   keys: TableRowSelection['selectedRowKeys'],
   rows: OrderSingleInterface[]
 ) => void = (keys, rows) => {
-  console.log(rows, 2);
-
   tableDataSourceArray.value = rows;
   tableDefaultExpandedRowKeysArray.value = rows.map(({ ono }) => ono);
 };

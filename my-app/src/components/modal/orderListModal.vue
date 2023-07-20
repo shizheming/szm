@@ -178,6 +178,7 @@ const tableColumnsArray: TableColumnsType = [
 const propsObject = defineProps<{
   visible: boolean;
   invoiceCode: string;
+  dataSource: OrderSingleInterface[];
 }>();
 const emitsFunction = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
@@ -225,10 +226,6 @@ const tablePaginationObject = computed(() => {
   };
 });
 
-let confirmTableRowSelectionSelectedRowKeysArray: TableRowSelection['selectedRowKeys'] =
-  [];
-let confirmSelectedRowsArray: OrderSingleInterface[] = [];
-
 const formFinishFunction = async () => {
   run(formModelObject);
 };
@@ -257,30 +254,24 @@ const clearOutlinedClickFunction = () => {
 const tableRowSelectionGetCheckboxPropsFunction: TableRowSelection['getCheckboxProps'] =
   (record: OrderRowSingleInterface) => {
     return {
-      disabled: confirmTableRowSelectionSelectedRowKeysArray.includes(
-        record.ono
-      ),
+      disabled: propsObject.dataSource
+        .map(({ ono }) => ono)
+        .includes(record.ono),
     };
   };
 
 const modalOkFunction = async () => {
   formRefObject.value?.resetFields();
-  confirmTableRowSelectionSelectedRowKeysArray = cloneDeep(
-    tableRowSelectionSelectedRowKeysArray.value
-  );
-
-  confirmSelectedRowsArray = cloneDeep(selectedRowsArray);
-  console.log(confirmSelectedRowsArray, 2222);
 
   emitsFunction(
     'select',
-    confirmTableRowSelectionSelectedRowKeysArray,
-    confirmSelectedRowsArray
+    cloneDeep(tableRowSelectionSelectedRowKeysArray.value),
+    cloneDeep(selectedRowsArray)
   );
   modalCancelFunction();
 };
 const modalCancelFunction = () => {
-  // formRefObject.value?.resetFields();
+  formRefObject.value?.resetFields();
   tableRowSelectionSelectedRowKeysArray.value = [];
   selectedRowsArray = [];
   emitsFunction('update:visible', false);
@@ -290,12 +281,13 @@ watch(
   () => propsObject.visible,
   async (newValue) => {
     if (newValue === true) {
-      tableRowSelectionSelectedRowKeysArray.value =
-        confirmTableRowSelectionSelectedRowKeysArray;
-      selectedRowsArray = confirmSelectedRowsArray;
+      selectedRowsArray = propsObject.dataSource;
+      tableRowSelectionSelectedRowKeysArray.value = propsObject.dataSource.map(
+        ({ ono }) => ono
+      );
       formModelObject.invoice_code = propsObject.invoiceCode;
-      console.log(formModelObject,23);
-      
+      console.log(formModelObject, 23);
+
       run(formModelObject);
     }
   }

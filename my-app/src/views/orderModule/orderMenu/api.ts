@@ -11,6 +11,7 @@ import type {
   QueryOrderPlansByOslSeqRequestResultItemInterface,
   GetServerInfoRequestResultItemInterface,
   InvoiceCodeSingleInterface,
+  InvoiceRepairInvoiceRequestParamsInterface,
 } from './interface';
 
 // 订单列表
@@ -138,11 +139,21 @@ export const confirmRequestFunction = (params: AddParamsInterface) => {
 };
 
 // 补开发票申请
-export const api_proxy_order_Manage_Invoice_repairInvoice = () => {
-  return axios.post('/api/proxy/order/Manage/Invoice/repairInvoice');
+export const repairInvoiceRequestFunction = (params: {
+  invoice: {
+    content_type: number;
+  } & InvoiceRepairInvoiceRequestParamsInterface;
+  order: {
+    ono: string;
+    user_id: string;
+  }[];
+}) => {
+  return axios.post('/api/proxy/order/Manage/Invoice/repairInvoice', params);
 };
 
 // 开票主体
 export const getInvoiceCodeRequestFunction = () => {
-  return axios.post<InvoiceCodeSingleInterface[]>('/api/proxy/order/Manage/query/getInvoiceCode');
+  return axios.post<InvoiceCodeSingleInterface[]>(
+    '/api/proxy/order/Manage/query/getInvoiceCode'
+  );
 };
