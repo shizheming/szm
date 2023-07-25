@@ -35,6 +35,7 @@ export interface Api_manager_me_result_interface {
   username: string;
 }
 
+// 权限接口
 export interface PermissionsRequestResultInterface {
   children: PermissionsRequestResultInterface[];
   display_name: string;

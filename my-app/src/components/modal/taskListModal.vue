@@ -45,8 +45,10 @@
         <a-col :span="8">
           <a-form-item :wrapper-col="{ offset: 6 }">
             <a-space style="font-size: 18px" size="large">
-              <a-button html-type="submit" type="primary">
-                <search-outlined />
+              <a-button html-type="submit" type="primary" :loading="loading">
+                <template #icon>
+                  <search-outlined />
+                </template>
               </a-button>
               <clear-outlined @click="clearOutlinedClick" />
             </a-space>
@@ -68,7 +70,7 @@
           record,
         }: {
           column: TableColumnType,
-          record: OrderSyncListRequestResultItemInterface,
+          record: OrderSyncListSingleInterface,
         }"
       >
         <template v-if="column.key === 'operation'">
@@ -101,17 +103,61 @@ import {
   TableProps,
   FormProps,
   TableColumnType,
+  TableColumnsType,
 } from 'ant-design-vue';
 import {
-  OrderSyncListRequestResultItemInterface,
-  OrderSyncListRequestParamsPageInterface,
-} from '../interface';
-import { orderSyncListRequestFunction, api_order_getFileByUrl } from '../api';
-import { TASK_CLASS_OPTIONS } from '../../../../data/dictionary';
-import { taskListModalTableColumnsArray } from '../data';
+  OrderSyncListSingleInterface,
+  OrderSyncListRequestParamsInterface,
+} from '../../api/interface';
+import {
+  orderSyncListRequestFunction,
+  fileByUrlRequestFunction,
+} from '../../api/list';
+import { TASK_CLASS_OPTIONS } from '../../data/options';
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
-
+const taskListModalTableColumnsArray: TableColumnsType = [
+  {
+    title: '操作',
+    dataIndex: 'operation',
+    key: 'operation',
+  },
+  {
+    title: '任务编号',
+    dataIndex: 'id',
+    key: 'id',
+  },
+  {
+    title: '任务类型',
+    dataIndex: 'type_format',
+    key: 'type_format',
+  },
+  {
+    title: '操作人',
+    dataIndex: 'operator',
+    key: 'operator',
+  },
+  {
+    title: '任务状态',
+    dataIndex: 'status_format',
+    key: 'status_format',
+  },
+  {
+    title: '操作时间',
+    dataIndex: 'operate_time',
+    key: 'operate_time',
+  },
+  {
+    title: '总记录数',
+    dataIndex: 'total_num',
+    key: 'total_num',
+  },
+  {
+    title: '成功记录数',
+    dataIndex: 'success_num',
+    key: 'success_num',
+  },
+];
 const propsObject = defineProps<{
   visible: boolean;
 }>();
@@ -135,12 +181,12 @@ const { data, current, pageSize, run, loading, total } = usePagination(
     },
   }
 );
-const formModelObject = reactive<OrderSyncListRequestParamsPageInterface>({
+const formModelObject = reactive<OrderSyncListRequestParamsInterface>({
   page: current.value,
   page_size: pageSize.value,
 });
 const getSearchDataObject = (
-  params: OrderSyncListRequestParamsPageInterface = {
+  params: OrderSyncListRequestParamsInterface = {
     page: current.value,
     page_size: pageSize.value,
   }
@@ -171,6 +217,7 @@ const pagination = computed(() => {
     current: current.value,
     pageSize: pageSize.value,
     hideOnSinglePage: true,
+    showQuickJumper: true,
   };
 });
 
@@ -199,7 +246,7 @@ const cancel: ModalProps['onCancel'] = (e) => {
 };
 
 const downTxtButtonClick = async (url: any) => {
-  let { data } = await api_order_getFileByUrl({
+  let { data } = await fileByUrlRequestFunction({
     url,
   });
   const a = document.createElement('a');

@@ -4,8 +4,6 @@ import type {
   OrderLsitParamsPageInterface,
   OrderListRequestResultInterface,
   ConfirmsignRequestParamsInterface,
-  OrderSyncListRequestParamsPageInterface,
-  OrderSyncListRequestResultItemInterface,
   BatchRequestParamsInterface,
   AddParamsInterface,
   QueryOrderPlansByOslSeqRequestResultItemInterface,
@@ -49,29 +47,6 @@ export const batchRequestFunction = (params: {
   ids: BatchRequestParamsInterface[];
 }) => {
   return axios.put('/api/order/merchant-remark/batch', params);
-};
-
-// 查看任务
-export const orderSyncListRequestFunction = (
-  params: OrderSyncListRequestParamsPageInterface
-) => {
-  return axios.get<ListInterface<OrderSyncListRequestResultItemInterface>>(
-    '/api/order/orderSyncList',
-    {
-      params,
-    }
-  );
-};
-
-// 查看日志
-export const api_order_getFileByUrl = (params: { url: string }) => {
-  return axios.get(`/api/order/getFileByUrl`, {
-    params,
-    responseType: 'blob',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
 };
 
 // 人工下单

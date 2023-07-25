@@ -1,12 +1,12 @@
 <template>
   <a-modal
-    :visible="propsObject.visible"
     title="卖家备注"
+    :visible="propsObject.visible"
     @ok="modalOkFunction"
     @cancel="modalCancelFunction"
     :confirmLoading="modalConfirmLoadingBoolean"
   >
-    <a-form ref="formRefObject" :model="formModelObject" layout="vertical">
+    <a-form ref="formRefObject" :model="formModelObject">
       <a-form-item
         label="卖家备注"
         :name="['merchant_remark']"
@@ -41,28 +41,25 @@ const formRefObject = ref<FormInstance>();
 const modalConfirmLoadingBoolean = ref(false);
 
 const modalOkFunction = async () => {
-  try {
-    await formRefObject.value?.validate();
-    await batchRequestFunction({
-      ids: propsObject.selectedRowsArray.map(
-        ({ osl_seq, user: { user_id } }) => {
-          return {
-            ...formModelObject,
-            osl_seq,
-            user_id: String(user_id),
-          };
-        }
-      ),
-    });
-    message.success('成功');
-    modalConfirmLoadingBoolean.value = true;
-    emitsFunction('submit');
+  await formRefObject.value?.validate();
+  modalConfirmLoadingBoolean.value = true;
+  await batchRequestFunction({
+    ids: propsObject.selectedRowsArray.map(({ osl_seq, user: { user_id } }) => {
+      return {
+        ...formModelObject,
+        osl_seq,
+        user_id: String(user_id),
+      };
+    }),
+  }).catch(() => {
     modalConfirmLoadingBoolean.value = false;
-    formRefObject.value?.resetFields();
-    emitsFunction('update:visible', false);
-  } catch (error) {
-    modalConfirmLoadingBoolean.value = false;
-  }
+    return Promise.reject();
+  });
+  message.success('成功');
+  emitsFunction('submit');
+  modalConfirmLoadingBoolean.value = false;
+  formRefObject.value?.resetFields();
+  emitsFunction('update:visible', false);
 };
 const modalCancelFunction = () => {
   formRefObject.value?.resetFields();

@@ -820,13 +820,15 @@ import {
 } from 'ant-design-vue/es/table/interface';
 import { PageInterface } from '../../../interface';
 import { Item } from 'ant-design-vue/lib/menu';
+import { log } from 'console';
 
 const RemarkFormModal = defineAsyncComponent(
   () => import('./components/remarkFormModal.vue')
 );
 const TaskListModal = defineAsyncComponent(
-  () => import('./components/taskListModal.vue')
+  () => import('../../../components/modal/taskListModal.vue')
 );
+
 const DeliveryInstallationTimeTableModal = defineAsyncComponent(
   () => import('./components/deliveryInstallationTimeTableModal.vue')
 );
@@ -1025,6 +1027,7 @@ const modalSubmit = () => {
 };
 
 const taskButtonClick = () => {
+  console.log(33838)
   taskListModalVisible.value = true;
 };
 const confirmSigningPopconfirmConfirm = async (

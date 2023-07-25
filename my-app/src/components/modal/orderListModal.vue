@@ -235,7 +235,6 @@ const tableRowSelectionOnChangeFunction: TableRowSelection['onChange'] = (
   rows
 ) => {
   tableRowSelectionSelectedRowKeysArray.value = keys;
-  // 这里就不能这样接了，因为展示的时候是子弹维度，keys用的是主单，主单要合并单元格，所以勾选的时候数据，返回的只是一条主单的子弹，也就是说如果一个主单下面有多个子弹，选中的时候，数据只有一条子弹，所以我要自己手动过滤出子弹
   selectedRowsArray = rows;
 };
 

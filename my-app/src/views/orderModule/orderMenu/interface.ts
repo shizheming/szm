@@ -341,35 +341,6 @@ export interface BatchRequestParamsInterface {
   user_id: string;
 }
 
-export interface OrderSyncListRequestParamsInterface {
-  sync_id: number;
-  type: number;
-  user_name: number;
-  time: [string, string];
-  operate_time_begin: string;
-  operate_time_end: string;
-}
-
-export interface OrderSyncListRequestResultItemInterface {
-  id: number;
-  name: string;
-  short_message: string;
-  status: number;
-  type: number;
-  type_format: string;
-  operator: string;
-  status_format: string;
-  operate_time: string;
-  total_num: number;
-  success_num: number;
-  log_url: string;
-  file_url: string;
-  import_url: string;
-}
-
-export type OrderSyncListRequestParamsPageInterface =
-  Partial<OrderSyncListRequestParamsInterface> & PageInterface;
-
 export type AddParamsInterface = Partial<{
   qty: number;
   total_price: number;
@@ -504,12 +475,12 @@ export type InvoiceRepairInvoiceRequestParamsInterface = Partial<{
   invoice_email: string;
   invoice_address: string;
   mArea: number[];
-  name:string
-  sale_tax_num:string;
-  sale_address:string;
-  sale_phone:string;
-  sale_bank:string;
-  sale_account:string;
+  name: string;
+  sale_tax_num: string;
+  sale_address: string;
+  sale_phone: string;
+  sale_bank: string;
+  sale_account: string;
 }>;
 
 export interface InvoiceCodeSingleInterface {

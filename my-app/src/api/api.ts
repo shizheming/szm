@@ -25,3 +25,7 @@ export const INVOICE_TITLE_STRING =
   '/api/proxy/order/config/invoiceTitle/getList';
 // 订单
 export const ORDER_STRING = '/api/proxy/order/Manage/query/searchOrder';
+// 查看任务
+export const TASK_STRING = '/api/order/orderSyncList';
+// 查看日志
+export const LOG_STRING = '/api/order/getFileByUrl';

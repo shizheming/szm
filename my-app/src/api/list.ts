@@ -7,6 +7,8 @@ import {
   InvoiceTitleParamsInterface,
   OrderRequestParamsInterface,
   orderRequestResultInterType,
+  OrderSyncListRequestParamsInterface,
+  orderSyncListRequestResultInterType,
 } from './interface';
 import axios from '../utils/axios';
 import {
@@ -14,6 +16,8 @@ import {
   SKU_API_STRING,
   INVOICE_TITLE_STRING,
   ORDER_STRING,
+  TASK_STRING,
+  LOG_STRING,
 } from './api';
 
 // 用户列表
@@ -66,4 +70,24 @@ export const invoiceTitleRequestFunction = (
 // 订单列表
 export const orderRequestFunction = (params: OrderRequestParamsInterface) => {
   return axios.post<orderRequestResultInterType>(ORDER_STRING, params);
+};
+
+// 查看任务
+export const orderSyncListRequestFunction = (
+  params: OrderSyncListRequestParamsInterface
+) => {
+  return axios.get<orderSyncListRequestResultInterType>(TASK_STRING, {
+    params,
+  });
+};
+
+// 查看日志
+export const fileByUrlRequestFunction = (params: { url: string }) => {
+  return axios.get(LOG_STRING, {
+    params,
+    responseType: 'blob',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 };

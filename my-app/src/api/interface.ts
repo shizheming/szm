@@ -305,3 +305,35 @@ export interface OrderRowSingleInterface {
 
 // 订单出参
 export type orderRequestResultInterType = ListInterface<OrderSingleInterface>;
+
+// 查看任务单条出参
+export interface OrderSyncListSingleInterface {
+  id: number;
+  name: string;
+  short_message: string;
+  status: number;
+  type: number;
+  type_format: string;
+  operator: string;
+  status_format: string;
+  operate_time: string;
+  total_num: number;
+  success_num: number;
+  log_url: string;
+  file_url: string;
+  import_url: string;
+}
+
+// 查看任务出参
+export type orderSyncListRequestResultInterType = ListInterface<OrderSyncListSingleInterface>;
+
+// 查看任务入参
+export type OrderSyncListRequestParamsInterface = Partial<{
+  sync_id: number;
+  type: number;
+  user_name: number;
+  time: [string, string];
+  operate_time_begin: string;
+  operate_time_end: string;
+}> &
+  PageInterface;
