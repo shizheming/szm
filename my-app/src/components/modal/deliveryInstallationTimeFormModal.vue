@@ -1,9 +1,10 @@
 <template>
   <a-modal
-    :visible="propsObject.visible"
     title="配送安装时间"
-    @cancel="cancel"
-    @ok="ok"
+    :visible="propsObject.visible"
+    :confirmLoading="modalConfirmLoadingBoolean"
+    @cancel="modalCancelFunction"
+    @ok="modalOkFunction"
     :width="1000"
   >
     <a-form ref="formRefObject" :model="formModelObject">
@@ -18,7 +19,7 @@
           #expandedRowRender="{
             record,
           }: {
-            record: GetServerInfoRequestResultItemInterface,
+            record: GetServerInfoSingleInterface,
           }"
         >
           <a-table
@@ -34,7 +35,7 @@
                 index,
               }: {
                 column: TableColumnType,
-                record: GetServerInfoRequestResultItemInterface['goods_list'][number],
+                record: GetServerInfoSingleInterface['goods_list'][number],
                 index: number,
               }"
             >
@@ -56,7 +57,7 @@
             index,
           }: {
             column: TableColumnType,
-            record: GetServerInfoRequestResultItemInterface,
+            record: GetServerInfoSingleInterface,
             index: number,
           }"
         >
@@ -92,7 +93,13 @@
   </a-modal>
 </template>
 <script setup lang="ts">
-import { FormInstance, ModalProps, TableColumnType } from 'ant-design-vue';
+import {
+  FormInstance,
+  ModalProps,
+  TableColumnType,
+  message,
+  TableColumnsType,
+} from 'ant-design-vue';
 import {
   ref,
   watch,
@@ -103,32 +110,68 @@ import {
   WatchCallback,
   nextTick,
 } from 'vue';
-import {
-  deliveryInstallationTimeModalTableColumnsArray,
-  deliveryInstallationTimeModalTableGoodsTableColumnsArray,
-} from '../data';
 import { usePagination } from 'vue-request';
 import {
-  GetServerInfoRequestResultItemInterface,
-  OrderListRequestResultItemInterface,
-} from '../interface';
+  GetServerInfoSingleInterface,
+  OrderListSingeInterface,
+} from '../../api/interface';
 import {
   getServerInfoRequestFunction,
-  queryOrderPlansByOslSeqRequestFunction,
+  queryOrderPlansRequestFunction,
   confirmPreOrderRequestFunction,
-} from '../api';
-import { SelectProps } from 'ant-design-vue/lib/vc-select';
+} from '../../api/form';
 import dayjs, { Dayjs } from 'dayjs';
-import { datePickerProps } from 'ant-design-vue/es/date-picker/generatePicker/props';
+const deliveryInstallationTimeModalTableColumnsArray: TableColumnsType = [
+  {
+    title: '服务名称',
+    dataIndex: 'goods_name',
+    key: 'goods_name',
+  },
+  {
+    title: '选择时间',
+    dataIndex: 'apply_server_time',
+    key: 'apply_server_time',
+  },
+];
+
+const deliveryInstallationTimeModalTableGoodsTableColumnsArray: TableColumnsType =
+  [
+    {
+      title: '主图',
+      dataIndex: 'pic_url',
+      key: 'pic_url',
+    },
+    {
+      title: '商品名称',
+      dataIndex: 'goods_name',
+      key: 'goods_name',
+    },
+    {
+      title: '商品编码',
+      dataIndex: 'sku_code',
+      key: 'sku_code',
+    },
+    {
+      title: '货号',
+      dataIndex: 'sn',
+      key: 'sn',
+    },
+    {
+      title: '规格属性',
+      dataIndex: 'sku_spec',
+      key: 'sku_spec',
+    },
+  ];
 
 const propsObject = defineProps<{
   visible: boolean;
-  record: Partial<OrderListRequestResultItemInterface>;
+  record: Partial<OrderListSingeInterface>;
 }>();
 const emitsFunction = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
   (event: 'submit'): void;
 }>();
+const modalConfirmLoadingBoolean = ref(false);
 
 const datePickerWatchFunction = (index: number) => {
   nextTick(() => {
@@ -152,6 +195,30 @@ const datePickerDisabledDateFunction = (current: Dayjs) => {
 };
 const formRefObject = ref<FormInstance>();
 let dateArray: number[];
+
+const modalCancelFunction = () => {
+  emitsFunction('update:visible', false);
+};
+const modalOkFunction = async () => {
+  await formRefObject.value!.validate();
+  modalConfirmLoadingBoolean.value = true;
+  await confirmPreOrderRequestFunction({
+    osl_seq: propsObject.record.osl_seq,
+    server_list: formModelObject.tableDataSourceArray!.map((item) => {
+      return {
+        apply_server_time: item.isTime ? 0 : item.apply_server_time,
+      };
+    }),
+  }).catch(() => {
+    modalConfirmLoadingBoolean.value = false;
+    return Promise.reject();
+  });
+  message.success('成功');
+  emitsFunction('submit');
+  modalConfirmLoadingBoolean.value = false;
+  emitsFunction('update:visible', false);
+};
+
 watch(
   () => propsObject.visible,
   async (newValue) => {
@@ -165,7 +232,7 @@ watch(
             orderPlans: [{ orderPlans }],
           },
         ],
-      } = await queryOrderPlansByOslSeqRequestFunction({
+      } = await queryOrderPlansRequestFunction({
         osl_seq: propsObject.record.osl_seq,
       });
       dateArray = orderPlans.map(({ planTime }) => {
@@ -174,23 +241,4 @@ watch(
     }
   }
 );
-
-const cancel: ModalProps['onCancel'] = () => {
-  emitsFunction('update:visible', false);
-};
-const ok = async () => {
-  try {
-    await formRefObject.value!.validate();
-    await confirmPreOrderRequestFunction({
-      osl_seq: propsObject.record.osl_seq,
-      server_list: formModelObject.tableDataSourceArray!.map((item) => {
-        return {
-          apply_server_time: item.isTime ? 0 : item.apply_server_time,
-        };
-      }),
-    });
-    emitsFunction('submit');
-    emitsFunction('update:visible', false);
-  } catch (e) {}
-};
 </script>

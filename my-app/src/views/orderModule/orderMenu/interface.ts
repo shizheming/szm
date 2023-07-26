@@ -335,12 +335,6 @@ export interface ConfirmsignRequestParamsInterface {
   operator: string;
 }
 
-export interface BatchRequestParamsInterface {
-  merchant_remark: string;
-  osl_seq: string;
-  user_id: string;
-}
-
 export type AddParamsInterface = Partial<{
   qty: number;
   total_price: number;
@@ -426,41 +420,6 @@ export type AddParamsInterface = Partial<{
   }> & { addressIds: number[] };
 };
 
-export interface QueryOrderPlansByOslSeqRequestResultItemInterface {
-  org_code: string;
-  orderPlans: {
-    service_code: string;
-    orderPlans: {
-      planDate: string;
-      planTime: number;
-      planId: string;
-    }[];
-  }[];
-}
-
-export interface GetServerInfoRequestResultItemInterface {
-  sku_code: string;
-  goods_name: string;
-  apply_server_time?: string;
-  isTime: boolean;
-  goods_list: {
-    oi_seq: string;
-    sku_code: string;
-    goods_name: string;
-    pic_url: string;
-    sn: number;
-    snapshot: number;
-    sku_spec: {
-      spec_id: number;
-      spec_name: string;
-      spec_value: string;
-      spec_group_id: number;
-      spec_value_id: number;
-      spec_group_name: string;
-    }[];
-  }[];
-}
-
 export type InvoiceRepairInvoiceRequestParamsInterface = Partial<{
   invoice_type: number;
   invoice_kind: number;
@@ -497,3 +456,219 @@ export interface InvoiceCodeSingleInterface {
   clerk: string;
   remark: string;
 }
+export type OrderDetailResultInterface = Partial<{
+  id: number;
+  user_id: number;
+  customer_id: number;
+  lock_stock: number;
+  from_userid: number;
+  extension_userid: number;
+  group_endtime: number;
+  group_snapshoot: string;
+  share_userid: number;
+  node_id: number;
+  recommend_staff: string;
+  ono: string;
+  ono_sn: number;
+  osl_seq: string;
+  type: number;
+  sale_mode: number;
+  settlement_method: number;
+  sale_guests: number;
+  order_transfer_time: number;
+  order_trans_reason: string;
+  delivery_mode: number;
+  express_company_no: string;
+  adjust_amount: number;
+  sub_total_price: number;
+  sub_total_pay: number;
+  productamt: number;
+  status: number;
+  stock_status: number;
+  group_id: string;
+  group_time: number;
+  confirm_time: number;
+  cancel_time: number;
+  cancel_reason: string;
+  shop_id: number;
+  shop_name: string;
+  supplier_id: number;
+  supplier_code: string;
+  store_code: string;
+  merchant_remark: string;
+  mem_msg: string;
+  delivery_remark: string;
+  use_credit_amount: number;
+  is_invoice_name:string
+  create_time_string:string;
+  is_return_name:string;
+  confirm_time_string:string;
+  use_credit: number;
+  freight: number;
+  freight_discount: number;
+  freight_use_credit: number;
+  is_support_local_name:string;
+  pay_time_string:string;
+  part_discount: number;
+  source_org_name:string;
+  pre_delivery_time_string:string;
+  delivery_time_string:string
+  marketing_discount: number;
+  level_discount: number;
+  use_level_discount: number;
+  pay_time: number;
+  traded_close_time: number;
+  pre_delivery_time: number;
+  delivery_time: number;
+  sign_time: number;
+  app_platform: string;
+  create_mode: number;
+  user_level: number;
+  user_kind: string;
+  oc_seq: string;
+  verify_exception_time: number;
+  verify_exception_remark: string;
+  verify_status: number;
+  verify_time: number;
+  verify_usr: string;
+  verify_remark: string;
+  order_type: number;
+  sa_value: string;
+  sa_channel: string;
+  order_sub_type: number;
+  down_payment_time: number;
+  down_payment: number;
+  stock_sale_delivery: number;
+  sale_method: number;
+  sale_channel: number;
+  order_flag: string;
+  marketing_type: string;
+  marketing_code: string;
+  comment_time: number;
+  split_flag: string;
+  stock_check_type: number;
+  order_month: number;
+  order_time: number;
+  item_sum: number;
+  business_id: number;
+  sub_org_id: number;
+  stock_node_org_id: number;
+  pick_up_time: number;
+  jv_company_id: number;
+  owner_site_id: number;
+  distribute_order: number;
+  distribute_org_id: number;
+  buy_company_name: string;
+  source_site_id: number;
+  employee_site_id: number;
+  use_card_ticket_fee: number;
+  freight_card_ticket_fee: number;
+  use_gift_card_fee: number;
+  is_support_local: number;
+  invoice_channel: string;
+  is_delete: number;
+  enterprise_id: number;
+  external_system_code: string;
+  goods_source: number;
+  spell_order_status: number;
+  tms_customer: string;
+  drop_shipping: number;
+  collection_payment: number;
+  org_write_off: number;
+  is_double_twelve_pre_sale: number;
+  out_type: number;
+  out_other_no: string;
+  create_time: number;
+  update_time: number;
+  delete_time: number;
+  modify_time: string;
+  invoice_code: string;
+  invoice_type: string;
+  is_pre_subscribe: number;
+  gas_account: string;
+  gas_account_name: string;
+  apply_delivery_time: number;
+  shop_account_id: number;
+  salesman_node_id: number;
+  stock_node_id: number;
+  third_user_id: string;
+  shop_user_id: number;
+  open_tcis_status: number;
+  tc_msg: string;
+  sale_depart_id: number;
+  sub_total_buy: number;
+  freight_origin: number;
+  sub_total_freight: number;
+  sub_total_amount: number;
+  out_type_name: string;
+  create_user_id: number;
+  create_user_username: string;
+  create_user_name: string;
+  order_type_name: string;
+  delivery_mode_name: string;
+  status_name: string;
+  create_mode_name: string;
+  sale_mode_name: string;
+  source_site_name: string;
+  owner_site_name: string;
+  business_name: string;
+  user_level_name: string;
+  wx_nickname: string;
+  user_name: string;
+  phone: string;
+  shop_account_name: string;
+  salesman_node_name: string;
+  app_platform_name: string;
+  sub_org_enterprise_id: number;
+  sub_org_name: string;
+  distribute_org_enterprise_id: number;
+  distribute_org_name: string;
+  customer_name: string;
+  sale_method_name: string;
+  sale_type_name: string;
+  sale_channel_name: string;
+  stock_sale_delivery_name: string;
+  sale_guests_name: string;
+  supplier_name: string;
+  store_name: string;
+  is_credit_order: number;
+  show_cancel_btn: number;
+  show_confirm_btn: number;
+  process_seq: string;
+  approval_status: number;
+  approval_status_name: string;
+  approval_time: number;
+  virtual_recharge_msg: string;
+  virtual_recharge_account: string;
+  virtual_recharge_status: number;
+  virtual_recharge_status_name: string;
+  pay_type: number;
+  pay_mode: number;
+  trade_no: string;
+  pay_deadline: number;
+  out_ono: string;
+  pay_type_name: string;
+  qr_code_origin: string;
+  wx_group: {
+    c_name: string;
+    chat_name: string;
+  };
+  pay_mode_name: string;
+  item_list: any[];
+  total_qty: number;
+  total_adjust_amount: number;
+  total_old_for_new_price: number;
+  has_green_product: number;
+  invoice_status: number;
+  order_invoice: {};
+  is_invoice: number;
+  org_code: string;
+  is_return: number;
+  ro_seq: string;
+  ro_seqs: string[];
+  is_allow_create_outstock: boolean;
+  operator: string;
+  user_id_string: string;
+  write_off_list: any[];
+  show_write_off_text: number;
+}>

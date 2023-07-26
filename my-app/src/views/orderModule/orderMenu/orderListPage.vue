@@ -662,9 +662,28 @@
         record: OrderListRequestResultItemInterface,
       }"
     >
-      <template v-if="column.key === 'operation'">
-        <router-link :to="{ name: 'orderDetailPage' }">
-          <a-button type="link" size="small">查看</a-button>
+      <template v-if="column.key === 'osl_seq'">
+        <router-link
+          :to="{
+            name: 'orderDetailPage',
+            query: { osl_seq: record.osl_seq, user_id: record.user.user_id },
+          }"
+        >
+          {{ record.osl_seq }}
+        </router-link>
+      </template>
+      <template v-if="column.key === 'sub_status.name'">
+        {{ record.sub_status.name }}
+        <router-link
+          v-if="
+            record.external_system_code != 'JINGDONG' &&
+            record.distribute_order != 1 &&
+            record.sub_status.value == 30 &&
+            record.delivery_mode.value == 1
+          "
+          to="/"
+        >
+          发货
         </router-link>
         <router-link
           to="/"
@@ -676,19 +695,10 @@
             record.delivery_mode.value == 1
           "
         >
-          <a-button type="link" size="small">京东快递发货</a-button>
+          京东快递发货
         </router-link>
-        <router-link
-          v-if="
-            record.external_system_code != 'JINGDONG' &&
-            record.distribute_order != 1 &&
-            record.sub_status.value == 30 &&
-            record.delivery_mode.value == 1
-          "
-          to="/"
-        >
-          <a-button type="link" size="small">发货</a-button>
-        </router-link>
+      </template>
+      <template v-else-if="column.key === 'operation'">
         <a-popconfirm
           v-if="record.sub_status.value == 40 && record.business_id == 2"
           title="请确认用户已经签收，否则可能会引起用户投诉！"
@@ -808,7 +818,6 @@ import type {
 import {
   orderListRequestFunction,
   confirmsignRequestFunction,
-  confirmPreOrderRequestFunction,
   orderDetailExportRequestFunction,
   saleOutstockRequestFunction,
 } from './api';
@@ -821,16 +830,18 @@ import {
 import { PageInterface } from '../../../interface';
 import { Item } from 'ant-design-vue/lib/menu';
 import { log } from 'console';
+import { confirmPreOrderRequestFunction } from '../../../api/form';
 
 const RemarkFormModal = defineAsyncComponent(
-  () => import('./components/remarkFormModal.vue')
+  () => import('../../../components/modal/remarkFormModal.vue')
 );
 const TaskListModal = defineAsyncComponent(
   () => import('../../../components/modal/taskListModal.vue')
 );
 
 const DeliveryInstallationTimeTableModal = defineAsyncComponent(
-  () => import('./components/deliveryInstallationTimeTableModal.vue')
+  () =>
+    import('../../../components/modal/deliveryInstallationTimeFormModal.vue')
 );
 
 const remarkFormModalVisible = ref(false);
@@ -871,7 +882,9 @@ const {
           ? (item.real_price as number).toFixed(2)
           : item.real_price;
 
-        item.category_name = findCategoryFunction(Number(item.category_id)).join('/');
+        item.category_name = findCategoryFunction(
+          Number(item.category_id)
+        ).join('/');
       });
     });
     return data;
@@ -1027,7 +1040,7 @@ const modalSubmit = () => {
 };
 
 const taskButtonClick = () => {
-  console.log(33838)
+  console.log(33838);
   taskListModalVisible.value = true;
 };
 const confirmSigningPopconfirmConfirm = async (

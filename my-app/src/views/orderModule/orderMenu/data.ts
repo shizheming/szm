@@ -267,49 +267,6 @@ export const orderFormPageGoodsLadderPriceTableColumnsArray: TableColumnsType =
     },
   ];
 
-export const deliveryInstallationTimeModalTableColumnsArray: TableColumnsType =
-  [
-    {
-      title: '服务名称',
-      dataIndex: 'goods_name',
-      key: 'goods_name',
-    },
-    {
-      title: '选择时间',
-      dataIndex: 'apply_server_time',
-      key: 'apply_server_time',
-    },
-  ];
-
-export const deliveryInstallationTimeModalTableGoodsTableColumnsArray: TableColumnsType =
-  [
-    {
-      title: '主图',
-      dataIndex: 'pic_url',
-      key: 'pic_url',
-    },
-    {
-      title: '商品名称',
-      dataIndex: 'goods_name',
-      key: 'goods_name',
-    },
-    {
-      title: '商品编码',
-      dataIndex: 'sku_code',
-      key: 'sku_code',
-    },
-    {
-      title: '货号',
-      dataIndex: 'sn',
-      key: 'sn',
-    },
-    {
-      title: '规格属性',
-      dataIndex: 'sku_spec',
-      key: 'sku_spec',
-    },
-  ];
-
 export const supplementaryInvoiceFormPageTableColumnsArray: TableColumnsType = [
   {
     title: '支付状态',

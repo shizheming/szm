@@ -29,3 +29,13 @@ export const ORDER_STRING = '/api/proxy/order/Manage/query/searchOrder';
 export const TASK_STRING = '/api/order/orderSyncList';
 // 查看日志
 export const LOG_STRING = '/api/order/getFileByUrl';
+// 批量修改备注
+export const BATCH_REMARK_STRING = '/api/order/merchant-remark/batch';
+// 配送安装时间列表
+export const SERVER_INFO_REMARK_STRING =
+  '/api/proxy/order/manage/query/getServerInfo';
+// 配送安装选择时间列表
+export const ORDER_PLANS_STRING =
+  '/api/proxy/order/Order/assistant/queryOrderPlansByOslSeq';
+// 预订购确认
+export const CONFIRM_PRE_ORDER_STRING = '/api/proxy/order/manage/edit/confirmPreOrder';

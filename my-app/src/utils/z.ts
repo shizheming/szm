@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { categoryRequestFunction } from '../api/dictionary';
 import { CategorySingleInterface } from '../api/interface';
 // 获取类目
@@ -13,11 +14,13 @@ export function findCategoryFunction(
 ) {
   var result: string[] = [];
 
-data.forEach((current) => {
+  data.forEach((current) => {
     if (current.id == n) {
       result.unshift(current.name);
       if (current.pid) {
-        result = findCategoryFunction(current.pid, categoryArray).concat(result);
+        result = findCategoryFunction(current.pid, categoryArray).concat(
+          result
+        );
       }
     } else {
       if (current.child) {
@@ -26,4 +29,9 @@ data.forEach((current) => {
     }
   });
   return result;
+}
+
+// 事件戳处理
+export function handleTimeFunction(time: number) {
+  return time ? dayjs(time * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
 }

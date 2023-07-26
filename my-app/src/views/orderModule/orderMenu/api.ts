@@ -4,12 +4,10 @@ import type {
   OrderLsitParamsPageInterface,
   OrderListRequestResultInterface,
   ConfirmsignRequestParamsInterface,
-  BatchRequestParamsInterface,
   AddParamsInterface,
-  QueryOrderPlansByOslSeqRequestResultItemInterface,
-  GetServerInfoRequestResultItemInterface,
   InvoiceCodeSingleInterface,
   InvoiceRepairInvoiceRequestParamsInterface,
+  OrderDetailResultInterface,
 } from './interface';
 
 // 订单列表
@@ -28,27 +26,6 @@ export const confirmsignRequestFunction = (
   return axios.post('/api/proxy/order/manage/edit/confirmsign', params);
 };
 
-// 预订购确认
-export const confirmPreOrderRequestFunction = (
-  params:
-    | {
-        osl_seq: string;
-      }
-    | {
-        osl_seq: string;
-        server_list: { apply_server_time: number | string }[];
-      }
-) => {
-  return axios.post('/api/proxy/order/manage/edit/confirmPreOrder', params);
-};
-
-// 批量修改卖家备注
-export const batchRequestFunction = (params: {
-  ids: BatchRequestParamsInterface[];
-}) => {
-  return axios.put('/api/order/merchant-remark/batch', params);
-};
-
 // 人工下单
 export const submitRequestFunction = (params: AddParamsInterface) => {
   return axios.post('/api/proxy/order/Order/BackEnd/submit', params);
@@ -64,24 +41,6 @@ export const orderDetailExportRequestFunction = (
 // 生成销售出库单
 export const saleOutstockRequestFunction = (params: { osl_seq: string }) => {
   return axios.post('/api/proxy/order/Order/Purchase/saleOutstock', params);
-};
-
-// 配送安装时间列表
-export const getServerInfoRequestFunction = (params: { osl_seq: string }) => {
-  return axios.post<GetServerInfoRequestResultItemInterface[]>(
-    '/api/proxy/order/manage/query/getServerInfo',
-    params
-  );
-};
-
-// 配送安装选择时间列表
-export const queryOrderPlansByOslSeqRequestFunction = (params: {
-  osl_seq: string;
-}) => {
-  return axios.post<QueryOrderPlansByOslSeqRequestResultItemInterface[]>(
-    '/api/proxy/order/Order/assistant/queryOrderPlansByOslSeq',
-    params
-  );
 };
 
 // 下单商品验证是否在配送地址返回内
@@ -130,5 +89,17 @@ export const repairInvoiceRequestFunction = (params: {
 export const getInvoiceCodeRequestFunction = () => {
   return axios.post<InvoiceCodeSingleInterface[]>(
     '/api/proxy/order/Manage/query/getInvoiceCode'
+  );
+};
+
+// 订单详情
+export const orderDetailRequestFunction = (params: {
+  user_id: string;
+  osl_seq: string;
+  show_sublistExt: number;
+}) => {
+  return axios.post<OrderDetailResultInterface>(
+    '/api/proxy/order/Manage/query/getSubList',
+    params
   );
 };

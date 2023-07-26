@@ -23,12 +23,12 @@
 <script setup lang="ts">
 import { ref, watch, reactive } from 'vue';
 import { FormInstance, message, ModalProps } from 'ant-design-vue';
-import { OrderListRequestResultItemInterface } from '../interface';
-import { batchRequestFunction } from '../api';
+import { OrderListSingeInterface } from '../../api/interface';
+import { batchRequestFunction } from '../../api/form';
 
 const propsObject = defineProps<{
   visible: boolean;
-  selectedRowsArray: OrderListRequestResultItemInterface[];
+  selectedRowsArray: OrderListSingeInterface[];
 }>();
 const emitsFunction = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
