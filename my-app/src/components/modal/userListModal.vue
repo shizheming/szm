@@ -29,7 +29,11 @@
               <a-button html-type="submit" type="primary" :loading="loading">
                 <template #icon><search-outlined /></template>
               </a-button>
-              <clear-outlined @click="clearOutlinedClickFunction" />
+              <a-button type="text" @click="clearOutlinedClickFunction">
+                <template #icon>
+                  <clear-outlined />
+                </template>
+              </a-button>
             </a-space>
           </a-form-item>
         </a-col>

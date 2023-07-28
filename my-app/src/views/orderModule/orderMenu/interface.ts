@@ -493,6 +493,8 @@ export type OrderDetailResultInterface = Partial<{
   shop_id: number;
   shop_name: string;
   supplier_id: number;
+  apply_delivery_time_string:string
+  type_name:string
   supplier_code: string;
   store_code: string;
   merchant_remark: string;

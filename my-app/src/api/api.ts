@@ -39,3 +39,5 @@ export const ORDER_PLANS_STRING =
   '/api/proxy/order/Order/assistant/queryOrderPlansByOslSeq';
 // 预订购确认
 export const CONFIRM_PRE_ORDER_STRING = '/api/proxy/order/manage/edit/confirmPreOrder';
+// 销售人员
+export const SUB_ACCOUNT_LIST_STRING = '/api/manager/get-sub-account-list';

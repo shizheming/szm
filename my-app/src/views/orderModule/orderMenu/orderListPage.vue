@@ -493,11 +493,29 @@
         <a-form-item :wrapper-col="{ offset: 6 }">
           <a-space size="large">
             <a-button html-type="submit" type="primary" :loading="loading">
-              <template #icon><search-outlined /></template>
+              <template #icon>
+                <search-outlined />
+              </template>
             </a-button>
-            <clear-outlined @click="clearOutlinedClick" />
-            <up-outlined @click="arrowClick" v-if="isExpandArrowBoolean" />
-            <down-outlined @click="arrowClick" v-else />
+            <a-button type="text" @click="clearOutlinedClick">
+              <template #icon>
+                <clear-outlined />
+              </template>
+            </a-button>
+            <a-button
+              type="text"
+              @click="arrowClick"
+              v-if="isExpandArrowBoolean"
+            >
+              <template #icon>
+                <up-outlined />
+              </template>
+            </a-button>
+            <a-button type="text" @click="arrowClick" v-else>
+              <template #icon>
+                <down-outlined />
+              </template>
+            </a-button>
           </a-space>
         </a-form-item>
       </a-col>
@@ -704,11 +722,12 @@
           title="请确认用户已经签收，否则可能会引起用户投诉！"
           @confirm="confirmSigningPopconfirmConfirm(record)"
         >
-          <a-button size="small">确认签收</a-button>
+          <a-button type="primary" size="small">确认签收</a-button>
         </a-popconfirm>
         <template v-if="record.is_pre_subscribe && record.status == 20">
           <a-button
             size="small"
+            type="primary"
             v-if="record.is_support_local"
             @click="bookingConfirmationPopconfirmConfirm1(record)"
           >
@@ -719,7 +738,7 @@
             title="订单确认后，在系统中可以对订单进行发货操作"
             @confirm="bookingConfirmationPopconfirmConfirm2(record)"
           >
-            <a-button size="small">预订购确认</a-button>
+            <a-button type="primary" size="small">预订购确认</a-button>
           </a-popconfirm>
         </template>
         <a-popconfirm
@@ -733,7 +752,7 @@
           title="确认要生成销售出库单吗？"
           @confirm="generateSalesIssueDocumentPopconfirmConfirm(record)"
         >
-          <a-button size="small">生成销售出库单</a-button>
+          <a-button type="primary" size="small">生成销售出库单</a-button>
         </a-popconfirm>
       </template>
     </template>

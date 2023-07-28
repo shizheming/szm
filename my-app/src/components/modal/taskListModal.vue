@@ -1,9 +1,9 @@
 <template>
   <a-modal
-    :visible="propsObject.visible"
     title="查看任务"
-    @ok="ok"
-    @cancel="cancel"
+    :visible="propsObject.visible"
+    @ok="modalOkFunction"
+    @cancel="modalCancelFunction"
     :width="1400"
   >
     <a-form
@@ -50,7 +50,11 @@
                   <search-outlined />
                 </template>
               </a-button>
-              <clear-outlined @click="clearOutlinedClick" />
+              <a-button type="text" @click="clearOutlinedClickFunction">
+                <template #icon>
+                  <clear-outlined />
+                </template>
+              </a-button>
             </a-space>
           </a-form-item>
         </a-col>
@@ -76,19 +80,21 @@
         <template v-if="column.key === 'operation'">
           <a-button
             size="small"
+            type="primary"
             v-if="record.log_url"
             @click="downTxtButtonClick(record.log_url)"
-            >查看日志</a-button
           >
-          <a-button size="small">
-            <a :href="record.import_url" target="_blank" v-if="record.type == 1"
-              >下载导入文件</a
-            >
+            查看日志
           </a-button>
-          <a-button size="small">
-            <a :href="record.file_url" target="_blank" v-if="record.type == 2"
-              >导出</a
-            >
+          <a-button
+            type="text"
+            size="small"
+            :href="['', record.import_url, record.file_url][record.type]"
+            target="_blank"
+          >
+            <template #icon>
+              <download-outlined />
+            </template>
           </a-button>
         </template>
       </template>
@@ -115,7 +121,11 @@ import {
 } from '../../api/list';
 import { TASK_CLASS_OPTIONS } from '../../data/options';
 import { usePagination } from 'vue-request';
-import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
+import {
+  SearchOutlined,
+  ClearOutlined,
+  DownloadOutlined,
+} from '@ant-design/icons-vue';
 const taskListModalTableColumnsArray: TableColumnsType = [
   {
     title: '操作',
@@ -230,17 +240,17 @@ const tableChange: TableProps['onChange'] = async (pag) => {
   );
 };
 
-const clearOutlinedClick = () => {
+const clearOutlinedClickFunction = () => {
   formRefObject.value?.resetFields();
 };
 
-const ok: ModalProps['onOk'] = async (e) => {
+const modalOkFunction: ModalProps['onOk'] = async (e) => {
   formRefObject.value?.resetFields();
 
   emitsFunction('select');
   emitsFunction('update:visible', false);
 };
-const cancel: ModalProps['onCancel'] = (e) => {
+const modalCancelFunction: ModalProps['onCancel'] = (e) => {
   formRefObject.value?.resetFields();
   emitsFunction('update:visible', false);
 };

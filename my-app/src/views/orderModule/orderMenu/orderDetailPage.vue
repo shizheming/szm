@@ -93,26 +93,78 @@
     <a-descriptions-item label="燃气户号">
       {{ detailDataObject.gas_account }}
     </a-descriptions-item>
-    <a-descriptions-item label="主单号">
-      {{ detailDataObject.ono }}
+    <a-descriptions-item label="要求送货时间">
+      {{ detailDataObject.apply_delivery_time_string }}
     </a-descriptions-item>
-    <a-descriptions-item label="主单号">
-      {{ detailDataObject.ono }}
+    <a-descriptions-item label="业务类型">
+      {{ detailDataObject.business_name }}
+    </a-descriptions-item>
+    <a-descriptions-item label="分销订单">
+      {{ detailDataObject.distribute_order }}
+    </a-descriptions-item>
+    <a-descriptions-item label="用户等级">
+      {{ detailDataObject.user_level_name }}
+    </a-descriptions-item>
+    <a-descriptions-item label="销售组织自营订单">
+      {{ detailDataObject.type_name }}
+    </a-descriptions-item>
+    <a-descriptions-item label="微信昵称">
+      {{ detailDataObject.wx_nickname }}
+    </a-descriptions-item>
+    <a-descriptions-item label="用户名">
+      {{ detailDataObject.user_name }}
+    </a-descriptions-item>
+    <a-descriptions-item label="供货组织">
+      {{ detailDataObject.distribute_org_name }}
+    </a-descriptions-item>
+    <a-descriptions-item label="供货组织来源平台企业id">
+      {{ detailDataObject.distribute_org_enterprise_id }}
+    </a-descriptions-item>
+    <a-descriptions-item label="销售站点">
+      {{ detailDataObject.owner_site_name }}
+    </a-descriptions-item>
+    <a-descriptions-item label="配送方式">
+      {{ detailDataObject.delivery_mode_name }}
+    </a-descriptions-item>
+    <a-descriptions-item label="销售人员">
+      {{ detailDataObject.shop_account_name }}
+      <a-button type="text" size="small" @click="editOutlinedButtonClickFunction">
+        <template #icon>
+          <edit-outlined />
+        </template>
+      </a-button>
+    </a-descriptions-item>
+    <a-descriptions-item label="销售人员所属网点">
+      {{ detailDataObject.salesman_node_name }}
+    </a-descriptions-item>
+    <a-descriptions-item label="预约信息">
+      {{ detailDataObject.xxxx }}
+    </a-descriptions-item>
+    <a-descriptions-item label="销售站点">
+      {{ detailDataObject.owner_site_name }}
     </a-descriptions-item>
   </a-descriptions>
+  <sales-person-list-modal v-model:visible="salesPersonListModalVisibleBoolean" :shop-id="detailDataObject.shop_id"/>
 </template>
 
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
 import { orderDetailRequestFunction } from './api';
-import { ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import { OrderDetailResultInterface } from './interface';
 import { WHETHER_ENUM } from '../../../data/dictionary';
 import dayjs from 'dayjs';
+import { handleTimeFunction } from '../../../utils/z';
+import { EditOutlined } from '@ant-design/icons-vue';
 
 const routeObject = useRoute();
 const routerObject = useRouter();
 const detailDataObject = ref<OrderDetailResultInterface>({});
+const SalesPersonListModal = defineAsyncComponent(() => import('../../../components/modal/salesPersonListModal.vue'))
+const salesPersonListModalVisibleBoolean = ref(false);
+const editOutlinedButtonClickFunction = () => {
+  salesPersonListModalVisibleBoolean.value = true;
+}
 
 orderDetailRequestFunction({
   osl_seq: routeObject.query.osl_seq as string,
@@ -122,23 +174,15 @@ orderDetailRequestFunction({
   data.is_support_local_name = WHETHER_ENUM[data.is_support_local];
   data.is_return_name = WHETHER_ENUM[data.is_return];
   data.is_invoice_name = WHETHER_ENUM[data.is_invoice];
-  
-  
-  data.pay_time_string = dayjs(data.pay_time * 1000).format(
-    'YYYY-MM-DD HH:mm:ss'
-  );
-  data.create_time_string = dayjs(data.create_time * 1000).format(
-    'YYYY-MM-DD HH:mm:ss'
-  );
-  data.confirm_time_string = dayjs(data.confirm_time * 1000).format(
-    'YYYY-MM-DD HH:mm:ss'
-  );
-  data.pre_delivery_time_string = dayjs(data.pre_delivery_time * 1000).format(
-    'YYYY-MM-DD HH:mm:ss'
-  );
-  data.delivery_time_string = dayjs(data.delivery_time * 1000).format(
-    'YYYY-MM-DD HH:mm:ss'
-  );
+
+  data.pay_time_string = handleTimeFunction(data.pay_time);
+  data.create_time_string = handleTimeFunction(data.create_time);
+  data.confirm_time_string = handleTimeFunction(data.confirm_time);
+  data.pre_delivery_time_string = handleTimeFunction(data.pre_delivery_time);
+  data.delivery_time_string = handleTimeFunction(data.delivery_time);
+  data.apply_delivery_time_string = handleTimeFunction(
+    data.apply_delivery_time
+  ).split(' ')[0];
 
   detailDataObject.value = data;
 });

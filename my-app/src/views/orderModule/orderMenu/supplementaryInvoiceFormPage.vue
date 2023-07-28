@@ -226,14 +226,14 @@
     </a-row>
     <a-divider orientation="left">订单信息</a-divider>
     <a-space>
-      <a-button @click="selectOrderButtonClickFunction" size="small">
+      <a-button type="text" @click="selectOrderButtonClickFunction">
         <template #icon>
           <plus-outlined />
         </template>
       </a-button>
       <a-button
+        type="text"
         @click="deleteOutlinedClickFunction"
-        size="small"
         :disabled="tableRowSelectionSelectedRowKeysArray.length === 0"
       >
         <template #icon>

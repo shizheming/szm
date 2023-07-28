@@ -96,9 +96,15 @@
           <a-form-item :wrapper-col="{ offset: 6 }">
             <a-space style="font-size: 18px" size="large">
               <a-button html-type="submit" type="primary" :loading="loading">
-                <template #icon><search-outlined /></template>
+                <template #icon>
+                  <search-outlined />
+                </template>
               </a-button>
-              <clear-outlined @click="clearOutlinedClickFunction" />
+              <a-button type="text" @click="clearOutlinedClickFunction">
+                <template #icon>
+                  <clear-outlined />
+                </template>
+              </a-button>
             </a-space>
           </a-form-item>
         </a-col>

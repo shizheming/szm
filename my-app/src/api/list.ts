@@ -9,6 +9,8 @@ import {
   orderRequestResultInterType,
   OrderSyncListRequestParamsInterface,
   orderSyncListRequestResultInterType,
+  SalesPersonRequestParamsType,
+  SalesPersonRequestResultType,
 } from './interface';
 import axios from '../utils/axios';
 import {
@@ -18,6 +20,7 @@ import {
   ORDER_STRING,
   TASK_STRING,
   LOG_STRING,
+  SUB_ACCOUNT_LIST_STRING,
 } from './api';
 
 // 用户列表
@@ -89,5 +92,14 @@ export const fileByUrlRequestFunction = (params: { url: string }) => {
     headers: {
       'Content-Type': 'application/json',
     },
+  });
+};
+
+// 销售人员
+export const subAccountRequestFunction = (
+  params: SalesPersonRequestParamsType
+) => {
+  return axios.get<SalesPersonRequestResultType>(SUB_ACCOUNT_LIST_STRING, {
+    params,
   });
 };

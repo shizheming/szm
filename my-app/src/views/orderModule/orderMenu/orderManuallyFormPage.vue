@@ -37,7 +37,11 @@
         >
           <a-space>
             <span>{{ formModelObject.user_id }}</span>
-            <plus-outlined @click="plusOutlinedClickFunction" />
+            <a-button type="text" @click="plusOutlinedClickFunction" >
+              <template #icon>
+                <plus-outlined />
+              </template>
+            </a-button>
           </a-space>
         </a-form-item>
       </a-col>
@@ -442,12 +446,15 @@
     </a-row>
     <a-divider orientation="left">商品信息</a-divider>
     <a-space>
-      <a-button @click="selectGoodsButtonClickFunction" size="small">
+      <a-button
+        type="text"
+        @click="selectGoodsButtonClickFunction"
+      >
         <template #icon>
           <plus-outlined />
         </template>
       </a-button>
-      <a-button @click="deleteOutlinedClickFunction" size="small">
+      <a-button type="text" @click="deleteOutlinedClickFunction" >
         <template #icon>
           <delete-outlined />
         </template>

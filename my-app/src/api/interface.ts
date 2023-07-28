@@ -645,3 +645,44 @@ export type confirmPreOrderRequestParamsType =
       osl_seq: string;
       server_list: { apply_server_time: number | string }[];
     };
+
+// 销售人员入参
+export type SalesPersonRequestParamsType = Partial<{
+  display_name: string;
+  node_name: number;
+  shop_id: number;
+  status: number;
+}> &
+  PageInterface;
+
+// 销售人员单条
+export interface SalesPersonSingleInterface {
+  id: number;
+  org_id: number;
+  username: string;
+  display_name: string;
+  department_id: number;
+  is_create: number;
+  email: string;
+  phone: string;
+  type: number;
+  status: number;
+  is_main: number;
+  last_shop_id: number;
+  last_login_time: number;
+  org_data_pri: string;
+  remark: string;
+  create_time: string;
+  update_time: string;
+  delete_time: string;
+  is_delete: number;
+  enterprise_id: number;
+  modify_time: string;
+  node_id: number;
+  node_name: string;
+  user_id: string;
+}
+
+// 销售人员出参
+export type SalesPersonRequestResultType =
+  ListInterface<SalesPersonSingleInterface>;

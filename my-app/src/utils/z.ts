@@ -31,7 +31,7 @@ export function findCategoryFunction(
   return result;
 }
 
-// 事件戳处理
+// 时间戳处理
 export function handleTimeFunction(time: number) {
   return time ? dayjs(time * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
 }
