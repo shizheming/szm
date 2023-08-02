@@ -63,7 +63,14 @@
             overflow: 'auto',
           }"
         >
-          <router-view />
+          <router-view v-slot="{ Component }">
+            <Suspense>
+              <component :is="Component"></component>
+              <template #fallback>
+                <a-skeleton active />
+              </template>
+            </Suspense>
+          </router-view>
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -109,7 +116,6 @@ const menusArray = ref<RouteRecord[]>([]);
 const pathArray = compact(routeObject.path.split('/'));
 console.log(allRouteArray, 1234);
 console.log(pathArray, 12300);
-
 const permissionsArray: PermissionsRequestResultInterface[] = JSON.parse(
   localStorage.permissions
 );

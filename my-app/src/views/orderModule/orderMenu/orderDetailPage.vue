@@ -128,7 +128,7 @@
     </a-descriptions-item>
     <a-descriptions-item label="销售人员">
       {{ detailDataObject.shop_account_name }}
-      <a-button type="text" size="small" @click="editOutlinedButtonClickFunction">
+      <a-button type="text" size="small" @click="shopAccountNameButtonClickFunction">
         <template #icon>
           <edit-outlined />
         </template>
@@ -162,7 +162,7 @@ const routerObject = useRouter();
 const detailDataObject = ref<OrderDetailResultInterface>({});
 const SalesPersonListModal = defineAsyncComponent(() => import('../../../components/modal/salesPersonListModal.vue'))
 const salesPersonListModalVisibleBoolean = ref(false);
-const editOutlinedButtonClickFunction = () => {
+const shopAccountNameButtonClickFunction = () => {
   salesPersonListModalVisibleBoolean.value = true;
 }
 

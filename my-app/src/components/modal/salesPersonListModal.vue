@@ -7,7 +7,7 @@
     title="选择销售人员"
     @ok="modalOkFunction"
     @cancel="modalCancelFunction"
-    :width="1400"
+    :width="700"
   >
     <a-form
       ref="formRefObject"
@@ -16,19 +16,19 @@
       @finish="formFinishFunction"
     >
       <a-row>
-        <a-col :span="8">
+        <a-col :span="12">
           <a-form-item label="姓名" :name="['display_name']">
             <a-input v-model:value="formModelObject.display_name" />
           </a-form-item>
         </a-col>
-        <a-col :span="8">
+        <a-col :span="12">
           <a-form-item label="网点" :name="['node_name']">
             <a-input v-model:value="formModelObject.node_name" />
           </a-form-item>
         </a-col>
       </a-row>
       <a-row>
-        <a-col :span="8">
+        <a-col :span="12">
           <a-form-item :wrapper-col="{ offset: 6 }">
             <a-space style="font-size: 18px" size="large">
               <a-button html-type="submit" type="primary" :loading="loading">
@@ -63,7 +63,7 @@
           record,
         }: {
           column: TableColumnType,
-          record: UserSingleInterface,
+          record: SalesPersonSingleInterface,
         }"
       >
         <template v-if="column.key === 'operation'"> </template>
@@ -81,7 +81,7 @@ import {
   TableColumnType,
 } from 'ant-design-vue';
 import {
-  UserSingleInterface,
+  SalesPersonSingleInterface,
   SalesPersonRequestParamsType,
 } from '../../api/interface';
 import { subAccountRequestFunction } from '../../api/list';
@@ -118,7 +118,7 @@ const emitsFunction = defineEmits<{
   (
     event: 'select',
     selectedRowKeysArray: TableRowSelection['selectedRowKeys'],
-    selectedRowsArray: UserSingleInterface[]
+    selectedRowsArray: SalesPersonSingleInterface[]
   ): void;
 }>();
 
@@ -126,7 +126,7 @@ const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
 const formRefObject = ref<FormInstance>();
-let selectedRowsArray: UserSingleInterface[] = [];
+let selectedRowsArray: SalesPersonSingleInterface[] = [];
 const { data, current, pageSize, run, loading, total } = usePagination(
   subAccountRequestFunction,
   {
@@ -144,7 +144,6 @@ const { data, current, pageSize, run, loading, total } = usePagination(
 
 const formModelObject = reactive<SalesPersonRequestParamsType>({
   status: 1,
-  shop_id: propsObject.shopId,
   page: current.value,
   page_size: pageSize.value,
 });
@@ -161,7 +160,7 @@ const tablePaginationObject = computed(() => {
 
 let confirmTableRowSelectionSelectedRowKeysArray: TableRowSelection['selectedRowKeys'] =
   [];
-let confirmSelectedRowsArray: UserSingleInterface[] = [];
+let confirmSelectedRowsArray: SalesPersonSingleInterface[] = [];
 
 const formFinishFunction = async () => {
   run(formModelObject);
@@ -206,7 +205,13 @@ const modalCancelFunction = () => {
   selectedRowsArray = [];
   emitsFunction('update:visible', false);
 };
-
+const wantchShopIDFunction = watch(
+  () => propsObject.shopId,
+  (newValue) => {
+    formModelObject.shop_id = newValue;
+    wantchShopIDFunction();
+  }
+);
 watch(
   () => propsObject.visible,
   async (newValue) => {
