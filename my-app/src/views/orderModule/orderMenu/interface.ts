@@ -4,7 +4,7 @@ import {
   PageInterface,
   partPartial,
 } from '../../../interface/index';
-import { SkuSingleInterface } from '../../../api/interface';
+import { SkuSingleInterface } from '../../../api/formInterface';
 
 export interface OrderListRequestParamsInterface {
   order_search_key: string;

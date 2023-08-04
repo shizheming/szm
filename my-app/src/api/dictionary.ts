@@ -8,7 +8,8 @@ import {
   SiteRequestResultInterface,
   OrgRequestResultInterface,
   AddressSingleInterface,
-} from './interface';
+  NodeRequestResultType,
+} from './dictionaryInterface';
 import {
   SUPPLIER_API_STRING,
   CATEGORY_API_STRING,
@@ -17,6 +18,7 @@ import {
   SITE_API_STRING,
   ORG_API_STRING,
   AREA_API_STRING,
+  NODE_STRING,
 } from './api';
 
 // 供应商
@@ -49,3 +51,7 @@ export const orgRequestFunction = (params: PageInterface) =>
 // 地址
 export const areaRequestFunction = (params: { parent_id: number }) =>
   axios.get<AddressSingleInterface[]>(AREA_API_STRING, { params });
+
+// 网点
+export const nodeRequestFunction = (params: PageInterface) =>
+  axios.get<NodeRequestResultType>(NODE_STRING, { params });

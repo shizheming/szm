@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { categoryRequestFunction } from '../api/dictionary';
-import { CategorySingleInterface } from '../api/interface';
+import { CategorySingleInterface } from '../api/formInterface';
 // 获取类目
 let categoryArray: CategorySingleInterface[];
 categoryRequestFunction().then(({ data }) => {

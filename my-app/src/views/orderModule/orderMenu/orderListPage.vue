@@ -829,7 +829,7 @@ import {
   CloseOutlined,
   CheckOutlined,
 } from '@ant-design/icons-vue';
-import { last, compact, values, isInteger } from 'lodash';
+import { last, compact, values, isInteger, delay } from 'lodash';
 import type {
   OrderListRequestResultItemInterface,
   OrderLsitParamsPageInterface,
@@ -1053,13 +1053,10 @@ const batchButtonClick = async () => {
 };
 
 const modalSubmit = () => {
-  setTimeout(() => {
-    run(getSearchDataObject());
-  }, 500);
+  delay(() => run(getSearchDataObject()), 500);
 };
 
 const taskButtonClick = () => {
-  console.log(33838);
   taskListModalVisible.value = true;
 };
 const confirmSigningPopconfirmConfirm = async (
@@ -1071,7 +1068,7 @@ const confirmSigningPopconfirmConfirm = async (
     operator: USER_INFO.user_id,
   });
   message.success('成功');
-  setTimeout(() => {
+  delay(() => {
     run(getSearchDataObject());
   }, 500);
 };
@@ -1090,7 +1087,7 @@ const bookingConfirmationPopconfirmConfirm2 = async (
     osl_seq: record.osl_seq,
   });
   message.success('成功');
-  setTimeout(() => {
+  delay(() => {
     run(getSearchDataObject());
   }, 500);
 };
@@ -1102,7 +1099,7 @@ const generateSalesIssueDocumentPopconfirmConfirm = async (
     osl_seq: record.osl_seq,
   });
   message.success('成功');
-  setTimeout(() => {
+  delay(() => {
     run(getSearchDataObject());
   }, 500);
 };

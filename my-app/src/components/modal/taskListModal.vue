@@ -114,7 +114,7 @@ import {
 import {
   OrderSyncListSingleInterface,
   OrderSyncListRequestParamsInterface,
-} from '../../api/interface';
+} from '../../api/listInterface';
 import {
   orderSyncListRequestFunction,
   fileByUrlRequestFunction,

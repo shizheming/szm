@@ -128,7 +128,11 @@
     </a-descriptions-item>
     <a-descriptions-item label="销售人员">
       {{ detailDataObject.shop_account_name }}
-      <a-button type="text" size="small" @click="shopAccountNameButtonClickFunction">
+      <a-button
+        type="text"
+        size="small"
+        @click="shopAccountNameButtonClickFunction"
+      >
         <template #icon>
           <edit-outlined />
         </template>
@@ -144,7 +148,12 @@
       {{ detailDataObject.owner_site_name }}
     </a-descriptions-item>
   </a-descriptions>
-  <sales-person-list-modal v-model:visible="salesPersonListModalVisibleBoolean" :shop-id="detailDataObject.shop_id"/>
+  <sales-person-list-modal
+    v-model:visible="salesPersonListModalVisibleBoolean"
+    :shop-id="detailDataObject.shop_id"
+    :osl-seq="detailDataObject.osl_seq"
+    @select="salesPersonListModalSelectFunction"
+  />
 </template>
 
 <script setup lang="ts">
@@ -159,18 +168,28 @@ import { EditOutlined } from '@ant-design/icons-vue';
 
 const routeObject = useRoute();
 const routerObject = useRouter();
-const detailDataObject = ref<OrderDetailResultInterface>({});
-const SalesPersonListModal = defineAsyncComponent(() => import('../../../components/modal/salesPersonListModal.vue'))
+const detailDataObject = ref<OrderDetailResultInterface>({
+  shop_id: 0,
+  osl_seq: ''
+});
+const SalesPersonListModal = defineAsyncComponent(
+  () => import('../../../components/modal/salesPersonListModal.vue')
+);
 const salesPersonListModalVisibleBoolean = ref(false);
 const shopAccountNameButtonClickFunction = () => {
   salesPersonListModalVisibleBoolean.value = true;
-}
+};
 
-orderDetailRequestFunction({
-  osl_seq: routeObject.query.osl_seq as string,
-  user_id: routeObject.query.user_id as string,
-  show_sublistExt: 1,
-}).then(({ data }) => {
+const salesPersonListModalSelectFunction = () => {
+  detailInfoFunction()
+};
+
+const detailInfoFunction = async () => {
+  const { data } = await orderDetailRequestFunction({
+    osl_seq: routeObject.query.osl_seq as string,
+    user_id: routeObject.query.user_id as string,
+    show_sublistExt: 1,
+  });
   data.is_support_local_name = WHETHER_ENUM[data.is_support_local];
   data.is_return_name = WHETHER_ENUM[data.is_return];
   data.is_invoice_name = WHETHER_ENUM[data.is_invoice];
@@ -185,7 +204,8 @@ orderDetailRequestFunction({
   ).split(' ')[0];
 
   detailDataObject.value = data;
-});
+};
+detailInfoFunction()
 </script>
 
 <style></style>

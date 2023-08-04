@@ -4,9 +4,10 @@
     :ok-button-props="{
       disabled: !tableRowSelectionSelectedRowKeysArray.length,
     }"
-    title="选择销售人员"
+    title="设置销售人员"
     @ok="modalOkFunction"
     @cancel="modalCancelFunction"
+    :confirm-loading="modalConfirmLoadingBoolean"
     :width="700"
   >
     <a-form
@@ -23,7 +24,7 @@
         </a-col>
         <a-col :span="12">
           <a-form-item label="网点" :name="['node_name']">
-            <a-input v-model:value="formModelObject.node_name" />
+            <node-select v-model:value="formModelObject.node_id" />
           </a-form-item>
         </a-col>
       </a-row>
@@ -32,7 +33,9 @@
           <a-form-item :wrapper-col="{ offset: 6 }">
             <a-space style="font-size: 18px" size="large">
               <a-button html-type="submit" type="primary" :loading="loading">
-                <template #icon><search-outlined /></template>
+                <template #icon>
+                  <search-outlined />
+                </template>
               </a-button>
               <a-button type="text" @click="clearOutlinedClickFunction">
                 <template #icon>
@@ -45,7 +48,7 @@
       </a-row>
     </a-form>
     <a-table
-      row-key="user_id"
+      row-key="id"
       :row-selection="{
         selectedRowKeys: tableRowSelectionSelectedRowKeysArray,
         onChange: tableRowSelectionOnChangeFunction,
@@ -72,25 +75,30 @@
   </a-modal>
 </template>
 <script setup lang="ts">
-import { ref, watch, reactive, computed } from 'vue';
+import { ref, watch, reactive, computed, defineAsyncComponent } from 'vue';
 import {
   FormInstance,
   ModalProps,
   TableProps,
   FormProps,
   TableColumnType,
+  message,
 } from 'ant-design-vue';
 import {
   SalesPersonSingleInterface,
   SalesPersonRequestParamsType,
-} from '../../api/interface';
+} from '../../api/listInterface';
 import { subAccountRequestFunction } from '../../api/list';
+import { salesManRequestFunction } from '../../api/form';
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import { PageInterface } from '../../interface';
 import { TableColumn, TableColumnsType } from 'ant-design-vue';
 import { cloneDeep } from 'lodash';
+const NodeSelect = defineAsyncComponent(
+  () => import('../select/nodeSelect.vue')
+);
 const tableColumnsArray: TableColumnsType = [
   {
     title: '姓名',
@@ -112,16 +120,13 @@ const tableColumnsArray: TableColumnsType = [
 const propsObject = defineProps<{
   visible: boolean;
   shopId: number;
+  oslSeq: string;
 }>();
 const emitsFunction = defineEmits<{
   (event: 'update:visible', visible: boolean): void;
-  (
-    event: 'select',
-    selectedRowKeysArray: TableRowSelection['selectedRowKeys'],
-    selectedRowsArray: SalesPersonSingleInterface[]
-  ): void;
+  (event: 'select'): void;
 }>();
-
+const modalConfirmLoadingBoolean = ref(false);
 const tableRowSelectionSelectedRowKeysArray = ref<
   TableRowSelection['selectedRowKeys']
 >([]);
@@ -187,22 +192,31 @@ const clearOutlinedClickFunction = () => {
 };
 
 const modalOkFunction = async () => {
-  formRefObject.value?.resetFields();
+  await formRefObject.value?.resetFields();
+  modalConfirmLoadingBoolean.value = true;
+  const [{ node_id, id, user_id = 0 }] = selectedRowsArray;
+  await salesManRequestFunction({
+    osl_seq: propsObject.oslSeq,
+    salesman_node_id: node_id,
+    shop_account_id: id,
+    shop_user_id: Number(user_id),
+  }).catch(() => {
+    modalConfirmLoadingBoolean.value = false;
+    return Promise.reject();
+  });
   confirmTableRowSelectionSelectedRowKeysArray = cloneDeep(
     tableRowSelectionSelectedRowKeysArray.value
   );
   confirmSelectedRowsArray = cloneDeep(selectedRowsArray);
-  emitsFunction(
-    'select',
-    confirmTableRowSelectionSelectedRowKeysArray,
-    confirmSelectedRowsArray
-  );
-  modalCancelFunction();
-};
-const modalCancelFunction = () => {
-  formRefObject.value?.resetFields();
   tableRowSelectionSelectedRowKeysArray.value = [];
   selectedRowsArray = [];
+  modalConfirmLoadingBoolean.value = false;
+  message.success('成功');
+  emitsFunction('select');
+  modalCancelFunction();
+};
+const modalCancelFunction = async () => {
+  await formRefObject.value?.resetFields();
   emitsFunction('update:visible', false);
 };
 const wantchShopIDFunction = watch(

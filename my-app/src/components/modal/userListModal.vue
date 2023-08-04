@@ -75,7 +75,7 @@ import {
   FormProps,
   TableColumnType,
 } from 'ant-design-vue';
-import { UserSingleInterface } from '../../api/interface';
+import { UserSingleInterface } from '../../api/listInterface';
 import { userRequsetFunction } from '../../api/list';
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';

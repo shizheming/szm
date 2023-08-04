@@ -16,9 +16,10 @@ export const ORG_API_STRING = '/api/sys/org';
 export const AREA_API_STRING = '/api/common/area';
 
 // 弹框api
+// 查询
 // 用户
 export const USER_API_STRING = '/api/proxy/user/User/UserSearch/epUserSearch';
-// sku商品列表
+// sku商品
 export const SKU_API_STRING = '/api/goods/sku/list';
 // 发票抬头
 export const INVOICE_TITLE_STRING =
@@ -29,15 +30,20 @@ export const ORDER_STRING = '/api/proxy/order/Manage/query/searchOrder';
 export const TASK_STRING = '/api/order/orderSyncList';
 // 查看日志
 export const LOG_STRING = '/api/order/getFileByUrl';
-// 批量修改备注
-export const BATCH_REMARK_STRING = '/api/order/merchant-remark/batch';
-// 配送安装时间列表
+// 配送安装时间
 export const SERVER_INFO_REMARK_STRING =
   '/api/proxy/order/manage/query/getServerInfo';
-// 配送安装选择时间列表
-export const ORDER_PLANS_STRING =
-  '/api/proxy/order/Order/assistant/queryOrderPlansByOslSeq';
+  // 配送安装选择时间
+  export const ORDER_PLANS_STRING =
+    '/api/proxy/order/Order/assistant/queryOrderPlansByOslSeq';
+    // 销售人员
+    export const SUB_ACCOUNT_LIST_STRING = '/api/manager/get-sub-account-list';
+    // 网点
+    export const NODE_STRING = '/api/goods/node/index';
+// 修改
+// 备注
+export const BATCH_REMARK_STRING = '/api/order/merchant-remark/batch';
 // 预订购确认
 export const CONFIRM_PRE_ORDER_STRING = '/api/proxy/order/manage/edit/confirmPreOrder';
-// 销售人员
-export const SUB_ACCOUNT_LIST_STRING = '/api/manager/get-sub-account-list';
+// 修改销售人员
+export const SALES_MAN_STRING = '/api/proxy/order/manage/edit/updateSalesman';

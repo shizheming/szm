@@ -114,12 +114,14 @@ import { usePagination } from 'vue-request';
 import {
   GetServerInfoSingleInterface,
   OrderListSingeInterface,
-} from '../../api/interface';
+} from '../../api/listInterface';
+import {
+  confirmPreOrderRequestFunction,
+} from '../../api/form';
 import {
   getServerInfoRequestFunction,
   queryOrderPlansRequestFunction,
-  confirmPreOrderRequestFunction,
-} from '../../api/form';
+} from '../../api/list';
 import dayjs, { Dayjs } from 'dayjs';
 const deliveryInstallationTimeModalTableColumnsArray: TableColumnsType = [
   {

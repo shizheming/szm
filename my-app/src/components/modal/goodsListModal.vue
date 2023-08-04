@@ -170,7 +170,7 @@ import {
 import {
   SkuSingleInterface,
   SkuRequestParamsInterface,
-} from '../../api/interface';
+} from '../../api/listInterface';
 import { api_goods_sku_getSkuAreaBySkuIds } from '../../views/orderModule/orderMenu/api';
 import { skuRequestFunction } from '../../api/list';
 import { usePagination } from 'vue-request';

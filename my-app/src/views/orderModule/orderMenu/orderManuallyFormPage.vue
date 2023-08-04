@@ -626,7 +626,7 @@ import {
   UserSingleInterface,
   SkuSingleInterface,
   SkuRequestResultInterface,
-} from '../../../api/interface';
+} from '../../../api/listInterface';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import BackgroundCategoryCascader from '../../../components/cascader/backgroundCategoryCascader.vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';

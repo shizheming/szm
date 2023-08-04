@@ -11,7 +11,9 @@ import {
   orderSyncListRequestResultInterType,
   SalesPersonRequestParamsType,
   SalesPersonRequestResultType,
-} from './interface';
+  QueryOrderPlansSingleInterface,
+  GetServerInfoSingleInterface,
+} from './listInterface';
 import axios from '../utils/axios';
 import {
   USER_API_STRING,
@@ -21,6 +23,8 @@ import {
   TASK_STRING,
   LOG_STRING,
   SUB_ACCOUNT_LIST_STRING,
+  ORDER_PLANS_STRING,
+  SERVER_INFO_REMARK_STRING,
 } from './api';
 
 // 用户列表
@@ -102,4 +106,20 @@ export const subAccountRequestFunction = (
   return axios.get<SalesPersonRequestResultType>(SUB_ACCOUNT_LIST_STRING, {
     params,
   });
+};
+
+// 配送安装选择时间列表
+export const queryOrderPlansRequestFunction = (params: { osl_seq: string }) => {
+  return axios.post<QueryOrderPlansSingleInterface[]>(
+    ORDER_PLANS_STRING,
+    params
+  );
+};
+
+// 配送安装时间列表
+export const getServerInfoRequestFunction = (params: { osl_seq: string }) => {
+  return axios.post<GetServerInfoSingleInterface[]>(
+    SERVER_INFO_REMARK_STRING,
+    params
+  );
 };

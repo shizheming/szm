@@ -111,7 +111,7 @@ import {
   OrderSingleInterface,
   OrderRequestParamsInterface,
   OrderRowSingleInterface,
-} from '../../api/interface';
+} from '../../api/listInterface';
 import { orderRequestFunction } from '../../api/list';
 import { usePagination } from 'vue-request';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons-vue';

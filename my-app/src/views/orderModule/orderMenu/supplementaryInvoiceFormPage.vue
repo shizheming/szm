@@ -347,7 +347,7 @@ import {
   OrderRowSingleInterface,
   OrderSingleInterface,
   SkuRequestResultInterface,
-} from '../../../api/interface';
+} from '../../../api/listInterface';
 import { TableRowSelection } from 'ant-design-vue/es/table/interface';
 import { partPartial } from '../../../interface';
 import {
